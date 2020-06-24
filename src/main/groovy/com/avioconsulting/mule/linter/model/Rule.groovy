@@ -4,16 +4,16 @@ class Rule {
     String ruleId = "TBD"
     String ruleName
     String severity = "ERROR"
-    ProjectFile projectFile
+    Application application
 
-    Rule(String ruleId, String ruleName, ProjectFile file) {
+    Rule(String ruleId, String ruleName, Application app) {
         this.ruleId = ruleId
         this.ruleName = ruleName
-        this.projectFile = file
+        this.application = app
     }
 
-    ProjectFile getProjectFile() {
-        return projectFile
+    Application application() {
+        return application
     }
 
     void setSeverity(String severity) {

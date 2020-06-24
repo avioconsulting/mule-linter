@@ -4,11 +4,11 @@ class PomFile extends ProjectFile {
 
     PomFile(File f) {
         super(f)
+        // parse file, to build out pom details
     }
 
     boolean exists() {
         if(getFile() == null) { return false }
-
         return getFile().exists()
     }
 
