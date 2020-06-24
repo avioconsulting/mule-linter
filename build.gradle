@@ -6,7 +6,7 @@ plugins {
 
 group 'com.avioconsulting.mule'
 version '1.0-SNAPSHOT'
-mainClassName = 'com.avioconsulting.mule.MuleLinter'
+mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
