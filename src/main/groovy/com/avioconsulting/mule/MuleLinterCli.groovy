@@ -15,9 +15,9 @@ class MuleLinterCli implements Runnable {
     String appDir
 
 
-    public static void main(String... args) {
-        new CommandLine(new MuleLinterCli()).execute(args)
-    }
+//    public static void main(String... args) {
+//        new CommandLine(new MuleLinterCli()).execute(args)
+//    }
 
     @Override
     void run() {

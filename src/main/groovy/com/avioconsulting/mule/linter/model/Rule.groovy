@@ -12,6 +12,14 @@ class Rule {
         this.application = app
     }
 
+    Application getApplication() {
+        return application
+    }
+
+    void setApplication(Application application) {
+        this.application = application
+    }
+
     Application application() {
         return application
     }
