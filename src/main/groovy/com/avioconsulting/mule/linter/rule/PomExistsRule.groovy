@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PomFile
 import com.avioconsulting.mule.linter.model.ProjectFile
 import com.avioconsulting.mule.linter.model.Rule
+import org.apache.maven.*
 
 class PomExistsRule extends Rule {
 
@@ -27,4 +28,5 @@ class PomExistsRule extends Rule {
 
         // this should implment a 'raiseIssue' (or similar method)
     }
+
 }

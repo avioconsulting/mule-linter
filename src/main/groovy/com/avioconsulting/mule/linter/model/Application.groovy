@@ -3,15 +3,19 @@ package com.avioconsulting.mule.linter.model
 class Application {
 
     File applicationPath
-//    ProjectFile[] files
     Map<String,ProjectFile> files = new HashMap<String,ProjectFile>()
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
-
         files.put("POM", new File(applicationPath, "pom.xml"))
+    }
 
-        // add logic to put in required files into files map
+    File getApplicationPath() {
+        return applicationPath
+    }
+
+    void setApplicationPath(File applicationPath) {
+        this.applicationPath = applicationPath
     }
 
     PomFile getPomFile() {
@@ -25,10 +29,6 @@ class Application {
     void setFiles(Map<String, ProjectFile> files) {
         this.files = files
     }
-
-
-// These to go away....
-    // implement getFile("name")
 
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
