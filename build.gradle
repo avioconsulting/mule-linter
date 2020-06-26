@@ -2,6 +2,7 @@ plugins {
     id 'groovy'
     id 'java'
     id 'application'
+    id 'codenarc'
 }
 
 group 'com.avioconsulting.mule'
