@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.linter.rule;
 
-import com.avioconsulting.mule.linter.model.Application;
-import com.avioconsulting.mule.linter.model.PomFile;
+import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
+import com.avioconsulting.mule.linter.model.RuleViolation
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.apache.maven.project.MavenProject;
@@ -14,8 +14,9 @@ class PomCheckProperties extends Rule {
     }
 
     @Override
-    public void execute() {
+    public List<RuleViolation> execute() {
         getProjectVersion()
+        return null;
     }
 
     private static String getProjectVersion() {

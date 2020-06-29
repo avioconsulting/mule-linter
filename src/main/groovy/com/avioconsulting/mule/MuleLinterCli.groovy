@@ -15,17 +15,14 @@ class MuleLinterCli implements Runnable {
     String appDir
 
 
-//    public static void main(String... args) {
-//        new CommandLine(new MuleLinterCli()).execute(args)
-//    }
+    public static void main(String... args) {
+        new CommandLine(new MuleLinterCli()).execute(args)
+    }
 
     @Override
     void run() {
         // parse application to build out structure
-        File appDir = new File(appDir)
-        Application app = new Application(appDir)
-
-        MuleLinter ml = new MuleLinter(app)
+        MuleLinter ml = new MuleLinter(appDir)
         ml.runLinter()
 //
 //        Rule r1 = new PomExistsRule(app.getPomFile())

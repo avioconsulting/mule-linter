@@ -1,15 +1,17 @@
 package com.avioconsulting.mule.linter.model;
 
 class Rule {
-    String ruleId = "TBD"
+    String ruleId
     String ruleName
-    String severity = "ERROR"
+    RuleSeverity severity = RuleSeverity.MINOR
     Application application
+    List<RuleViolation> violations = new ArrayList<RuleViolation>()
 
     Rule(String ruleId, String ruleName, Application app) {
         this.ruleId = ruleId
         this.ruleName = ruleName
         this.application = app
+        println("Created rule $ruleId $ruleName")
     }
 
     Application getApplication() {
@@ -20,18 +22,39 @@ class Rule {
         this.application = application
     }
 
-    Application application() {
-        return application
+    String getRuleName() {
+        return ruleName
     }
 
-    void setSeverity(String severity) {
+    void setRuleName(String ruleName) {
+        this.ruleName = ruleName
+    }
+
+    void setSeverity(RuleSeverity severity) {
         this.severity = severity
     }
 
 /* Rule logic to be overridden */
-    public void execute() {}
+    public List<RuleViolation> execute() {
+        println("Override this method.")
+        return violations
+    }
 
-    public void raiseIssue(Integer lineNumber, String message){
-        System.out.println(severity + ": Rule " + ruleName + " failed validation on line " + lineNumber + " " + message)
+    public void raiseIssue(RuleSeverity severity, String fileName, Integer lineNumber, String message){
+        addIssue(new RuleViolation(this, fileName, lineNumber, severity, message))
+    }
+
+    private void addIssue(RuleViolation res){
+        violations.add(res)
+    }
+
+
+    @Override
+    public String toString() {
+        return "Rule{" +
+                "ruleId='" + ruleId + '\'' +
+                ", ruleName='" + ruleName + '\'' +
+                ", severity=" + severity +
+                '}';
     }
 }

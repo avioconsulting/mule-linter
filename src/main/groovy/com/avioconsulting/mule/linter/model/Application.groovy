@@ -7,6 +7,11 @@ class Application {
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
+        if( !this.applicationPath.exists()) {
+            throw new FileNotFoundException(applicationPath.absolutePath, "Application directory does not exists.")
+        }
+
+        //Parse out the files necessary for an application.
         files.put("POM", new File(applicationPath, "pom.xml"))
     }
 
