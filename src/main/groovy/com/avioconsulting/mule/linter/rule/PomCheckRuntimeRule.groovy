@@ -22,7 +22,7 @@ class PomCheckRuntimeRule extends PomPropertyRule {
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = new ArrayList<RuleViolation>()
 
-        String propertyValue = findPropertyVersion(this.PROPERTY_NAME)
+        String propertyValue = findPropertyVersion(app, this.PROPERTY_NAME)
         if (!propertyValue.equalsIgnoreCase(this.version)) {
             violations.add(new RuleViolation(this, POM_FILE, 0, RULE_VIOLATION_MESSAGE))
         }

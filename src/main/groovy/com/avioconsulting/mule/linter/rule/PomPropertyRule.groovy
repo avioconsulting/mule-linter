@@ -15,9 +15,10 @@ class PomPropertyRule extends Rule{
     String findPropertyVersion(Application app, String propName){
         String propertyName = propName
         File pomFile = app.getPomFile().getFile()
-        String property = mavenUtil.getMavenModel(pomFile).getProperties().getProperty(propertyName)
-
-        return property
+        if(pomFile.exists())
+            return mavenUtil.getMavenModel(pomFile).getProperties().getProperty(propertyName)
+        else
+            return ""
     }
 
 }
