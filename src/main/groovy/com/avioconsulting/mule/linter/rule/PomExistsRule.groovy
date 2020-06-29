@@ -20,7 +20,6 @@ class PomExistsRule extends Rule {
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = new ArrayList<RuleViolation>()
 
-        // implement rule
         PomFile pfile = app.getPomFile()
         if (pfile == null || !pfile.exists()) {
             violations.add(new RuleViolation(this, POM_FILE, 0, FILE_NOT_EXISTS))
