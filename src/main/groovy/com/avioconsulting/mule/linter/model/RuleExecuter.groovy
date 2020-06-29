@@ -1,22 +1,19 @@
 package com.avioconsulting.mule.linter.model
 
 class RuleExecuter {
-    List<Rule> rules = new ArrayList<Rule>()
-    Map<Rule, List<RuleViolation>> results = new HashMap<Rule, RuleViolation>()
+    RuleSet rules
+    Application application
+    List<RuleViolation> results = new ArrayList<RuleViolation>()
 
-    RuleExecuter() {
-
-    }
-
-    void addRule(Rule r) {
-        println("Adding new rule: $r")
-        rules.add(r);
+    RuleExecuter(Application application, RuleSet rules) {
+        this.rules = rules
+        this.application = application
     }
 
     void executeRules(){
-        rules.each { // assigns current rule to 'it'
+        rules.getRules().each { // assigns current rule to 'it'
             println("$it.ruleName executing.")
-            results.put(it, it.execute())
+            results.addAll(it.execute(application))
         }
         println("All rules run.")
     }
@@ -24,23 +21,13 @@ class RuleExecuter {
     void displayResults(){
         println()
         println()
-        println("Rule Results: ")
-        Integer count = 0;
-        results.each {
-            Rule r = it.key
-            List<RuleViolation> res = it.value
-            count += res.size()
-            if(res.size() > 0) {
-                println("  $r.ruleName Violations:")
-
-                it.value.each { violation ->
-                    println("    $violation.severity $violation.fileName ( $violation.lineNumber ) Failed. $violation.message ")
-                }
-            } else {
-                println("  $r.ruleName Successly passed.")
-            }
-            println()
-            println("Found a total of $count violations.")
+        println("Rule Results")
+        Integer count = 0
+        results.each { violation ->
+            println("    $violation.rule.severity: $violation.fileName " + (violation.lineNumber > 0 ? "( $violation.lineNumber ) " : "") + "$violation.message ")
         }
+
+        println()
+        println("Found a total of $count violations.")
     }
 }

@@ -4,21 +4,11 @@ class Rule {
     String ruleId
     String ruleName
     RuleSeverity severity = RuleSeverity.MINOR
-    Application application
 
-    Rule(String ruleId, String ruleName, Application app) {
+    Rule(String ruleId, String ruleName) {
         this.ruleId = ruleId
         this.ruleName = ruleName
-        this.application = app
         println("Created rule $ruleId $ruleName")
-    }
-
-    Application getApplication() {
-        return application
-    }
-
-    void setApplication(Application application) {
-        this.application = application
     }
 
     String getRuleName() {
@@ -34,7 +24,7 @@ class Rule {
     }
 
 /* Rule logic to be overridden */
-    public List<RuleViolation> execute() {
+    public List<RuleViolation> execute(Application application) {
         println("Override this method.")
         return null
     }

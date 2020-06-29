@@ -3,16 +3,17 @@ package com.avioconsulting.mule.linter.model
 class Application {
 
     File applicationPath
-    Map<String,ProjectFile> files = new HashMap<String,ProjectFile>()
+    List<ProjectFile> files = new ArrayList<ProjectFile>()
+
+    /* Files */
+    static final String POM_FILE = "pom.xml"
+
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
         if( !this.applicationPath.exists()) {
             throw new FileNotFoundException(applicationPath.absolutePath, "Application directory does not exists.")
         }
-
-        //Parse out the files necessary for an application.
-        files.put("POM", new PomFile(applicationPath, "pom.xml"))
     }
 
     File getApplicationPath() {
@@ -24,15 +25,7 @@ class Application {
     }
 
     PomFile getPomFile() {
-        return new PomFile(getFiles().get("POM"))
-    }
-
-    Map<String, ProjectFile> getFiles() {
-        return files
-    }
-
-    void setFiles(Map<String, ProjectFile> files) {
-        this.files = files
+        return new PomFile(applicationPath, POM_FILE)
     }
 
     Boolean hasFile(String filename) {
@@ -40,12 +33,6 @@ class Application {
         if(!file.exists() || !file.canRead() || file.length() == 0) {
             return false
         }
-
         return true
     }
-
-    Boolean hasGitIgnore() {
-        return hasFile('.gitignore')
-    }
-
 }

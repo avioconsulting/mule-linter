@@ -6,8 +6,8 @@ class PomFile extends ProjectFile {
         super(f)
     }
 
-    PomFile(String fileName, Application app) {
-        super(new File(app, fileName))
+    PomFile(File application, String fileName) {
+        super(new File(application, fileName))
     }
 
     boolean exists() {

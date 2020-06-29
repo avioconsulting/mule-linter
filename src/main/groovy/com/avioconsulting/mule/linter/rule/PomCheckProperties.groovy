@@ -10,11 +10,11 @@ import org.apache.maven.project.MavenProject;
 class PomCheckProperties extends Rule {
 
     public PomCheckProperties(Application app) {
-        super("1", "Pom Properties", app);
+        super("1", "Pom Properties");
     }
 
     @Override
-    public List<RuleViolation> execute() {
+    public List<RuleViolation> execute(Application application) {
         getProjectVersion()
         return null;
     }

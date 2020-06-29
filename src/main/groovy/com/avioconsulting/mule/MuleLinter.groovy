@@ -2,6 +2,7 @@ package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.RuleExecuter
+import com.avioconsulting.mule.linter.model.RuleSet
 import com.avioconsulting.mule.linter.rule.PomExistsRule
 
 class MuleLinter {
@@ -12,11 +13,12 @@ class MuleLinter {
     }
 
     public void runLinter() {
-        // Create the executer
-        RuleExecuter exe = new RuleExecuter()
+        // Build a list of rules
+        RuleSet rules = new RuleSet();
+        rules.addRule(new PomExistsRule())
 
-        // Add ALL rules to run
-        exe.addRule(new PomExistsRule(app))
+        // Create the executer
+        RuleExecuter exe = new RuleExecuter(app, rules)
 
         // Execute
         exe.executeRules()
