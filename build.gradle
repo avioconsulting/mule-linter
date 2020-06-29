@@ -17,14 +17,14 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.5.12'
+    compile 'org.codehaus.groovy:groovy-all:3.0.0'
     compile 'info.picocli:picocli-groovy:4.1.4'
     compile 'org.apache.maven:maven-core:3.6.3'
     compile 'org.apache.maven:maven-model:3.6.3'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.spockframework:spock-bom:2.0-M1-groovy-2.5'
-//    testCompile platform("org.spockframework:spock-bom:2.0-M1-groovy-2.5")
+    testCompile 'org.spockframework:spock-bom:2.0-M3-groovy-3.0'
+    testCompile platform("org.spockframework:spock-bom:2.0-M3-groovy-3.0")
     testCompile 'org.spockframework:spock-core'
     testCompile 'org.spockframework:spock-junit4'
 }
