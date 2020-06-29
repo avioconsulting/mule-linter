@@ -4,14 +4,12 @@ class RuleViolation {
     Rule rule
     Integer lineNumber
     String fileName
-    RuleSeverity severity
     String message
 
-    RuleViolation(Rule rule, String fileName, Integer lineNumber, RuleSeverity severity, String message){
+    RuleViolation(Rule rule, String fileName, Integer lineNumber, String message){
         this.rule = rule
         this.fileName = fileName
         this.lineNumber = lineNumber
-        this.severity = severity
         this.message = message
     }
 
@@ -39,14 +37,6 @@ class RuleViolation {
         this.fileName = fileName
     }
 
-    RuleSeverity getSeverity() {
-        return severity
-    }
-
-    void setSeverity(RuleSeverity severity) {
-        this.severity = severity
-    }
-
     String getMessage() {
         return message
     }
@@ -58,10 +48,9 @@ class RuleViolation {
     @Override
     public String toString() {
         return "RuleResult {" +
-                "rule = " + rule.getRuleName() +
+                "rule = " + rule +
                 ", lineNumber = " + lineNumber +
                 ", fileName = '" + fileName + '\'' +
-                ", severity = '" + severity + '\'' +
                 ", message = '" + message + '\'' +
                 '}';
     }

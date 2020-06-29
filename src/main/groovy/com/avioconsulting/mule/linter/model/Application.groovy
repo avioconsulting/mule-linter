@@ -12,7 +12,7 @@ class Application {
         }
 
         //Parse out the files necessary for an application.
-        files.put("POM", new File(applicationPath, "pom.xml"))
+        files.put("POM", new PomFile(applicationPath, "pom.xml"))
     }
 
     File getApplicationPath() {

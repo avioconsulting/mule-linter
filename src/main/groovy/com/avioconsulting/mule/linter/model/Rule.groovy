@@ -5,7 +5,6 @@ class Rule {
     String ruleName
     RuleSeverity severity = RuleSeverity.MINOR
     Application application
-    List<RuleViolation> violations = new ArrayList<RuleViolation>()
 
     Rule(String ruleId, String ruleName, Application app) {
         this.ruleId = ruleId
@@ -37,16 +36,10 @@ class Rule {
 /* Rule logic to be overridden */
     public List<RuleViolation> execute() {
         println("Override this method.")
-        return violations
+        return null
     }
 
-    public void raiseIssue(RuleSeverity severity, String fileName, Integer lineNumber, String message){
-        addIssue(new RuleViolation(this, fileName, lineNumber, severity, message))
-    }
 
-    private void addIssue(RuleViolation res){
-        violations.add(res)
-    }
 
 
     @Override

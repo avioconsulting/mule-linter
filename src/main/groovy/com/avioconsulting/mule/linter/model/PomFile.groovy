@@ -6,6 +6,10 @@ class PomFile extends ProjectFile {
         super(f)
     }
 
+    PomFile(String fileName, Application app) {
+        super(new File(app, fileName))
+    }
+
     boolean exists() {
         if(getFile() == null) { return false }
         return getFile().exists()
