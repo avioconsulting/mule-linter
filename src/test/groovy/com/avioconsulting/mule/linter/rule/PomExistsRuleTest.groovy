@@ -23,7 +23,7 @@ class PomExistsRuleTest extends Specification {
         where:
         application            | size
         'SampleMuleApp'        | 0
-        'NoPom'                | 1
+        'BadMuleApp'           | 1
     }
 
 }
