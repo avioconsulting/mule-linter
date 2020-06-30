@@ -6,18 +6,19 @@ import com.avioconsulting.mule.linter.model.RuleSet
 import com.avioconsulting.mule.linter.rule.PomExistsRule
 
 class MuleLinter {
+
     Application app
 
-    MuleLinter(String applicationDirectory){
+    MuleLinter(String applicationDirectory) {
         this.app = new Application(new File(applicationDirectory))
     }
 
-    public void runLinter() {
+    void runLinter() {
         // Build a list of rules
         RuleSet rules = new RuleSet();
         rules.addRule(new PomExistsRule())
 
-        // Create the executer
+        // Create the executor
         RuleExecuter exe = new RuleExecuter(app, rules)
 
         // Execute
