@@ -20,9 +20,9 @@ class MuleLinter {
         // Build a list of rules
         RuleSet rules = new RuleSet();
         rules.addRule(new PomExistsRule())
-        rules.addRule(new MuleMavenPluginVersionRule("3.3.5"))
-        rules.addRule(new MunitVersionRule("2.2.1"))
-        rules.addRule(new MuleRuntimeVersionRule("4.2.1"))
+        rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
+        rules.addRule(new MunitVersionRule('2.2.1'))
+        rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
 
         // Create the executor
         RuleExecuter exe = new RuleExecuter(app, rules)
@@ -31,6 +31,6 @@ class MuleLinter {
         exe.executeRules()
 
         // Display Results
-        exe.displayResults()
+        exe.displayResults(System.out)
     }
 }

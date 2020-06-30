@@ -2,17 +2,16 @@ package com.avioconsulting.mule.linter.model
 
 class Application {
 
+    static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists.'
+    static final String POM_FILE = 'pom.xml'
+
     File applicationPath
-    List<ProjectFile> files = new ArrayList<ProjectFile>()
-
-    /* Files */
-    static final String POM_FILE = "pom.xml"
-
+    List<ProjectFile> files = []
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
-        if( !this.applicationPath.exists()) {
-            throw new FileNotFoundException(applicationPath.absolutePath, "Application directory does not exists.")
+        if (!this.applicationPath.exists()) {
+            throw new FileNotFoundException(applicationPath.absolutePath, APPLICATION_DOES_NOT_EXIST)
         }
     }
 
@@ -30,9 +29,6 @@ class Application {
 
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
-        if(!file.exists() || !file.canRead() || file.length() == 0) {
-            return false
-        }
-        return true
+        return file.exists() && file.canRead() && file.length() > 0
     }
 }
