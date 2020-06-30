@@ -23,7 +23,7 @@ class PomFile extends ProjectFile {
         this(new File(application, fileName))
     }
 
-    Boolean exists() {
+    Boolean doesExist() {
         return exists
     }
 

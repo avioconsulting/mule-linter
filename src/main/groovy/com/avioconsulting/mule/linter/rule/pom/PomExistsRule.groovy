@@ -21,7 +21,7 @@ class PomExistsRule extends Rule {
         List<RuleViolation> violations = []
 
         PomFile pomFile = app.pomFile
-        if (pomFile == null || !pomFile.exists()) {
+        if (pomFile == null || !pomFile.doesExist()) {
             violations.add(new RuleViolation(this, app.applicationPath.toString(), 0, FILE_NOT_EXISTS))
         }
         return violations
