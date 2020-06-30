@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.linter.model;
+package com.avioconsulting.mule.linter.model
 
 abstract class Rule {
 

@@ -32,9 +32,9 @@ class PomFile extends ProjectFile {
     }
 
     private static Model parseModel(File pomFile) {
-        Model model = null;
-        FileReader reader;
-        MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+        Model model = null
+        FileReader reader
+        MavenXpp3Reader mavenReader = new MavenXpp3Reader()
         try {
             reader = new FileReader(pomFile)
             model = mavenReader.read(reader)

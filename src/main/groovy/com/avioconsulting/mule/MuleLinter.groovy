@@ -18,7 +18,7 @@ class MuleLinter {
 
     void runLinter() {
         // Build a list of rules
-        RuleSet rules = new RuleSet();
+        RuleSet rules = new RuleSet()
         rules.addRule(new PomExistsRule())
         rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
         rules.addRule(new MunitVersionRule('2.2.1'))
