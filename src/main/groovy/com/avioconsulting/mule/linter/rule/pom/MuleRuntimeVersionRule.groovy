@@ -9,11 +9,8 @@ class MuleRuntimeVersionRule extends PomPropertyValueRule {
     static final String PROPERTY_NAME = 'app.runtime'
     static final String RULE_NAME = 'app.runtime maven property match'
 
-    String version
-
     MuleRuntimeVersionRule(String version) {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
-        this.version = version
     }
 
     @Override

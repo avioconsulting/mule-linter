@@ -9,11 +9,8 @@ class MuleMavenPluginVersionRule extends PomPropertyValueRule {
     static final String PROPERTY_NAME = 'mule.maven.plugin.version'
     static final String RULE_NAME = 'mule.maven.plugin.version maven property match'
 
-    String version
-
     MuleMavenPluginVersionRule(String version) {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
-        this.version = version
     }
 
     @Override

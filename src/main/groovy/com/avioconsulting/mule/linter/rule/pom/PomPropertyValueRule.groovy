@@ -8,7 +8,7 @@ class PomPropertyValueRule extends Rule {
 
     static final String RULE_ID = 'MAVEN_PROPERTY'
     static final String RULE_NAME = 'maven property match'
-    static final String RULE_VIOLATION_MESSAGE = ' maven property does not match or exists'
+    static final String RULE_VIOLATION_MESSAGE = ' maven property does not match or exists in <properties></properties>'
 
     private final String propertyName
     private final String propertyValue

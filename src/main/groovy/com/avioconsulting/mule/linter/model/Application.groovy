@@ -2,17 +2,19 @@ package com.avioconsulting.mule.linter.model
 
 class Application {
 
-    static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists.'
+    static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
 
     File applicationPath
     List<ProjectFile> files = []
+    PomFile pomFile
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
-            throw new FileNotFoundException(applicationPath.absolutePath, APPLICATION_DOES_NOT_EXIST)
+            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
+        pomFile = new PomFile(applicationPath, POM_FILE)
     }
 
     File getApplicationPath() {
@@ -24,12 +26,12 @@ class Application {
     }
 
     PomFile getPomFile() {
-        return new PomFile(applicationPath, POM_FILE)
+        return pomFile
     }
 
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
-        return file.exists() && file.canRead() && file.length() > 0
+        return file.exists()
     }
 
 }
