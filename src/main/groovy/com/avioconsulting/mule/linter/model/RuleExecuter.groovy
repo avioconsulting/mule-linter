@@ -1,33 +1,33 @@
 package com.avioconsulting.mule.linter.model
 
 class RuleExecuter {
+
     RuleSet rules
     Application application
-    List<RuleViolation> results = new ArrayList<RuleViolation>()
+    List<RuleViolation> results = []
 
     RuleExecuter(Application application, RuleSet rules) {
         this.rules = rules
         this.application = application
     }
 
-    void executeRules(){
+    void executeRules() {
         rules.getRules().each { // assigns current rule to 'it'
-            println("$it.ruleName executing.")
             results.addAll(it.execute(application))
         }
-        println("All rules run.")
     }
 
-    void displayResults(){
-        println()
-        println(rules.getRules().size() + " rules executed.")
-        println("Rule Results")
+    void displayResults(OutputStream outputStream) {
+        outputStream.write("$rules.rules.size rules executed.\n".bytes)
+        outputStream.write('Rule Results\n'.bytes)
         Integer count = 0
         results.each { violation ->
-            println("    $violation.rule.severity: $violation.fileName " + (violation.lineNumber > 0 ? "( $violation.lineNumber ) " : "") + "$violation.message ")
+            outputStream.write("    $violation.rule.severity: $violation.fileName ".bytes)
+            outputStream.write((violation.lineNumber > 0 ? "( $violation.lineNumber ) " : '').bytes)
+            outputStream.write("$violation.message \n".bytes)
         }
-
-        println()
-        println("Found a total of $count violations.")
+        outputStream.write("\nFound a total of $count violations.\n".bytes)
+        outputStream.flush()
+        outputStream.close()
     }
 }

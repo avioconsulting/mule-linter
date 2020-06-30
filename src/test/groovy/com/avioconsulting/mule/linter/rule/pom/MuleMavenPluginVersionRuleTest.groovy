@@ -1,22 +1,23 @@
-package com.avioconsulting.mule.linter.rule
+package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
 import spock.lang.Specification
 
-class PomCheckRuntimeRuleTest extends Specification {
+class MuleMavenPluginVersionRuleTest extends Specification {
 
     private static final String APP_NAME = 'SampleMuleApp'
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-    def 'Mule Runtime Version Check'() {
+    def 'Mule Maven Plugin Version Check'() {
         given:
         File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
         Application app = new Application(appDir)
 
         when:
-        Rule rule = new PomCheckRuntimeRule(version)
+        Rule rule = new MuleMavenPluginVersionRule(version)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -24,8 +25,8 @@ class PomCheckRuntimeRuleTest extends Specification {
 
         where:
         version | size
-        '4.2.1' | 0
-        '4.2.2' | 1
+        '3.3.5' | 0
+        '3.3.6' | 1
     }
 
 }

@@ -1,13 +1,13 @@
 package com.avioconsulting.mule.linter.model
 
 class RuleSet {
-    List<Rule> rules = new ArrayList<Rule>()
+
+    List<Rule> rules = []
 
     RuleSet() {
-
     }
 
-    void addRule(Rule rule){
+    void addRule(Rule rule) {
         rules.add(rule)
     }
 

@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.linter.rule
+package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PomFile
@@ -9,11 +9,11 @@ class PomExistsRule extends Rule {
 
     static final String RULE_ID = 'POM_EXISTS'
     static final String RULE_NAME = 'pom.xml file exists'
-    static final String POM_FILE = 'pom.xml'
-    static final String FILE_NOT_EXISTS = 'File does not exist.'
+    static final String FILE_NOT_EXISTS = 'pom.xml does not exist.'
 
     PomExistsRule() {
-        super(RULE_ID, RULE_NAME)
+        this.ruleId = RULE_ID
+        this.ruleName = RULE_NAME
     }
 
     @Override
@@ -22,7 +22,7 @@ class PomExistsRule extends Rule {
 
         PomFile pomFile = app.pomFile
         if (pomFile == null || !pomFile.exists()) {
-            violations.add(new RuleViolation(this, POM_FILE, 0, FILE_NOT_EXISTS))
+            violations.add(new RuleViolation(this, app.applicationPath.toString(), 0, FILE_NOT_EXISTS))
         }
         return violations
     }

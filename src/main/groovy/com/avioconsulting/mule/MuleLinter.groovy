@@ -3,10 +3,10 @@ package com.avioconsulting.mule
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.RuleExecuter
 import com.avioconsulting.mule.linter.model.RuleSet
-import com.avioconsulting.mule.linter.rule.PomCheckMulePluginRule
-import com.avioconsulting.mule.linter.rule.PomCheckMunitRule
-import com.avioconsulting.mule.linter.rule.PomCheckRuntimeRule
-import com.avioconsulting.mule.linter.rule.PomExistsRule
+import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
+import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
+import com.avioconsulting.mule.linter.rule.pom.MuleRuntimeVersionRule
+import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
 
 class MuleLinter {
 
@@ -20,9 +20,9 @@ class MuleLinter {
         // Build a list of rules
         RuleSet rules = new RuleSet();
         rules.addRule(new PomExistsRule())
-        rules.addRule(new PomCheckMulePluginRule("3.3.5"))
-        rules.addRule(new PomCheckMunitRule("2.2.1"))
-        rules.addRule(new PomCheckRuntimeRule("4.2.1"))
+        rules.addRule(new MuleMavenPluginVersionRule("3.3.5"))
+        rules.addRule(new MunitVersionRule("2.2.1"))
+        rules.addRule(new MuleRuntimeVersionRule("4.2.1"))
 
         // Create the executor
         RuleExecuter exe = new RuleExecuter(app, rules)

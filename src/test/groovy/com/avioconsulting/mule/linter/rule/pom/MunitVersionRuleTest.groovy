@@ -1,11 +1,12 @@
-package com.avioconsulting.mule.linter.rule
+package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
 import spock.lang.Specification
 
-class PomCheckMunitRuleTest extends Specification {
+class MunitVersionRuleTest extends Specification {
 
     private static final String APP_NAME = 'SampleMuleApp'
 
@@ -16,7 +17,7 @@ class PomCheckMunitRuleTest extends Specification {
         Application app = new Application(appDir)
 
         when:
-        Rule rule = new PomCheckMunitRule(version)
+        Rule rule = new MunitVersionRule(version)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
