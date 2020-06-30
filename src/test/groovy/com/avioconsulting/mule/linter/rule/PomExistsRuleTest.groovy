@@ -5,25 +5,25 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
-
 class PomExistsRuleTest extends Specification {
 
-    def "Maven Pom Exists check"(){
+    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
+    def 'Maven Pom Exists check'() {
         given:
-            File appDir = new File(this.getClass().getClassLoader().getResource(APP_NAME).getFile())
-            Application app = new Application(appDir)
+        Rule rule = new PomExistsRule()
 
         when:
-            Rule rule = new PomExistsRule()
-            List<RuleViolation> violations = rule.execute(app)
+        File appDir = new File(this.class.classLoader.getResource(application).file)
+        Application app = new Application(appDir)
+        List<RuleViolation> violations = rule.execute(app)
 
         then:
-            violations.size() == size
+        violations.size() == size
 
         where:
-            APP_NAME                  | size
-            "SampleMuleApp"           | 0
-            "multi-module-project"    | 1
+        application            | size
+        'SampleMuleApp'        | 0
+        'BadMuleApp'           | 1
     }
 
 }

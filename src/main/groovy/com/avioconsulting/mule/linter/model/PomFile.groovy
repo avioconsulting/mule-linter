@@ -11,7 +11,7 @@ class PomFile extends ProjectFile {
     }
 
     boolean exists() {
-        if(getFile() == null) { return false }
+        if (getFile() == null) { return false }
         return getFile().exists()
     }
 

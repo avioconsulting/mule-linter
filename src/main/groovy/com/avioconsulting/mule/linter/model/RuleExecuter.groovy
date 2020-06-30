@@ -20,7 +20,7 @@ class RuleExecuter {
 
     void displayResults(){
         println()
-        println()
+        println(rules.getRules().size() + " rules executed.")
         println("Rule Results")
         Integer count = 0
         results.each { violation ->

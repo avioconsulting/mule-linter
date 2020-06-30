@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.model
 
 class ProjectFile {
+
     String name
     String type
     File file
