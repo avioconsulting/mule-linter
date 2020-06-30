@@ -1,7 +1,7 @@
 package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.RuleExecuter
+import com.avioconsulting.mule.linter.model.RuleExecutor
 import com.avioconsulting.mule.linter.model.RuleSet
 import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
 import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
@@ -25,7 +25,7 @@ class MuleLinter {
         rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
 
         // Create the executor
-        RuleExecuter exe = new RuleExecuter(app, rules)
+        RuleExecutor exe = new RuleExecutor(app, rules)
 
         // Execute
         exe.executeRules()
@@ -33,4 +33,5 @@ class MuleLinter {
         // Display Results
         exe.displayResults(System.out)
     }
+
 }

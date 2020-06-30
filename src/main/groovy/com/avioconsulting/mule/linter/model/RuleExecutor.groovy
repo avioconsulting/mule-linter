@@ -1,12 +1,12 @@
 package com.avioconsulting.mule.linter.model
 
-class RuleExecuter {
+class RuleExecutor {
 
     RuleSet rules
     Application application
     List<RuleViolation> results = []
 
-    RuleExecuter(Application application, RuleSet rules) {
+    RuleExecutor(Application application, RuleSet rules) {
         this.rules = rules
         this.application = application
     }
@@ -30,4 +30,5 @@ class RuleExecuter {
         outputStream.flush()
         outputStream.close()
     }
+
 }

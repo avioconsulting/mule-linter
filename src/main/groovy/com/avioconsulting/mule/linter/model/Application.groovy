@@ -31,4 +31,5 @@ class Application {
         File file = new File(applicationPath, filename)
         return file.exists() && file.canRead() && file.length() > 0
     }
+
 }

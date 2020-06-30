@@ -13,7 +13,7 @@ class PomFile extends ProjectFile {
         super(file)
         if (file.exists()) {
             exists = true
-            model =  parseModel(file)
+            model = parseModel(file)
         } else {
             exists = false
         }
@@ -23,7 +23,7 @@ class PomFile extends ProjectFile {
         this(new File(application, fileName))
     }
 
-    boolean exists() {
+    Boolean exists() {
         return exists
     }
 
@@ -31,7 +31,7 @@ class PomFile extends ProjectFile {
         return exists ? model?.properties?.getProperty(propertyName) : ''
     }
 
-    private Model parseModel(File pomFile) {
+    private static Model parseModel(File pomFile) {
         Model model = null;
         FileReader reader;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -39,10 +39,11 @@ class PomFile extends ProjectFile {
             reader = new FileReader(pomFile)
             model = mavenReader.read(reader)
             model.pomFile = pomFile
-        } catch ( IOException | XmlPullParserException ex) {
+        } catch (IOException | XmlPullParserException ex) {
             ex.printStackTrace()
         }
 
         return model
     }
+
 }

@@ -3,7 +3,6 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
-import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
 import spock.lang.Specification
 
 class MuleMavenPluginVersionRuleTest extends Specification {

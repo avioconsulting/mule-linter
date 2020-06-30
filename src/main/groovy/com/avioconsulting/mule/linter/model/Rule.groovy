@@ -18,15 +18,6 @@ abstract class Rule {
         this.severity = severity
     }
 
-    /* Rule logic to be overridden */
     abstract List<RuleViolation> execute(Application application)
 
-    @Override
-    String toString() {
-        return 'Rule{' +
-                'ruleId=\'' + ruleId + '\'' +
-                ', ruleName=\'' + ruleName + '\'' +
-                ', severity=\'' + severity +
-                '}';
-    }
 }

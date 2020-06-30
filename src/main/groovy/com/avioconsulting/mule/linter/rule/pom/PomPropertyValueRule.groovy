@@ -33,7 +33,8 @@ class PomPropertyValueRule extends Rule {
 
         String pomPropertyValue = app.pomFile.getProperty(propertyName)
         if (!pomPropertyValue.equalsIgnoreCase(propertyValue)) {
-            violations.add(new RuleViolation(this, app.pomFile.getFile().absolutePath, 0, propertyName + RULE_VIOLATION_MESSAGE))
+            violations.add(new RuleViolation(this, app.pomFile.getFile().absolutePath,
+                    0, propertyName + RULE_VIOLATION_MESSAGE))
         }
 
         return violations

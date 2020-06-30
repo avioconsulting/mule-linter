@@ -18,4 +18,5 @@ class RuleSet {
     void setRules(List<Rule> rules) {
         this.rules = rules
     }
+
 }

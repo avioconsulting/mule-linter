@@ -20,4 +20,5 @@ class MuleRuntimeVersionRule extends PomPropertyValueRule {
     List<RuleViolation> execute(Application app) {
         return super.execute(app)
     }
+
 }

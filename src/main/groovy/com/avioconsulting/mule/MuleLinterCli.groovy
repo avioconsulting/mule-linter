@@ -21,4 +21,5 @@ class MuleLinterCli implements Runnable {
         MuleLinter ml = new MuleLinter(appDir)
         ml.runLinter()
     }
+
 }

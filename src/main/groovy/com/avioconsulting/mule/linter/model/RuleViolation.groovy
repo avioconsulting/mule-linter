@@ -1,12 +1,13 @@
 package com.avioconsulting.mule.linter.model
 
 class RuleViolation {
+
     Rule rule
     Integer lineNumber
     String fileName
     String message
 
-    RuleViolation(Rule rule, String fileName, Integer lineNumber, String message){
+    RuleViolation(Rule rule, String fileName, Integer lineNumber, String message) {
         this.rule = rule
         this.fileName = fileName
         this.lineNumber = lineNumber
@@ -45,13 +46,4 @@ class RuleViolation {
         this.message = message
     }
 
-    @Override
-    public String toString() {
-        return "RuleResult {" +
-                "rule = " + rule +
-                ", lineNumber = " + lineNumber +
-                ", fileName = '" + fileName + '\'' +
-                ", message = '" + message + '\'' +
-                '}';
-    }
 }
