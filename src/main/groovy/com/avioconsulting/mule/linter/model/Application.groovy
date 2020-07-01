@@ -4,11 +4,12 @@ class Application {
 
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
+    static final String GITIGNORE_FILE = '.gitignore'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
     PomFile pomFile
-    String name
+    GitIgnoreFile gitignoreFile
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
@@ -16,6 +17,7 @@ class Application {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
+        gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         this.name = pomFile.getArtifactId()
 
         loadPropertyFiles()
@@ -39,6 +41,10 @@ class Application {
 
     PomFile getPomFile() {
         return pomFile
+    }
+
+    GitIgnoreFile getGitignoreFile() {
+        return gitignoreFile
     }
 
     Boolean hasFile(String filename) {

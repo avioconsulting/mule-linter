@@ -16,16 +16,16 @@ class ProjectFile {
         this.file = file
     }
 
+    String getPath() {
+        return file.absolutePath
+    }
+
     String getName() {
         return name
     }
 
     void setName(String name) {
         this.name = name
-    }
-
-    String getPath() {
-        return file.absolutePath
     }
 
 }
