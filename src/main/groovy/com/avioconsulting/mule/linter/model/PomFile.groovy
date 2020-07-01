@@ -1,13 +1,10 @@
 package com.avioconsulting.mule.linter.model
 
 import groovy.xml.slurpersupport.GPathResult
-import org.apache.maven.model.Model
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader
-import org.apache.maven.shared.utils.xml.pull.XmlPullParserException
 
 class PomFile extends ProjectFile {
 
-//    private Model model
+    public static final String PROPERTIES = 'properties'
     MuleXmlParser parser
     private final GPathResult pomXml
     private final Boolean exists
@@ -36,8 +33,7 @@ class PomFile extends ProjectFile {
     }
 
     PomProperty getPomProperty(String propertyName) throws IllegalArgumentException {
-//        return exists ? model?.properties?.getProperty(propertyName) : ''
-        GPathResult p = pomXml['properties'][propertyName]
+        GPathResult p = pomProperties[propertyName]
         if (p == null) {
             throw new IllegalArgumentException('Property doesn\'t exist')
         }
@@ -50,23 +46,10 @@ class PomFile extends ProjectFile {
     }
 
     Integer getPropertiesLineNo() {
-        GPathResult props = pomXml['properties']
-        return parser.getNodeLineNumber(props)
+        return parser.getNodeLineNumber(pomProperties)
     }
 
-//    private static Model parseModel(File pomFile) {
-//        Model model = null
-//        FileReader reader
-//        MavenXpp3Reader mavenReader = new MavenXpp3Reader()
-//        try {
-//            reader = new FileReader(pomFile)
-//            model = mavenReader.read(reader)
-//            model.pomFile = pomFile
-//        } catch (IOException | XmlPullParserException ex) {
-//            ex.printStackTrace()
-//        }
-//
-//        return model
-//    }
-
+    private GPathResult getPomProperties() {
+        return pomXml[PROPERTIES]
+    }
 }
