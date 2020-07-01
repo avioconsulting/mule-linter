@@ -10,6 +10,7 @@ import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
 import com.avioconsulting.mule.linter.rule.property.PropertyFileNamingRule
 import com.avioconsulting.mule.linter.rule.property.PropertyFilePropertyCountRule
 
+@SuppressWarnings(['GStringExpressionWithinString'])
 class MuleLinter {
 
     Application app
