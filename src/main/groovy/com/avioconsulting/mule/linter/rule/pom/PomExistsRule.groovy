@@ -22,7 +22,7 @@ class PomExistsRule extends Rule {
 
         PomFile pomFile = app.pomFile
         if (pomFile == null || !pomFile.doesExist()) {
-            violations.add(new RuleViolation(this, app.pomFile.getFile().toString(), 0, FILE_NOT_EXISTS))
+            violations.add(new RuleViolation(this, app.pomFile.file.toString(), 0, FILE_NOT_EXISTS))
         }
         return violations
     }
