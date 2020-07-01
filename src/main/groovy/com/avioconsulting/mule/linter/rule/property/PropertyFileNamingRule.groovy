@@ -46,15 +46,11 @@ class PropertyFileNamingRule extends Rule {
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
 
-        List propertyFilenames = []
-        app.propertyFiles.each {
-            propertyFilenames.add(it.name)
-        }
+        List propertyFilenames = app.propertyFiles*.getName()
 
         environments.each { env ->
             Map<String, String> binding = ['appname':app.name, 'env':env]
             String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
-
             if (!(fileName in propertyFilenames)) {
                 violations.add(new RuleViolation(this, fileName, 0, RULE_VIOLATION_MESSAGE + pattern))
             }

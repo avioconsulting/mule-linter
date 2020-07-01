@@ -23,6 +23,14 @@ class PomFile extends ProjectFile {
         this(new File(application, fileName))
     }
 
+    String getArtifactId() {
+        return exists ? model?.artifactId : ''
+    }
+
+    void setArtifactId(String artifactId) {
+        this.artifactId = artifactId
+    }
+
     Boolean doesExist() {
         return exists
     }

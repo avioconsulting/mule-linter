@@ -6,7 +6,7 @@ class Application {
     static final String POM_FILE = 'pom.xml'
 
     File applicationPath
-    List<ProjectFile> files = []
+    List<PropertyFile> propertyFiles = []
     PomFile pomFile
     String name
 
@@ -16,15 +16,21 @@ class Application {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
-        this.name = applicationPath.name
+        this.name = pomFile.getArtifactId()
+
+        File resourcePath = new File(applicationPath, 'src/main/resources')
+        if (!resourcePath.exists()) {
+            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + resourcePath.absolutePath)
+        }
+        resourcePath.eachDirRecurse { dir ->
+            dir.eachFileMatch(~/.*.properties/) { file ->
+                propertyFiles.add(new PropertyFile(file))
+            }
+        }
     }
 
     File getApplicationPath() {
         return applicationPath
-    }
-
-    void setApplicationPath(File applicationPath) {
-        this.applicationPath = applicationPath
     }
 
     PomFile getPomFile() {
@@ -40,18 +46,8 @@ class Application {
         return name
     }
 
-    void setName(String name) {
-        this.name = name
-    }
-
-    List<ProjectFile> getPropertyFiles() {
-        List<ProjectFile> files = []
-        applicationPath.eachDirRecurse { dir ->
-            dir.eachFileMatch(~/.*.properties/) { file ->
-                files.add(new ProjectFile(file))
-            }
-        }
-        return files
+    List<PropertyFile> getPropertyFiles() {
+        return propertyFiles
     }
 
 }

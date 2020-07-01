@@ -2,10 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.avioconsulting.bc</groupId>
-	<artifactId>np-store-product-sys-api</artifactId>
-	<!-- IMPORTANT:- Make sure you change this version in your application's 
-		global property(pomVersion) as well to log this current application version -->
+	<groupId>com.avioconsulting.mulelinter</groupId>
+	<artifactId>sample-mule-app</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
