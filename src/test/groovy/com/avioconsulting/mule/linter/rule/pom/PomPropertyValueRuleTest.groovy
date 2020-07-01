@@ -31,7 +31,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 18
+        violations[0].lineNumber == 16
     }
 
     def 'Missing Property'() {
@@ -44,7 +44,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 14
+        violations[0].lineNumber == 12
     }
 
     private Application loadApp() {
