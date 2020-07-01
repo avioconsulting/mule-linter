@@ -8,6 +8,7 @@ class Application {
     File applicationPath
     List<ProjectFile> files = []
     PomFile pomFile
+    String name
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
@@ -15,6 +16,7 @@ class Application {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
+        this.name = applicationPath.name
     }
 
     File getApplicationPath() {
@@ -32,6 +34,14 @@ class Application {
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
         return file.exists()
+    }
+
+    String getName() {
+        return name
+    }
+
+    void setName(String name) {
+        this.name = name
     }
 
     List<ProjectFile> getPropertyFiles() {

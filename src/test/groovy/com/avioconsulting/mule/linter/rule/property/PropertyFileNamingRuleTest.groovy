@@ -7,10 +7,10 @@ import spock.lang.Specification
 
 class PropertyFileNamingRuleTest extends Specification {
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
+    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'GStringExpressionWithinString'])
     def 'Property File Naming Rule check'() {
         given:
-        Rule rule = new PropertyFileNamingRule(['dev', 'test', 'prod'])
+        Rule rule = new PropertyFileNamingRule(['dev', 'test', 'prod'], '${appname}-${env}.properties')
 
         when:
         File appDir = new File(this.class.classLoader.getResource(application).file)
@@ -22,7 +22,7 @@ class PropertyFileNamingRuleTest extends Specification {
 
         where:
         application     | size
-        'SampleMuleApp' | 0
+        'SampleMuleApp' | 1
     }
 
 }
