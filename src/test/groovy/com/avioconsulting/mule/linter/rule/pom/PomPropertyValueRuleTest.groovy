@@ -5,35 +5,28 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
-class MunitVersionRuleTest extends Specification {
+class PomPropertyValueRuleTest extends  Specification {
 
     private static final String APP_NAME = 'SampleMuleApp'
 
-    private Application loadApp() {
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        new Application(appDir)
-    }
-
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-    def 'Correct MUnit Version'() {
+    def 'Correct Property Value'() {
         given:
         Application app = loadApp()
 
         when:
-        Rule rule = new MunitVersionRule('2.2.1')
+        Rule rule = new PomPropertyValueRule('munit.version', '2.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 0
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-    def 'Incorrect MUnit Version'() {
+    def 'Incorrect Property Value'() {
         given:
         Application app = loadApp()
 
         when:
-        Rule rule = new MunitVersionRule('3.2.1')
+        Rule rule = new PomPropertyValueRule('munit.version', '3.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -41,18 +34,21 @@ class MunitVersionRuleTest extends Specification {
         violations[0].lineNumber == 18
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-    def 'Missing MUnit Property'() {
+    def 'Missing Property'() {
         given:
         Application app = loadApp()
 
         when:
-        Rule rule = new MunitVersionRule('3.2.1')
+        Rule rule = new PomPropertyValueRule('invalid.munit.version', '2.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 18
+        violations[0].lineNumber == 14
     }
 
+    private Application loadApp() {
+        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
+        new Application(appDir)
+    }
 }

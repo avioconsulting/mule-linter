@@ -1,19 +1,20 @@
 package com.avioconsulting.mule.linter.model
 
-import org.apache.maven.model.Model
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader
-import org.apache.maven.shared.utils.xml.pull.XmlPullParserException
+import groovy.xml.slurpersupport.GPathResult
 
 class PomFile extends ProjectFile {
 
-    private Model model
+    public static final String PROPERTIES = 'properties'
+    MuleXmlParser parser
+    private final GPathResult pomXml
     private final Boolean exists
 
     PomFile(File file) {
         super(file)
         if (file.exists()) {
             exists = true
-            model = parseModel(file)
+            parser = new MuleXmlParser()
+            pomXml = parser.parse(file)
         } else {
             exists = false
         }
@@ -27,23 +28,28 @@ class PomFile extends ProjectFile {
         return exists
     }
 
-    String getProperty(String propertyName) {
-        return exists ? model?.properties?.getProperty(propertyName) : ''
+    String getPath() {
+        return file.absolutePath
     }
 
-    private static Model parseModel(File pomFile) {
-        Model model = null
-        FileReader reader
-        MavenXpp3Reader mavenReader = new MavenXpp3Reader()
-        try {
-            reader = new FileReader(pomFile)
-            model = mavenReader.read(reader)
-            model.pomFile = pomFile
-        } catch (IOException | XmlPullParserException ex) {
-            ex.printStackTrace()
+    PomProperty getPomProperty(String propertyName) throws IllegalArgumentException {
+        GPathResult p = pomProperties[propertyName]
+        if (p == null) {
+            throw new IllegalArgumentException('Property doesn\'t exist')
         }
 
-        return model
+        PomProperty prop = new PomProperty()
+        prop.name = propertyName
+        prop.value = p.text()
+        prop.lineNo = parser.getNodeLineNumber(p)
+        return prop
     }
 
+    Integer getPropertiesLineNo() {
+        return parser.getNodeLineNumber(pomProperties)
+    }
+
+    private GPathResult getPomProperties() {
+        return pomXml[PROPERTIES]
+    }
 }
