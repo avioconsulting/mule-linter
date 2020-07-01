@@ -9,6 +9,7 @@ class Application {
     File applicationPath
     List<PropertyFile> propertyFiles = []
     PomFile pomFile
+    String name
     GitIgnoreFile gitignoreFile
 
     Application(File applicationPath) {

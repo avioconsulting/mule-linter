@@ -3,9 +3,11 @@ package com.avioconsulting.mule.linter.model
 class ProjectFile {
 
     File file
+    String name
 
     ProjectFile(File f) {
         file = f
+        this.name = f.name
     }
 
     File getFile() {
@@ -16,16 +18,16 @@ class ProjectFile {
         this.file = file
     }
 
-    String getPath() {
-        return file.absolutePath
-    }
-
     String getName() {
         return name
     }
 
     void setName(String name) {
         this.name = name
+    }
+
+    String getPath() {
+        return file.absolutePath
     }
 
 }
