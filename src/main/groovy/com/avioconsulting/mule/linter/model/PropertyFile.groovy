@@ -13,8 +13,6 @@ class PropertyFile {
     }
 
     void loadProperties() {
-        // TODO Odd scenario, where if i use the properties variable here, I get an error:
-        //  Cannot invoke method load() on null object
         Properties props = new Properties()
         file.withInputStream {
             props.load(it)

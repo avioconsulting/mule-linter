@@ -18,6 +18,10 @@ class Application {
         pomFile = new PomFile(applicationPath, POM_FILE)
         this.name = pomFile.getArtifactId()
 
+        loadPropertyFiles()
+    }
+
+    void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, 'src/main/resources')
         if (!resourcePath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + resourcePath.absolutePath)
