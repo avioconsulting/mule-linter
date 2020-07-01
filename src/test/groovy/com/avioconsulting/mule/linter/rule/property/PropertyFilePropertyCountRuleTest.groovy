@@ -12,7 +12,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
     private static final String NAMING_PATTERN = '${env}.properties'
     private static final String APP_NAME = 'SampleMuleApp'
 
-    def 'Property File Naming Rule check with pattern'() {
+    def 'Property File Count mismatch with pattern'() {
         given:
         Rule rule = new PropertyFilePropertyCountRule(['dev', 'test', 'uat', 'prod'], NAMING_PATTERN)
 
@@ -23,8 +23,20 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
         then:
         violations.size() == 4
-//        violations[0].fileName == 'sample-mule-app.dev.properties'
-//        violations[0].message.contains(NAMING_PATTERN)
-
+        violations[0].message.contains('[uat.properties:6, test.properties:6, dev.properties:4, prod.properties:7]')
     }
+
+    def 'Property File Count matching with pattern'() {
+        given:
+        Rule rule = new PropertyFilePropertyCountRule(['test', 'uat'], NAMING_PATTERN)
+
+        when:
+        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
+        Application app = new Application(appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }
+
 }
