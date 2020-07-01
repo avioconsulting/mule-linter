@@ -26,7 +26,7 @@ class MuleLinter {
         rules.addRule(new MunitVersionRule('2.2.1'))
         rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
         rules.addRule(new PropertyFileNamingRule(['dev', 'test']))
-        rules.addRule(new PropertyFilePropertyCountRule(['dev', 'test', 'uat', 'prod'], '${env}.properties'))
+        rules.addRule(new PropertyFilePropertyCountRule(['test', 'uat'], '${env}.properties'))
 
         // Create the executor
         RuleExecutor exe = new RuleExecutor(app, rules)
