@@ -34,4 +34,14 @@ class Application {
         return file.exists()
     }
 
+    List<ProjectFile> getPropertyFiles() {
+        List<ProjectFile> files = []
+        applicationPath.eachDirRecurse { dir ->
+            dir.eachFileMatch(~/.*.properties/) { file ->
+                files.add(new ProjectFile(file))
+            }
+        }
+        return files
+    }
+
 }
