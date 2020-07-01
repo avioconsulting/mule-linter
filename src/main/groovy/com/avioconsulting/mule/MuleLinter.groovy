@@ -7,6 +7,8 @@ import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
 import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
 import com.avioconsulting.mule.linter.rule.pom.MuleRuntimeVersionRule
 import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
+import com.avioconsulting.mule.linter.rule.property.PropertyFileNamingRule
+import com.avioconsulting.mule.linter.rule.property.PropertyFilePropertyCountRule
 
 class MuleLinter {
 
@@ -23,6 +25,8 @@ class MuleLinter {
         rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
         rules.addRule(new MunitVersionRule('2.2.1'))
         rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
+        rules.addRule(new PropertyFileNamingRule(['dev', 'test']))
+        rules.addRule(new PropertyFilePropertyCountRule(['dev', 'test', 'uat', 'prod'], '${env}.properties'))
 
         // Create the executor
         RuleExecutor exe = new RuleExecutor(app, rules)
