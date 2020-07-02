@@ -19,19 +19,18 @@ class Application {
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
-        this.name = pomFile.getArtifactId()
+        this.name = pomFile.artifactId
 
         loadPropertyFiles()
     }
 
     void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, 'src/main/resources')
-        if (!resourcePath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + resourcePath.absolutePath)
-        }
-        resourcePath.eachDirRecurse { dir ->
-            dir.eachFileMatch(~/.*.properties/) { file ->
-                propertyFiles.add(new PropertyFile(file))
+        if (resourcePath.exists()) {
+            resourcePath.eachDirRecurse { dir ->
+                dir.eachFileMatch(~/.*.properties/) { file ->
+                    propertyFiles.add(new PropertyFile(file))
+                }
             }
         }
     }
