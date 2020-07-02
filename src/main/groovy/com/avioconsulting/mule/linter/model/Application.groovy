@@ -7,6 +7,7 @@ class Application {
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
+    List<ConfigurationFile> configurationFiles = []
     PomFile pomFile
     String name
 
@@ -19,6 +20,7 @@ class Application {
         this.name = pomFile.getArtifactId()
 
         loadPropertyFiles()
+        loadConfigurationFiles()
     }
 
     void loadPropertyFiles() {
@@ -33,6 +35,19 @@ class Application {
         }
     }
 
+    void loadConfigurationFiles() {
+        println('loading configuration files')
+        File configurationPath = new File(applicationPath, 'src/main')
+        if (!configurationPath.exists()) {
+            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + configurationPath.absolutePath)
+        }
+        //TODO if i set the path to src/main/mule and there are no sub-directories, it doesn't load anything.
+        configurationPath.eachDirRecurse { dir ->
+            dir.eachFileMatch(~/.*.xml/) { file ->
+                configurationFiles.add(new ConfigurationFile(file))
+            }
+        }
+    }
     File getApplicationPath() {
         return applicationPath
     }
