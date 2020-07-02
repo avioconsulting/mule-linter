@@ -38,7 +38,7 @@ class MunitVersionRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 18
+        violations[0].lineNumber == 16
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -52,7 +52,7 @@ class MunitVersionRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 18
+        violations[0].lineNumber == 16
     }
 
 }

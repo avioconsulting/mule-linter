@@ -25,7 +25,7 @@ class PomFile extends ProjectFile {
     }
 
     String getArtifactId() {
-        return exists ? model?.artifactId : ''
+        return exists ? pomXml.getProperty('artifactId') : ''
     }
 
     void setArtifactId(String artifactId) {

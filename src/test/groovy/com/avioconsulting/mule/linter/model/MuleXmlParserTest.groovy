@@ -43,8 +43,10 @@ class MuleXmlParserTest extends Specification {
         GPathResult project = parser.parseText(pomXml)
         def appRuntime = project.'properties'.'app.runtime'
         def munitVersion = project.'properties'.'munit.version'
+        def artifactId = project.getProperty('artifactId')
 
         then:
+        artifactId == 'np-store-product-sys-api'
         appRuntime.text() == '4.2.1'
         parser.getNodeLineNumber(appRuntime) == 11
 
