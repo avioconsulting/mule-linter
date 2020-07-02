@@ -10,6 +10,7 @@ class ConfigurationFile extends ProjectFile {
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
+    private final List<String> rootElement = []
 
     ConfigurationFile(File file) {
         super(file)
@@ -18,16 +19,36 @@ class ConfigurationFile extends ProjectFile {
             exists = true
             parser = new MuleXmlParser()
             configXml = parser.parse(file)
+            loadElement()
         } else {
             println('File does not exist....')
             exists = false
         }
     }
 
+    Boolean doesExist() {
+        return exists
+    }
+
+    void loadElement() {
+        rootElement.clear()
+        if (exists) {
+            configXml.children().each {
+                element->
+                    rootElement.add(element.name())
+            }
+        }
+    }
+
+    Boolean containsConfiguration(String configuration) {
+        return rootElement.contains(configuration)
+    }
+
     String findSomething(String element){
         println("looking for $element")
         return configXml.getProperty(element).toString()
     }
+
     String findAnother() {
         GPathResult subflow = configXml.'sub-flow'
 //        subflow.each {

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <apikit:config outboundHeadersMapName="outboundHeadersMapName" httpStatusVarName="httpStatus" doc:name="Router" doc:id="d898061d-7861-457f-accb-be2ef941b992" name="Router" raml="api/np-store-product-system-api.raml" />
+    <flow name="np-store-product-sys-api-main" doc:id="360ec8d1-c5e9-4f56-99da-6877ba87ff4c">
+        <http:listener doc:name="Listener" doc:id="8aeaffe6-3892-4377-a2c0-609416062b35" config-ref="HTTP_Listener_config" path="/${http.router.path}/*">
+            <http:response statusCode="#[vars.httpStatus default 200]" />
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+            </http:error-response>
+        </http:listener>
+        <set-variable variableName="correlationId" value="#[attributes.headers.correlation_id default uuid()]" doc:name="set correlationId" />
+		<apikit:router doc:name="APIkit Router" doc:id="e474b7e2-127a-4371-af30-b98e39d0bc3c" config-ref="np-store-product-system-api-config" />
+    </flow>
+    <flow name="np-store-product-sys-api-console" doc:id="7d0f944e-387b-4a6f-94c1-de21e517ef93">
+        <http:listener doc:name="Listener" doc:id="d21e0e9b-9c88-45dd-a6bc-98f84ef8852a" config-ref="HTTP_Listener_config" path="/console/*" />
+        <apikit:console doc:name="APIkit Console" doc:id="16be3bd8-ff97-461c-86df-566605fbfe96" config-ref="Router" />
+    </flow>
+    <apikit:config name="np-store-product-system-api-config" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" raml="api/np-store-product-system-api.raml"/>
+    <flow name="patch:\product\(id)\details:application\json:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="c5a92b72-d04a-4379-8e3a-a9d05f2ae3d0" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="product-details-patch" doc:id="e607e2c5-5b2f-4cf5-979d-6e853d3de538" name="product-details-patch"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="d92edd4c-a4f6-4676-a14f-f444be3b07cc">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "The details has been properly updated"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="patch:\product\(id)\inventory:application\json:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="76e70f53-4302-43bb-bf0e-c9fda088bf93" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="product-inventory-patch" doc:id="5b1aba51-7abf-4a56-9637-6ca61e911bcf" name="product-inventory-patch"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="4cc19da1-a200-456b-ba42-ae3ae60f211f">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "The inventory has been properly updated"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\product\(id)\details:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="5c3bbc9c-412a-429b-86dd-e77e5630a78f" doc:name="id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="product-details-get" doc:id="871b60bb-55ac-49fc-aba2-68d289a1690c" name="product-details-get"/>
+    </flow>
+    <flow name="get:\product\(id)\inventory:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="511c98fa-3012-42e7-91b6-c963bab8c0d0" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="product-inventory-get" doc:id="08ef7757-3b56-4b8d-a0fc-3c9a5b12d3b3" name="product-inventory-get"/>
+    </flow>
+    <flow name="get:\product\(id)\pricing:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="6710e356-4b9b-4d53-8e16-47611c707cbf" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="product-pricing-get" doc:id="224609e8-2ad8-4e4d-b87e-0862afbb3453" name="product-pricing-get"/>
+    </flow>
+    <flow name="get:\product\(id)\review:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="c6a7a82c-ac63-4004-9020-2d87640bfc30" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="product-reviews-get" doc:id="a6774b19-559c-4992-af0e-4f663e0de1f3" name="product-reviews-get"/>
+    </flow>
+    <flow name="get:\product\search:np-store-product-system-api-config">
+        <set-variable value='#[%dw 2.0
+output application/json
+var name =attributes.queryParams.name
+var summary =attributes.queryParams.summary
+var manufacturer=attributes.queryParams.manufacturer
+fun regx(String) = { 
+            "\$regex": String, 
+            "\$options": "i" 
+            }
+---
+{
+    (if(name != null) ("name" : regx(name)) else null),
+    (if(summary != null) ("summary" : regx(summary)) else null),
+    (if(manufacturer != null) ("manufacturer" : regx(manufacturer)) else null),
+}]' doc:name="findQuery" doc:id="5bf9d153-1d82-4546-b783-d8311ec67332" variableName="findQuery" />
+		<flow-ref doc:name="product-search-get" doc:id="8a1c3d2b-6a45-48fb-8e27-f6b217c8de75" name="product-search-get"/>
+    </flow>
+    <flow name="post:\product\(id)\review:application\json:np-store-product-system-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="f3488cca-60dd-495e-b8c7-296e98bc61b8" doc:name="set id">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="product-review-post" doc:id="daf0a98e-2e07-41d1-8c34-8ec10f1c8c7c" name="product-review-post"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "The review has been properly added"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="np-store-product-jms-post-review" doc:id="60767a96-7ee3-495d-ae3e-1cf56488394b" >
+		<jms:listener doc:name="Listener" doc:id="57b2ed53-e8ad-47d6-8964-248d86a465a1" config-ref="JMS_Config" destination="post-review" ackMode="AUTO">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<ee:transform doc:name="Transform Message" doc:id="3122979f-e5b5-412d-bec9-c41879beb2d2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+//read((payload as String),"application/json")
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload.id]" doc:name="Set id" doc:id="5a2c4688-e72c-4bf7-b7c2-15a39837b645" variableName="id"/>
+		<flow-ref doc:name="product-review-post" doc:id="f6cd33e0-278b-47d2-8dc6-53970e8a9211" name="product-review-post"/>
+	</flow>
+	<flow name="np-store-product-jms-get-review" doc:id="731ecb0a-3f04-43e7-9731-ea024cd14c61" >
+		<jms:listener doc:name="Listener" doc:id="c74fbcf7-8029-42aa-8b99-bc2b69035958" config-ref="JMS_Config" destination="get-review">
+		</jms:listener>
+		<set-variable value="#[payload as Number]" doc:name="Set id" doc:id="4cf09d1e-699f-498c-8dd0-1e97d4456b45" variableName="id"/>
+		<flow-ref doc:name="product-reviews-get" doc:id="6c58b062-d71f-4e9b-af3e-de939b7cd550" name="product-reviews-get"/>
+	</flow>
+</mule>

@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="main-flows-test-suite.xml" />
+	<munit:test name="main-flows-product-search-get-test" doc:id="b5aa55f7-f235-4c90-bac8-ec2acc5d3404" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="find document" doc:id="88211789-f8c0-4e1d-b635-593d8344701d" processor="mongo:find-documents">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Find documents" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java
+---
+[{
+	"_id": "5dcae4a28ccb7795d7455d83",
+	"product_id": 1.0,
+	"name": "Dell XPS 13",
+	"manufacturer": "Dell",
+	"summary": "Dell XPS 13 9370 13.3 FHD InfinityEdge - 8th Gen Intel Core i5 - 8GB Memory - 128GB SSD - Intel UHD Graphics 620 - Rose Gold",
+	"description": "Dell XPS 13",
+	"dimensions": "7.8 x 11.9 x 0.3 inches",
+	"weight": 2.4,
+	"weight_uom": "lb",
+	"asin": "B078MKCPKH",
+	"model": "XPS9370-5033GLD-PUS",
+	"average_rating": 3.5,
+	"total_ratings": 10.0,
+	"image_url": "https://images-na.ssl-images-amazon.com/images/I/71P%2BvbmKucL._SL1280_.jpg",
+	"status_cd": "ACTIVE",
+	"averageRating": 2.5,
+	"totalRatings": 4.0
+}]
+]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Response transformation" doc:id="d936b821-2001-40db-83e6-db7f5c1e92d1" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="1c850a25-7042-410b-8e5b-ca7e1af879fa" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="c58e01a9-23d0-488e-86c6-b5ade7ddc8cc" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var transfromedObj = [{
+  "productId": 1.0,
+  "name": "Dell XPS 13",
+  "manufacturer": "Dell",
+  "summary": "Dell XPS 13 9370 13.3 FHD InfinityEdge - 8th Gen Intel Core i5 - 8GB Memory - 128GB SSD - Intel UHD Graphics 620 - Rose Gold",
+  "description": "Dell XPS 13",
+  "dimensions": "7.8 x 11.9 x 0.3 inches",
+  "weight": 2.4,
+  "weightUom": "lb",
+  "asin": "B078MKCPKH",
+  "model": "XPS9370-5033GLD-PUS",
+  "averageRating": 3.5,
+  "totalRatings": 10.0,
+  "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/71P%2BvbmKucL._SL1280_.jpg",
+  "statusCd": "ACTIVE"
+}]
+ ---
+payload must equalTo(transfromedObj)]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value='#[%dw 2.0
+output application/json
+---
+{
+    "name" : "dell",
+    "summary" : "dell",
+    "manufacturer" : "dell",
+}]' doc:name="findQuery" doc:id="23a8a71d-9ea5-494f-a381-69a32953a762" variableName="findQuery" />
+			<flow-ref doc:name="product-search-get" doc:id="dc011f3c-ccdd-4228-9243-ed41dc01c603" name="product-search-get"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="find document" doc:id="d002eec6-2a9d-49fd-b4d0-3305673e8e32" processor="mongo:find-documents" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Find documents" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="doc to response" doc:id="47a8086d-58f7-435d-92b0-060fdbbbf0f9" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-product-details-get-test" doc:id="1ed4c42d-435d-47d1-8fce-97e757cc2d2d" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Find one document" doc:id="915b12ba-e68c-4d40-ab37-28382b3b82d3" processor="mongo:find-one-document">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Find one document" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="503a095a-9f79-4a45-a07d-c4058591e9c0" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java
+---
+{
+	"_id": "5dcae4a28ccb7795d7455d83",
+	"product_id": 1.0,
+	"name": "Dell XPS 13",
+	"manufacturer": "Dell",
+	"summary": "Dell XPS 13 9370 13.3 FHD InfinityEdge - 8th Gen Intel Core i5 - 8GB Memory - 128GB SSD - Intel UHD Graphics 620 - Rose Gold",
+	"description": "Dell XPS 13",
+	"dimensions": "7.8 x 11.9 x 0.3 inches",
+	"weight": 2.4,
+	"weight_uom": "lb",
+	"asin": "B078MKCPKH",
+	"model": "XPS9370-5033GLD-PUS",
+	"average_rating": 3.5,
+	"total_ratings": 10.0,
+	"image_url": "https://images-na.ssl-images-amazon.com/images/I/71P%2BvbmKucL._SL1280_.jpg",
+	"status_cd": "ACTIVE"
+}
+]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Response transformation" doc:id="4ebcd090-3b0c-40f2-a823-3b60d99a0eb7" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="99794d9e-3add-49b1-83c6-12536fdae9cc" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="76b4814c-1a27-41e5-9664-00aed6793711" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var transfromedObj = {
+  "productId": 1.0,
+  "name": "Dell XPS 13",
+  "manufacturer": "Dell",
+  "summary": "Dell XPS 13 9370 13.3 FHD InfinityEdge - 8th Gen Intel Core i5 - 8GB Memory - 128GB SSD - Intel UHD Graphics 620 - Rose Gold",
+  "description": "Dell XPS 13",
+  "dimensions": "7.8 x 11.9 x 0.3 inches",
+  "weight": 2.4,
+  "weightUom": "lb",
+  "asin": "B078MKCPKH",
+  "model": "XPS9370-5033GLD-PUS",
+  "averageRating": 3.5,
+  "totalRatings": 10.0,
+  "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/71P%2BvbmKucL._SL1280_.jpg",
+  "statusCd": "ACTIVE"
+}
+ ---
+payload must equalTo(transfromedObj)]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="0742064d-d796-4bea-b0bc-1a0368c90844" variableName="id" />
+			<flow-ref doc:name="product-details-get" doc:id="9874a389-a265-4cba-baf0-6e8c4fad9462" name="product-details-get"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="find one document" doc:id="7cb81a41-62a0-44c0-a53e-340a9dde40ce" processor="mongo:find-one-document" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Find one document" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="doc to response" doc:id="ec2240ea-2096-468e-9112-1e3fc931e76a" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="99794d9e-3add-49b1-83c6-12536fdae9cc" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-test-suite-product-details-patch-test" doc:id="4c171398-512f-49f7-a1a1-6d1fe6706247" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="update documents" doc:id="1ba454c7-361e-4c20-b126-b514c324c074" processor="mongo:update-documents">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+					<munit-tools:with-attribute whereValue="Update documents" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="ae398682-24c5-445e-b17e-0b78698a0088" variableName="id" />
+			<set-payload value='#[output application/json
+---
+{
+  "averageRating": 3.5,
+  "totalRatings": 10.0
+}]' doc:name="Set Payload" doc:id="1d08b274-43b9-42bb-957d-e321a9040aaf" />
+			<flow-ref doc:name="product-details-patch" doc:id="4e171a7c-46c8-4ce0-ad35-270e39dc7334" name="product-details-patch"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="findByIdQuery" doc:id="91059415-65dc-42fe-8a19-faf1f853284f" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var outputQuery={
+	product_id: vars.id as String {format: "#.0"} as Number,
+}
+ ---
+vars.findByIdQuery must equalTo(outputQuery)]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="update documents" doc:id="287ff11c-ea1b-4bd0-9e94-6e78a04c4cb9" processor="mongo:update-documents" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="products" attributeName="collectionName" />
+					<munit-tools:with-attribute whereValue="Update documents" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-test-suite-product-reviews-get-test" doc:id="76f247d9-59c4-4b0f-9655-ea10ba9acb57" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9b640f17-94af-4dc5-946b-022bba4713a9" processor="mongo:find-documents">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f5c79236-201c-44fc-8234-0be4de0f12e1" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="product_reviews" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java
+---
+[{ 
+    "_id" : "5dcae4a2303289fdb31eacd5", 
+    "product_id" : 1.0, 
+    "user" : "jhorrible1985", 
+    "rating" : 1.0, 
+    "review" : "Horrible product, do not buy this piece of", 
+    "created_date" : "2019-11-19 12:28:42"
+}]
+]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="fc629f63-7e78-4e99-917b-7ff2c886baba" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0c33e8da-2a0d-4e5b-ac43-d3e54c85b41e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="f77881ba-3897-413b-b2eb-2c9742d346f6" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var reviewResponse=[{ 
+    "productId" : 1.0, 
+    "user" : "jhorrible1985", 
+    "rating" : 1.0, 
+    "review" : "Horrible product, do not buy this piece of", 
+    "createdDate" : "2019-11-19 12:28:42"
+}]
+ ---
+payload must equalTo(reviewResponse)]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="d040ce94-81cc-4edc-81d0-a823133e5f1d" variableName="id" />
+			<flow-ref doc:name="product-reviews-get" doc:id="a8628301-05d5-44fe-96a4-4822b79d329d" name="product-reviews-get"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="99e05923-af32-4e27-a31a-99a30c8eb702" processor="mongo:find-documents" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f5c79236-201c-44fc-8234-0be4de0f12e1" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="product_reviews" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="7a1518b0-aa16-4a74-a3ec-aae9612f2653" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Doc to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0c33e8da-2a0d-4e5b-ac43-d3e54c85b41e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-product-review-post-test" doc:id="5e3f0bf0-dbd9-4779-922c-d903e7030458" description="Test" ignore="true">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a442b543-738a-4b60-9696-c204c915f315" processor="mongo:insert-document">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Insert document" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="product_reviews" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="589ff353-cc93-457e-b3c9-c3f664db3c6c" variableName="id" />
+			<set-payload value='#[output application/json
+---
+{ 
+    "user" : "npansuria", 
+    "rating" : 1.0, 
+    "review" : "My dog ate it too quickly review Three"
+}]' doc:name='productReview' doc:id="79de9dc8-5129-4ca9-839d-b69bf8fa3adf" />
+			<flow-ref doc:name="product-review-post" doc:id="2c6e0149-c885-46c5-b14f-15882c1ebf58" name="product-review-post"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="created_date not null" doc:id="a8bed113-d021-461c-8d3f-968f734044bf" expression="#[vars.insertDocument.created_date]" is="#[MunitTools::notNullValue()]" message="created_date is null"/>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="5cb85940-1234-418e-9bb9-c956e5cb2ec0" processor="set-variable" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9f13b4ca-88b0-4191-9409-e8491528d9d7" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="insertDocument" attributeName="variableName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-product-inventory-get-test" doc:id="e510aa49-4b39-48a4-93d7-2ba1f374ec37" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="180d7bd2-5f58-4f5b-b16a-7d3ae6663a46" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="00b19dd4-728c-4598-97ac-8e54a5d31f37" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java
+---
+[{
+    "AS_OF_DATE": "2019-11-21T12:52:07",
+    "STATUS_CD": "AVAILABLE",
+    "PRODUCT_ID": 1,
+    "QUANTITY_AVAILABLE": 23
+}]
+]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="59f902d5-9037-425a-aff7-ed252c9bbe7f" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="225589fb-6416-4e78-8bd5-0ca82cb5c89a" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var inventoryResponse={
+  "productId": 1,
+  "quantityAvailable": 23,
+  "asOfDate": "2019-11-21T12:52:07",
+  "statusCd": "AVAILABLE"
+}
+ ---
+payload must equalTo(inventoryResponse)]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="2b10d745-b891-42d0-adb2-2a33b0197431" variableName="id" />
+			<flow-ref doc:name="product-inventory-get" doc:id="ff9fd9c6-0c44-4041-952c-02afe080c67b" name="product-inventory-get"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="select" doc:id="dcd79404-3efc-4ba7-a5a6-13be16d4b247" processor="db:select" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="00b19dd4-728c-4598-97ac-8e54a5d31f37" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="DB to response" doc:id="78473dcb-048d-4d49-80e9-6d7a89d53707" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Db to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a3292e4-9b8f-4e1c-9d8e-be5537f44f5c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-product-inventory-patch-test" doc:id="8436c935-47df-4563-bdd1-b3ab62b21147" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="cac5993c-a821-4a51-b22b-58c5ccec8cea" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Update" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7c0f0416-2710-4f0b-892a-43fb3670b730" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value='#[output application/json
+---
+{
+  "quantityAvailable": 30
+}]' doc:name="inventory" doc:id="7dfca8e8-6235-466a-b266-f663ad74087b" />
+			<set-variable value="#[1]" doc:name="id" doc:id="7064c70a-77fd-4f59-9b14-ab41db82c2da" variableName="id" />
+			<flow-ref doc:name="product-inventory-patch" doc:id="ef7730e9-de06-482e-a809-0ca1804d016c" name="product-inventory-patch"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="d9cb544b-5c0d-414b-a7bf-d3913fa9e7c5" processor="db:update" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Update" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7c0f0416-2710-4f0b-892a-43fb3670b730" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="dfa2b040-d5bb-4200-b048-be4d9afa3413" actual="#[vars.updateQuery]" expected="UPDATE BC_PRODUCT_INVENTORY SET QUANTITY_AVAILABLE = :quantityAvailable, AS_OF_DATE = :asOfDate WHERE PRODUCT_ID = :productId"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-flows-product-pricing-get-test" doc:id="286a6d02-6f98-45a4-afb2-8e26944bf9fc" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9f2de828-2685-4b7b-b03f-fcba54e91a35" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e2600297-8bb6-40cd-a5e9-a11556109fa5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/java
+---
+[{
+    "AS_OF_DATE": "2019-07-24T12:57:03",
+    "STATUS_CD": "ACTIVE",
+    "PRICE": 1.00,
+    "PRODUCT_ID": 1,
+    "CURRENCY": "USD"
+}]
+]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="89a635a7-1345-4120-b02d-b66afb18f196" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="600fdf41-9cdc-4865-8ffb-4cccf17e0f4f" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+var pricing={
+  "productId": 1,
+  "price": 1.00,
+  "currency": "USD",
+  "asOfDate": "2019-07-24T12:57:03",
+  "statusCd": "ACTIVE"
+}
+ ---
+payload must equalTo(pricing)]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<set-variable value="#[1]" doc:name="id" doc:id="6b0fb035-a6bb-4ca5-b427-0301d1dc30f7" variableName="id" />
+			<flow-ref doc:name="Flow-ref to product-pricing-get" doc:id="2e732ccd-8409-4d62-b5f0-3703c31ea2e7" name="product-pricing-get"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="29a5d2b2-4ffe-430a-8c45-4f5e4be6ce5a" processor="db:select" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e2600297-8bb6-40cd-a5e9-a11556109fa5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="12c25c8d-7729-4117-9af2-5d5656da33b2" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="DB to Response" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0064af89-d110-45c4-9d42-c633be311f5e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+</mule>
