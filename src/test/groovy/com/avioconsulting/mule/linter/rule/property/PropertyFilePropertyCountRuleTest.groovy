@@ -14,7 +14,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
     def 'Property File Count mismatch with pattern'() {
         given:
-        Rule rule = new PropertyFilePropertyCountRule(['dev', 'test', 'uat', 'prod'], NAMING_PATTERN)
+        Rule rule = new PropertyFilePropertyCountRule(ENVS, NAMING_PATTERN)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
@@ -28,7 +28,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
     def 'Property File Count matching with pattern'() {
         given:
-        Rule rule = new PropertyFilePropertyCountRule(['test', 'uat'], NAMING_PATTERN)
+        Rule rule = new PropertyFilePropertyCountRule(['test', 'uat', 'other'], NAMING_PATTERN)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
