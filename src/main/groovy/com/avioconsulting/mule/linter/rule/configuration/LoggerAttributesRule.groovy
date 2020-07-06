@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.ConfigurationFile
+import com.avioconsulting.mule.linter.model.LoggerComponent
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 
@@ -21,10 +22,15 @@ class LoggerAttributesRule extends Rule {
         println('LoggerAttributesRule Executing on ' + application.name)
 
         List<ConfigurationFile> configs = application.configurationFiles
-        ConfigurationFile f = configs[0]
-        println(f.name)
-        println(f.findSomething('mule.sub-flow.@name'))
-        f.findAnother()
+        application.configurationFiles.each {
+            it.loggerComponents.each { log ->
+                    println(log.message)
+            }
+        }
         return []
+    }
+
+    private void checkLogger(LoggerComponent log){
+      
     }
 }

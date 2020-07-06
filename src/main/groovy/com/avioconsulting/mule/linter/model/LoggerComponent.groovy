@@ -8,8 +8,12 @@ class LoggerComponent {
     private String category
     private Integer lineNo
 
-    LoggerComponent(){
-
+    LoggerComponent(String name, String message, String level, String category, Integer lineNo){
+        this.name = name
+        this.message = message
+        this.level = level
+        this.category = category
+        this.lineNo = lineNo
     }
 
     String getName() {
