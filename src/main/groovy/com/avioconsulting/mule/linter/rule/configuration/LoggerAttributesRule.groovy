@@ -8,29 +8,41 @@ import com.avioconsulting.mule.linter.model.RuleViolation
 
 class LoggerAttributesRule extends Rule {
 
-    static final String RULE_ID = 'PROPERTY_FILE_NAMING'
-    static final String RULE_NAME = 'Property File Naming Rule'
-    static final String RULE_VIOLATION_MESSAGE = 'Missing property file, files must match naming pattern: '
+    List<String> requiredAttributes
+    static final String RULE_ID = 'LOGGER_ATTRIBUTES_RULE'
+    static final String RULE_NAME = 'Logger Attributes Required Rule'
+    static final String RULE_VIOLATION_MESSAGE = 'Logger is missing attribute '
 
-    LoggerAttributesRule() {
+    LoggerAttributesRule(List<String> requiredAttributes) {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
+        this.requiredAttributes = requiredAttributes
     }
 
     @Override
     List<RuleViolation> execute(Application application) {
+        List<RuleViolation> violations = []
         println('LoggerAttributesRule Executing on ' + application.name)
 
-        List<ConfigurationFile> configs = application.configurationFiles
-        application.configurationFiles.each {
-            it.loggerComponents.each { log ->
-                    println(log.message)
+        application.configurationFiles.each { config ->
+            println("Checking $config.name for Loggers.")
+            config.loggerComponents.each { log ->
+                println("Found $log.name")
+                requiredAttributes.each { att ->
+                    if( !log.hasAttribute(att) ) {
+                        violations.add(new RuleViolation(this), config.name, log.lineNo, RULE_VIOLATION_MESSAGE + att)
+                    }
+                }
             }
         }
-        return []
+        return violations
     }
 
-    private void checkLogger(LoggerComponent log){
-      
+    private List<RuleViolation> checkLogger(LoggerComponent log){
+        requiredAttributes.each { att ->
+            if( !log.hasAttribute(att) ) {
+
+            }
+        }
     }
 }

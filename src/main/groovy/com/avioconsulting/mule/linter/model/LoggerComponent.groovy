@@ -7,6 +7,7 @@ class LoggerComponent {
     private String level
     private String category
     private Integer lineNo
+    private Map<String, String> attributes = [:]
 
     LoggerComponent(String name, String message, String level, String category, Integer lineNo){
         this.name = name
@@ -14,6 +15,15 @@ class LoggerComponent {
         this.level = level
         this.category = category
         this.lineNo = lineNo
+    }
+
+    LoggerComponent(Map<String,String> attributes){
+        this.attributes = attributes
+    }
+
+    Boolean hasAttribute(String name){
+        println('Does logger ' + this.name + ' have: ' + name + ' ' + !attributes.get(name)?.isEmpty() + ' |' + attributes.get(name) + '|')
+        return !attributes.get(name)?.isEmpty()
     }
 
     String getName() {

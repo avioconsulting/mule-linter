@@ -10,7 +10,7 @@ class LoggerAttributesRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Logger Attributes check'() {
         given:
-        Rule rule = new LoggerAttributesRule()
+        Rule rule = new LoggerAttributesRule(['category', 'message'])
 
         when:
         File appDir = new File(this.class.classLoader.getResource('LoggingMuleApp').file)
@@ -18,10 +18,9 @@ class LoggerAttributesRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        true
-//        violations.size() == 2
-//        violations[0].fileName == 'simple-logging-flow-with-errors.xml'
-//        violations[0].lineNumber == 18
-//        violations[1].lineNumber == 35
+        violations.size() == 2
+        violations[0].fileName == 'simple-logging-flow-with-errors.xml'
+        violations[0].lineNumber == 18
+        violations[1].lineNumber == 35
     }
 }

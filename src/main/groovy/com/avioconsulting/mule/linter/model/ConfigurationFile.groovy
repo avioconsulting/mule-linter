@@ -29,10 +29,19 @@ class ConfigurationFile extends ProjectFile {
     private void findLoggers() {
         GPathResult[] loggers = configXml.depthFirst().findAll {
             it.name() == 'logger'
+
+
         }
-        loggers.each {
-            println('New Logger: ' + it.@'doc:name' + '|' + it.@message + '|' + it.@level + '|' + it.@category + '|' + parser.getNodeLineNumber(it))
-            loggerComponents.add(new LoggerComponent(it.@'doc:name'.toString(), it.@message.toString(), it.@level.toString(), it.@category.toString(), parser.getNodeLineNumber(it)))
+        loggers.each { log ->
+//            println('New Logger: ' + log.@'doc:name' + '|' + log.@message + '|' + log.@level + '|' + log.@category + '|' + parser.getNodeLineNumber(log))
+//            println('Logger namespace: ' + log.namespacePrefix)
+//            loggerComponents.add(new LoggerComponent(it.@'doc:name'.toString(), it.@message.toString(), it.@level.toString(), it.@category.toString(), parser.getNodeLineNumber(it)))
+            Map<String,String> atts = [:]
+            log[0].attributes.each {
+                atts.put(it.key, it.value)
+//                println 'Adding ' + it.key + ' with value ' + it.value
+            }
+            loggerComponents.add(new LoggerComponent(atts))
         }
     }
 
@@ -43,4 +52,5 @@ class ConfigurationFile extends ProjectFile {
     void setLoggerComponents(List<LoggerComponent> loggerComponents) {
         this.loggerComponents = loggerComponents
     }
+
 }
