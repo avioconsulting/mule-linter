@@ -27,10 +27,10 @@ class LoggerAttributesRule extends Rule {
         application.configurationFiles.each { config ->
             println("Checking $config.name for Loggers.")
             config.loggerComponents.each { log ->
-                println("Found $log.name")
+//                println("Found " + log.getName())
                 requiredAttributes.each { att ->
                     if( !log.hasAttribute(att) ) {
-                        violations.add(new RuleViolation(this), config.name, log.lineNo, RULE_VIOLATION_MESSAGE + att)
+                        violations.add(new RuleViolation(this, config.name, log.lineNumber, RULE_VIOLATION_MESSAGE + att))
                     }
                 }
             }
@@ -38,11 +38,4 @@ class LoggerAttributesRule extends Rule {
         return violations
     }
 
-    private List<RuleViolation> checkLogger(LoggerComponent log){
-        requiredAttributes.each { att ->
-            if( !log.hasAttribute(att) ) {
-
-            }
-        }
-    }
 }

@@ -11,6 +11,7 @@ class ConfigurationFile extends ProjectFile {
     private final GPathResult configXml
     private final Boolean exists
     private List<LoggerComponent> loggerComponents = []
+    private List<MuleComponent> components = []
 
     ConfigurationFile(File file) {
         super(file)
@@ -20,26 +21,59 @@ class ConfigurationFile extends ProjectFile {
             parser = new MuleXmlParser()
             configXml = parser.parse(file)
             findLoggers()
+//            components = parseChildren(configXml)
         } else {
             println('File does not exist....')
             exists = false
         }
     }
 
+    // TODO new method name.... 'Find me all components that are not...'
+    // notComponents(['sub-flow','flow'])
+    List<MuleComponent> notComponents(List<String> ignoreComponents){
+        List<MuleComponent> compList = []
+        GPathResult[] comps = configXml.depthFirst().findAll {
+            !ignoreComponents.contains(it.name())
+            //TODO need the namespace...
+        }
+
+        comps.each { comp ->
+            Map<String,String> atts = [:]
+            comp[0].attributes.each {
+                atts.put(it.key, it.value)
+            }
+            compList.add(new MuleComponent(atts))
+        }
+    }
+
+    //TODO does not work...
+    private List<MuleComponent> parseChildren(GPathResult path) {
+        List<MuleComponent> comps = []
+        Map<String,String> atts = [:]
+        path[0].attributes.each {
+            atts.put(it.key, it.value)
+        }
+        println atts
+        if(path.children().size() > 0) {
+            List<MuleComponent> childList = []
+            path.children().each {
+                childList = parseChildren(it)
+            }
+            comps.add(new MuleComponent(atts, childList))
+        } else {
+            comps.add(new MuleComponent(atts))
+        }
+    }
+
     private void findLoggers() {
+        //TODO remove depthFirst call
         GPathResult[] loggers = configXml.depthFirst().findAll {
-            it.name() == 'logger'
-
-
+            it.name() == 'logger' && it.namespaceURI() == 'http://www.mulesoft.org/schema/mule/core'
         }
         loggers.each { log ->
-//            println('New Logger: ' + log.@'doc:name' + '|' + log.@message + '|' + log.@level + '|' + log.@category + '|' + parser.getNodeLineNumber(log))
-//            println('Logger namespace: ' + log.namespacePrefix)
-//            loggerComponents.add(new LoggerComponent(it.@'doc:name'.toString(), it.@message.toString(), it.@level.toString(), it.@category.toString(), parser.getNodeLineNumber(it)))
             Map<String,String> atts = [:]
             log[0].attributes.each {
                 atts.put(it.key, it.value)
-//                println 'Adding ' + it.key + ' with value ' + it.value
             }
             loggerComponents.add(new LoggerComponent(atts))
         }
@@ -52,5 +86,6 @@ class ConfigurationFile extends ProjectFile {
     void setLoggerComponents(List<LoggerComponent> loggerComponents) {
         this.loggerComponents = loggerComponents
     }
+
 
 }

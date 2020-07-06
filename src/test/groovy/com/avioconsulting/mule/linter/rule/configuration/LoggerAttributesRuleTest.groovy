@@ -20,7 +20,7 @@ class LoggerAttributesRuleTest extends Specification {
         then:
         violations.size() == 2
         violations[0].fileName == 'simple-logging-flow-with-errors.xml'
-        violations[0].lineNumber == 18
+        violations[0].lineNumber == 20
         violations[1].lineNumber == 35
     }
 }
