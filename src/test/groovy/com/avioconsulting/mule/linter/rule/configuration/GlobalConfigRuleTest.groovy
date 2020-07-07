@@ -15,7 +15,7 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml')
 
         when:
         File appDir = new File(this.class.classLoader.getResource(GLOBALCONFIG_APP).file)
@@ -27,9 +27,9 @@ class GlobalConfigRuleTest extends Specification {
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-    def 'Incorrect global configuration'() {
+    def 'Incorrect global configuration default element check'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml')
 
         when:
         File appDir = new File(this.class.classLoader.getResource(BAD_GLOBALCONFIG_APP).file)
@@ -47,9 +47,27 @@ class GlobalConfigRuleTest extends Specification {
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
+    def 'Additional global configuration element check'() {
+        given:
+        Rule rule = new GlobalConfigRule('global-config.xml',
+                    ['listener-config':'http://www.mulesoft.org/schema/mule/http'])
+
+        when:
+        File appDir = new File(this.class.classLoader.getResource(BAD_GLOBALCONFIG_APP).file)
+        Application app = new Application(appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 1
+        violations[0].lineNumber == 9
+        violations[0].message.contains('config')
+        violations[0].fileName.contains('simple-logging-flow-with-errors.xml')
+    }
+
+    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing global configuration file'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml')
 
         when:
         File appDir = new File(this.class.classLoader.getResource(MISSING_GLOBALCONFIG_APP).file)

@@ -13,19 +13,24 @@ class GlobalConfigRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
     static Map<String, String> DEFAULT_NON_GLOBAL = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
                                                       'flow'    : 'http://www.mulesoft.org/schema/mule/core']
-    static Map<String, String> noneGlobalElements
+    static Map<String, String> noneGlobalElements = [:]
     static String DEFAULT_FILE_NAME = 'globals.xml'
     String globalFileName
 
     GlobalConfigRule(String globalFileName, Map<String, String> noneGlobalElements) {
+        this(globalFileName)
+        this.noneGlobalElements += noneGlobalElements
+    }
+
+    GlobalConfigRule(String globalFileName) {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
-        this.noneGlobalElements = noneGlobalElements
         this.globalFileName = globalFileName
+        this.noneGlobalElements += DEFAULT_NON_GLOBAL
     }
 
     GlobalConfigRule() {
-        this(DEFAULT_FILE_NAME, DEFAULT_NON_GLOBAL)
+        this(DEFAULT_FILE_NAME)
     }
 
     @Override
