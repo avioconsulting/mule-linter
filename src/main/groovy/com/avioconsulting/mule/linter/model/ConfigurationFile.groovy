@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter.model
 
+
 import groovy.xml.slurpersupport.GPathResult
 
 /**
@@ -24,34 +25,26 @@ class ConfigurationFile extends ProjectFile {
 
     List<MuleComponent> findComponents(String componentType, String namespace) {
         List<MuleComponent> componentList = []
-        GPathResult[] comps = configXml.depthFirst().findAll {
-            it.name() == componentType && it.namespaceURI() == namespace
-        }
-        comps.each { comp ->
-            Map<String, String> atts = [:]
-            comp[0].attributes.each {
-                atts.put(it.key, it.value)
-            }
-            componentList.add(new MuleComponent(atts))
+        searchComponentType(componentType, namespace).each { comp ->
+            componentList.add(new MuleComponent(comp[0].attributes))
             //TODO this doesn't account for child components...
         }
+        return componentList
     }
 
     List<LoggerComponent> findLoggerComponents() {
         List<LoggerComponent> loggerComponents = []
-        GPathResult[] loggers = configXml.depthFirst().findAll {
-            it.name() == 'logger' && it.namespaceURI() == 'http://www.mulesoft.org/schema/mule/core'
-        }
-
-        loggers.each { log ->
-            Map<String, String> atts = [:]
-
-            log[0].attributes.each {
-                atts.put(it.key, it.value)
-            }
-            loggerComponents.add(new LoggerComponent(atts))
+        searchComponentType(LoggerComponent.COMPONENT_NAME, LoggerComponent.COMPONENT_NAMESPACE).each {
+            loggerComponents.add(new LoggerComponent(it[0].attributes))
         }
         return loggerComponents
+    }
+
+    private List<GPathResult> searchComponentType(String componentType, String namespace) {
+        List<GPathResult> components = configXml.depthFirst().findAll {
+            it.name() == componentType && it.namespaceURI() == namespace
+        }
+        return components
     }
 
 }

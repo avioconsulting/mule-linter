@@ -41,17 +41,15 @@ class Application {
 
     void loadConfigurationFiles() {
         File configurationPath = new File(applicationPath, 'src/main/mule')
-        if (!configurationPath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + configurationPath.absolutePath)
-        }
-
-        configurationPath.eachFileMatch(~/.*.xml/){ file ->
-            configurationFiles.add(new ConfigurationFile(file))
-        }
-        
-        configurationPath.eachDirRecurse { dir ->
-            dir.eachFileMatch(~/.*.xml/) { file ->
+        if(configurationPath.exists()) {
+            configurationPath.eachFileMatch(~/.*.xml/) { file ->
                 configurationFiles.add(new ConfigurationFile(file))
+            }
+
+            configurationPath.eachDirRecurse { dir ->
+                dir.eachFileMatch(~/.*.xml/) { file ->
+                    configurationFiles.add(new ConfigurationFile(file))
+                }
             }
         }
     }
