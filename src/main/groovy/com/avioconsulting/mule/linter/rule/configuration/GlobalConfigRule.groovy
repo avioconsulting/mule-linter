@@ -11,7 +11,7 @@ class GlobalConfigRule extends Rule {
     static final String RULE_ID = 'GLOBAL_CONFIG'
     static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration.'
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
-    static Map<String, String> DEFAULT_NONE_GLOBAL = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
+    static Map<String, String> DEFAULT_NON_GLOBAL = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
                                                       'flow'    : 'http://www.mulesoft.org/schema/mule/core']
     static Map<String, String> noneGlobalElements
     static String DEFAULT_FILE_NAME = 'globals.xml'
@@ -25,7 +25,7 @@ class GlobalConfigRule extends Rule {
     }
 
     GlobalConfigRule() {
-        this(DEFAULT_FILE_NAME, DEFAULT_NONE_GLOBAL)
+        this(DEFAULT_FILE_NAME, DEFAULT_NON_GLOBAL)
     }
 
     @Override
@@ -34,7 +34,7 @@ class GlobalConfigRule extends Rule {
 
         app.configurationFiles.each {
             configFile ->
-            List<MuleComponent> globalConfigs = configFile.findGlobalConfigs(noneGlobalElements)
+            List<MuleComponent> globalConfigs = configFile.findChildComponents(noneGlobalElements,false)
             if (globalConfigs.size() > 0 && configFile.name != globalFileName) {
                 globalConfigs.each {
                     violations.add(new RuleViolation(this, configFile.path,

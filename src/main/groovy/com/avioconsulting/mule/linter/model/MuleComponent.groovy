@@ -7,18 +7,15 @@ class MuleComponent {
     private final Map<String, String> attributes = [:]
     private final List<MuleComponent> children
 
-    MuleComponent(Map<String, String> attributes) {
-        this(attributes, null)
-    }
-
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
-        this(attributes, null)
         this.componentName = componentName
         this.componentNamespace = componentNamespace
+        this.attributes = attributes
     }
 
-    MuleComponent(Map<String, String> attributes, List<MuleComponent> children) {
-        this.attributes = attributes
+    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes,
+                  List<MuleComponent> children) {
+        this(componentName,componentNamespace,attributes)
         this.children = children
     }
 
@@ -28,17 +25,6 @@ class MuleComponent {
 
     String getComponentName() {
         return componentName
-    }
-
-    String getName() {
-        if (name == null || name.length() < 1) {
-            name = attributes.get('name')
-        }
-        return name
-    }
-
-    void setName(String name) {
-        this.name = name
     }
 
     Integer getLineNumber() {

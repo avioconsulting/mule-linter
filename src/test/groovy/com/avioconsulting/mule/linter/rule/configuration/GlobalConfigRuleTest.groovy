@@ -15,7 +15,7 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(GLOBALCONFIG_APP).file)
@@ -29,7 +29,7 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Incorrect global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(BAD_GLOBALCONFIG_APP).file)
@@ -49,7 +49,7 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing global configuration file'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NON_GLOBAL)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(MISSING_GLOBALCONFIG_APP).file)
