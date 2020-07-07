@@ -3,6 +3,8 @@ package com.avioconsulting.mule
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.RuleExecutor
 import com.avioconsulting.mule.linter.model.RuleSet
+import com.avioconsulting.mule.linter.rule.configuration.LoggerCategoryExistsRule
+import com.avioconsulting.mule.linter.rule.configuration.LoggerMessageExistsRule
 import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
 import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
 import com.avioconsulting.mule.linter.rule.pom.MuleRuntimeVersionRule
@@ -28,6 +30,8 @@ class MuleLinter {
         rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
         rules.addRule(new PropertyFileNamingRule(['dev', 'test']))
         rules.addRule(new PropertyFilePropertyCountRule(['test', 'uat'], '${env}.properties'))
+        rules.addRule(new LoggerCategoryExistsRule())
+        rules.addRule(new LoggerMessageExistsRule())
 
         // Create the executor
         RuleExecutor exe = new RuleExecutor(app, rules)

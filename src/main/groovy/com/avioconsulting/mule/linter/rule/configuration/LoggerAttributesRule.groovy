@@ -17,7 +17,7 @@ class LoggerAttributesRule extends Rule {
         this.requiredAttributes = requiredAttributes
     }
 
-    LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttribute) {
+    LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttributes) {
         this.ruleId = ruleId
         this.ruleName = ruleName
         this.requiredAttributes = requiredAttributes

@@ -52,4 +52,5 @@ class ConfigurationFile extends ProjectFile {
         }
         return loggerComponents
     }
+
 }

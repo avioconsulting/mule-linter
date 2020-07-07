@@ -6,9 +6,8 @@ class LoggerComponent extends MuleComponent {
     private String level
     private String category
 
-    LoggerComponent(Map<String,String> attributes){
+    LoggerComponent(Map<String, String> attributes) {
         super(attributes)
-        println('New LoggerComponent: ' + attributes)
         this.name = attributes.get('{http://www.mulesoft.org/schema/mule/documentation}name')
         this.message = attributes.get('message')
         this.level = attributes.get('level')
@@ -19,10 +18,6 @@ class LoggerComponent extends MuleComponent {
     String getName() {
         return name
     }
-
-//    Integer getLineNo() {
-//        return attributes.get('lineNo')
-//    }
 
     String getMessage() {
         return message
@@ -35,4 +30,5 @@ class LoggerComponent extends MuleComponent {
     String getCategory() {
         return category
     }
+
 }
