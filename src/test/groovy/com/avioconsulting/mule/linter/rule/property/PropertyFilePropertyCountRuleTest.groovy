@@ -23,7 +23,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
         then:
         violations.size() == 4
-        violations[0].message.contains('[uat.properties:6, test.properties:6, dev.properties:4, prod.properties:7]')
+        violations[0].message.contains('[dev.properties:4, prod.properties:7, test.properties:6, uat.properties:6]')
     }
 
     def 'Property File Count matching with pattern'() {

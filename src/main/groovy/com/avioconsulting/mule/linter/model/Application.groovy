@@ -24,7 +24,6 @@ class Application {
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
-        loadConfigurationFiles()
     }
 
     void loadPropertyFiles() {
@@ -47,7 +46,7 @@ class Application {
         configurationPath.eachFileMatch(~/.*.xml/){ file ->
             configurationFiles.add(new ConfigurationFile(file))
         }
-        
+
         configurationPath.eachDirRecurse { dir ->
             dir.eachFileMatch(~/.*.xml/) { file ->
                 configurationFiles.add(new ConfigurationFile(file))
@@ -89,4 +88,7 @@ class Application {
         return configXML
     }
 
+    MuleArtifact getMuleArtifact() {
+        return muleArtifact
+    }
 }
