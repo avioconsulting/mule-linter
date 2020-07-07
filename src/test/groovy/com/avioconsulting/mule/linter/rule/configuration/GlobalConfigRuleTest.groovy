@@ -8,16 +8,14 @@ import spock.lang.Specification
 
 class GlobalConfigRuleTest extends Specification {
 
-    private static final String GLOBALCONFIG_APP = 'np-store-product-sys-api'
-    private static final String INCORRECT_GLOBALCONFIG_APP = 'LoggingMuleApp'
-    private static final String MISSING_GLOBALCONFIG_APP = 'SampleMuleApp'
-    private final List<String> config = ['secure-properties:config','http:listener-config']
-    private final List<String> extraConfig = ['config','listener-config']
+    private static final String GLOBALCONFIG_APP = 'GlobalConfigMuleApp'
+    private static final String BAD_GLOBALCONFIG_APP = 'BadGlobalConfigMuleApp'
+    private static final String MISSING_GLOBALCONFIG_APP = 'BadMuleApp'
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule()
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(GLOBALCONFIG_APP).file)
@@ -31,23 +29,27 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Incorrect global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule()
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
 
         when:
-        File appDir = new File(this.class.classLoader.getResource(INCORRECT_GLOBALCONFIG_APP).file)
+        File appDir = new File(this.class.classLoader.getResource(BAD_GLOBALCONFIG_APP).file)
         Application app = new Application(appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 2
-        violations[0].message.contains('config')
-        violations[1].message.contains('listener-config')
+        violations[0].lineNumber == 10
+        violations[0].message.contains('listener-config')
+        violations[0].fileName.contains('simple-logging-flow.xml')
+        violations[1].lineNumber == 9
+        violations[1].message.contains('config')
+        violations[1].fileName.contains('simple-logging-flow-with-errors.xml')
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing global configuration file'() {
         given:
-        Rule rule = new GlobalConfigRule()
+        Rule rule = new GlobalConfigRule('global-config.xml', GlobalConfigRule.DEFAULT_NONE_GLOBAL)
 
         when:
         File appDir = new File(this.class.classLoader.getResource(MISSING_GLOBALCONFIG_APP).file)
@@ -55,8 +57,6 @@ class GlobalConfigRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        violations.size() == 1
-        violations[0].lineNumber == 0
-        violations[0].message == GlobalConfigRule.FILE_MISSING_VIOLATION_MESSAGE
+        violations.size() == 0
     }
 }

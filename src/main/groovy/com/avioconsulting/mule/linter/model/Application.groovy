@@ -5,6 +5,7 @@ class Application {
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
+    static final String CONFIG_FILE_PATH = 'src/main/mule/'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -41,7 +42,7 @@ class Application {
 
     void loadConfigurationFiles() {
         File configurationPath = new File(applicationPath, 'src/main/mule')
-        if(configurationPath.exists()) {
+        if (configurationPath.exists()) {
             configurationPath.eachFileMatch(~/.*.xml/) { file ->
                 configurationFiles.add(new ConfigurationFile(file))
             }
@@ -81,6 +82,18 @@ class Application {
 
     List<PropertyFile> getPropertyFiles() {
         return propertyFiles
+    }
+
+    ConfigurationFile getConfigurationFile( String fileName ) {
+        ConfigurationFile configXML = new ConfigurationFile((new File(applicationPath, CONFIG_FILE_PATH + fileName)))
+
+        configurationFiles.each {
+            configFile->
+            if ( configFile.name.equalsIgnoreCase(fileName)) {
+                configXML = configFile
+            }
+        }
+        return configXML
     }
 
     MuleArtifact getMuleArtifact() {
