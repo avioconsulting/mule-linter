@@ -17,7 +17,7 @@ class MuleComponent {
         this.children = children
     }
 
-    Boolean hasAttribute(String name){
+    Boolean hasAttributeValue(String name){
         return attributes.get(name)?.length() > 0
     }
 

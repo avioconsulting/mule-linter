@@ -1,8 +1,6 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.ConfigurationFile
-import com.avioconsulting.mule.linter.model.LoggerComponent
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 
@@ -19,17 +17,19 @@ class LoggerAttributesRule extends Rule {
         this.requiredAttributes = requiredAttributes
     }
 
+    LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttribute) {
+        this.ruleId = ruleId
+        this.ruleName = ruleName
+        this.requiredAttributes = requiredAttributes
+    }
+
     @Override
     List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []
-        println('LoggerAttributesRule Executing on ' + application.name)
-
         application.configurationFiles.each { config ->
-            println("Checking $config.name for Loggers.")
-            config.loggerComponents.each { log ->
-//                println("Found " + log.getName())
+            config.findLoggerComponents().each { log ->
                 requiredAttributes.each { att ->
-                    if( !log.hasAttribute(att) ) {
+                    if (!log.hasAttributeValue(att)) {
                         violations.add(new RuleViolation(this, config.name, log.lineNumber, RULE_VIOLATION_MESSAGE + att))
                     }
                 }
