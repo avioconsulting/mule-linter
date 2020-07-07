@@ -60,4 +60,5 @@ class PomFile extends ProjectFile {
     private GPathResult getPomProperties() {
         return pomXml[PROPERTIES]
     }
+
 }

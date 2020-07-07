@@ -29,4 +29,5 @@ class PomProperty {
     void setLineNo(Integer lineNo) {
         this.lineNo = lineNo
     }
+
 }

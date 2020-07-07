@@ -8,6 +8,7 @@ class Application {
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
+    List<ConfigurationFile> configurationFiles = []
     PomFile pomFile
     String name
     GitIgnoreFile gitignoreFile
@@ -23,6 +24,7 @@ class Application {
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
+        loadConfigurationFiles()
         loadMuleArtifact()
     }
 
@@ -32,6 +34,21 @@ class Application {
             resourcePath.eachDirRecurse { dir ->
                 dir.eachFileMatch(~/.*.properties/) { file ->
                     propertyFiles.add(new PropertyFile(file))
+                }
+            }
+        }
+    }
+
+    void loadConfigurationFiles() {
+        File configurationPath = new File(applicationPath, 'src/main/mule')
+        if(configurationPath.exists()) {
+            configurationPath.eachFileMatch(~/.*.xml/) { file ->
+                configurationFiles.add(new ConfigurationFile(file))
+            }
+
+            configurationPath.eachDirRecurse { dir ->
+                dir.eachFileMatch(~/.*.xml/) { file ->
+                    configurationFiles.add(new ConfigurationFile(file))
                 }
             }
         }

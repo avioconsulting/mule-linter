@@ -9,11 +9,6 @@ class MunitVersionRuleTest extends Specification {
 
     private static final String APP_NAME = 'SampleMuleApp'
 
-    private Application loadApp() {
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        new Application(appDir)
-    }
-
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct MUnit Version'() {
         given:
@@ -53,6 +48,11 @@ class MunitVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 16
+    }
+
+    private Application loadApp() {
+        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
+        new Application(appDir)
     }
 
 }

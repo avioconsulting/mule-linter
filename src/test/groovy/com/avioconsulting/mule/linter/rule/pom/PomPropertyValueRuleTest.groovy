@@ -51,4 +51,5 @@ class PomPropertyValueRuleTest extends  Specification {
         File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
         new Application(appDir)
     }
+
 }
