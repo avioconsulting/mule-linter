@@ -23,4 +23,5 @@ class LoggerAttributesRuleTest extends Specification {
         violations[0].lineNumber == 20
         violations[1].lineNumber == 35
     }
+
 }

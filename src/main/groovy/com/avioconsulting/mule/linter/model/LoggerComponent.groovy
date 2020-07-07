@@ -2,9 +2,9 @@ package com.avioconsulting.mule.linter.model
 
 class LoggerComponent extends MuleComponent {
 
-    private String message
-    private String level
-    private String category
+    private final String message
+    private final String level
+    private final String category
 
     LoggerComponent(Map<String, String> attributes) {
         super(attributes)

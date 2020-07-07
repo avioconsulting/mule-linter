@@ -22,4 +22,5 @@ class LoggerCategoryExistsRuleTest  extends Specification {
         violations[0].fileName == 'simple-logging-flow-with-errors.xml'
         violations[0].lineNumber == 20
     }
+
 }

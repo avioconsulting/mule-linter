@@ -3,21 +3,19 @@ package com.avioconsulting.mule.linter.model
 class MuleComponent {
 
     private String name
-    private Integer lineNumber
-    private String id
-    private Map<String,String> attributes = [:]
-    private List<MuleComponent> children
+    private Map<String, String> attributes = [:]
+    private final List<MuleComponent> children
 
-    MuleComponent(Map<String,String> attributes){
+    MuleComponent(Map<String, String> attributes) {
         this(attributes, null)
     }
 
-    MuleComponent(Map<String,String> attributes, List<MuleComponent> children){
+    MuleComponent(Map<String, String> attributes, List<MuleComponent> children) {
         this.attributes = attributes
         this.children = children
     }
 
-    Boolean hasAttributeValue(String name){
+    Boolean hasAttributeValue(String name) {
         return attributes.get(name)?.length() > 0
     }
 
@@ -43,4 +41,5 @@ class MuleComponent {
     String getId() {
         return attributes.get('id')
     }
+
 }

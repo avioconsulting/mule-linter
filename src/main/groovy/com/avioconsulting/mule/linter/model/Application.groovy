@@ -36,7 +36,6 @@ class Application {
     }
 
     void loadConfigurationFiles() {
-        println('loading configuration files')
         File configurationPath = new File(applicationPath, 'src/main')
         if (!configurationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + configurationPath.absolutePath)

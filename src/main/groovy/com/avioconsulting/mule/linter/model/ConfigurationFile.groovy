@@ -24,12 +24,12 @@ class ConfigurationFile extends ProjectFile {
 
     List<MuleComponent> findComponents(String componentType, String namespace) {
         List<MuleComponent> componentList = []
-        GPathResult[] loggers = configXml.depthFirst().findAll {
+        GPathResult[] comps = configXml.depthFirst().findAll {
             it.name() == componentType && it.namespaceURI() == namespace
         }
-        loggers.each { log ->
+        comps.each { comp ->
             Map<String, String> atts = [:]
-            log[0].attributes.each {
+            comp[0].attributes.each {
                 atts.put(it.key, it.value)
             }
             componentList.add(new MuleComponent(atts))
@@ -45,6 +45,7 @@ class ConfigurationFile extends ProjectFile {
 
         loggers.each { log ->
             Map<String, String> atts = [:]
+
             log[0].attributes.each {
                 atts.put(it.key, it.value)
             }
