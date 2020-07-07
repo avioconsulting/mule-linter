@@ -5,12 +5,12 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
-class LoggerAttributesRuleTest extends Specification {
+class LoggerMessageExistsRuleTest extends Specification {
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Logger Attributes check'() {
         given:
-        Rule rule = new LoggerAttributesRule(['category', 'message'])
+        Rule rule = new LoggerMessageExistsRule()
 
         when:
         File appDir = new File(this.class.classLoader.getResource('LoggingMuleApp').file)
@@ -18,10 +18,9 @@ class LoggerAttributesRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        violations.size() == 2
+        violations.size() == 1
         violations[0].fileName == 'simple-logging-flow-with-errors.xml'
-        violations[0].lineNumber == 20
-        violations[1].lineNumber == 35
+        violations[0].lineNumber == 35
     }
 
 }

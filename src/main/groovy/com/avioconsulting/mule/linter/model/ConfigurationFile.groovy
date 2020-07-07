@@ -10,52 +10,48 @@ class ConfigurationFile extends ProjectFile {
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private final List<String> rootElement = []
 
     ConfigurationFile(File file) {
         super(file)
-        println("ConfigurationFile: adding file $file.name")
         if (file.exists()) {
             exists = true
             parser = new MuleXmlParser()
             configXml = parser.parse(file)
-            loadElement()
         } else {
-            println('File does not exist....')
             exists = false
         }
     }
 
-    Boolean doesExist() {
-        return exists
-    }
-
-    void loadElement() {
-        rootElement.clear()
-        if (exists) {
-            configXml.children().each {
-                element->
-                    rootElement.add(element.name())
+    List<MuleComponent> findComponents(String componentType, String namespace) {
+        List<MuleComponent> componentList = []
+        GPathResult[] comps = configXml.depthFirst().findAll {
+            it.name() == componentType && it.namespaceURI() == namespace
+        }
+        comps.each { comp ->
+            Map<String, String> atts = [:]
+            comp[0].attributes.each {
+                atts.put(it.key, it.value)
             }
+            componentList.add(new MuleComponent(atts))
+            //TODO this doesn't account for child components...
         }
     }
 
-    Boolean containsConfiguration(String configuration) {
-        return rootElement.contains(configuration)
-    }
+    List<LoggerComponent> findLoggerComponents() {
+        List<LoggerComponent> loggerComponents = []
+        GPathResult[] loggers = configXml.depthFirst().findAll {
+            it.name() == 'logger' && it.namespaceURI() == 'http://www.mulesoft.org/schema/mule/core'
+        }
 
-    String findSomething(String element){
-        println("looking for $element")
-        return configXml.getProperty(element).toString()
-    }
+        loggers.each { log ->
+            Map<String, String> atts = [:]
 
-    String findAnother() {
-        GPathResult subflow = configXml.'sub-flow'
-//        subflow.each {
-            println("subflow - names: $subflow.@name")
-//        }
-//        println("looking for subflow name: $subflow.@name")
+            log[0].attributes.each {
+                atts.put(it.key, it.value)
+            }
+            loggerComponents.add(new LoggerComponent(atts))
+        }
+        return loggerComponents
     }
-
 
 }
