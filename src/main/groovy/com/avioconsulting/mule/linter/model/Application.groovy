@@ -11,6 +11,7 @@ class Application {
     PomFile pomFile
     String name
     GitIgnoreFile gitignoreFile
+    MuleArtifact muleArtifact
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
@@ -22,6 +23,7 @@ class Application {
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
+        loadMuleArtifact()
     }
 
     void loadPropertyFiles() {
@@ -33,6 +35,10 @@ class Application {
                 }
             }
         }
+    }
+
+    void loadMuleArtifact() {
+        muleArtifact = new MuleArtifact(applicationPath)
     }
 
     File getApplicationPath() {
@@ -60,4 +66,7 @@ class Application {
         return propertyFiles
     }
 
+    MuleArtifact getMuleArtifact() {
+        return muleArtifact
+    }
 }
