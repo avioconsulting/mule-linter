@@ -6,7 +6,8 @@
     10,
     null,
     true,
-    false
+    false,
+    "new.property"
   ],
   "itsTrue" : true,
   "itsFalse" : false,

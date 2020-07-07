@@ -11,13 +11,16 @@ class MuleArtifact extends ProjectFile {
     public static final String MULE_ARTIFACT_JSON = 'mule-artifact.json'
 
     private JsonMap muleArtifact;
+    private final Boolean exists
 
     MuleArtifact(File f) {
         super(new File(f, MULE_ARTIFACT_JSON))
-        if(!f.isDirectory() && f.exists()) {
-            throw new IllegalArgumentException('File must be a Mule application directory that exists')
+        if (file.exists()) {
+            parseMuleArtifact()
+            this.exists = true
+        } else {
+            this.exists = false
         }
-        parseMuleArtifact()
     }
 
     private void parseMuleArtifact() {

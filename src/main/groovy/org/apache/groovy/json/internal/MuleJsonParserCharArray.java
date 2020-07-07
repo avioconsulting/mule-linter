@@ -303,6 +303,8 @@ public class MuleJsonParserCharArray extends BaseJsonParser {
                 __index++;
             }
 
+            list = new JsonArray(lineNumber);
+
             int lastIndex;
 
             skipWhiteSpace();
@@ -310,10 +312,8 @@ public class MuleJsonParserCharArray extends BaseJsonParser {
             /* the list might be empty  */
             if (__currentChar == ']') {
                 __index++;
-                return new JsonArray();
+                return list;
             }
-
-            list = new JsonArray();
 
             while (this.hasMore()) {
                 Object arrayItem = decodeValueInternal();

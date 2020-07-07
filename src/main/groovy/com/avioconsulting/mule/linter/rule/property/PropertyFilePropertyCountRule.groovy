@@ -35,7 +35,7 @@ class PropertyFilePropertyCountRule extends Rule {
         List<PropertyFile> propFiles = getValidPropertyFiles(getValidPropertyFilenames(app.name), app.propertyFiles)
 
         if (propFiles*.getPropertyCount().unique().size() > 1) {
-            Map counts = propFiles.collectEntries { [it.getName(), it.getPropertyCount()] }
+            Map counts = propFiles.collectEntries { [it.getName(), it.getPropertyCount()] }.sort()
             propFiles.each { file ->
                 violations.add(new RuleViolation(this, file.getName(), 0, RULE_VIOLATION_MESSAGE + counts))
             }

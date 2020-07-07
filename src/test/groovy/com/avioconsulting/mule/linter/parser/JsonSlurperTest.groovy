@@ -37,9 +37,9 @@ class JsonSlurperTest extends Specification {
 
         then:
         itsTrue == true
-        itsTrue.lineNumber == 11
+        itsTrue.lineNumber == 12
         itsFalse == false
-        itsFalse.lineNumber == 12
+        itsFalse.lineNumber == 13
     }
 
     def "Null value with line numbers"() {
@@ -52,7 +52,7 @@ class JsonSlurperTest extends Specification {
 
         then:
         muleArtifact.itsNull.value == null
-        muleArtifact.itsNull.lineNumber == 13
+        muleArtifact.itsNull.lineNumber == 14
     }
 
     def "Number values with line numbers"() {
@@ -65,9 +65,9 @@ class JsonSlurperTest extends Specification {
 
         then:
         muleArtifact.itsNumber == 100
-        muleArtifact.itsNumber.lineNumber == 14
+        muleArtifact.itsNumber.lineNumber == 15
         muleArtifact.itsDecimal == 100.5
-        muleArtifact.itsDecimal.lineNumber == 15
+        muleArtifact.itsDecimal.lineNumber == 16
     }
 
     def "Array values with line numbers and contains"() {
@@ -80,7 +80,7 @@ class JsonSlurperTest extends Specification {
         ArrayList t = new ArrayList();
 
         then:
-        muleArtifact.secureProperties.size() == 6
+        muleArtifact.secureProperties.size() == 7
         muleArtifact.secureProperties[0].lineNumber == 4
         muleArtifact.secureProperties[0] == 'anypoint.platform.client_id'
         muleArtifact.secureProperties[1].lineNumber == 5

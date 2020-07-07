@@ -4,6 +4,16 @@ import java.util.ArrayList;
 
 public class JsonArray<T> extends ArrayList {
 
+    private Integer lineNumber;
+
+    JsonArray(Integer lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    Integer getLineNumber() {
+        return lineNumber;
+    }
+
     @Override
     public int indexOf(Object o) {
         Object a = o;
