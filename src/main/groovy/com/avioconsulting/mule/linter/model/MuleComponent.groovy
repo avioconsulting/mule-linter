@@ -31,7 +31,8 @@ class MuleComponent {
     }
 
     Integer getLineNumber() {
-        return Integer.parseInt(attributes.get('{http://www.avioconsulting.com/mule/linter}_startLineNo'))
+        String lineNoString = '{' + MuleXmlParser.START_LINE_NO_NAMESPACE + '}' + MuleXmlParser.START_LINE_NO_ATTRIBUTE
+        return Integer.parseInt(attributes.get(lineNoString))
     }
 
     List<MuleComponent> getChildren() {

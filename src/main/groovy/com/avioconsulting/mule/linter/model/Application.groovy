@@ -5,7 +5,6 @@ class Application {
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
-    static final String CONFIG_FILE_PATH = 'src/main/mule/'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -13,6 +12,7 @@ class Application {
     PomFile pomFile
     String name
     GitIgnoreFile gitignoreFile
+    MuleArtifact muleArtifact
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
@@ -24,6 +24,8 @@ class Application {
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
+        loadConfigurationFiles()
+        loadMuleArtifact()
     }
 
     void loadPropertyFiles() {
@@ -39,20 +41,23 @@ class Application {
 
     void loadConfigurationFiles() {
         File configurationPath = new File(applicationPath, 'src/main/mule')
-        if (!configurationPath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + configurationPath.absolutePath)
-        }
-
-        configurationPath.eachFileMatch(~/.*.xml/){ file ->
-            configurationFiles.add(new ConfigurationFile(file))
-        }
-
-        configurationPath.eachDirRecurse { dir ->
-            dir.eachFileMatch(~/.*.xml/) { file ->
+        if(configurationPath.exists()) {
+            configurationPath.eachFileMatch(~/.*.xml/) { file ->
                 configurationFiles.add(new ConfigurationFile(file))
+            }
+
+            configurationPath.eachDirRecurse { dir ->
+                dir.eachFileMatch(~/.*.xml/) { file ->
+                    configurationFiles.add(new ConfigurationFile(file))
+                }
             }
         }
     }
+
+    void loadMuleArtifact() {
+        muleArtifact = new MuleArtifact(applicationPath)
+    }
+
     File getApplicationPath() {
         return applicationPath
     }
@@ -76,16 +81,6 @@ class Application {
 
     List<PropertyFile> getPropertyFiles() {
         return propertyFiles
-    }
-
-    ConfigurationFile getConfigurationFile( String fileName ) {
-        ConfigurationFile configXML = new ConfigurationFile((new File(applicationPath, CONFIG_FILE_PATH + fileName)))
-
-        configurationFiles.each { configFile->
-            if ( configFile.name.equalsIgnoreCase(fileName))
-                configXML = configFile
-        }
-        return configXML
     }
 
     MuleArtifact getMuleArtifact() {
