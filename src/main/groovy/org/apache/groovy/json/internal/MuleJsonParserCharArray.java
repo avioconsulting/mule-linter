@@ -104,7 +104,8 @@ public class MuleJsonParserCharArray extends BaseJsonParser {
             __index++;
         }
 
-        JsonMap map = new JsonMap();
+        JsonMap map = new JsonMap(lineNumber);
+
 
         for (; __index < this.charArray.length; __index++) {
             skipWhiteSpace();
@@ -309,7 +310,7 @@ public class MuleJsonParserCharArray extends BaseJsonParser {
             /* the list might be empty  */
             if (__currentChar == ']') {
                 __index++;
-                return new ArrayList();
+                return new JsonArray();
             }
 
             list = new JsonArray();

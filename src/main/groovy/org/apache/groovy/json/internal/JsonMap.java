@@ -4,6 +4,12 @@ import java.util.HashMap;
 
 public class JsonMap extends HashMap {
 
+    protected int lineNumber;
+
+    public JsonMap(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
     @Override
     public Object get(Object o) {
         if(o instanceof JsonString) {
@@ -12,6 +18,10 @@ public class JsonMap extends HashMap {
         } else {
             return super.get(o);
         }
+    }
+
+    Integer getLineNumber() {
+        return lineNumber;
     }
 
     @Override
