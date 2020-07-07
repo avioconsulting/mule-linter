@@ -1,0 +1,6 @@
+{
+  "minMuleVersion": "4.2.2",
+  "secureProperties": [
+    "new.property"
+  ]
+}

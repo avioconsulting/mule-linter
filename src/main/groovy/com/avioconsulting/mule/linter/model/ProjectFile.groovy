@@ -26,4 +26,8 @@ class ProjectFile {
         this.name = name
     }
 
+    String getPath() {
+        return file.absolutePath
+    }
+
 }

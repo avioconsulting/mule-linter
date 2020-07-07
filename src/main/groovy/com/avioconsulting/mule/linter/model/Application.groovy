@@ -4,12 +4,15 @@ class Application {
 
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
+    static final String GITIGNORE_FILE = '.gitignore'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
     List<ConfigurationFile> configurationFiles = []
     PomFile pomFile
     String name
+    GitIgnoreFile gitignoreFile
+    MuleArtifact muleArtifact
 
     Application(File applicationPath) {
         this.applicationPath = applicationPath
@@ -17,20 +20,21 @@ class Application {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
-        this.name = pomFile.getArtifactId()
+        gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
+        this.name = pomFile.artifactId
 
         loadPropertyFiles()
         loadConfigurationFiles()
+        loadMuleArtifact()
     }
 
     void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, 'src/main/resources')
-        if (!resourcePath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + resourcePath.absolutePath)
-        }
-        resourcePath.eachDirRecurse { dir ->
-            dir.eachFileMatch(~/.*.properties/) { file ->
-                propertyFiles.add(new PropertyFile(file))
+        if (resourcePath.exists()) {
+            resourcePath.eachDirRecurse { dir ->
+                dir.eachFileMatch(~/.*.properties/) { file ->
+                    propertyFiles.add(new PropertyFile(file))
+                }
             }
         }
     }
@@ -51,12 +55,21 @@ class Application {
             }
         }
     }
+
+    void loadMuleArtifact() {
+        muleArtifact = new MuleArtifact(applicationPath)
+    }
+
     File getApplicationPath() {
         return applicationPath
     }
 
     PomFile getPomFile() {
         return pomFile
+    }
+
+    GitIgnoreFile getGitignoreFile() {
+        return gitignoreFile
     }
 
     Boolean hasFile(String filename) {
@@ -72,4 +85,7 @@ class Application {
         return propertyFiles
     }
 
+    MuleArtifact getMuleArtifact() {
+        return muleArtifact
+    }
 }

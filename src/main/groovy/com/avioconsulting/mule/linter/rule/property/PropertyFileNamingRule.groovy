@@ -42,12 +42,12 @@ class PropertyFileNamingRule extends Rule {
         this.pattern = pattern
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
 
         List propertyFilenames = app.propertyFiles*.getName()
-
         environments.each { env ->
             Map<String, String> binding = ['appname':app.name, 'env':env]
             String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
