@@ -17,6 +17,7 @@ class PomFile extends ProjectFile {
             pomXml = parser.parse(file)
         } else {
             exists = false
+            pomXml = null
         }
     }
 

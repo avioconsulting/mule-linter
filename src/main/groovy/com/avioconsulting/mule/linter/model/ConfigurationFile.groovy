@@ -23,6 +23,7 @@ class ConfigurationFile extends ProjectFile {
             configXml = parser.parse(file)
         } else {
             exists = false
+            configXml = null
         }
     }
 
@@ -37,7 +38,7 @@ class ConfigurationFile extends ProjectFile {
     List<MuleComponent> findGlobalConfigs() {
         List<MuleComponent> componentList = []
         List<Node> childNodes = configXml.childNodes() as List<Node>
-        List comps = []
+        List<Node> comps = []
         childNodes.each { node ->
             if (!checkElementExists(node, globalConfig)) {
                 comps.add(node)
@@ -45,7 +46,7 @@ class ConfigurationFile extends ProjectFile {
         }
 
         comps.each { comp ->
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes()))
         }
         return componentList
     }
@@ -58,7 +59,7 @@ class ConfigurationFile extends ProjectFile {
      */
     Boolean checkElementExists(Node node, Map<String, String> elements) {
         Map<String, String> found = elements.findAll {
-            it.key == node.name && it.value == node.namespaceURI()
+            it.key == node.name() && it.value == node.namespaceURI()
         }
         return (found.size() > 0)
     }
