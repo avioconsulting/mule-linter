@@ -2,16 +2,20 @@ package com.avioconsulting.mule.linter.model
 
 class MuleComponent {
 
-    private String name
-    private Map<String, String> attributes = [:]
+    private final String componentName
+    private final String componentNamespace
+    private final Map<String, String> attributes = [:]
     private final List<MuleComponent> children
 
-    MuleComponent(Map<String, String> attributes) {
-        this(attributes, null)
+    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
+        this.componentName = componentName
+        this.componentNamespace = componentNamespace
+        this.attributes = attributes
     }
 
-    MuleComponent(Map<String, String> attributes, List<MuleComponent> children) {
-        this.attributes = attributes
+    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes,
+                  List<MuleComponent> children) {
+        this(componentName,componentNamespace,attributes)
         this.children = children
     }
 
@@ -19,15 +23,8 @@ class MuleComponent {
         return attributes.get(name)?.length() > 0
     }
 
-    String getName() {
-        if (name == null || name.length() < 1) {
-            name = attributes.get('name')
-        }
-        return name
-    }
-
-    void setName(String name) {
-        this.name = name
+    String getComponentName() {
+        return componentName
     }
 
     Integer getLineNumber() {
