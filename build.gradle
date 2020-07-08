@@ -27,3 +27,5 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+[codenarcMain, codenarcTest]*.ignoreFailures = true

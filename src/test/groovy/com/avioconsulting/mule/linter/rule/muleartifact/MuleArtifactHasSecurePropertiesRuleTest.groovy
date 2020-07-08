@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.linter.rule.muleArtifact
+package com.avioconsulting.mule.linter.rule.muleartifact
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule

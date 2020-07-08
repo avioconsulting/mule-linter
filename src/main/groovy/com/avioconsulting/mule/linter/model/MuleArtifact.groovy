@@ -10,7 +10,7 @@ class MuleArtifact extends ProjectFile {
 
     public static final String MULE_ARTIFACT_JSON = 'mule-artifact.json'
 
-    private JsonMap muleArtifact;
+    private JsonMap muleArtifact
     private final Boolean exists
 
     MuleArtifact(File f) {
