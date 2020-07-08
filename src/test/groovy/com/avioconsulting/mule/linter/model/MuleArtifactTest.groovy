@@ -61,6 +61,7 @@ class MuleArtifactTest extends Specification {
         muleArtifact.redeploymentEnabled == true
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     def "MuleArtifact dynamic attributes"() {
         given:
         String artifactString = '''{
