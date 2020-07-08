@@ -10,7 +10,7 @@ class LoggerComponent extends MuleComponent {
     private final String category
 
     LoggerComponent(Map<String, String> attributes) {
-        super(attributes)
+        super(COMPONENT_NAME, COMPONENT_NAMESPACE, attributes)
         this.docName = attributes.get('{http://www.mulesoft.org/schema/mule/documentation}name')
         this.message = attributes.get('message')
         this.level = attributes.get('level')
