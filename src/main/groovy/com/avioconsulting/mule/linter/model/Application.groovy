@@ -5,6 +5,8 @@ class Application {
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
+    static final String PROPERTY_PATH = 'src/main/resources'
+    static final String CONFIGURATION_PATH = 'src/main/mule'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -29,7 +31,7 @@ class Application {
     }
 
     void loadPropertyFiles() {
-        File resourcePath = new File(applicationPath, 'src/main/resources')
+        File resourcePath = new File(applicationPath, PROPERTY_PATH)
         if (resourcePath.exists()) {
             resourcePath.eachDirRecurse { dir ->
                 dir.eachFileMatch(~/.*.properties/) { file ->
@@ -40,7 +42,7 @@ class Application {
     }
 
     void loadConfigurationFiles() {
-        File configurationPath = new File(applicationPath, 'src/main/mule')
+        File configurationPath = new File(applicationPath, CONFIGURATION_PATH)
         if (configurationPath.exists()) {
             configurationPath.eachFileMatch(~/.*.xml/) { file ->
                 configurationFiles.add(new ConfigurationFile(file))

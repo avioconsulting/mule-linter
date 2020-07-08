@@ -12,7 +12,7 @@ class ConfigurationFile extends ProjectFile {
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private Map<String, String> DEFAULT_NON_GLOBAL = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
+    private Map<String, String> GlobalConfig = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
                                                      'flow'    : 'http://www.mulesoft.org/schema/mule/core']
 
     ConfigurationFile(File file) {
@@ -29,59 +29,39 @@ class ConfigurationFile extends ProjectFile {
     Boolean doesExists() {
         return exists
     }
-/**
- *This method gives all child component that satisfies the condition.
- * @param elements elements to compare to.
- * @param include check for equal to (true) or not equal to (false).
- * @return all the found child mule component.
- */
-    List<MuleComponent> findChildComponents(Map<String, String> elements, Boolean include) {
+
+    void addAdditionalGlobalConfig(Map<String, String> noneGlobalElements) {
+        GlobalConfig += noneGlobalElements
+    }
+
+    List<MuleComponent> findGlobalConfigs() {
         List<MuleComponent> componentList = []
         def childNodes = configXml.childNodes()
         def comps = []
         childNodes.each {
             node ->
-            if (include) {
-                if (checkElementExists( node, elements )) {
+            if (!checkElementExists( node, GlobalConfig )) {
                     comps.add(node)
-                }
-            } else {
-                if (!checkElementExists( node, elements )) {
-                    comps.add(node)
-                }
             }
         }
 
         comps.each { comp ->
-            Map<String, String> atts = [:]
-            comp.attributes.each {
-                atts.put(it.key, it.value)
-            }
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), atts))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes))
         }
         return componentList
     }
 
-    List<MuleComponent> findGlobalConfigs() {
-        return findChildComponents(DEFAULT_NON_GLOBAL, false)
-    }
-/**
- * It iterate through elements and check if one of the element belongs to node.
- * @param node ChildNode.
- * @param elements map of element name and namespace.
- * @return the boolean value of element found or not.
- */
+    /**
+     * It iterate through elements and check if one of the element belongs to node.
+     * @param node ChildNode.
+     * @param elements map of element name and namespace.
+     * @return the boolean value of element found or not.
+     */
     Boolean checkElementExists(Node node, Map<String, String> elements) {
-        Boolean exists
         Map<String, String> found = elements.findAll {
             it.key == node.name && it.value == node.namespaceURI()
         }
-        if (found.size() > 0) {
-            exists = true
-        } else {
-            exists = false
-        }
-        return exists
+        return (found.size() > 0)
     }
 
     List<MuleComponent> findComponents(String componentType, String namespace) {

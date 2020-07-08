@@ -75,6 +75,8 @@ class GlobalConfigRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        violations.size() == 0
+        violations.size() == 1
+        violations[0].lineNumber == 0
+        violations[0].message == GlobalConfigRule.FILE_MISSING_VIOLATION_MESSAGE
     }
 }

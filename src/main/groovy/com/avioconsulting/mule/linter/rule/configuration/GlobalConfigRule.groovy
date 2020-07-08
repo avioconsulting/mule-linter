@@ -11,8 +11,8 @@ class GlobalConfigRule extends Rule {
     static final String RULE_ID = 'GLOBAL_CONFIG'
     static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration.'
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
-    static Map<String, String> DEFAULT_NON_GLOBAL = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
-                                                      'flow'    : 'http://www.mulesoft.org/schema/mule/core']
+    static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist'
+
     static Map<String, String> noneGlobalElements = [:]
     static String DEFAULT_FILE_NAME = 'globals.xml'
     String globalFileName
@@ -26,7 +26,6 @@ class GlobalConfigRule extends Rule {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
         this.globalFileName = globalFileName
-        this.noneGlobalElements += DEFAULT_NON_GLOBAL
     }
 
     GlobalConfigRule() {
@@ -36,16 +35,27 @@ class GlobalConfigRule extends Rule {
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
-
+        Boolean globalFound = false
         app.configurationFiles.each {
             configFile ->
-            List<MuleComponent> globalConfigs = configFile.findChildComponents(noneGlobalElements,false)
+            if (noneGlobalElements.size() > 0) {
+                configFile.addAdditionalGlobalConfig(noneGlobalElements)
+            }
+            List<MuleComponent> globalConfigs = configFile.findGlobalConfigs()
             if (globalConfigs.size() > 0 && configFile.name != globalFileName) {
                 globalConfigs.each {
                     violations.add(new RuleViolation(this, configFile.path,
                             it.lineNumber, RULE_VIOLATION_MESSAGE + it.componentName))
                 }
             }
+            if (configFile.name == globalFileName) {
+                globalFound = true
+            }
+        }
+
+        if (!globalFound) {
+            violations.add(new RuleViolation(this, app.applicationPath.absolutePath + app.CONFIGURATION_PATH,
+                    0, FILE_MISSING_VIOLATION_MESSAGE ))
         }
 
         return violations
