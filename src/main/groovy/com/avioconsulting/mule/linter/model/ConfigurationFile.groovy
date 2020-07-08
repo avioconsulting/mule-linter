@@ -36,7 +36,7 @@ class ConfigurationFile extends ProjectFile {
 
     List<MuleComponent> findGlobalConfigs() {
         List<MuleComponent> componentList = []
-        Iterator<Node> childNodes = configXml.childNodes()
+        List<Node> childNodes = configXml.childNodes() as List<Node>
         List comps = []
         childNodes.each { node ->
             if (!checkElementExists(node, globalConfig)) {

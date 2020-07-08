@@ -60,7 +60,7 @@ class PropertyFilePropertyCountRule extends Rule {
         List<PropertyFile> validPropertyFiles = []
         propertyFiles.each {
             if (it.getName() in validPropertyFilenames) {
-                validPropertyFiles.add(it)
+                validPropertyFiles.add(it as PropertyFile)
             }
         }
         return validPropertyFiles
