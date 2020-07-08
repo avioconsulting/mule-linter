@@ -44,4 +44,5 @@ class GitIgnoreRule extends Rule {
 
         return violations
     }
+
 }

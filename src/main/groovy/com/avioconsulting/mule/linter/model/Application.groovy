@@ -88,4 +88,5 @@ class Application {
     MuleArtifact getMuleArtifact() {
         return muleArtifact
     }
+
 }

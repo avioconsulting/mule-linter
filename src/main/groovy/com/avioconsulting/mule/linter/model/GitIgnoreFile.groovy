@@ -33,4 +33,5 @@ class GitIgnoreFile extends ProjectFile {
     Boolean contains(String expression) {
         return expressions.contains(expression)
     }
+
 }

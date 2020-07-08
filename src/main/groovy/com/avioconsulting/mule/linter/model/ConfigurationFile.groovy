@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.linter.model
 
-
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.Node
 
@@ -9,11 +8,12 @@ import groovy.xml.slurpersupport.Node
  */
 class ConfigurationFile extends ProjectFile {
 
+    private static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private Map<String, String> GlobalConfig = ['sub-flow': 'http://www.mulesoft.org/schema/mule/core',
-                                                     'flow'    : 'http://www.mulesoft.org/schema/mule/core']
+    private Map<String, String> globalConfig = ['sub-flow':MULE_CORE_NAMESPACE,
+                                                'flow':MULE_CORE_NAMESPACE]
 
     ConfigurationFile(File file) {
         super(file)
@@ -31,17 +31,16 @@ class ConfigurationFile extends ProjectFile {
     }
 
     void addAdditionalGlobalConfig(Map<String, String> noneGlobalElements) {
-        GlobalConfig += noneGlobalElements
+        globalConfig += noneGlobalElements
     }
 
     List<MuleComponent> findGlobalConfigs() {
         List<MuleComponent> componentList = []
-        def childNodes = configXml.childNodes()
-        def comps = []
-        childNodes.each {
-            node ->
-            if (!checkElementExists( node, GlobalConfig )) {
-                    comps.add(node)
+        Iterator<Node> childNodes = configXml.childNodes()
+        List comps = []
+        childNodes.each { node ->
+            if (!checkElementExists(node, globalConfig)) {
+                comps.add(node)
             }
         }
 

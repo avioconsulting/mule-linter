@@ -5,7 +5,6 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
-
 class GlobalConfigRuleTest extends Specification {
 
     private static final String GLOBALCONFIG_APP = 'GlobalConfigMuleApp'
@@ -79,4 +78,5 @@ class GlobalConfigRuleTest extends Specification {
         violations[0].lineNumber == 0
         violations[0].message == GlobalConfigRule.FILE_MISSING_VIOLATION_MESSAGE
     }
+
 }

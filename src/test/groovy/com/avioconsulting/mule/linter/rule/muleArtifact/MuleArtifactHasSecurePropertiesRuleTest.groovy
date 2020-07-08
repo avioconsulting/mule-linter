@@ -69,4 +69,5 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
         violations[0].message.contains('client_id')
         violations[1].message.contains('client_secret')
     }
+
 }

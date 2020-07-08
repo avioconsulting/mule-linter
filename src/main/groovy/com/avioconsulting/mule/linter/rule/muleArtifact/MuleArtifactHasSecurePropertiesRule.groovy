@@ -11,7 +11,7 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final String RULE_NAME = 'mule-artifact.json should contain certain secured properties'
     static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_id', 'anypoint.platform.client_secret']
 
-    private List secureProperties
+    private final List secureProperties
 
     MuleArtifactHasSecurePropertiesRule() {
         this([], true)
@@ -29,10 +29,11 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
         JsonArray sprops = app.muleArtifact.secureProperties
         secureProperties.each { prop ->
             if (!sprops.contains(prop)) {
-                violations.add(new RuleViolation(this, app.muleArtifact.name, sprops.lineNumber, 'The secureProperties array does not contain the property ' + prop))
+                violations.add(new RuleViolation(this, app.muleArtifact.name, sprops.lineNumber,
+                        'The secureProperties array does not contain the property ' + prop))
             }
         }
         return violations
     }
-}
 
+}

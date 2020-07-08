@@ -106,4 +106,5 @@ class GitIgnoreRuleTest extends Specification {
         !app.gitignoreFile.contains('')
         !app.gitignoreFile.contains('# Ending Comment')
     }
+
 }

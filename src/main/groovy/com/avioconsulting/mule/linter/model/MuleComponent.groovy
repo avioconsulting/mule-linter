@@ -15,7 +15,7 @@ class MuleComponent {
 
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes,
                   List<MuleComponent> children) {
-        this(componentName,componentNamespace,attributes)
+        this(componentName, componentNamespace, attributes)
         this.children = children
     }
 

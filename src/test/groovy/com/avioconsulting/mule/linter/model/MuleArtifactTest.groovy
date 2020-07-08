@@ -19,7 +19,7 @@ class MuleArtifactTest extends Specification {
 
     def "MuleArtifact attributes"() {
         given:
-        def artifactString = '''{
+        String artifactString = '''{
   "configs": [
     "ch-usage-sync.xml"
   ],
@@ -43,7 +43,7 @@ class MuleArtifactTest extends Specification {
   ]
 }'''
         muleArtifactFile.withPrintWriter { pw ->
-                pw.print(artifactString)
+            pw.print(artifactString)
         }
 
         when:
@@ -63,7 +63,7 @@ class MuleArtifactTest extends Specification {
 
     def "MuleArtifact dynamic attributes"() {
         given:
-        def artifactString = '''{
+        String artifactString = '''{
   "configs": [
     "ch-usage-sync.xml"
   ],
@@ -93,7 +93,8 @@ class MuleArtifactTest extends Specification {
         muleArtifact.classLoaderModelLoaderDescriptor.id.lineNumber == 9
         muleArtifact.classLoaderModelLoaderDescriptor.attributes.getLineNumber() == 10
         muleArtifact.classLoaderModelLoaderDescriptor.attributes.exportedResources.size() == 0
-        muleArtifact.classLoaderModelLoaderDescriptor.attributes.exportedResources.class.name == 'org.apache.groovy.json.internal.JsonArray'
+        muleArtifact.classLoaderModelLoaderDescriptor.attributes.exportedResources.class.name ==
+                'org.apache.groovy.json.internal.JsonArray'
     }
 
 }

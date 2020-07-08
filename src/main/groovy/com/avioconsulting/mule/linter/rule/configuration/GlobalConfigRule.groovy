@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.ConfigurationFile
 import com.avioconsulting.mule.linter.model.MuleComponent
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
@@ -60,4 +59,5 @@ class GlobalConfigRule extends Rule {
 
         return violations
     }
+
 }

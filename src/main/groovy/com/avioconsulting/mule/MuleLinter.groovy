@@ -21,6 +21,7 @@ class MuleLinter {
         this.app = new Application(new File(applicationDirectory))
     }
 
+    @SuppressWarnings('UnnecessaryObjectReferences')
     void runLinter() {
         // Build a list of rules
         RuleSet rules = new RuleSet()
@@ -29,7 +30,7 @@ class MuleLinter {
         rules.addRule(new MunitVersionRule('2.2.1'))
         rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
         rules.addRule(new PropertyFileNamingRule(['dev', 'test']))
-        rules.addRule(new PropertyFilePropertyCountRule(['test', 'uat'], '${env}.properties'))
+        rules.addRule(new PropertyFilePropertyCountRule(['uat'], '${env}.properties'))
         rules.addRule(new LoggerCategoryExistsRule())
         rules.addRule(new LoggerMessageExistsRule())
 
