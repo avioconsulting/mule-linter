@@ -8,7 +8,7 @@ import groovy.xml.slurpersupport.Node
  */
 class ConfigurationFile extends ProjectFile {
 
-    private static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
+    static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
@@ -67,7 +67,7 @@ class ConfigurationFile extends ProjectFile {
     List<MuleComponent> findComponents(String componentType, String namespace) {
         List<MuleComponent> componentList = []
         searchComponentType(componentType, namespace).each { comp ->
-            componentList.add(new MuleComponent(comp[0].attributes))
+            componentList.add(new MuleComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes()))
             //TODO this doesn't account for child components...
         }
         return componentList
