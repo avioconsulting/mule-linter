@@ -10,7 +10,7 @@ class MuleArtifact extends ProjectFile {
 
     public static final String MULE_ARTIFACT_JSON = 'mule-artifact.json'
 
-    private JsonMap muleArtifact;
+    private JsonMap muleArtifact
     private final Boolean exists
 
     MuleArtifact(File f) {
@@ -21,11 +21,6 @@ class MuleArtifact extends ProjectFile {
         } else {
             this.exists = false
         }
-    }
-
-    private void parseMuleArtifact() {
-        JsonSlurper slurper = new JsonSlurper()
-        muleArtifact = slurper.parse(file)
     }
 
     JsonArray getSecureProperties() {
@@ -53,12 +48,17 @@ class MuleArtifact extends ProjectFile {
     }
 
     Object getProperty(String propertyName) {
-        def meta = this.metaClass.getMetaProperty(propertyName)
-        if(meta) {
+        MetaProperty meta = this.metaClass.getMetaProperty(propertyName)
+        if (meta) {
             meta.getProperty(this)
         } else {
             return muleArtifact[propertyName]
         }
+    }
+
+    private void parseMuleArtifact() {
+        JsonSlurper slurper = new JsonSlurper()
+        muleArtifact = slurper.parse(file) as JsonMap
     }
 
 }

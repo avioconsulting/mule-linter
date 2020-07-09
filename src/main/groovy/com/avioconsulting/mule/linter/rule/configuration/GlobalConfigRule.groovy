@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.ConfigurationFile
 import com.avioconsulting.mule.linter.model.MuleComponent
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
@@ -12,9 +11,8 @@ class GlobalConfigRule extends Rule {
     static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration.'
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist'
-
+    static final String DEFAULT_FILE_NAME = 'globals.xml'
     static Map<String, String> noneGlobalElements = [:]
-    static String DEFAULT_FILE_NAME = 'globals.xml'
     String globalFileName
 
     GlobalConfigRule(String globalFileName, Map<String, String> noneGlobalElements) {
@@ -60,4 +58,5 @@ class GlobalConfigRule extends Rule {
 
         return violations
     }
+
 }

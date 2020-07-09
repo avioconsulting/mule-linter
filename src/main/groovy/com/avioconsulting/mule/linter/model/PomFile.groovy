@@ -17,6 +17,7 @@ class PomFile extends ProjectFile {
             pomXml = parser.parse(file)
         } else {
             exists = false
+            pomXml = null
         }
     }
 
@@ -41,7 +42,7 @@ class PomFile extends ProjectFile {
     }
 
     PomProperty getPomProperty(String propertyName) throws IllegalArgumentException {
-        GPathResult p = pomProperties[propertyName]
+        GPathResult p = pomProperties[propertyName] as GPathResult
         if (p == null) {
             throw new IllegalArgumentException('Property doesn\'t exist')
         }
@@ -58,7 +59,7 @@ class PomFile extends ProjectFile {
     }
 
     private GPathResult getPomProperties() {
-        return pomXml[PROPERTIES]
+        return pomXml[PROPERTIES] as GPathResult
     }
 
 }

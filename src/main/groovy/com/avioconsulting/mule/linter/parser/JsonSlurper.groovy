@@ -79,6 +79,7 @@ import groovy.json.JsonParser;
  * @see groovy.json.JsonParserType
  * @since 1.8.0
  */
+@SuppressWarnings('All')
 public class JsonSlurper {
 
     private int maxSizeForInMemory = 2000000;

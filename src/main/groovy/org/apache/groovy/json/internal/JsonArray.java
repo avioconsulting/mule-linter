@@ -10,7 +10,7 @@ public class JsonArray<T> extends ArrayList {
         this.lineNumber = lineNumber;
     }
 
-    Integer getLineNumber() {
+    public Integer getLineNumber() {
         return lineNumber;
     }
 

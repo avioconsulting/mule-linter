@@ -43,8 +43,8 @@ class MuleXmlParserTest extends Specification {
         when:
         MuleXmlParser parser = new MuleXmlParser()
         GPathResult project = parser.parseText(pomXml)
-        GPathResult appRuntime = project.'properties'.'app.runtime'
-        GPathResult munitVersion = project.'properties'.'munit.version'
+        GPathResult appRuntime = project.'properties'.'app.runtime' as GPathResult
+        GPathResult munitVersion = project.'properties'.'munit.version' as GPathResult
         String artifactId = project.getProperty('artifactId')
 
         then:

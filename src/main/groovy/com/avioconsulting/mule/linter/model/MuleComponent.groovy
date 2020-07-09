@@ -4,18 +4,18 @@ class MuleComponent {
 
     private final String componentName
     private final String componentNamespace
-    private final Map<String, String> attributes = [:]
+    private final Map<String, String> attributes
     private final List<MuleComponent> children
 
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
-        this.componentName = componentName
-        this.componentNamespace = componentNamespace
-        this.attributes = attributes
+        this(componentName, componentNamespace, attributes, null)
     }
 
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes,
                   List<MuleComponent> children) {
-        this(componentName,componentNamespace,attributes)
+        this.componentName = componentName
+        this.componentNamespace = componentNamespace
+        this.attributes = attributes
         this.children = children
     }
 

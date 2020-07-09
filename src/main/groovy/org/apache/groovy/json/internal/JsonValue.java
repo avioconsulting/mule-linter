@@ -19,7 +19,7 @@ public class JsonValue {
         return value;
     }
 
-    Integer getLineNumber() {
+    public Integer getLineNumber() {
         return lineNumber;
     }
 

@@ -28,6 +28,7 @@ class PropertyFilePropertyCountRule extends Rule {
         this.pattern = pattern
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
@@ -54,11 +55,12 @@ class PropertyFilePropertyCountRule extends Rule {
         return validPropertyFilenames
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     List getValidPropertyFiles(List validPropertyFilenames, List propertyFiles) {
         List<PropertyFile> validPropertyFiles = []
         propertyFiles.each {
             if (it.getName() in validPropertyFilenames) {
-                validPropertyFiles.add(it)
+                validPropertyFiles.add(it as PropertyFile)
             }
         }
         return validPropertyFiles

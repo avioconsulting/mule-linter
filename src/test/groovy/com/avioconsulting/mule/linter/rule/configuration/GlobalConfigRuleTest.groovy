@@ -5,7 +5,6 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
-
 class GlobalConfigRuleTest extends Specification {
 
     private static final String GLOBALCONFIG_APP = 'GlobalConfigMuleApp'
@@ -38,12 +37,12 @@ class GlobalConfigRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].lineNumber == 10
-        violations[0].message.contains('listener-config')
-        violations[0].fileName.contains('simple-logging-flow.xml')
-        violations[1].lineNumber == 9
-        violations[1].message.contains('config')
-        violations[1].fileName.contains('simple-logging-flow-with-errors.xml')
+        violations[1].lineNumber == 10
+        violations[1].message.contains('listener-config')
+        violations[1].fileName.contains('simple-logging-flow.xml')
+        violations[0].lineNumber == 9
+        violations[0].message.contains('config')
+        violations[0].fileName.contains('simple-logging-flow-with-errors.xml')
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -79,4 +78,5 @@ class GlobalConfigRuleTest extends Specification {
         violations[0].lineNumber == 0
         violations[0].message == GlobalConfigRule.FILE_MISSING_VIOLATION_MESSAGE
     }
+
 }

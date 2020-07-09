@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class JsonSlurperTest extends Specification {
 
-    private static final String APP_NAME = "SampleMuleApp"
+    private static final String APP_NAME = 'SampleMuleApp'
 
     def "String values with line numbers"() {
         given:
@@ -15,23 +15,24 @@ class JsonSlurperTest extends Specification {
         File json = new File(new File(this.class.classLoader.getResource(APP_NAME).file), 'mule-artifact.json')
 
         when:
-        JsonMap muleArtifact = slurper.parse(json)
-        JsonString minMuleVersion = muleArtifact['minMuleVersion']
+        JsonMap muleArtifact = slurper.parse(json) as JsonMap
+        JsonString minMuleVersion = muleArtifact['minMuleVersion'] as JsonString
 
         then:
-        minMuleVersion == '4.2.2'
+        minMuleVersion.toString() == '4.2.2'
         minMuleVersion.lineNumber == 2
-        muleArtifact.getClass().getName() == 'org.apache.groovy.json.internal.JsonMap'
-        minMuleVersion.getClass().getName() == 'org.apache.groovy.json.internal.JsonString'
+        muleArtifact.getClass().name == 'org.apache.groovy.json.internal.JsonMap'
+        minMuleVersion.getClass().name == 'org.apache.groovy.json.internal.JsonString'
     }
 
+    @SuppressWarnings('GrEqualsBetweenInconvertibleTypes')
     def "Boolean values with line numbers"() {
         given:
         JsonSlurper slurper = new JsonSlurper()
         File json = new File(new File(this.class.classLoader.getResource(APP_NAME).file), 'mule-artifact.json')
 
         when:
-        JsonMap muleArtifact = slurper.parse(json)
+        JsonMap muleArtifact = slurper.parse(json) as JsonMap
         JsonBoolean itsTrue = muleArtifact.itsTrue
         JsonBoolean itsFalse = muleArtifact.itsFalse
 
@@ -48,7 +49,7 @@ class JsonSlurperTest extends Specification {
         File json = new File(new File(this.class.classLoader.getResource(APP_NAME).file), 'mule-artifact.json')
 
         when:
-        JsonMap muleArtifact = slurper.parse(json)
+        JsonMap muleArtifact = slurper.parse(json) as JsonMap
 
         then:
         muleArtifact.itsNull.value == null
@@ -61,7 +62,7 @@ class JsonSlurperTest extends Specification {
         File json = new File(new File(this.class.classLoader.getResource(APP_NAME).file), 'mule-artifact.json')
 
         when:
-        JsonMap muleArtifact = slurper.parse(json)
+        JsonMap muleArtifact = slurper.parse(json) as JsonMap
 
         then:
         muleArtifact.itsNumber == 100
@@ -76,8 +77,7 @@ class JsonSlurperTest extends Specification {
         File json = new File(new File(this.class.classLoader.getResource(APP_NAME).file), 'mule-artifact.json')
 
         when:
-        JsonMap muleArtifact = slurper.parse(json)
-        ArrayList t = new ArrayList();
+        JsonMap muleArtifact = slurper.parse(json) as JsonMap
 
         then:
         muleArtifact.secureProperties.size() == 7
@@ -92,4 +92,5 @@ class JsonSlurperTest extends Specification {
         muleArtifact.secureProperties.contains(true)
         muleArtifact.secureProperties.contains(false)
     }
+
 }

@@ -4,9 +4,6 @@ class RuleSet {
 
     List<Rule> rules = []
 
-    RuleSet() {
-    }
-
     void addRule(Rule rule) {
         rules.add(rule)
     }
