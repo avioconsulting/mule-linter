@@ -4,7 +4,7 @@ class MuleComponent {
 
     private final String componentName
     private final String componentNamespace
-    private final Map<String, String> attributes
+    private final Map<String, String> attributes = [:]
     private final List<MuleComponent> children
 
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
@@ -21,6 +21,10 @@ class MuleComponent {
 
     Boolean hasAttributeValue(String name) {
         return attributes.get(name)?.length() > 0
+    }
+
+    String getAttributeValue(String name) {
+        return attributes.get(name)
     }
 
     String getComponentName() {
