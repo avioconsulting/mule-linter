@@ -10,11 +10,6 @@ class FlowSubflowNamingRuleTest extends Specification {
 
     private static final String NAMING_APP = 'FlowSubflowNaming'
 
-    private static final String CAMEL_CASE_FILE = 'camelCase.xml'
-    private static final String PASCAL_CASE_FILE = 'PascalCase.xml'
-    private static final String SNAKE_CASE_FILE = 'snake_case.xml'
-    private static final String KEBAB_CASE_FILE = 'kebab-case.xml'
-
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'cameCase flow subflow naming convention check'() {
         given:
@@ -26,7 +21,8 @@ class FlowSubflowNamingRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        !violations.any { it.fileName.contains(CAMEL_CASE_FILE) }
+        !violations.any { it.message.contains('cameCaseFlowName') }
+        !violations.any { it.message.contains('cameCaseFlow2') }
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -40,7 +36,10 @@ class FlowSubflowNamingRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        !violations.any { it.fileName.contains(PASCAL_CASE_FILE) }
+        !violations.any { it.message.contains('PascalCaseFlowName') }
+        !violations.any { it.message.contains('PascalCaseFlowName2') }
+        !violations.any { it.message.contains('IEnumerable') }
+        !violations.any { it.message.contains('IOStream') }
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -54,7 +53,8 @@ class FlowSubflowNamingRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        !violations.any { it.fileName.contains(SNAKE_CASE_FILE) }
+        !violations.any { it.message.contains('snake_case') }
+        !violations.any { it.message.contains('snake_case_2') }
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -68,6 +68,7 @@ class FlowSubflowNamingRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        !violations.any { it.fileName.contains(KEBAB_CASE_FILE) }
+        !violations.any { it.message.contains('kebab-case') }
+        !violations.any { it.message.contains('kebab-case-2') }
     }
 }
