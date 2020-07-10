@@ -3,17 +3,25 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
 class MuleMavenPluginVersionRuleTest extends Specification {
 
-    private static final String APP_NAME = 'SampleMuleApp'
+    private final TestApplication testApp = new TestApplication()
+
+    def setup() {
+        testApp.addPom()
+    }
+
+    def cleanup() {
+        testApp.remove()
+    }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Mule Maven Plugin Version Check'() {
         given:
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        Application app = new Application(appDir)
+        Application app = new Application(testApp.appDir)
 
         when:
         Rule rule = new MuleMavenPluginVersionRule(version)

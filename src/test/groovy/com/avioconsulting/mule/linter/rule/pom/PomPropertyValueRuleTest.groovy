@@ -3,15 +3,24 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
 class PomPropertyValueRuleTest extends  Specification {
 
-    private static final String APP_NAME = 'SampleMuleApp'
+    private final TestApplication testApp = new TestApplication()
+
+    def setup() {
+        testApp.addPom()
+    }
+
+    def cleanup() {
+        testApp.remove()
+    }
 
     def 'Correct Property Value'() {
         given:
-        Application app = loadApp()
+        Application app = new Application(testApp.appDir)
 
         when:
         Rule rule = new PomPropertyValueRule('munit.version', '2.2.1')
@@ -23,7 +32,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
     def 'Incorrect Property Value'() {
         given:
-        Application app = loadApp()
+        Application app = new Application(testApp.appDir)
 
         when:
         Rule rule = new PomPropertyValueRule('munit.version', '3.2.1')
@@ -36,7 +45,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
     def 'Missing Property'() {
         given:
-        Application app = loadApp()
+        Application app = new Application(testApp.appDir)
 
         when:
         Rule rule = new PomPropertyValueRule('invalid.munit.version', '2.2.1')
@@ -45,11 +54,6 @@ class PomPropertyValueRuleTest extends  Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 12
-    }
-
-    private Application loadApp() {
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        new Application(appDir)
     }
 
 }
