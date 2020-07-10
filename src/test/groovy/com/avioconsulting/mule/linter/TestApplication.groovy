@@ -8,7 +8,9 @@ import com.avioconsulting.mule.linter.model.GitIgnoreFile
 class TestApplication {
 
     static final String SAMPLE_APP_NAME = 'SampleMuleApp'
-    static final String CONFIG_SIMPLE = 'src/main/mule/simple-flow.xml'
+    static final List<String> CONFIGS = ['src/main/mule/business-logic.xml',
+                                         'src/main/mule/global-config.xml',
+                                         'src/main/mule/sample-mule-app-api.xml']
     static final String PROPERTY_FILE_DIR = 'src/main/resources/properties/'
     static final List<String> DIRECTORY_STRUCTURE = ['src/main/mule', 'src/main/resources/properties']
 
@@ -21,6 +23,7 @@ class TestApplication {
     void create() {
         appDir = File.createTempDir()
         buildDirectoryStructure()
+        println 'Created temporary app: ' + appDir.path
     }
 
     void addPom() {
@@ -41,7 +44,9 @@ class TestApplication {
         if (!muleDir.exists()) {
             muleDir.mkdirs()
         }
-        copyFileFromBaseApp(CONFIG_SIMPLE)
+        CONFIGS.each { config ->
+            copyFileFromBaseApp(config)
+        }
     }
 
     void addPropertyFiles() {
@@ -79,6 +84,10 @@ class TestApplication {
         }
     }
 
+    void buildConfigContent(String filename, String content) {
+        addFile("src/main/mule/$filename", MULE_CONFIG_START + content + MULE_CONFIG_END)
+    }
+
     private void buildDirectoryStructure() {
         DIRECTORY_STRUCTURE.each { dir ->
             File directory = new File(appDir, dir)
@@ -114,4 +123,13 @@ class TestApplication {
 
 build/
 out/'''
+
+    private static final String MULE_CONFIG_START = '''<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+\txmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+\t\thttp://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+'''
+    private static final String MULE_CONFIG_END = '''
+</mule>'''
 }
