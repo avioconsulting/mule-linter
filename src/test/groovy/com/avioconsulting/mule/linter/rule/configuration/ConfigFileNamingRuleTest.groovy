@@ -31,12 +31,17 @@ class ConfigFileNamingRuleTest extends Specification {
         given:
         Rule rule = new ConfigFileNamingRule()
 
-        when:
+        expect:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
+        violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
-        then:
-        !violations.any { it.fileName.contains('kebab-case.xml')}
+        where:
+        FILE_NAME        | RESULT
+        'camelCase.xml'  | true
+        'PascalCase.xml' | true
+        'snake_case.xml' | true
+        'kebab-case.xml' | false
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -44,12 +49,17 @@ class ConfigFileNamingRuleTest extends Specification {
         given:
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.CAMEL_CASE)
 
-        when:
+        expect:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
+        violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
-        then:
-        !violations.any { it.fileName.contains('camelCase.xml')}
+        where:
+        FILE_NAME        | RESULT
+        'camelCase.xml'  | false
+        'PascalCase.xml' | true
+        'snake_case.xml' | true
+        'kebab-case.xml' | true
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -57,12 +67,17 @@ class ConfigFileNamingRuleTest extends Specification {
         given:
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.PASCAL_CASE)
 
-        when:
+        expect:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
+        violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
-        then:
-        !violations.any { it.fileName.contains('PascalCase.xml')}
+        where:
+        FILE_NAME        | RESULT
+        'camelCase.xml'  | true
+        'PascalCase.xml' | false
+        'snake_case.xml' | true
+        'kebab-case.xml' | true
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -70,12 +85,17 @@ class ConfigFileNamingRuleTest extends Specification {
         given:
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.SNAKE_CASE)
 
-        when:
+        expect:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
+        violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
-        then:
-        !violations.any { it.fileName.contains('snake_case.xml')}
+        where:
+        FILE_NAME        | RESULT
+        'camelCase.xml'  | true
+        'PascalCase.xml' | true
+        'snake_case.xml' | false
+        'kebab-case.xml' | true
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -83,11 +103,16 @@ class ConfigFileNamingRuleTest extends Specification {
         given:
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE)
 
-        when:
+        expect:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
+        violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
-        then:
-        !violations.any { it.fileName.contains('kebab-case.xml')}
+        where:
+        FILE_NAME        | RESULT
+        'camelCase.xml'  | true
+        'PascalCase.xml' | true
+        'snake_case.xml' | true
+        'kebab-case.xml' | false
     }
 }
