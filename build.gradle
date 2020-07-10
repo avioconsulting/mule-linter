@@ -28,4 +28,9 @@ test {
     useJUnitPlatform()
 }
 
-[codenarcMain, codenarcTest]*.ignoreFailures = true
+// https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html
+codenarc {
+    configFile = file("${project.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
+    ignoreFailures = true
+}
+

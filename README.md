@@ -3,6 +3,15 @@ A linter is a tool that analyzes source code looking for patterns that don’t f
 
 The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.  Some basic examples of rules that will be enforced, are the proper usage of property and pom files, useful logging messages, and standard project structure.
 
+## Code Checkout
+When cloning add the 'recurse-submodules' flag
+
+```git clone --recurse-submodules```
+
+After cloning, update the submodules
+
+```git submodule update --remote```
+
 ## Mule Application Design
 ![Mermaid Design](config/mermaid/mule-application-diagram.png)
 
