@@ -3,27 +3,45 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class PomExistsRuleTest extends Specification {
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
+    private final TestApplication testApp = new TestApplication()
+    private Application app
+
+    def setup() {
+        testApp.create()
+    }
+
+    def cleanup() {
+        testApp.remove()
+    }
+
     def 'Maven Pom Exists check'() {
+        given:
+        testApp.addPom()
+        Rule rule = new PomExistsRule()
+
+        when:
+        app = new Application(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }
+
+    def 'Maven Pom Does not exist check'() {
         given:
         Rule rule = new PomExistsRule()
 
         when:
-        File appDir = new File(this.class.classLoader.getResource(application).file)
-        Application app = new Application(appDir)
+        app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        violations.size() == size
-
-        where:
-        application            | size
-        'SampleMuleApp'        | 0
-        'BadMuleApp'           | 1
+        violations.size() == 1
     }
-
 }

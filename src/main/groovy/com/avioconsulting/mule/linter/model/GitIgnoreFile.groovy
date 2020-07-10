@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.model
 
 class GitIgnoreFile extends ProjectFile {
 
+    public static final String GITIGNORE = '.gitignore'
     private final Boolean exists
     private final List<String> expressions = []
 
