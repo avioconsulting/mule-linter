@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter.rule.property
 
+import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
@@ -10,15 +11,26 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
     private static final List<String> ENVS = ['dev', 'test', 'uat', 'prod']
     private static final String NAMING_PATTERN = '${env}.properties'
-    private static final String APP_NAME = 'SampleMuleApp'
+    private final TestApplication testApp = new TestApplication()
+
+    def setup() {
+        testApp.addPom()
+        testApp.addPropertyFiles(['dev.properties',
+                                  'test.properties',
+                                  'uat.properties',
+                                  'prod.properties'])
+    }
+
+    def cleanup() {
+        testApp.remove()
+    }
 
     def 'Property File Count mismatch with pattern'() {
         given:
         Rule rule = new PropertyFilePropertyCountRule(ENVS, NAMING_PATTERN)
 
         when:
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        Application app = new Application(appDir)
+        Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -31,8 +43,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
         Rule rule = new PropertyFilePropertyCountRule(['test', 'uat', 'other'], NAMING_PATTERN)
 
         when:
-        File appDir = new File(this.class.classLoader.getResource(APP_NAME).file)
-        Application app = new Application(appDir)
+        Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
