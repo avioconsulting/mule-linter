@@ -1,0 +1,3 @@
+[submodule "config/code-quality-config"]
+	path = config/code-quality-config
+	url = https://github.com/avioconsulting/code-quality-config
