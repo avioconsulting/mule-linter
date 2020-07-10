@@ -10,7 +10,7 @@ import com.avioconsulting.mule.linter.model.RuleViolation
 class FlowSubflowNamingRule extends Rule {
 
     static final String RULE_ID = 'FLOW_SUBFLOW_NAMING'
-    static final String RULE_NAME = 'Flow and subflow name is following naming conventions'
+    static final String RULE_NAME = 'Flow and subflow name is following naming conventions.'
     static final String RULE_VIOLATION_MESSAGE = 'Flow or subflow is not following naming conventions: '
     static final Map<String, String> flowSubFlowComponent = ['sub-flow':ConfigurationFile.MULE_CORE_NAMESPACE,
                                                             'flow':ConfigurationFile.MULE_CORE_NAMESPACE]

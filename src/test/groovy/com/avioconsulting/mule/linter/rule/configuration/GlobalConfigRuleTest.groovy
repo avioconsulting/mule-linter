@@ -47,12 +47,12 @@ class GlobalConfigRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].lineNumber == 10
-        violations[0].message.contains('listener-config')
-        violations[0].fileName.contains('bad-global-with-listener.xml')
-        violations[1].lineNumber == 9
-        violations[1].message.contains('config')
-        violations[1].fileName.contains('bad-global-with-router.xml')
+        violations[0].lineNumber == 9
+        violations[0].message.contains('config')
+        violations[0].fileName.contains('bad-global-with-router.xml')
+        violations[1].lineNumber == 10
+        violations[1].message.contains('listener-config')
+        violations[1].fileName.contains('bad-global-with-listener.xml')
     }
 
     def 'Additional global configuration element check'() {
