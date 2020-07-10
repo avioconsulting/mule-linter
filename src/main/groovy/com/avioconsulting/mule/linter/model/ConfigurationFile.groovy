@@ -12,8 +12,8 @@ class ConfigurationFile extends ProjectFile {
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private Map<String, String> globalConfig = ['sub-flow':MULE_CORE_NAMESPACE,
-                                                'flow':MULE_CORE_NAMESPACE]
+    private Map<String, String> nonGlobalConfig = ['sub-flow':MULE_CORE_NAMESPACE,
+                                                   'flow'    :MULE_CORE_NAMESPACE]
 
     ConfigurationFile(File file) {
         super(file)
@@ -31,8 +31,8 @@ class ConfigurationFile extends ProjectFile {
         return exists
     }
 
-    void addAdditionalGlobalConfig(Map<String, String> noneGlobalElements) {
-        globalConfig += noneGlobalElements
+    void addAdditionalGlobalConfig(Map<String, String> nonGlobalConfig) {
+        this.nonGlobalConfig += nonGlobalConfig
     }
 
     List<MuleComponent> findGlobalConfigs() {
@@ -40,7 +40,23 @@ class ConfigurationFile extends ProjectFile {
         List<Node> childNodes = configXml.childNodes() as List<Node>
         List<Node> comps = []
         childNodes.each { node ->
-            if (!checkElementExists(node, globalConfig)) {
+            if (!checkElementExists(node, nonGlobalConfig)) {
+                comps.add(node)
+            }
+        }
+
+        comps.each { comp ->
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes()))
+        }
+        return componentList
+    }
+
+    List<MuleComponent> findNonGlobalConfigs() {
+        List<MuleComponent> componentList = []
+        List<Node> childNodes = configXml.childNodes() as List<Node>
+        List<Node> comps = []
+        childNodes.each { node ->
+            if (checkElementExists(node, nonGlobalConfig)) {
                 comps.add(node)
             }
         }

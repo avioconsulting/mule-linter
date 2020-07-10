@@ -89,6 +89,22 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
 		</on-error-propagate>
 	</error-handler>
-
+	<sub-flow name="a-sub-flow">
+		<logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
+		<ee:transform doc:name="Simple Transform">
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG"
+				doc:name="Log End"
+				message="Ending"
+				category="com.avioconsulting.mulelinter" />
+	</sub-flow>
+	<flow name="a-flow"></flow>
 
 </mule>
