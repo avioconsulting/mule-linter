@@ -14,11 +14,13 @@ class PropertyFilePropertyCountRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
+        testApp.create()
         testApp.addPom()
         testApp.addPropertyFiles(['dev.properties',
                                   'test.properties',
                                   'uat.properties',
-                                  'prod.properties'])
+                                  'prod.properties',
+                                  'other.properties'])
     }
 
     def cleanup() {
@@ -34,6 +36,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
+        app.propertyFiles.size() == 5
         violations.size() == 4
         violations[0].message.contains('[dev.properties:4, prod.properties:7, test.properties:6, uat.properties:6]')
     }

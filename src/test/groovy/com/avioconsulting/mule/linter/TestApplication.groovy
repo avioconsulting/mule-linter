@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.linter
 
+import com.avioconsulting.mule.linter.model.MuleArtifact
+import com.avioconsulting.mule.linter.model.PomFile
+import com.avioconsulting.mule.linter.model.GitIgnoreFile
+
 @SuppressWarnings('StaticFieldsBeforeInstanceFields')
 class TestApplication {
 
     static final String SAMPLE_APP_NAME = 'SampleMuleApp'
-    static final String POM_FILE = 'pom.xml'
-    static final String GITIGNORE_FILE = '.gitignore'
     static final String CONFIG_SIMPLE = 'src/main/mule/simple-flow.xml'
     static final String PROPERTY_FILE_DIR = 'src/main/resources/properties/'
     static final List<String> DIRECTORY_STRUCTURE = ['src/main/mule', 'src/main/resources/properties']
@@ -14,24 +16,24 @@ class TestApplication {
     private final File sampleAppDir = new File(this.class.classLoader.getResource(SAMPLE_APP_NAME).file)
 
     TestApplication() {
-        appDir = File.createTempDir()
-        buildDirectoryStructure()
-        println('Temporary TestApp created at: ' + appDir.path)
     }
 
-    private void buildDirectoryStructure(){
-        DIRECTORY_STRUCTURE.each { dir ->
-            File directory = new File(appDir, dir)
-            directory.mkdirs()
-        }
+    void create() {
+        appDir = File.createTempDir()
+        buildDirectoryStructure()
     }
+
     void addPom() {
-        copyFileFromBaseApp(POM_FILE)
+        copyFileFromBaseApp(PomFile.POM_XML)
     }
 
     void addGitIgnore() {
-        File gitIgnore = new File(appDir, GITIGNORE_FILE)
+        File gitIgnore = new File(appDir, GitIgnoreFile.GITIGNORE)
         writeFile(gitIgnore, GITIGNORE_CONTENTS)
+    }
+
+    void addMuleArtifact() {
+        copyFileFromBaseApp(MuleArtifact.MULE_ARTIFACT_JSON)
     }
 
     void addConfig() {
@@ -68,6 +70,20 @@ class TestApplication {
 
     void remove() {
         appDir.deleteDir()
+    }
+
+    void removeFile(String fileName) {
+        File fileToRemove = new File(appDir, fileName)
+        if (fileToRemove.exists()) {
+            fileToRemove.delete()
+        }
+    }
+
+    private void buildDirectoryStructure() {
+        DIRECTORY_STRUCTURE.each { dir ->
+            File directory = new File(appDir, dir)
+            directory.mkdirs()
+        }
     }
 
     private void copyFileFromBaseApp(String fileName) {

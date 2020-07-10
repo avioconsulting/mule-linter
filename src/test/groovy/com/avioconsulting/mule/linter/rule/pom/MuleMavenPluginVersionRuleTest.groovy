@@ -6,11 +6,13 @@ import com.avioconsulting.mule.linter.model.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
 class MuleMavenPluginVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
+        testApp.create()
         testApp.addPom()
     }
 
@@ -18,7 +20,6 @@ class MuleMavenPluginVersionRuleTest extends Specification {
         testApp.remove()
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Mule Maven Plugin Version Check'() {
         given:
         Application app = new Application(testApp.appDir)

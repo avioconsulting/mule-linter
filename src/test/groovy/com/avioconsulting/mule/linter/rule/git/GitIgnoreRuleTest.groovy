@@ -5,6 +5,7 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class GitIgnoreRuleTest extends Specification {
 
     private final List<String> ignoredFiles = ['*.jar', '*.war', '*.ear', '*.class',
@@ -24,7 +25,6 @@ class GitIgnoreRuleTest extends Specification {
         appDir.deleteDir()
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct expressions in .gitignore'() {
         given:
         gitIgnore.withPrintWriter { pw ->
@@ -42,7 +42,6 @@ class GitIgnoreRuleTest extends Specification {
         violations.size() == 0
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing expressions in .gitignore'() {
         given:
         gitIgnore.withPrintWriter { pw ->
@@ -64,7 +63,6 @@ class GitIgnoreRuleTest extends Specification {
         violations[1].message.contains('idea')
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing .gitignore file'() {
         given:
         Application app = new Application(appDir)

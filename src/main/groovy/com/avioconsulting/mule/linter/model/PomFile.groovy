@@ -4,7 +4,8 @@ import groovy.xml.slurpersupport.GPathResult
 
 class PomFile extends ProjectFile {
 
-    public static final String PROPERTIES = 'properties'
+    public static final String POM_XML = 'pom.xml'
+    static final String PROPERTIES = 'properties'
     MuleXmlParser parser
     private final GPathResult pomXml
     private final Boolean exists

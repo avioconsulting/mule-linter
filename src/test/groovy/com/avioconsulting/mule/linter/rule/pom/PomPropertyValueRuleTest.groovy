@@ -6,12 +6,17 @@ import com.avioconsulting.mule.linter.model.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
 class PomPropertyValueRuleTest extends  Specification {
 
     private final TestApplication testApp = new TestApplication()
+    private Application app
 
     def setup() {
+        testApp.create()
         testApp.addPom()
+
+        app = new Application(testApp.appDir)
     }
 
     def cleanup() {
@@ -19,9 +24,6 @@ class PomPropertyValueRuleTest extends  Specification {
     }
 
     def 'Correct Property Value'() {
-        given:
-        Application app = new Application(testApp.appDir)
-
         when:
         Rule rule = new PomPropertyValueRule('munit.version', '2.2.1')
         List<RuleViolation> violations = rule.execute(app)
@@ -31,9 +33,6 @@ class PomPropertyValueRuleTest extends  Specification {
     }
 
     def 'Incorrect Property Value'() {
-        given:
-        Application app = new Application(testApp.appDir)
-
         when:
         Rule rule = new PomPropertyValueRule('munit.version', '3.2.1')
         List<RuleViolation> violations = rule.execute(app)
@@ -44,9 +43,6 @@ class PomPropertyValueRuleTest extends  Specification {
     }
 
     def 'Missing Property'() {
-        given:
-        Application app = new Application(testApp.appDir)
-
         when:
         Rule rule = new PomPropertyValueRule('invalid.munit.version', '2.2.1')
         List<RuleViolation> violations = rule.execute(app)

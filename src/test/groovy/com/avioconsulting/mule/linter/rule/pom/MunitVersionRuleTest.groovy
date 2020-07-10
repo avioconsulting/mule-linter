@@ -1,20 +1,25 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.PomFile
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class MunitVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
+
+    def setup() {
+        testApp.create()
+    }
 
     def cleanup() {
         testApp.remove()
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Correct MUnit Version'() {
         given:
         testApp.addPom()
@@ -28,7 +33,6 @@ class MunitVersionRuleTest extends Specification {
         violations.size() == 0
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Incorrect MUnit Version'() {
         given:
         testApp.addPom()
@@ -43,10 +47,9 @@ class MunitVersionRuleTest extends Specification {
         violations[0].lineNumber == 16
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing MUnit Property'() {
         given:
-        testApp.addFile(TestApplication.POM_FILE, invalidPom)
+        testApp.addFile(PomFile.POM_XML, INVALID_POM)
         Application app = new Application(testApp.appDir)
 
         when:
@@ -58,7 +61,7 @@ class MunitVersionRuleTest extends Specification {
         violations[0].lineNumber == 11
     }
 
-    def invalidPom = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+    private static final String INVALID_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">

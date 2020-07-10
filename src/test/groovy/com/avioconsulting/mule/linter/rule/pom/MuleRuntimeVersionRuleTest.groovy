@@ -6,11 +6,13 @@ import com.avioconsulting.mule.linter.model.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class MuleRuntimeVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
+        testApp.create()
         testApp.addPom()
     }
 
@@ -18,7 +20,6 @@ class MuleRuntimeVersionRuleTest extends Specification {
         testApp.remove()
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Mule Runtime Version Check'() {
         given:
         Application app = new Application(testApp.appDir)
