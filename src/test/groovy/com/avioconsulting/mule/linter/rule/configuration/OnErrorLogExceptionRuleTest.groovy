@@ -50,8 +50,7 @@ class OnErrorLogExceptionRuleTest extends Specification {
         violations.size() == 2
         violations[0].lineNumber == 23
         violations[0].fileName.contains('on-error-logging-exception.xml')
-        violations[0].message.contains(('Log exception enabled is required for ' +
-                'on-error-continue and on-error-propagate'))
+        violations[0].message.contains(OnErrorLogExceptionRule.RULE_VIOLATION_MESSAGE)
         violations[1].lineNumber == 69
     }
 
