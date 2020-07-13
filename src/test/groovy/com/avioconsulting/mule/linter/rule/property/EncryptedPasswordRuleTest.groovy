@@ -49,9 +49,10 @@ class EncryptedPasswordRuleTest extends Specification {
         app.propertyFiles.size() == 2
         violations.size() == 3
         violations[0].fileName.contains('sample-mule-app.test.properties')
-        violations[0].message.contains('password')
+        violations[0].message.endsWith('db.secret')
         violations[1].fileName.contains('sample-mule-app.dev.properties')
-        violations[1].message.contains('db.secret')
+        violations[1].message.endsWith('db.secret')
+        violations[2].message.endsWith('password')
     }
 
     private static final String GOOD_PROPERTY_1 = '''
