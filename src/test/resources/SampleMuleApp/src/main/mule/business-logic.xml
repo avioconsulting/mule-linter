@@ -6,19 +6,30 @@
 		http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="a-sub-flow">
 		<logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
-		<ee:transform doc:name="Simple Transform">
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<try doc:name="Try" doc:id="f25ff1ca-a2bc-4e75-82e4-f60098e46953" >
+			<ee:transform doc:name="Simple Transform">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
 {
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="DEBUG" 
-			doc:name="Log End" 
-			message="Ending" 
-			category="com.avioconsulting.mulelinter" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9ea642a7-c9f5-4c34-a147-2ed27034dffd" >
+					<logger level="ERROR" doc:name="Log Error" doc:id="8844c569-6f99-4e86-be18-e8c6d678dca6" message='"An Error Occured... Continuing"' category="com.avioconsulting.mulelinter"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<try doc:name="Try" doc:id="0263f77e-147f-407e-9bc6-7a263e54a3f7" >
+			<logger level="DEBUG" doc:name="Log End" message="Ending" category="com.avioconsulting.mulelinter" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="be8f2b02-566b-420b-a473-de408585a1a5" >
+					<logger level="ERROR" doc:name="Log Another Error" doc:id="9db68cf6-2cda-41b1-8a4a-d4c574ca41c4" message='"An Error Occured... Continuing"' category="com.avioconsulting.mulelinter" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
 	</sub-flow>
 	<sub-flow name="b-sub-flow">
 		<logger level="WARN" 

@@ -4,7 +4,7 @@ class MuleComponent {
 
     private final String componentName
     private final String componentNamespace
-    private final Map<String, String> attributes = [:]
+    final Map<String, String> attributes = [:]
     private final List<MuleComponent> children
 
     MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
