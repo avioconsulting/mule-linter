@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter
 
+import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.PomFile
 import com.avioconsulting.mule.linter.model.GitIgnoreFile
@@ -33,6 +34,11 @@ class TestApplication {
     void addGitIgnore() {
         File gitIgnore = new File(appDir, GitIgnoreFile.GITIGNORE)
         writeFile(gitIgnore, GITIGNORE_CONTENTS)
+    }
+
+    void addJenkinsfile() {
+        File jenkinsFile = new File(appDir, JenkinsFile.JENKINSFILE)
+        writeFile(jenkinsFile, '')
     }
 
     void addMuleArtifact() {

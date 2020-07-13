@@ -30,4 +30,8 @@ class ProjectFile {
         return file.absolutePath
     }
 
+    Boolean doesExist() {
+        return file.exists()
+    }
+
 }
