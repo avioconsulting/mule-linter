@@ -24,6 +24,10 @@ class PropertyFile {
         return file
     }
 
+    Properties getProperties() {
+        return properties
+    }
+
     Integer getPropertyCount() {
         return properties.size()
     }

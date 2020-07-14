@@ -90,8 +90,20 @@ class TestApplication {
         }
     }
 
+    void cleanDirectory(String directory) {
+        File directoryPath = new File(appDir, directory)
+        directoryPath.listFiles().each {
+            if (!it.isDirectory())
+                it.delete();
+        }
+    }
+
     void buildConfigContent(String filename, String content) {
         addFile("src/main/mule/$filename", MULE_CONFIG_START + content + MULE_CONFIG_END)
+    }
+
+    void buildPropertyContent(String filename, String content) {
+        addFile("src/main/resources/properties/$filename", content)
     }
 
     private void buildDirectoryStructure() {
