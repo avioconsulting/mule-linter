@@ -6,20 +6,20 @@ import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import spock.lang.Specification
 
+@SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class GlobalConfigNoFlowsRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
         testApp.addConfig()
 
         app = new Application(testApp.appDir)
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'No flow subflow in global configuration file'() {
         given:
         Rule rule = new GlobalConfigNoFlowsRule('global-config.xml')
@@ -33,7 +33,6 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
         violations.size() == 0
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'flow subflow in global configuration file'() {
         given:
         Rule rule = new GlobalConfigNoFlowsRule('global-config.xml')
@@ -49,7 +48,6 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
         violations[0].lineNumber == 14
     }
 
-    @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing global configuration file'() {
         given:
         Rule rule = new GlobalConfigNoFlowsRule()

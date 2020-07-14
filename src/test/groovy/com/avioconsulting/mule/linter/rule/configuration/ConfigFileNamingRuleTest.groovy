@@ -13,7 +13,7 @@ class ConfigFileNamingRuleTest extends Specification {
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
         testApp.addConfig()
         testApp.buildConfigContent('camelCase.xml', '')

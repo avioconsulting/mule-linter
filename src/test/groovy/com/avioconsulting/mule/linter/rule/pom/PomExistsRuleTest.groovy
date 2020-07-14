@@ -13,7 +13,7 @@ class PomExistsRuleTest extends Specification {
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
     }
 
     def cleanup() {

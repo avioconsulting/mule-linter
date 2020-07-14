@@ -1,5 +1,7 @@
-package com.avioconsulting.mule.linter.model
+package com.avioconsulting.mule.linter.model.pom
 
+import com.avioconsulting.mule.linter.model.ProjectFile
+import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 
 class PomFile extends ProjectFile {
@@ -42,13 +44,13 @@ class PomFile extends ProjectFile {
         return file.absolutePath
     }
 
-    PomProperty getPomProperty(String propertyName) throws IllegalArgumentException {
+    PomElement getPomProperty(String propertyName) throws IllegalArgumentException {
         GPathResult p = pomProperties[propertyName] as GPathResult
         if (p == null) {
             throw new IllegalArgumentException('Property doesn\'t exist')
         }
 
-        PomProperty prop = new PomProperty()
+        PomElement prop = new PomElement()
         prop.name = propertyName
         prop.value = p.text()
         prop.lineNo = parser.getNodeLineNumber(p)
@@ -57,6 +59,23 @@ class PomFile extends ProjectFile {
 
     Integer getPropertiesLineNo() {
         return parser.getNodeLineNumber(pomProperties)
+    }
+
+    PomPlugin getPlugin(String groupId, String artifactId) {
+        PomPlugin plugin
+        GPathResult pluginPath = pomXml.build.plugins.plugin.find {
+            it.groupId == groupId && it.artifactId == artifactId
+        } as GPathResult
+
+        if (pluginPath != null && pluginPath.size() > 0) {
+            plugin = new PomPlugin(pluginPath, this)
+        }
+        return plugin
+    }
+
+    MunitMavenPlugin getMunitPlugin() {
+        PomPlugin pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
+        return pp == null ? null : new MunitMavenPlugin(pp.pluginXml, this)
     }
 
     private GPathResult getPomProperties() {
