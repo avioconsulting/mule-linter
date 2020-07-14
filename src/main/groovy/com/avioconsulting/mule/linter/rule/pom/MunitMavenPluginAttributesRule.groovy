@@ -50,7 +50,7 @@ class MunitMavenPluginAttributesRule extends Rule {
         if (plugin != null) {
             coverageAttributeMap.each { key, val ->
                 PomElement pe = plugin.getConfigProperty(key)
-                if (pe == null || pe.value != val) {
+                if (pe?.value != val) {
                     violations.add(new RuleViolation(this, PomFile.POM_XML,
                             pe == null ? plugin.lineNo : pe.lineNo, RULE_MESSAGE + key + '|' + val))
                 }
@@ -69,30 +69,3 @@ class MunitMavenPluginAttributesRule extends Rule {
     }
 
 }
-
-//@Override
-//List<RuleViolation> execute(Application application) {
-//    List<RuleViolation> violations = []
-//    MunitMavenPlugin plugin = application.pomFile.munitPlugin
-//    if (plugin != null) {
-//        Map<String, String> coverageContains = plugin.configurationCoverageDetails
-//        coverageAttributeMap.each { key, val ->
-//            if (key == IGNORE_FILES) {
-//                println 'ignore... '
-//                // Check for ignore files
-//                ignoreFiles.each { fileName ->
-//                    if (!coverageContains.get(key).contains(fileName)) {
-//                        violations.add(new RuleViolation(this, PomFile.POM_XML,
-//                                plugin.configStartLineNo, RULE_MESSAGE + key + '|' + fileName))
-//                    }
-//                }
-//            } else if (coverageContains.get(key) != val) {
-//                violations.add(new RuleViolation(this, PomFile.POM_XML,
-//                        plugin.configStartLineNo, RULE_MESSAGE + key + '|' + val))
-//            }
-//        }
-//    } else {
-//        violations.add(new RuleViolation(this, PomFile.POM_XML, 0, 'Missing munit-maven-plugin'))
-//    }
-//    return violations
-//}

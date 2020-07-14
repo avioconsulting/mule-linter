@@ -82,10 +82,4 @@ class PomFile extends ProjectFile {
         return pomXml[PROPERTIES] as GPathResult
     }
 
-    @SuppressWarnings('DuplicateStringLiteral')
-    private String getPropertyValueFromVariable(String variable) {
-        String variableName = variable.startsWith('${') ? variable.takeAfter('${').takeBefore('}') : variable
-        return getPomProperty(variableName).value
-    }
-
 }
