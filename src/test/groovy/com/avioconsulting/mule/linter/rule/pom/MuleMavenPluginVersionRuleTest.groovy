@@ -12,7 +12,7 @@ class MuleMavenPluginVersionRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
     }
 

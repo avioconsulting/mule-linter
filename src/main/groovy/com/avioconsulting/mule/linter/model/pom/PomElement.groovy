@@ -1,6 +1,6 @@
-package com.avioconsulting.mule.linter.model
+package com.avioconsulting.mule.linter.model.pom
 
-class PomProperty {
+class PomElement {
 
     private String name
     private String value

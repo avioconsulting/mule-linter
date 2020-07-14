@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.PomFile
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.Rule
 import com.avioconsulting.mule.linter.model.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
@@ -13,7 +13,7 @@ class MunitVersionRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
     }
 
     def cleanup() {
@@ -62,8 +62,8 @@ class MunitVersionRuleTest extends Specification {
     }
 
     private static final String INVALID_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.avioconsulting.mulelinter</groupId>

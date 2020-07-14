@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.linter.model
 
+import com.avioconsulting.mule.linter.parser.MuleXmlParser
+
 class MuleComponent {
 
     private final String componentName

@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.linter.model
+package com.avioconsulting.mule.linter.parser
 
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
@@ -34,7 +34,8 @@ class MuleXmlParser extends XmlSlurper {
         super.startElement(uri, localName, qName, newAttrs)
     }
 
-    Integer getNodeLineNumber(GPathResult node) {
+    @SuppressWarnings('StaticMethodsBeforeInstanceMethods')
+    static Integer getNodeLineNumber(GPathResult node) {
         return Integer.valueOf(String.valueOf(node["@${START_LINE_NO_NAMESPACE_PREFIX}:${START_LINE_NO_ATTRIBUTE}"]))
     }
 
