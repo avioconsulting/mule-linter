@@ -12,7 +12,7 @@ class UnusedFlowRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
     }
 
@@ -48,10 +48,11 @@ class UnusedFlowRuleTest extends Specification {
         violations.size() == 3
         List<RuleViolation> rv = violations.findAll { it.fileName.contains('main.xml') }
         rv.size() == 2
-        rv[0].lineNumber == 22
-        rv[0].message.contains('main-subflow-one-not-used')
-        rv[1].lineNumber == 6
-        rv[1].message.contains('main-flow-one-not-used')
+        rv[0].lineNumber == 6
+        rv[0].message.contains('main-flow-one-not-used')
+        rv[1].lineNumber == 22
+        rv[1].message.contains('main-subflow-one-not-used')
+
 
         List<RuleViolation> rv2 = violations.findAll { it.fileName.contains('business-logic.xml') }
         rv2.size() == 1

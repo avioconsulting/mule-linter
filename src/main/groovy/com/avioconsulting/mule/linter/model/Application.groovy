@@ -61,6 +61,27 @@ class Application {
         }
     }
 
+    List<MuleComponent> findComponents(String componentType, String namespace) {
+        List<MuleComponent> comps = []
+        configurationFiles.each { configFile ->
+            List<MuleComponent> comp = configFile.findComponents(componentType, namespace)
+            comps += comp
+        }
+        return comps
+    }
+
+    List<MuleComponent> getFlows() {
+        return findComponents('flow', ConfigurationFile.MULE_CORE_NAMESPACE)
+    }
+
+    List<MuleComponent> getSubFlows() {
+        return findComponents('sub-flow', ConfigurationFile.MULE_CORE_NAMESPACE)
+    }
+
+    List<MuleComponent> getAllFlows() {
+        return (getFlows() + getSubFlows())
+    }
+
     void loadMuleArtifact() {
         muleArtifact = new MuleArtifact(applicationPath)
     }

@@ -8,17 +8,19 @@ class MuleComponent {
     private final String componentNamespace
     final Map<String, String> attributes = [:]
     private final List<MuleComponent> children
+    private final File file
 
-    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes) {
-        this(componentName, componentNamespace, attributes, null)
+    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes, File file) {
+        this(componentName, componentNamespace, attributes, file, null)
     }
 
-    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes,
+    MuleComponent(String componentName, String componentNamespace, Map<String, String> attributes, File file,
                   List<MuleComponent> children) {
         this.componentName = componentName
         this.componentNamespace = componentNamespace
         this.attributes = attributes
         this.children = children
+        this.file = file
     }
 
     Boolean hasAttributeValue(String name) {
@@ -44,6 +46,10 @@ class MuleComponent {
 
     String getId() {
         return attributes.get('id')
+    }
+
+    File getFile(){
+        return file
     }
 
 }

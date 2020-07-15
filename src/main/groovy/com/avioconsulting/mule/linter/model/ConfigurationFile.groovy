@@ -84,7 +84,7 @@ class ConfigurationFile extends ProjectFile {
     List<MuleComponent> findComponents(String componentType, String namespace) {
         List<MuleComponent> componentList = []
         searchComponentType(componentType, namespace).each { comp ->
-            componentList.add(new MuleComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes(),
+            componentList.add(new MuleComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes(), getFile(),
                                 getNestedComponent(comp)))
             //TODO this doesn't account for child components...
         }
@@ -94,7 +94,7 @@ class ConfigurationFile extends ProjectFile {
     List<MuleComponent> getNestedComponent(GPathResult comp) {
         List<MuleComponent> componentList= []
         comp.children().each {
-            componentList.add(new MuleComponent(it.name(), it.namespaceURI(), it.attributes()))
+            componentList.add(new MuleComponent(it.name(), it.namespaceURI(), it.attributes(), getFile()))
         }
         return componentList
     }
