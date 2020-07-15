@@ -63,27 +63,15 @@ class Application {
     }
 
     List<MuleComponent> findComponents(String componentType, String namespace) {
-        List<MuleComponent> comps = []
-        configurationFiles.each { configFile ->
-            comps += configFile.findComponents(componentType, namespace)
-        }
-        return comps
+        return configurationFiles.collect { it.findComponents(componentType, namespace) }.flatten()
     }
 
     List<FlowComponent> getFlows() {
-        List<FlowComponent> comps = []
-        configurationFiles.each { configFile ->
-            comps += configFile.flows
-        }
-        return comps
+        return configurationFiles.collect { it.flows }.flatten()
     }
 
     List<FlowComponent> getSubFlows() {
-        List<FlowComponent> comps = []
-        configurationFiles.each { configFile ->
-            comps += configFile.subFlows
-        }
-        return comps
+        return configurationFiles.collect { it.subFlows }.flatten()
     }
 
     List<FlowComponent> getAllFlows() {
@@ -91,11 +79,7 @@ class Application {
     }
 
     List<MuleComponent> getFlowrefs() {
-        List<MuleComponent> comps = []
-        configurationFiles.each { configFile ->
-            comps += configFile.flowrefs
-        }
-        return comps
+        return configurationFiles.collect { it.flowrefs }.flatten()
     }
 
     void loadMuleArtifact() {
