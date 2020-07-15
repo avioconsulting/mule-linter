@@ -90,7 +90,7 @@ class UnusedFlowRule extends Rule {
 
         //make a list of unused flowname/subflow
         //loop through config files again check for name attribute matches
-        //through violation
+        //throw violation
 
         return violations
     }
