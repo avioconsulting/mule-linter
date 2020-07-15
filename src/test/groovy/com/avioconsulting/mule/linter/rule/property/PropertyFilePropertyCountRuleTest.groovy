@@ -14,7 +14,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
         testApp.addPropertyFiles(['dev.properties',
                                   'test.properties',

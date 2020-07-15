@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.linter.model
 
+import com.avioconsulting.mule.linter.model.pom.PomFile
+
 class Application {
 
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '

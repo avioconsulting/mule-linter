@@ -14,7 +14,7 @@ class JenkinsFileExistsRuleTest extends Specification {
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addJenkinsfile()
     }
 

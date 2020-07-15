@@ -49,7 +49,7 @@
                     </sharedLibraries>
                 </configuration>
 			</plugin>
-		<plugin>
+			<plugin>
                 <groupId>com.mulesoft.munit.tools</groupId>
                 <artifactId>munit-maven-plugin</artifactId>
                 <version>${munit.version}</version>
@@ -66,12 +66,14 @@
                 <configuration>
 					<coverage>
 						<runCoverage>true</runCoverage>
-						<failBuild>false</failBuild>
-						<formats>
-							<format>console</format>
-							<format>html</format>
-							<format>json</format>
-						</formats>
+						<failBuild>true</failBuild>
+						<requiredApplicationCoverage>80</requiredApplicationCoverage>
+						<requiredResourceCoverage>80</requiredResourceCoverage>
+						<requiredFlowCoverage>80</requiredFlowCoverage>
+						<ignoreFiles>
+							<ignoreFile>global-config.xml</ignoreFile>
+							<ignoreFile>error-handler.xml</ignoreFile>
+						</ignoreFiles>
 					</coverage>
                 </configuration>
             </plugin>

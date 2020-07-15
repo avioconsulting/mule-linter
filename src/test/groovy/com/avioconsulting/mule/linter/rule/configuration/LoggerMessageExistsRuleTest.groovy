@@ -13,7 +13,7 @@ class LoggerMessageExistsRuleTest extends Specification {
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
         testApp.addConfig()
     }

@@ -13,7 +13,7 @@ class PomPropertyValueRuleTest extends  Specification {
     private Application app
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.addPom()
 
         app = new Application(testApp.appDir)

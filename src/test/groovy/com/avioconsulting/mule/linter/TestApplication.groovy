@@ -2,10 +2,10 @@ package com.avioconsulting.mule.linter
 
 import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.MuleArtifact
-import com.avioconsulting.mule.linter.model.PomFile
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.GitIgnoreFile
 
-@SuppressWarnings('StaticFieldsBeforeInstanceFields')
+@SuppressWarnings(['StaticFieldsBeforeInstanceFields', 'BuilderMethodWithSideEffects', 'FactoryMethodName'])
 class TestApplication {
 
     static final String SAMPLE_APP_NAME = 'SampleMuleApp'
@@ -21,7 +21,7 @@ class TestApplication {
     TestApplication() {
     }
 
-    void create() {
+    void initialize() {
         appDir = File.createTempDir()
         buildDirectoryStructure()
         println 'Created temporary app: ' + appDir.path
@@ -150,4 +150,5 @@ out/'''
 '''
     private static final String MULE_CONFIG_END = '''
 </mule>'''
+
 }
