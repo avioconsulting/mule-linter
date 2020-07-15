@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter.model
 
+import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
 
 class Application {
@@ -64,22 +65,37 @@ class Application {
     List<MuleComponent> findComponents(String componentType, String namespace) {
         List<MuleComponent> comps = []
         configurationFiles.each { configFile ->
-            List<MuleComponent> comp = configFile.findComponents(componentType, namespace)
-            comps += comp
+            comps += configFile.findComponents(componentType, namespace)
         }
         return comps
     }
 
-    List<MuleComponent> getFlows() {
-        return findComponents('flow', ConfigurationFile.MULE_CORE_NAMESPACE)
+    List<FlowComponent> getFlows() {
+        List<FlowComponent> comps = []
+        configurationFiles.each { configFile ->
+            comps += configFile.flows
+        }
+        return comps
     }
 
-    List<MuleComponent> getSubFlows() {
-        return findComponents('sub-flow', ConfigurationFile.MULE_CORE_NAMESPACE)
+    List<FlowComponent> getSubFlows() {
+        List<FlowComponent> comps = []
+        configurationFiles.each { configFile ->
+            comps += configFile.subFlows
+        }
+        return comps
     }
 
-    List<MuleComponent> getAllFlows() {
-        return (getFlows() + getSubFlows())
+    List<FlowComponent> getAllFlows() {
+        return flows + subFlows
+    }
+
+    List<MuleComponent> getFlowrefs() {
+        List<MuleComponent> comps = []
+        configurationFiles.each { configFile ->
+            comps += configFile.flowrefs
+        }
+        return comps
     }
 
     void loadMuleArtifact() {

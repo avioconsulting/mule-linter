@@ -52,4 +52,13 @@ class MuleComponent {
         return file
     }
 
+    Object getProperty(String propertyName) {
+        MetaProperty meta = this.metaClass.getMetaProperty(propertyName)
+        if (meta) {
+            meta.getProperty(this)
+        } else {
+            return attributes.get(propertyName)
+        }
+    }
+
 }

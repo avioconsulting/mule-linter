@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter.model
 
+import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.Node
@@ -10,11 +11,12 @@ import groovy.xml.slurpersupport.Node
 class ConfigurationFile extends ProjectFile {
 
     static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
+    static final String ELEMENT_FLOWREF = 'flow-ref'
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
     private Map<String, String> nonGlobalConfig = ['sub-flow':MULE_CORE_NAMESPACE,
-                                                   'flow'    :MULE_CORE_NAMESPACE]
+                                                   'flow':MULE_CORE_NAMESPACE]
 
     ConfigurationFile(File file) {
         super(file)
@@ -47,7 +49,7 @@ class ConfigurationFile extends ProjectFile {
         }
 
         comps.each { comp ->
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes()))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile()))
         }
         return componentList
     }
@@ -63,7 +65,7 @@ class ConfigurationFile extends ProjectFile {
         }
 
         comps.each { comp ->
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes()))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile()))
         }
         return componentList
     }
@@ -85,14 +87,14 @@ class ConfigurationFile extends ProjectFile {
         List<MuleComponent> componentList = []
         searchComponentType(componentType, namespace).each { comp ->
             componentList.add(new MuleComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes(), getFile(),
-                                getNestedComponent(comp)))
+                    getNestedComponent(comp)))
             //TODO this doesn't account for child components...
         }
         return componentList
     }
 
     List<MuleComponent> getNestedComponent(GPathResult comp) {
-        List<MuleComponent> componentList= []
+        List<MuleComponent> componentList = []
         comp.children().each {
             componentList.add(new MuleComponent(it.name(), it.namespaceURI(), it.attributes(), getFile()))
         }
@@ -102,9 +104,37 @@ class ConfigurationFile extends ProjectFile {
     List<LoggerComponent> findLoggerComponents() {
         List<LoggerComponent> loggerComponents = []
         searchComponentType(LoggerComponent.COMPONENT_NAME, LoggerComponent.COMPONENT_NAMESPACE).each {
-            loggerComponents.add(new LoggerComponent(it[0].attributes))
+            loggerComponents.add(new LoggerComponent(it[0].attributes, getFile()))
         }
         return loggerComponents
+    }
+
+    List<FlowComponent> getFlows() {
+        List<FlowComponent> comps = []
+        searchComponentType(FlowComponent.COMPONENT_NAME_FLOW, FlowComponent.COMPONENT_NAMESPACE).each {
+            comp ->
+                comps.add(new FlowComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes(), getFile(),
+                        getNestedComponent(comp)))
+        }
+        return comps
+    }
+
+    List<FlowComponent> getSubFlows() {
+        List<FlowComponent> comps = []
+        searchComponentType(FlowComponent.COMPONENT_NAME_SUBFLOW, FlowComponent.COMPONENT_NAMESPACE).each {
+            comp ->
+                comps.add(new FlowComponent(comp[0].name(), comp[0].namespaceURI(), comp[0].attributes(), getFile(),
+                        getNestedComponent(comp)))
+        }
+        return comps
+    }
+
+    List<MuleComponent> getFlowrefs() {
+        return findComponents(ELEMENT_FLOWREF, MULE_CORE_NAMESPACE)
+    }
+
+    List<FlowComponent> getAllFlows() {
+        return flows + subFlows
     }
 
     private List<GPathResult> searchComponentType(String componentType, String namespace) {
