@@ -10,27 +10,18 @@ class UnusedFlowRule extends Rule {
 
     static final String RULE_ID = 'UNUSED_FLOW'
     static final String RULE_NAME = 'All Flow and sub-flow are used in application.'
-    static final String RULE_VIOLATION_MESSAGE = 'Flow and sub-flow is not referenced by flow ref: '
-    static final Map<String, String> flowSubFlowComponent = ['sub-flow': ConfigurationFile.MULE_CORE_NAMESPACE,
+    static final String RULE_VIOLATION_MESSAGE = 'Flow or sub-flow is not referenced by flow ref: '
+    static final Map<String, String> flowSubFlowComponent = ['sub-flow':ConfigurationFile.MULE_CORE_NAMESPACE,
                                                              'flow':ConfigurationFile.MULE_CORE_NAMESPACE]
+    private static final String ATTRIBUTE_NAME = 'name'
     static final String APIKIT_FLOW_PREFIX_REGEX = '(get:|post:|put:|patch:|delete:|head:|options:|trace:).*'
+
     UnusedFlowRule() {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
     }
 
-    List<MuleComponent> getAllFlow(Application app) {
-        List<MuleComponent> allFlowsSubflows = []
-        app.configurationFiles.each { configFile ->
-            flowSubFlowComponent.each { element ->
-                List<MuleComponent> flowsSubflows = configFile.findComponents(element.key, element.value)
-                allFlowsSubflows += flowsSubflows
-            }
-        }
-        return allFlowsSubflows
-    }
-
-    List<MuleComponent> getAllFlowRef(Application app) {
+    static List<MuleComponent> getAllFlowRef(Application app) {
         List<MuleComponent> allFlowRefs = []
         app.configurationFiles.each { configFile ->
             List<MuleComponent> flowRefs = configFile.findComponents('flow-ref',
@@ -40,58 +31,51 @@ class UnusedFlowRule extends Rule {
         return allFlowRefs
     }
 
-    List<MuleComponent> notUsedByFlowRef(List<MuleComponent> allFlowsSubflows, List<MuleComponent> allFlowRefs) {
-        List<MuleComponent> notUsedByFlowRef = []
-        allFlowsSubflows.each { flow->
-            String flowSubflowName = flow.getAttributeValue('name')
-            List<MuleComponent> foundRef = allFlowRefs.findAll { it.getAttributeValue('name') == flowSubflowName }
-
-            if ( foundRef.size <= 0 ) {
-                notUsedByFlowRef += flow
+    static List<MuleComponent> filterApiKitWithoutSource(Application app) {
+        List<MuleComponent> allFilteredFlowsSubflows = []
+        List<MuleComponent> filteredFlowsSubflows = []
+        app.configurationFiles.each { configFile ->
+            flowSubFlowComponent.each { element ->
+                List<MuleComponent> flowsSubflows = configFile.findComponents(element.key, element.value)
+                allFilteredFlowsSubflows += flowsSubflows
             }
         }
-        return notUsedByFlowRef
-    }
-
-    List<MuleComponent> filterWithoutSource(List<MuleComponent> muleComponent) {
-        List<MuleComponent> withoutSourceComp = []
-        muleComponent.each { comp->
+        allFilteredFlowsSubflows.each { comp ->
             MuleComponent firstComp = comp.children[0]
-            if ( !firstComp.componentName.toLowerCase().contains('listener') ) {
-                withoutSourceComp += comp
+            if ( !comp.getAttributeValue(ATTRIBUTE_NAME).toLowerCase().matches(APIKIT_FLOW_PREFIX_REGEX) &&
+                    !firstComp.componentName.toLowerCase().contains('listener')) {
+                filteredFlowsSubflows += comp
             }
         }
-        return withoutSourceComp
-    }
-
-    List<MuleComponent> filterApiKitRouterFlow(List<MuleComponent> muleComponent) {
-        List<MuleComponent> withoutApiKitRouterFlow = []
-        muleComponent.each { comp->
-            if ( !comp.getAttributeValue('name').toLowerCase().matches(APIKIT_FLOW_PREFIX_REGEX)) {
-                withoutApiKitRouterFlow += comp
-            }
-        }
-        return withoutApiKitRouterFlow
+        return filteredFlowsSubflows
     }
 
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
 
-        List<MuleComponent> allFlowsSubflows = getAllFlow(app)
-
+        List<MuleComponent> withoutApiKitRouterFlows = filterApiKitWithoutSource(app)
         List<MuleComponent> allFlowRefs = getAllFlowRef(app)
 
-        List<MuleComponent> notUsedByFlowRef = notUsedByFlowRef(allFlowsSubflows, allFlowRefs)
+        List<MuleComponent> notReferencedFlow = withoutApiKitRouterFlows.findAll { flow ->
+            String flowSubflowName = flow.getAttributeValue(ATTRIBUTE_NAME)
+            !allFlowRefs.any { it.getAttributeValue(ATTRIBUTE_NAME) == flowSubflowName }
+        }
 
-        List<MuleComponent> withoutSourceComp = filterWithoutSource(notUsedByFlowRef)
+        List<String> unusedFlowName = notReferencedFlow*.getAttributeValue(ATTRIBUTE_NAME)
 
-        List<MuleComponent> withoutApiKitRouterFlow = filterApiKitRouterFlow(withoutSourceComp)
-
-        //make a list of unused flowname/subflow
-        //loop through config files again check for name attribute matches
-        //throw violation
-
+        app.configurationFiles.each { configFile ->
+            flowSubFlowComponent.each { element ->
+                List<MuleComponent> flowsSubflows = configFile.findComponents(element.key, element.value)
+                flowsSubflows.each { flowsSubflow ->
+                    String flowSubflowName = flowsSubflow.getAttributeValue(ATTRIBUTE_NAME)
+                    if ( unusedFlowName.contains(flowSubflowName) ) {
+                        violations.add(new RuleViolation(this, configFile.path,
+                                flowsSubflow.getLineNumber(), RULE_VIOLATION_MESSAGE + flowSubflowName))
+                    }
+                }
+            }
+        }
         return violations
     }
 }
