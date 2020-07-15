@@ -12,7 +12,7 @@ class EncryptedPasswordRuleTest extends Specification {
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
-        testApp.create()
+        testApp.initialize()
         testApp.cleanDirectory('src/main/resources/properties/')
     }
 
