@@ -2,8 +2,8 @@ package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.JenkinsFile
-import com.avioconsulting.mule.linter.model.Rule
-import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class JenkinsFileExistsRule extends Rule{
 

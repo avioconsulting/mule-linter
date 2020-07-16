@@ -1,6 +1,8 @@
 package com.avioconsulting.mule.linter.model
 
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
+import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
+import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.Node

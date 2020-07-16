@@ -1,7 +1,5 @@
 package com.avioconsulting.mule.linter.model.configuration
 
-import com.avioconsulting.mule.linter.model.MuleComponent
-
 class FlowComponent extends MuleComponent {
 
     final static String COMPONENT_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'

@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.linter.rule.git
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.Rule
-import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])

@@ -1,4 +1,6 @@
-package com.avioconsulting.mule.linter.model
+package com.avioconsulting.mule.linter.model.rule
+
+import com.avioconsulting.mule.linter.model.Application
 
 class RuleExecutor {
 

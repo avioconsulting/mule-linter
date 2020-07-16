@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.linter.model
+package com.avioconsulting.mule.linter.model.configuration
 
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 
