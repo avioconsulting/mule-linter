@@ -1,8 +1,8 @@
 package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.RuleExecutor
-import com.avioconsulting.mule.linter.model.RuleSet
+import com.avioconsulting.mule.linter.model.rule.RuleExecutor
+import com.avioconsulting.mule.linter.model.rule.RuleSet
 import com.avioconsulting.mule.linter.rule.configuration.LoggerCategoryExistsRule
 import com.avioconsulting.mule.linter.rule.configuration.LoggerMessageExistsRule
 import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule

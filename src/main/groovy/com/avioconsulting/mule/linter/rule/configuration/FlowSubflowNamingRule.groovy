@@ -3,9 +3,9 @@ package com.avioconsulting.mule.linter.rule.configuration
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.ConfigurationFile
-import com.avioconsulting.mule.linter.model.MuleComponent
-import com.avioconsulting.mule.linter.model.Rule
-import com.avioconsulting.mule.linter.model.RuleViolation
+import com.avioconsulting.mule.linter.model.configuration.MuleComponent
+import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class FlowSubflowNamingRule extends Rule {
 

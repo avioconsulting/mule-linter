@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.model
 
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
+import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
 
 class Application {
