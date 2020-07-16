@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter.model
 
+import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
 
 class Application {
@@ -59,6 +60,26 @@ class Application {
                 }
             }
         }
+    }
+
+    List<MuleComponent> findComponents(String componentType, String namespace) {
+        return configurationFiles.collect { it.findComponents(componentType, namespace) }.flatten()
+    }
+
+    List<FlowComponent> getFlows() {
+        return configurationFiles.collect { it.flows }.flatten()
+    }
+
+    List<FlowComponent> getSubFlows() {
+        return configurationFiles.collect { it.subFlows }.flatten()
+    }
+
+    List<FlowComponent> getAllFlows() {
+        return flows + subFlows
+    }
+
+    List<MuleComponent> getFlowrefs() {
+        return configurationFiles.collect { it.flowrefs }.flatten()
     }
 
     void loadMuleArtifact() {
