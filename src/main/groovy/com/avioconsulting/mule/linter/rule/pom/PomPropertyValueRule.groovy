@@ -9,7 +9,8 @@ class PomPropertyValueRule extends Rule {
 
     static final String RULE_ID = 'MAVEN_PROPERTY'
     static final String RULE_NAME = 'maven property match'
-    static final String RULE_VIOLATION_MESSAGE = ' maven property does not match or exists in <properties></properties>'
+    static final String RULE_VIOLATION_MESSAGE = ' maven property value does not match expected value. '
+    static final String ATTRIBUTE_MISSING_MESSAGE = ' maven property does not exist in <properties></properties>'
 
     private final String propertyName
     private final String propertyValue
@@ -36,11 +37,12 @@ class PomPropertyValueRule extends Rule {
             PomElement pomProperty = app.pomFile.getPomProperty(propertyName)
             if (!pomProperty.value.equalsIgnoreCase(propertyValue)) {
                 violations.add(new RuleViolation(this, app.pomFile.path,
-                        pomProperty.lineNo, pomProperty.name + RULE_VIOLATION_MESSAGE))
+                        pomProperty.lineNo, pomProperty.name + RULE_VIOLATION_MESSAGE + 'Expected: ' + propertyValue
+                        + ' found: ' + pomProperty.value))
             }
         } catch (IllegalArgumentException e) {
             violations.add(new RuleViolation(this, app.pomFile.path,
-                    app.pomFile.propertiesLineNo, propertyName + RULE_VIOLATION_MESSAGE))
+                    app.pomFile.propertiesLineNo, propertyName + ATTRIBUTE_MISSING_MESSAGE))
         }
 
         return violations

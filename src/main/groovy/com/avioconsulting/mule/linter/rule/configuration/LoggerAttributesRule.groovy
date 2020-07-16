@@ -40,7 +40,7 @@ class LoggerAttributesRule extends Rule {
             config.findLoggerComponents().each { log ->
                 requiredAttributes.each { att ->
                     if (!log.hasAttributeValue(att)) {
-                        violations.add(new RuleViolation(this, config.name, log.lineNumber,
+                        violations.add(new RuleViolation(this, config.path, log.lineNumber,
                                 RULE_VIOLATION_MESSAGE + att))
                     }
                 }
