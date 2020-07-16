@@ -81,6 +81,11 @@ class FlowSubflowNamingRuleTest extends Specification {
     }
 
     private static final String FLOWS = '''
+\t<flow name="get:\\user\\(id)\\roles:application\\json:my-api-config" doc:id="bcadf69e-4504-4654-9c7a-38971a01ed11" >
+\t\t<logger level="INFO" doc:name="Logger" doc:id="6a676a90-4f3a-48c5-90af-358e8c1c298a" />
+\t\t<flow-ref doc:name="Flow Reference" doc:id="4bc8fa65-90c4-454f-b5b7-c1c318f3a1cb" name="business-subflow-two"/>
+\t</flow>
+
 \t<sub-flow name="cameCaseFlowName">
 \t\t<logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
 \t</sub-flow>
