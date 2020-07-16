@@ -18,7 +18,7 @@ output application/java
 		</ee:transform>
 			<error-handler >
 				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9ea642a7-c9f5-4c34-a147-2ed27034dffd" >
-					<logger level="ERROR" doc:name="Log Error" doc:id="8844c569-6f99-4e86-be18-e8c6d678dca6" message='"An Error Occured... Continuing"' category="com.avioconsulting.mulelinter"/>
+					<logger level="ERROR" doc:name="Log Error" doc:id="8844c569-6f99-4e86-be18-e8c6d678dca6" message='"An Error Occured... Continuing"' category="com.avioconsulting.linter"/>
 				</on-error-continue>
 			</error-handler>
 		</try>
