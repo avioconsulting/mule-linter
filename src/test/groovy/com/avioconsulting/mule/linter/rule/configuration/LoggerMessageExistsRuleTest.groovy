@@ -47,7 +47,7 @@ class LoggerMessageExistsRuleTest extends Specification {
         then:
         app.configurationFiles.size() == 4
         violations.size() == 1
-        violations[0].fileName == 'logging-flow-with-errors.xml'
+        violations[0].fileName.endsWith('logging-flow-with-errors.xml')
         violations[0].lineNumber == 35
     }
 

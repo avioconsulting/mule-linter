@@ -34,7 +34,7 @@ class LoggerAttributesRuleTest extends Specification {
         then:
         app.configurationFiles.size() == 4
         violations.size() == 2
-        violations[0].fileName == 'logging-flow-with-errors.xml'
+        violations[0].fileName.endsWith('logging-flow-with-errors.xml')
         violations[0].lineNumber == 20
         violations[1].lineNumber == 35
     }
