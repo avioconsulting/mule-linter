@@ -3,11 +3,20 @@ A linter is a tool that analyzes source code looking for patterns that don’t f
 
 The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.  Some basic examples of rules that will be enforced, are the proper usage of property and pom files, useful logging messages, and standard project structure.
 
+## Execution
+
+```
+~/code/avio/mule-linter$ java -jar mule-linter-1.0-SNAPSHOT.jar --dir=SampleMuleApp --rules='AVIOCustomRuleConfiguration.groovy'
+```
+
 ## Rule Configuration
 
 Create a Groovy class that implements a method, and build and return a RuleSet.
 
-```static RuleSet getRules() { }```
+```
+static RuleSet getRules() { }
+```
+
 
 Make sure to have the proper imports.
 
