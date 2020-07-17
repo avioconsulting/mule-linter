@@ -90,11 +90,13 @@ class TestApplication {
         }
     }
 
+    @SuppressWarnings('UnnecessaryGetter')
     void cleanDirectory(String directory) {
         File directoryPath = new File(appDir, directory)
         directoryPath.listFiles().each {
-            if (!it.isDirectory())
-                it.delete();
+            if (!it.isDirectory()) {
+                it.delete()
+            }
         }
     }
 
