@@ -8,7 +8,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
-class MunitPomPluginRuleTest extends Specification {
+class MunitPluginVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
 
@@ -26,7 +26,7 @@ class MunitPomPluginRuleTest extends Specification {
         Application app = new Application(testApp.appDir)
 
         when:
-        Rule rule = new MunitPomPluginRule('2.2.1')
+        Rule rule = new MunitPluginVersionRule('2.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -39,12 +39,12 @@ class MunitPomPluginRuleTest extends Specification {
         Application app = new Application(testApp.appDir)
 
         when:
-        Rule rule = new MunitPomPluginRule('3.2.1')
+        Rule rule = new MunitPluginVersionRule('3.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].rule.ruleId == MunitPomPluginRule.RULE_ID
+        violations[0].rule.ruleId == MunitPluginVersionRule.RULE_ID
         violations[0].lineNumber == 16
     }
 
@@ -54,14 +54,14 @@ class MunitPomPluginRuleTest extends Specification {
         Application app = new Application(testApp.appDir)
 
         when:
-        Rule rule = new MunitPomPluginRule('3.2.1')
+        Rule rule = new MunitPluginVersionRule('3.2.1')
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].rule.ruleId == MunitPomPluginRule.RULE_ID
+        violations[0].rule.ruleId == MunitPluginVersionRule.RULE_ID
         violations[0].lineNumber == 0
-        violations[0].message.startsWith(PomPluginRule.MISSING_PLUGIN)
+        violations[0].message.startsWith(PomPluginAttributeRule.MISSING_PLUGIN)
     }
 
     private static final String INVALID_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>

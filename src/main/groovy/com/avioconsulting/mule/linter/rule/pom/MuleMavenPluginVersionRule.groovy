@@ -3,7 +3,7 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class MuleMavenPluginVersionRule extends PomPluginRule {
+class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
 
     static final String RULE_ID = 'MULE_MAVEN_PLUGIN'
     static final String RULE_NAME = 'mule maven plugin version'

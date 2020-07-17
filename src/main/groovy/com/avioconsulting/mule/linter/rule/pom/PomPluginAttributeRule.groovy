@@ -6,10 +6,10 @@ import com.avioconsulting.mule.linter.model.pom.PomPlugin
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class PomPluginRule extends Rule {
+class PomPluginAttributeRule extends Rule {
 
-    static final String RULE_ID = 'MAVEN_PLUGIN_VERSION'
-    static final String RULE_NAME = 'Maven plugin exists in pom.xml and matches the version.'
+    static final String RULE_ID = 'POM_PLUGIN_ATTRIBUTE'
+    static final String RULE_NAME = 'Maven plugin exists in pom.xml and matches the attributes.'
     static final String MISSING_PLUGIN = 'Plugin does not exits: '
     static final String RULE_VIOLATION_MESSAGE = 'Plugin exist but does not matches the attribute: '
 
@@ -17,7 +17,7 @@ class PomPluginRule extends Rule {
     private final String artifactId
     private final Map<String,String> attributes
 
-    PomPluginRule(String groupId, String artifactId, Map<String,String> attributes) {
+    PomPluginAttributeRule(String groupId, String artifactId, Map<String,String> attributes) {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
         this.groupId = groupId
@@ -25,7 +25,7 @@ class PomPluginRule extends Rule {
         this.attributes = attributes
     }
 
-    PomPluginRule(String ruleId, String ruleName, String groupId, String artifactId, Map<String,String> attributes) {
+    PomPluginAttributeRule(String ruleId, String ruleName, String groupId, String artifactId, Map<String,String> attributes) {
         this.ruleId = ruleId
         this.ruleName = ruleName
         this.groupId = groupId
