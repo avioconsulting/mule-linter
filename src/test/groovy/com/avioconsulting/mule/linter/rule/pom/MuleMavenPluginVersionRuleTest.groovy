@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.TestApplication
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
-class MulePomPluginRuleTest extends Specification {
+class MuleMavenPluginVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
 
@@ -25,7 +25,7 @@ class MulePomPluginRuleTest extends Specification {
         Application app = new Application(testApp.appDir)
 
         when:
-        Rule rule = new MulePomPluginRule(version)
+        Rule rule = new MuleMavenPluginVersionRule(version)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
