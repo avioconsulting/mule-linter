@@ -3,14 +3,15 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class MuleMavenPluginVersionRule extends PomPropertyValueRule {
+class MuleMavenPluginVersionRule extends MavenPluginVersionRule {
 
     static final String RULE_ID = 'MULE_MAVEN_PLUGIN'
-    static final String PROPERTY_NAME = 'mule.maven.plugin.version'
-    static final String RULE_NAME = 'mule.maven.plugin.version maven property match'
+    static final String RULE_NAME = 'mule maven plugin version'
+    static final String GROUP_ID = 'org.mule.tools.maven'
+    static final String ARTIFACT_ID = 'mule-maven-plugin'
 
     MuleMavenPluginVersionRule(String version) {
-        super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
+        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, version)
     }
 
     @Override

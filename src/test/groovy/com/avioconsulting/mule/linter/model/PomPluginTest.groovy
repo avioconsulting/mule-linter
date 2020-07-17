@@ -30,7 +30,7 @@ class PomPluginTest extends Specification {
         then:
         pp.artifactId == 'munit-maven-plugin'
         pp.groupId == 'com.mulesoft.munit.tools'
-        pp.version == '2.2.1'
+        pp.version.value == '2.2.1'
         pp.lineNo == 25
         pp.getConfigProperty('requiredResourceCoverage').value == '85'
         pp.getConfigProperty('failBuild').lineNo == 32

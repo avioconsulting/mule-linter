@@ -7,7 +7,7 @@ class PomPlugin {
 
     String groupId
     String artifactId
-    String version
+    PomElement version
     Integer lineNo
     PomFile pomFile
     GPathResult pluginXml
@@ -18,8 +18,27 @@ class PomPlugin {
         this.artifactId = pluginXml.artifactId as String
         this.lineNo = MuleXmlParser.getNodeLineNumber(pluginXml)
         this.pomFile = pomFile
-        this.version = isExpression(pluginXml.version as String) ?
-                resolveExpression(pluginXml.version as String) : pluginXml.version
+        this.version = getVersion()
+    }
+
+    PomElement getVersion() {
+        PomElement pElement = null
+        GPathResult version = pluginXml.depthFirst().find {
+            it.name() == 'version'
+        }
+
+        if (version != null ) {
+            if ( isExpression(version.text()) ) {
+                pElement = pomFile.getPomProperty(variableName(version.text()))
+            } else {
+                pElement = new PomElement()
+                pElement.name = version.name()
+                pElement.value = version.text()
+                pElement.lineNo = MuleXmlParser.getNodeLineNumber(version)
+            }
+        }
+
+        return pElement
     }
 
     PomElement getConfigProperty(String propertyName) {
@@ -41,14 +60,6 @@ class PomPlugin {
 
     private String variableName(String expression) {
         expression.takeAfter('${').takeBefore('}')
-    }
-
-    private String resolveExpression(String expression) {
-        try {
-            return pomFile.getPomProperty(variableName(expression)).value
-        } catch (IllegalArgumentException iae) {
-            return null
-        }
     }
 
 }
