@@ -16,4 +16,9 @@ class RuleSet {
         this.rules = rules
     }
 
+    @Override
+    String toString() {
+        rules.collect { it.ruleId }.flatten().toString()
+    }
+
 }
