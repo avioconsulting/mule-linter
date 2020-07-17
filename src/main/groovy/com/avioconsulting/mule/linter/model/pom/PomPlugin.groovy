@@ -18,23 +18,23 @@ class PomPlugin {
         this.artifactId = pluginXml.artifactId as String
         this.lineNo = MuleXmlParser.getNodeLineNumber(pluginXml)
         this.pomFile = pomFile
-        this.version = getVersion()
+        this.version = getAttribute('version')
     }
 
-    PomElement getVersion() {
+    PomElement getAttribute(String attributeName) {
         PomElement pElement = null
-        GPathResult version = pluginXml.depthFirst().find {
-            it.name() == 'version'
+        GPathResult element = pluginXml.depthFirst().find {
+            it.name() == attributeName
         }
 
-        if (version != null ) {
-            if ( isExpression(version.text()) ) {
-                pElement = pomFile.getPomProperty(variableName(version.text()))
+        if (element != null ) {
+            if ( isExpression(element.text()) ) {
+                pElement = pomFile.getPomProperty(variableName(element.text()))
             } else {
                 pElement = new PomElement()
-                pElement.name = version.name()
-                pElement.value = version.text()
-                pElement.lineNo = MuleXmlParser.getNodeLineNumber(version)
+                pElement.name = element.name()
+                pElement.value = element.text()
+                pElement.lineNo = MuleXmlParser.getNodeLineNumber(element)
             }
         }
 

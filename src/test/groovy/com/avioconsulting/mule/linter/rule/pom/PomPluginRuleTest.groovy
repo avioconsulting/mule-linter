@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class MavenPluginVersionRuleTest extends Specification {
+class PomPluginRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private Application app
@@ -23,7 +23,7 @@ class MavenPluginVersionRuleTest extends Specification {
     def 'Missing Maven Plugin'() {
         given:
         testApp.addFile(PomFile.POM_XML, MISSING_PLUGINS_POM)
-        Rule rule = new MavenPluginVersionRule('org.mule.tools.maven', 'mule-maven-plugin', '3.3.5')
+        Rule rule = new PomPluginRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
         app = new Application(testApp.appDir)
@@ -32,13 +32,13 @@ class MavenPluginVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].fileName.contains('pom.xml')
-        violations[0].message.startsWith(MavenPluginVersionRule.MISSING_PLUGIN)
+        violations[0].message.startsWith(PomPluginRule.MISSING_PLUGIN)
     }
 
     def 'Correct Maven Plugin version'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_POM)
-        Rule rule = new MavenPluginVersionRule('org.mule.tools.maven', 'mule-maven-plugin', '3.3.5')
+        Rule rule = new PomPluginRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
         app = new Application(testApp.appDir)
@@ -51,7 +51,7 @@ class MavenPluginVersionRuleTest extends Specification {
     def 'Incorrect Maven Plugin version'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_POM)
-        Rule rule = new MavenPluginVersionRule('org.mule.tools.maven', 'mule-maven-plugin', '3.3.6')
+        Rule rule = new PomPluginRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
 
         when:
         app = new Application(testApp.appDir)
@@ -61,13 +61,13 @@ class MavenPluginVersionRuleTest extends Specification {
         violations.size() == 1
         violations[0].fileName.contains('pom.xml')
         violations[0].lineNumber == 17
-        violations[0].message.startsWith(MavenPluginVersionRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(PomPluginRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'Correct Maven Plugin version check as property'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_WITHPROPERTY_POM)
-        Rule rule = new MavenPluginVersionRule('org.mule.tools.maven', 'mule-maven-plugin', '3.3.5')
+        Rule rule = new PomPluginRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
         app = new Application(testApp.appDir)
@@ -80,7 +80,7 @@ class MavenPluginVersionRuleTest extends Specification {
     def 'Incorrect Maven Plugin version check as property'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_WITHPROPERTY_POM)
-        Rule rule = new MavenPluginVersionRule('org.mule.tools.maven', 'mule-maven-plugin', '3.3.6')
+        Rule rule = new PomPluginRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
 
         when:
         app = new Application(testApp.appDir)
@@ -90,7 +90,7 @@ class MavenPluginVersionRuleTest extends Specification {
         violations.size() == 1
         violations[0].fileName.contains('pom.xml')
         violations[0].lineNumber == 13
-        violations[0].message.startsWith(MavenPluginVersionRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(PomPluginRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String MISSING_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
