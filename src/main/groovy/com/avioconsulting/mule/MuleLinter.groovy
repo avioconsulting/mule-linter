@@ -5,7 +5,6 @@ import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 import com.avioconsulting.mule.linter.rule.configuration.ConfigFileNamingRule
-import com.avioconsulting.mule.linter.rule.configuration.FlowSubflowNamingRule
 import com.avioconsulting.mule.linter.rule.configuration.LoggerCategoryExistsRule
 import com.avioconsulting.mule.linter.rule.configuration.LoggerMessageExistsRule
 import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
