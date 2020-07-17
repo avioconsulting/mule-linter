@@ -1,46 +1,32 @@
 package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
-import com.avioconsulting.mule.linter.rule.configuration.ConfigFileNamingRule
-import com.avioconsulting.mule.linter.rule.configuration.LoggerCategoryExistsRule
-import com.avioconsulting.mule.linter.rule.configuration.LoggerMessageExistsRule
-import com.avioconsulting.mule.linter.rule.pom.MuleMavenPluginVersionRule
-import com.avioconsulting.mule.linter.rule.pom.MunitVersionRule
-import com.avioconsulting.mule.linter.rule.pom.MuleRuntimeVersionRule
-import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
-import com.avioconsulting.mule.linter.rule.pom.PomPropertyValueRule
-import com.avioconsulting.mule.linter.rule.property.PropertyFileNamingRule
-import com.avioconsulting.mule.linter.rule.property.PropertyFilePropertyCountRule
 
-@SuppressWarnings(['GStringExpressionWithinString'])
+@SuppressWarnings(['All', 'GStringExpressionWithinString'])
 class MuleLinter {
 
     Application app
+    List<RuleSet> ruleSetList = []
 
-    MuleLinter(String applicationDirectory) {
+    MuleLinter(String applicationDirectory, String ruleConfigFile) {
         this.app = new Application(new File(applicationDirectory))
+        ruleSetList = parseConfigurationFile(ruleConfigFile)
+    }
+
+    List<RuleSet> parseConfigurationFile(String ruleConfigFile) {
+        GroovyClassLoader gcl = new GroovyClassLoader()
+        File config = new File(ruleConfigFile)
+        Class dynamicRules = gcl.parseClass(config)
+        RuleSet rules = dynamicRules.getRules()
+        return [rules]
     }
 
     @SuppressWarnings('UnnecessaryObjectReferences')
     void runLinter() {
-        // Build a list of rules
-        RuleSet rules = new RuleSet()
-        rules.addRule(new PomExistsRule())
-        rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
-        rules.addRule(new MunitVersionRule('2.2.1'))
-        rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
-        rules.addRule(new PomPropertyValueRule('someproperty', 'roar'))
-        rules.addRule(new PropertyFileNamingRule(['dev', 'test']))
-        rules.addRule(new LoggerCategoryExistsRule())
-        rules.addRule(new PropertyFilePropertyCountRule(['dev', 'uat', 'prod']))
-        rules.addRule(new LoggerMessageExistsRule())
-        rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-
         // Create the executor
-        RuleExecutor exe = new RuleExecutor(app, rules)
+        RuleExecutor exe = new RuleExecutor(app, ruleSetList)
 
         // Execute
         exe.executeRules()

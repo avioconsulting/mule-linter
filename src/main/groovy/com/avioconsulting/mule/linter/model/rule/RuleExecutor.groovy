@@ -4,23 +4,27 @@ import com.avioconsulting.mule.linter.model.Application
 
 class RuleExecutor {
 
-    RuleSet rules
+    List<RuleSet> rules
     Application application
     List<RuleViolation> results = []
+    private Integer ruleCount = 0
 
-    RuleExecutor(Application application, RuleSet rules) {
+    RuleExecutor(Application application, List<RuleSet> rules) {
         this.rules = rules
         this.application = application
     }
 
     void executeRules() {
-        rules.getRules().each { // assigns current rule to 'it'
-            results.addAll(it.execute(application))
+        rules.each { ruleSet ->
+            ruleSet.getRules().each { // assigns current rule to 'it'
+                results.addAll(it.execute(application))
+                ruleCount++
+            }
         }
     }
 
     void displayResults(OutputStream outputStream) {
-        outputStream.write("$rules.rules.size rules executed.\n".bytes)
+        outputStream.write("$ruleCount rules executed.\n".bytes)
         outputStream.write('Rule Results\n'.bytes)
 
         results.each { violation ->
