@@ -121,7 +121,7 @@ output application/java
 \t\t\t<logger level="DEBUG" doc:name="Log End" message="Ending"
 \t\t\t\t\tcategory="com.avioconsulting.mulelinter" />
 \t\t\t<error-handler >
-\t\t\t\t<on-error-propagate enableNotifications="true" logException="false"
+\t\t\t\t<on-error-propagate enableNotifications="true"
 \t\t\t\t\t\tdoc:name="Bad On Error Propagate" doc:id="dccce6bd-82dd-4223-a0cc-01bbe3f892cf" >
 \t\t\t\t\t<logger level="ERROR" doc:name="Log Another Error"
 \t\t\t\t\t\tmessage='An Error Occured... Propagating'
