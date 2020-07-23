@@ -10,6 +10,7 @@ import groovy.xml.slurpersupport.Node
 /**
  * This class represents a Mule Configuration XML file.
  */
+@SuppressWarnings('SpaceAroundMapEntryColon')
 class ConfigurationFile extends ProjectFile {
 
     static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
@@ -17,8 +18,9 @@ class ConfigurationFile extends ProjectFile {
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private Map<String, String> nonGlobalConfig = ['sub-flow':MULE_CORE_NAMESPACE,
-                                                   'flow':MULE_CORE_NAMESPACE]
+    private Map<String, String> nonGlobalConfig = ['sub-flow'     : MULE_CORE_NAMESPACE,
+                                                   'flow'         : MULE_CORE_NAMESPACE,
+                                                   'error-handler': MULE_CORE_NAMESPACE]
 
     ConfigurationFile(File file) {
         super(file)

@@ -66,6 +66,7 @@ class GlobalConfigRuleTest extends Specification {
         when:
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)
         testApp.addFile('src/main/mule/bad-global-with-router.xml', BAD_CONFIG_2)
+        testApp.addFile('src/main/mule/global-error-handler.xml', GLOBAL_ERROR_HANDLER_CONFIG)
         app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
@@ -74,6 +75,7 @@ class GlobalConfigRuleTest extends Specification {
         violations[0].lineNumber == 9
         violations[0].message.contains('config')
         violations[0].fileName.contains('bad-global-with-router.xml')
+        violations.findAll { it.fileName.endsWith('global-error-handler.xml') }.size() == 0
     }
 
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
@@ -126,4 +128,17 @@ class GlobalConfigRuleTest extends Specification {
 \t</sub-flow>
 </mule>
 '''
+
+    private static final String GLOBAL_ERROR_HANDLER_CONFIG = '''<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+\txsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+\t<error-handler name="global-error-handler" doc:id="82e9e554-63ed-4a45-bd9e-f3db5ffceca2" >
+\t\t<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="830f0e11-1353-4917-9f0f-a4c233e04700" >
+\t\t\t<logger level="ERROR" doc:name="Log Error" doc:id="66c71fbb-dbce-435c-8d22-f9fed6beae53" message="Error!" category="com.avioconsulting.mulelinter"/>
+\t\t</on-error-propagate>
+\t</error-handler>
+</mule>
+'''
+
 }
