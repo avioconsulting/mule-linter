@@ -12,7 +12,7 @@ class OnErrorLogExceptionRule extends Rule {
                                                     'on-error-continue and on-error-propagate'
     private static final List<String> ON_ERROR_COMPONENTS = ['on-error-continue', 'on-error-propagate']
     private static final String ATTRIBUTE_NAME = 'logException'
-    private static final String ATTRIBUTE_VALUE_CHECK = 'false'
+    private static final String ATTRIBUTE_VALUE_CHECK = 'true'
 
     OnErrorLogExceptionRule() {
         this.ruleId = RULE_ID
@@ -25,7 +25,7 @@ class OnErrorLogExceptionRule extends Rule {
         application.configurationFiles.each { file ->
             ON_ERROR_COMPONENTS.each {
                 file.findComponents(it, file.MULE_CORE_NAMESPACE).each { comp ->
-                    if (comp.getAttributeValue(ATTRIBUTE_NAME).equalsIgnoreCase(ATTRIBUTE_VALUE_CHECK)) {
+                    if (comp.getAttributeValue(ATTRIBUTE_NAME) != ATTRIBUTE_VALUE_CHECK) {
                         violations.add(new RuleViolation(this, file.name, comp.lineNumber, RULE_VIOLATION_MESSAGE))
                     }
                 }

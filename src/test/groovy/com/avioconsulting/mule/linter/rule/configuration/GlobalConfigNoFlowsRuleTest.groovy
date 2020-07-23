@@ -95,4 +95,5 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 \t</sub-flow>
 </mule>
 '''
+
 }

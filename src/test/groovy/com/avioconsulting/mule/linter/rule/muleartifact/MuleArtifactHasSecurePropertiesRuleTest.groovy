@@ -80,10 +80,30 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
         violations[1].message.contains('client_secret')
     }
 
+    def 'Missing Secure Properties'() {
+        given:
+        Rule rule = new MuleArtifactHasSecurePropertiesRule()
+
+        when:
+        testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_SECURE_PROPS)
+        app = new Application(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        app.muleArtifact != null
+        violations.size() == 2
+        violations[0].lineNumber == 0
+        violations[0].message.contains('client_id')
+        violations[1].message.contains('client_secret')
+    }
+
     private static final String MISSING_PROPS_MULE_ARTIFACT = '''{
   "minMuleVersion": "4.2.2",
   "secureProperties": [
     "new.property"
   ]
+}'''
+    private static final String MISSING_SECURE_PROPS = '''{
+  "minMuleVersion": "4.2.2"
 }'''
 }

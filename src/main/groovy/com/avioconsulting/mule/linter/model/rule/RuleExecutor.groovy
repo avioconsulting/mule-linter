@@ -28,7 +28,7 @@ class RuleExecutor {
         outputStream.write('Rule Results\n'.bytes)
 
         results.each { violation ->
-            outputStream.write("    $violation.rule.severity: $violation.fileName ".bytes)
+            outputStream.write("    [$violation.rule.severity] $violation.rule.ruleId - $violation.fileName ".bytes)
             outputStream.write((violation.lineNumber > 0 ? "( $violation.lineNumber ) " : '').bytes)
             outputStream.write("$violation.message \n".bytes)
         }
