@@ -28,8 +28,8 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
         List<RuleViolation> violations = []
         JsonArray sprops = app.muleArtifact.secureProperties
         secureProperties.each { prop ->
-            if (!sprops.contains(prop)) {
-                violations.add(new RuleViolation(this, app.muleArtifact.name, sprops.lineNumber,
+            if (!sprops?.contains(prop)) {
+                violations.add(new RuleViolation(this, app.muleArtifact.name, sprops == null ? 0 : sprops.lineNumber,
                         'The secureProperties array does not contain the property ' + prop))
             }
         }
