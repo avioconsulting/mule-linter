@@ -2,7 +2,6 @@ pipeline {
 	environment {
 	  MVN_SET = credentials('maven_secret_settings')
 	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
-// 	  IS_SNAPSHOT = readMavenPom(file: 'pom.xml').version.endsWith('SNAPSHOT')
       IS_SNAPSHOT = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim().endsWith('SNAPSHOT')
 	}
 	agent any
@@ -20,7 +19,9 @@ pipeline {
             stages {
                 stage('Compile') {
                     steps {
-                	    echo 'mvn package -skipTests=true'
+                        withGradle {
+                	        sh './gradlew build -x test'
+                	    }
                 	}
                 }
                 stage('Unit Test') {
