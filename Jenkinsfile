@@ -3,7 +3,7 @@ pipeline {
 	  MVN_SET = credentials('maven_secret_settings')
 	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
 // 	  IS_SNAPSHOT = readMavenPom(file: 'pom.xml').version.endsWith('SNAPSHOT')
-      IS_SNAPSHOT = (new Properties(new File('gradle.properties').newInputStream())).get('version').endsWith('SNAPSHOT')
+      IS_SNAPSHOT = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print $2}'").trim().endsWith('SNAPSHOT')
 	}
 	agent any
     tools {
