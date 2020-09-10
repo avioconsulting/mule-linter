@@ -24,7 +24,7 @@ pipeline {
                 	    }
                 	}
                 }
-                stage('Compile') {
+                stage('Validate') {
                     steps {
                         withGradle {
                             sh './gradlew check -x test'
