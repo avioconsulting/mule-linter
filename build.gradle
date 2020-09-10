@@ -7,7 +7,6 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0-SNAPSHOT'
 mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,3 +33,6 @@ codenarc {
     ignoreFailures = true
 }
 
+task buildVersion {
+    println "${version}"
+}
