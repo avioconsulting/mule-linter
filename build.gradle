@@ -3,10 +3,13 @@ plugins {
     id 'java'
     id 'application'
     id 'codenarc'
+    id 'maven-publish'
+    id 'org.hibernate.build.maven-repo-auth' version '3.0.3'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 group 'com.avioconsulting.mule'
+
 mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -33,6 +36,18 @@ codenarc {
     ignoreFailures = true
 }
 
-task buildVersion {
-    println "${version}"
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            def repo = "https://devops.avioconsulting.com/nexus/repository/avio-"
+            def repoName = "avio-"
+            url = version.endsWith('SNAPSHOT') ? "${repo}snapshots" : "${repo}releases"
+            name = version.endsWith('SNAPSHOT') ? "${repoName}snapshots" : "${repoName}releases"
+        }
+    }
 }

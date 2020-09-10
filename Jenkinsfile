@@ -20,23 +20,36 @@ pipeline {
                 stage('Compile') {
                     steps {
                         withGradle {
-                	        sh './gradlew build -x test'
+                	        sh './gradlew classes'
                 	    }
                 	}
                 }
+                stage('Compile') {
+                    steps {
+                        withGradle {
+                            sh './gradlew check -x test'
+                        }
+                    }
+                }
                 stage('Unit Test') {
                     steps {
-                	    echo 'mvn test'
+                        withGradle {
+                            sh './gradlew test'
+                        }
                 	}
                 }
                 stage('Integration Test') {
                     steps {
-                	    echo 'mvn integration-test'
+                	    echo 'NO INTEGRATION TESTS - ./gradlew integration-test'
                 	}
                 }
                 stage('Deploy Artifact') {
                     steps {
-                	    echo 'mvn deploy'
+                        withMaven(mavenSettingsConfig: 'b204bb78-a37b-46af-898c-2f84bf665276') {
+                            withGradle {
+                                sh './gradlew publish'
+                            }
+                        }
                 	}
                 }
             }
