@@ -45,7 +45,9 @@ pipeline {
                 }
                 stage('Deploy Artifact') {
                     steps {
-                        withMaven(mavenSettingsConfig: 'b204bb78-a37b-46af-898c-2f84bf665276') {
+                        withCredentials([usernamePassword(credentialsId: 'nexus',
+                            usernameVariable: 'ORG_GRADLE_PROJECT_MVN_USER',
+                            passwordVariable: 'ORG_GRADLE_PROJECT_MVN_PASSWORD')]) {
                             withGradle {
                                 sh './gradlew publish'
                             }

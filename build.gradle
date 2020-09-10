@@ -44,6 +44,10 @@ publishing {
     }
     repositories {
         maven {
+            credentials {
+                username = $MVN_USER
+                password = $MVN_PASSWORD
+            }
             def repo = "https://devops.avioconsulting.com/nexus/repository/avio-"
             def repoName = "avio-"
             url = version.endsWith('SNAPSHOT') ? "${repo}snapshots" : "${repo}releases"
