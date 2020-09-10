@@ -48,9 +48,8 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'nexus',
                             usernameVariable: 'ORG_GRADLE_PROJECT_MVN_USER',
                             passwordVariable: 'ORG_GRADLE_PROJECT_MVN_PASSWORD')]) {
-                            withGradle {
+                                sh 'export'
                                 sh './gradlew publish'
-                            }
                         }
                 	}
                 }
