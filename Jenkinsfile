@@ -17,8 +17,7 @@ pipeline {
             stages {
                 stage('Compile') {
                     steps {
-                        def cred = scm.userRemoteConfigs.credentialsId
-                        sh "echo ${cred}"
+                        sh "echo ${scm.userRemoteConfigs.credentialsId}"
                         withGradle {
                 	        sh './gradlew classes'
                 	    }
