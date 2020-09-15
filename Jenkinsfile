@@ -1,24 +1,24 @@
 pipeline {
 	environment {
-	  MVN_SET = credentials('maven_secret_settings')
-	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
+// 	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
       IS_SNAPSHOT = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim().endsWith('SNAPSHOT')
 	}
 	agent any
     tools {
-        maven 'Maven 3'
         jdk 'jdk8'
     }
 	stages {
 		stage('Build') {
-            when {
-                not {
-                    environment name:'IS_RELEASE_TAG', value:'true'
-                }
-            }
+//             when {
+//                 not {
+//                     environment name:'IS_RELEASE_TAG', value:'true'
+//                 }
+//             }
             stages {
                 stage('Compile') {
                     steps {
+                        def cred = scm.userRemoteConfigs.credentialsId
+                        sh "echo ${cred}"
                         withGradle {
                 	        sh './gradlew classes'
                 	    }
@@ -60,9 +60,9 @@ pipeline {
 		stage('Release') {
             when {
                 allOf {
-                    not {
-                        environment name:'IS_RELEASE_TAG', value:'true'
-                    }
+//                     not {
+//                         environment name:'IS_RELEASE_TAG', value:'true'
+//                     }
                     not {
                         environment name:'IS_SNAPSHOT', value:'true'
                     }
