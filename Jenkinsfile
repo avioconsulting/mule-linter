@@ -80,6 +80,7 @@ pipeline {
                         sh "git tag -a v${VERSION} -m \"Version ${VERSION}\""
                         withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId[0], passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             sh 'git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"'
+                            sh 'git checkout ${BRANCH_NAME}'
                             sh 'git push --follow-tags'
                         }
                     }
