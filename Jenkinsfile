@@ -1,7 +1,8 @@
 pipeline {
 	environment {
 // 	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
-      IS_SNAPSHOT = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim().endsWith('SNAPSHOT')
+      VERSION = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim()
+      IS_SNAPSHOT = VERSION.endsWith('SNAPSHOT')
 	}
 	agent any
     tools {
@@ -70,12 +71,17 @@ pipeline {
             stages {
                 stage('Generate Release Notes') {
                     steps {
-                        echo 'Generate release notes'
+                        sh "echo 'test' > CHANGELOG.md"
+                        sh "git add CHANGELOG.md"
                     }
                 }
                 stage('Tag Release') {
                     steps {
-                        echo 'git tag release'
+                        sh "git tag -a v${VERSION} -m \"Version ${VERSION}\""
+                        withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                            sh 'git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"'
+                            sh 'git push --follow-tags'
+                        }
                     }
                 }
             }
