@@ -46,10 +46,11 @@ pipeline {
                 stage('Deploy Artifact') {
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'nexus',
-                            usernameVariable: 'ORG_GRADLE_PROJECT_MVN_USER',
-                            passwordVariable: 'ORG_GRADLE_PROJECT_MVN_PASSWORD')]) {
-                                sh 'export '
-                                sh './gradlew publish'
+                            usernameVariable: 'MVN_USER',
+                            passwordVariable: 'MVN_PASSWORD')]) {
+                                withGradle {
+                                    sh './gradlew publish'
+                                }
                         }
                 	}
                 }

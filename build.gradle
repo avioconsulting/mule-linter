@@ -9,7 +9,6 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-
 mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -21,7 +20,6 @@ repositories {
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.0'
     implementation 'info.picocli:picocli-groovy:4.3.2'
-
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'
 }
@@ -45,13 +43,11 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = MVN_USER
-                password = MVN_PASSWORD
+                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
+                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
             }
             def repo = "https://devops.avioconsulting.com/nexus/repository/avio-"
-            def repoName = "avio-"
             url = version.endsWith('SNAPSHOT') ? "${repo}snapshots" : "${repo}releases"
-            name = version.endsWith('SNAPSHOT') ? "${repoName}snapshots" : "${repoName}releases"
         }
     }
 }
