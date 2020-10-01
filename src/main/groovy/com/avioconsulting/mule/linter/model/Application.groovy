@@ -9,6 +9,7 @@ class Application {
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
+    static final String README = 'README.md'
     static final String JENKINS_FILE = 'Jenkinsfile'
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
@@ -17,6 +18,7 @@ class Application {
     List<PropertyFile> propertyFiles = []
     List<ConfigurationFile> configurationFiles = []
     PomFile pomFile
+    ReadmeFile readmeFile
     JenkinsFile jenkinsFile
     String name
     GitIgnoreFile gitignoreFile
@@ -29,6 +31,7 @@ class Application {
         }
         pomFile = new PomFile(applicationPath, POM_FILE)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
+        readmeFile = new ReadmeFile(applicationPath, README)
         jenkinsFile =  new JenkinsFile(applicationPath, JENKINS_FILE)
         this.name = pomFile.artifactId
 
@@ -99,9 +102,15 @@ class Application {
         return gitignoreFile
     }
 
+    ReadmeFile getReadmeFile() {
+        return readmeFile
+    }
+
     JenkinsFile getJenkinsfile() {
         return jenkinsFile
     }
+
+
 
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
