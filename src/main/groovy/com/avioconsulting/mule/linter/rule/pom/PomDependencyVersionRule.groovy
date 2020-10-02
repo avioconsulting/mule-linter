@@ -10,8 +10,8 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class PomDependencyVersionRule extends Rule {
 
     static final String RULE_ID = 'POM_DEPENDENCY_VERSION_CHECK'
-    static final String RULE_NAME = 'Maven dependency matches exists pom.xml and matches to specified version criteria'
-    static final String MISSING_DEPENDENCY = 'Dependency does not exits: '
+    static final String RULE_NAME = 'Maven dependency matches exists in pom.xml and matches to specified version criteria'
+    static final String MISSING_DEPENDENCY = 'Dependency does not exist: '
     static final String RULE_VIOLATION_MESSAGE = 'Dependency exist but invalid version: '
     Version version= new Version()
 
