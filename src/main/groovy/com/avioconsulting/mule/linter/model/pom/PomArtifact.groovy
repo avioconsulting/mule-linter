@@ -3,7 +3,7 @@ package com.avioconsulting.mule.linter.model.pom
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 
-class PomPlugin {
+class PomArtifact {
 
     String groupId
     String artifactId
@@ -12,7 +12,7 @@ class PomPlugin {
     PomFile pomFile
     GPathResult pluginXml
 
-    PomPlugin(GPathResult pluginXml, PomFile pomFile) {
+    PomArtifact(GPathResult pluginXml, PomFile pomFile) {
         this.pluginXml = pluginXml
         this.groupId = pluginXml.groupId as String
         this.artifactId = pluginXml.artifactId as String

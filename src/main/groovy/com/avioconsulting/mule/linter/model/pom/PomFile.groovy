@@ -61,20 +61,32 @@ class PomFile extends ProjectFile {
         return parser.getNodeLineNumber(pomProperties)
     }
 
-    PomPlugin getPlugin(String groupId, String artifactId) {
-        PomPlugin plugin
+    PomArtifact getPlugin(String groupId, String artifactId) {
+        PomArtifact plugin
         GPathResult pluginPath = pomXml.build.plugins.plugin.find {
             it.groupId == groupId && it.artifactId == artifactId
         } as GPathResult
 
         if (pluginPath != null && pluginPath.size() > 0) {
-            plugin = new PomPlugin(pluginPath, this)
+            plugin = new PomArtifact(pluginPath, this)
+        }
+        return plugin
+    }
+
+    PomArtifact getDependency(String groupId, String artifactId) {
+        PomArtifact plugin
+        GPathResult pluginPath = pomXml.dependencies.dependency.find {
+            it.groupId == groupId && it.artifactId == artifactId
+        } as GPathResult
+
+        if (pluginPath != null && pluginPath.size() > 0) {
+            plugin = new PomArtifact(pluginPath, this)
         }
         return plugin
     }
 
     MunitMavenPlugin getMunitPlugin() {
-        PomPlugin pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
+        PomArtifact pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
         return pp == null ? null : new MunitMavenPlugin(pp.pluginXml, this)
     }
 
