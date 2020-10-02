@@ -2,7 +2,7 @@ package com.avioconsulting.mule.linter.model
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.pom.PomFile
-import com.avioconsulting.mule.linter.model.pom.PomArtifact
+import com.avioconsulting.mule.linter.model.pom.PomPlugin
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
@@ -25,7 +25,7 @@ class PomPluginTest extends Specification {
         Application app = new Application(testApp.appDir)
 
         when:
-        PomArtifact pp = app.pomFile.getPlugin('com.mulesoft.munit.tools', 'munit-maven-plugin')
+        PomPlugin pp = app.pomFile.getPlugin('com.mulesoft.munit.tools', 'munit-maven-plugin')
 
         then:
         pp.artifactId == 'munit-maven-plugin'

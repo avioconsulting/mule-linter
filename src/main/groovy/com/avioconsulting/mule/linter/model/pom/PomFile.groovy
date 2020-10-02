@@ -61,32 +61,32 @@ class PomFile extends ProjectFile {
         return parser.getNodeLineNumber(pomProperties)
     }
 
-    PomArtifact getPlugin(String groupId, String artifactId) {
-        PomArtifact plugin
+    PomPlugin getPlugin(String groupId, String artifactId) {
+        PomPlugin plugin
         GPathResult pluginPath = pomXml.build.plugins.plugin.find {
             it.groupId == groupId && it.artifactId == artifactId
         } as GPathResult
 
         if (pluginPath != null && pluginPath.size() > 0) {
-            plugin = new PomArtifact(pluginPath, this)
+            plugin = new PomPlugin(pluginPath, this)
         }
         return plugin
     }
 
-    PomArtifact getDependency(String groupId, String artifactId) {
-        PomArtifact plugin
-        GPathResult pluginPath = pomXml.dependencies.dependency.find {
+    PomDependency getDependency(String groupId, String artifactId) {
+        PomDependency dependency
+        GPathResult dependencyPath = pomXml.dependencies.dependency.find {
             it.groupId == groupId && it.artifactId == artifactId
         } as GPathResult
 
-        if (pluginPath != null && pluginPath.size() > 0) {
-            plugin = new PomArtifact(pluginPath, this)
+        if (dependencyPath != null && dependencyPath.size() > 0) {
+            dependency = new PomDependency(dependencyPath, this)
         }
-        return plugin
+        return dependency
     }
 
     MunitMavenPlugin getMunitPlugin() {
-        PomArtifact pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
+        PomPlugin pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
         return pp == null ? null : new MunitMavenPlugin(pp.pluginXml, this)
     }
 

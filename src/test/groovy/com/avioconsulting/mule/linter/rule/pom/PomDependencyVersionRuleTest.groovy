@@ -2,7 +2,7 @@ package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
-import com.avioconsulting.mule.linter.model.VersionCompare
+import com.avioconsulting.mule.linter.model.Version
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -54,7 +54,7 @@ class PomDependencyVersionRuleTest extends Specification {
         testApp.addFile(PomFile.POM_XML, WITH_DEPENDENCY_POM)
 
         Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.9',
-                VersionCompare.VersionOperator.GRATER_THAN)
+                Version.Operator.GREATER_THAN)
 
         when:
         app = new Application(testApp.appDir)
@@ -71,7 +71,7 @@ class PomDependencyVersionRuleTest extends Specification {
         testApp.addFile(PomFile.POM_XML, WITH_DEPENDENCY_POM)
 
         Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', version,
-                VersionCompare.VersionOperator.GRATER_THAN)
+                Version.Operator.GREATER_THAN)
 
         when:
         app = new Application(testApp.appDir)
@@ -93,7 +93,7 @@ class PomDependencyVersionRuleTest extends Specification {
         given:
         testApp.addFile(PomFile.POM_XML, DEPENDENCY_PROPERTY_VERSION_POM);
         Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2',
-                VersionCompare.VersionOperator.EQUAL)
+                Version.Operator.EQUAL)
 
         when:
         app = new Application(testApp.appDir)

@@ -42,7 +42,7 @@ import groovy.xml.slurpersupport.GPathResult
  *				</configuration>
  *			</plugin>
  */
-class MunitMavenPlugin extends PomArtifact {
+class MunitMavenPlugin extends PomPlugin {
 
     static final String GROUP_ID = 'com.mulesoft.munit.tools'
     static final String ARTIFACT_ID = 'munit-maven-plugin'
