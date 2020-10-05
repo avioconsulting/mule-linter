@@ -56,6 +56,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
+        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with required attributes empty should fail'() {
@@ -67,6 +68,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
+        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'components missing attributes to match should fail'() {
@@ -78,6 +80,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
+        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with wrong attribute values should fail'() {
@@ -89,6 +92,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
+        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String FLOWS = '''
