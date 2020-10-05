@@ -19,6 +19,9 @@ repositories {
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.0'
     implementation 'info.picocli:picocli-groovy:4.3.2'
+    implementation 'org.apache.maven:maven-plugin-api:3.6.3'
+    implementation 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+    implementation 'org.apache.maven:maven-project:2.2.1'
 
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'
