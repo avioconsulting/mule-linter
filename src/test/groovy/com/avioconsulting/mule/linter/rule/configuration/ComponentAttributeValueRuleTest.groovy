@@ -24,6 +24,7 @@ class ComponentAttributeValueRuleTest extends Specification {
     }
 
     String CORE_NAMESPACE = "http://www.mulesoft.org/schema/mule/core"
+    String CORE_EE_NAMESPACE = "http://www.mulesoft.org/schema/mule/ee/core"
 
     def 'component with required attributes should pass'() {
         given:
@@ -85,7 +86,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with wrong attribute values should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE6', 'Example 6', 'example6', CORE_NAMESPACE, [right:~/right/])
+        Rule rule = new ComponentAttributeValueRule('EXAMPLE6', 'Example 6', 'transform', CORE_EE_NAMESPACE, [right:~/Payload/])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -108,6 +109,15 @@ class ComponentAttributeValueRuleTest extends Specification {
 \t\t<example3/>
 \t\t<example4 empty=""/>
 \t\t<example5/>
-\t\t<example6 right="wrong"/>
+\t\t<ee:transform doc:name="Return payload" doc:id="bf7fab73-0ded-445c-9d26-3ebf854a3fb6">
+\t\t\t<ee:message >
+\t\t\t\t<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  correlationId: vars.correlationId
+}]]></ee:set-payload>
+\t\t\t</ee:message>
+\t\t</ee:transform>
 \t</sub-flow>'''
 }
