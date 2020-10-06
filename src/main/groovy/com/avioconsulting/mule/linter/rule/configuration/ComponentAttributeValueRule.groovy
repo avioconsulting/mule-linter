@@ -30,8 +30,12 @@ class ComponentAttributeValueRule extends Rule {
         this.requiredAttributes = requiredAttributes
     }
 
+    ComponentAttributeValueRule(String component, String namespace, Map<String, Pattern> attributeMatchers) {
+        this(RULE_ID, RULE_NAME, component, namespace, attributeMatchers)
+    }
+
     ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, Map<String,
-                                Pattern> attributeMatchers) {
+            Pattern> attributeMatchers) {
         this.ruleId = ruleId
         this.ruleName = ruleName
         this.component = component

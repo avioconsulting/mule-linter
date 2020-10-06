@@ -73,7 +73,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'components missing attributes to match should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE5', 'Example 5', 'example5', CORE_NAMESPACE, [exists:~/exists|or_not/])
+        Rule rule = new ComponentAttributeValueRule('example5', CORE_NAMESPACE, [exists:~/exists|or_not/])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
