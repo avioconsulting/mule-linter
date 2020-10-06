@@ -4,6 +4,7 @@ plugins {
     id 'application'
     id 'codenarc'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'io.freefair.maven-plugin' version '5.2.1'
 }
 
 group 'com.avioconsulting.mule'
