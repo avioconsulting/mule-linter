@@ -12,12 +12,19 @@ class FlowComponent extends MuleComponent {
         super(componentName, componentNamespace, attributes, file, children)
     }
 
-    Boolean hasListner() {
-        return children[0].componentName.contains('listener')
+    Boolean hasSource() {
+        return SOURCES.any({children[0].componentName.contains(it)})
     }
 
     Boolean isApiKitFlow() {
         return name.matches(APIKIT_FLOW_PREFIX_REGEX)
     }
 
+    static final String[] SOURCES = [
+            "listener", // HTTP, Sockets, File, FTP, SFTP, Email, JMS, VM,
+            "scheduler", // Scheduler (Core)
+            "subscriber", // Anypoint MQ
+            "trigger", "new-object", "modified-object", "deleted-object", // Salesforce, Netsuite, Workday, LDAP, S3
+            "receivemessages" // SQS
+    ]
 }
