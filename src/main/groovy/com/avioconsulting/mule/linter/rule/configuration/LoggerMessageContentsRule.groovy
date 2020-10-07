@@ -11,7 +11,7 @@ class LoggerMessageContentsRule extends Rule {
     static final String RULE_NAME = 'Logger Message Contents Rule'
     static final String RULE_VIOLATION_MESSAGE = 'Logger of level INFO or higher is logging Payload'
     static final String LOGGER_LEVEL = "INFO"
-    static final String LOGGER_REGEX = ~/#\[payload]/
+    static final String LOGGER_REGEX = ~/payload]/
 
     LoggerMessageContentsRule() {
         this.ruleId = RULE_ID
@@ -23,7 +23,7 @@ class LoggerMessageContentsRule extends Rule {
         List<RuleViolation> violations = []
         application.configurationFiles.collect({it.findLoggerComponents()}).flatten().each {
             LoggerComponent loggerComponent ->
-                if (loggerComponent.level == LOGGER_LEVEL && loggerComponent.message ==~ LOGGER_REGEX) {
+                if (loggerComponent.level == LOGGER_LEVEL && loggerComponent.message =~ LOGGER_REGEX) {
                     violations.add(new RuleViolation(this, loggerComponent.file.path,
                             loggerComponent.lineNumber, RULE_VIOLATION_MESSAGE))
                 }}
