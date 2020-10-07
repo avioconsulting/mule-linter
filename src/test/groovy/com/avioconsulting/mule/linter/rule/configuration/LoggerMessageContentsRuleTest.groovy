@@ -32,8 +32,35 @@ class LoggerMessageContentsRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].message == LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE
-        violations[1].message == LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE
+        violations[0].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+        violations[1].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+    }
+
+    def 'Loggers logging only the payload should fail'() {
+        given:
+        Rule rule = new LoggerMessageContentsRule(~/#\[payload]/)
+
+        when:
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 1
+        violations[0].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+    }
+
+    def 'Loggers logging payload at multiple levels should fail'() {
+        given:
+        Rule rule = new LoggerMessageContentsRule(["INFO":~/payload]/, "DEBUG":~/payload]/, "WARN":~/payload]/])
+
+        when:
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 4
+        violations[0].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+        violations[1].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+        violations[2].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
+        violations[3].message.startsWith(LoggerMessageContentsRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String FLOWS = '''
