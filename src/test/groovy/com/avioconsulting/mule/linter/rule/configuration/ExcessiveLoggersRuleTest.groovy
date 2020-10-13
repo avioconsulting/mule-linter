@@ -50,12 +50,12 @@ class ExcessiveLoggersRuleTest extends Specification{
 
     def 'Custom excessive loggers rule fails no flows'() {
         given:
-        Rule rule = new ExcessiveLoggersRule([(LoggerComponent.LogLevel.TRACE): 2,
-                                              (LoggerComponent.LogLevel.DEBUG): 3,
-                                              (LoggerComponent.LogLevel.INFO): 3,
-                                              (LoggerComponent.LogLevel.WARN): 2,
-                                              (LoggerComponent.LogLevel.ERROR): 4])
-
+        EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers = [(LoggerComponent.LogLevel.TRACE): 2,
+                                                                       (LoggerComponent.LogLevel.DEBUG): 3,
+                                                                       (LoggerComponent.LogLevel.INFO): 3,
+                                                                       (LoggerComponent.LogLevel.WARN): 2,
+                                                                       (LoggerComponent.LogLevel.ERROR): 4]
+        Rule rule = new ExcessiveLoggersRule(excessiveLoggers)
 
         when:
         Application app = new Application(testApp.appDir)
