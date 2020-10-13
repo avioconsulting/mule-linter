@@ -6,7 +6,6 @@ class UntilSuccessfulRule extends ComponentCountRule {
     static final String RULE_VIOLATION_MESSAGE = ' should be avoided if possible'
 
     UntilSuccessfulRule() {
-        super('UNTIL_SUCCESSFUL_RULE', 'Until Successful Rule', "until-successful",
-                Namespace.CORE, 1)
+        super('UNTIL_SUCCESSFUL_RULE', 'Until Successful Rule', "until-successful", Namespace.CORE, 1)
     }
 }
