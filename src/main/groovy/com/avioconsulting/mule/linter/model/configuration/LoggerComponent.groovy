@@ -1,8 +1,10 @@
 package com.avioconsulting.mule.linter.model.configuration
 
+import com.avioconsulting.mule.linter.model.Namespace
+
 class LoggerComponent extends MuleComponent {
 
-    final static String COMPONENT_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
+    final static String COMPONENT_NAMESPACE = Namespace.CORE
     final static String COMPONENT_NAME = 'logger'
     private final String docName
     private final String message

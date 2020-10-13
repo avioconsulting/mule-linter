@@ -1,8 +1,10 @@
 package com.avioconsulting.mule.linter.model.configuration
 
+import com.avioconsulting.mule.linter.model.Namespace
+
 class FlowComponent extends MuleComponent {
 
-    final static String COMPONENT_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
+    final static String COMPONENT_NAMESPACE = Namespace.CORE
     final static String COMPONENT_NAME_FLOW = 'flow'
     final static String COMPONENT_NAME_SUBFLOW = 'sub-flow'
     static final String APIKIT_FLOW_PREFIX_REGEX = '(get:|post:|put:|patch:|delete:|head:|options:|trace:).*'

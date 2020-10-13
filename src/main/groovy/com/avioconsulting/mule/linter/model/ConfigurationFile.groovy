@@ -13,14 +13,13 @@ import groovy.xml.slurpersupport.Node
 @SuppressWarnings('SpaceAroundMapEntryColon')
 class ConfigurationFile extends ProjectFile {
 
-    static final String MULE_CORE_NAMESPACE = 'http://www.mulesoft.org/schema/mule/core'
     static final String ELEMENT_FLOWREF = 'flow-ref'
     MuleXmlParser parser
     private final GPathResult configXml
     private final Boolean exists
-    private Map<String, String> nonGlobalConfig = ['sub-flow'     : MULE_CORE_NAMESPACE,
-                                                   'flow'         : MULE_CORE_NAMESPACE,
-                                                   'error-handler': MULE_CORE_NAMESPACE]
+    private Map<String, String> nonGlobalConfig = ['sub-flow'     : Namespace.CORE,
+                                                   'flow'         : Namespace.CORE,
+                                                   'error-handler': Namespace.CORE]
 
     ConfigurationFile(File file) {
         super(file)
@@ -134,7 +133,7 @@ class ConfigurationFile extends ProjectFile {
     }
 
     List<MuleComponent> getFlowrefs() {
-        return findComponents(ELEMENT_FLOWREF, MULE_CORE_NAMESPACE)
+        return findComponents(ELEMENT_FLOWREF, Namespace.CORE)
     }
 
     List<FlowComponent> getAllFlows() {
