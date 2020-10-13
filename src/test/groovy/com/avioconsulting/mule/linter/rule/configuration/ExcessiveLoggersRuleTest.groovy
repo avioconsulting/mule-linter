@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -49,7 +50,12 @@ class ExcessiveLoggersRuleTest extends Specification{
 
     def 'Custom excessive loggers rule fails no flows'() {
         given:
-        Rule rule = new ExcessiveLoggersRule(["TRACE": 2, "DEBUG": 3, "INFO": 3, "WARN": 2, "ERROR": 4])
+        Rule rule = new ExcessiveLoggersRule([(LoggerComponent.LogLevel.TRACE): 2,
+                                              (LoggerComponent.LogLevel.DEBUG): 3,
+                                              (LoggerComponent.LogLevel.INFO): 3,
+                                              (LoggerComponent.LogLevel.WARN): 2,
+                                              (LoggerComponent.LogLevel.ERROR): 4])
+
 
         when:
         Application app = new Application(testApp.appDir)
