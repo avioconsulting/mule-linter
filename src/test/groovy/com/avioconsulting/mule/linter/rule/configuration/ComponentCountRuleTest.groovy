@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -25,11 +26,9 @@ class ComponentCountRuleTest extends Specification {
         testApp.remove()
     }
 
-    String CORE_NAMESPACE = "http://www.mulesoft.org/schema/mule/core"
-
     def 'Rule for less than 8 loggers fails'() {
         given:
-        Rule rule = new ComponentCountRule("logger", CORE_NAMESPACE, 8)
+        Rule rule = new ComponentCountRule("logger", Namespace.CORE, 8)
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -41,7 +40,7 @@ class ComponentCountRuleTest extends Specification {
 
     def 'Rule for less than 12 loggers passes'() {
         given:
-        Rule rule = new ComponentCountRule("logger", CORE_NAMESPACE, 12)
+        Rule rule = new ComponentCountRule("logger", Namespace.CORE, 12)
 
         when:
         List<RuleViolation> violations = rule.execute(app)

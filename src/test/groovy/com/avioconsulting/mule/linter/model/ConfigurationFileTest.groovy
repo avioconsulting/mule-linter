@@ -39,7 +39,7 @@ class ConfigurationFileTest extends Specification {
 
         when:
         List<FlowComponent> untilSucess = app.configurationFiles[0].findComponents('until-successful',
-                                                                ConfigurationFile.MULE_CORE_NAMESPACE)
+                                                                Namespace.CORE)
 
         then:
         untilSucess[0].componentName == 'until-successful'

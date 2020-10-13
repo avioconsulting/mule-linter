@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -24,7 +25,7 @@ class OnErrorLogExceptionRule extends Rule {
         List<RuleViolation> violations = []
         application.configurationFiles.each { file ->
             ON_ERROR_COMPONENTS.each {
-                file.findComponents(it, file.MULE_CORE_NAMESPACE).each { comp ->
+                file.findComponents(it, Namespace.CORE).each { comp ->
                     if (comp.getAttributeValue(ATTRIBUTE_NAME) != ATTRIBUTE_VALUE_CHECK) {
                         violations.add(new RuleViolation(this, file.name, comp.lineNumber, RULE_VIOLATION_MESSAGE))
                     }

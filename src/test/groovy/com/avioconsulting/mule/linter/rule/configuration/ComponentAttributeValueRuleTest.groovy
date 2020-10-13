@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -23,12 +24,9 @@ class ComponentAttributeValueRuleTest extends Specification {
         testApp.remove()
     }
 
-    String CORE_NAMESPACE = "http://www.mulesoft.org/schema/mule/core"
-    String CORE_EE_NAMESPACE = "http://www.mulesoft.org/schema/mule/ee/core"
-
     def 'component with required attributes should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('example1', CORE_NAMESPACE, ['exists'])
+        Rule rule = new ComponentAttributeValueRule('example1', Namespace.CORE, ['exists'])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -39,7 +37,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attribute values should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE2', 'Example 2', 'example2', CORE_NAMESPACE, [exists:~/exists|or_not/])
+        Rule rule = new ComponentAttributeValueRule('EXAMPLE2', 'Example 2', 'example2', Namespace.CORE, [exists:~/exists|or_not/])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -50,7 +48,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component missing required attributes should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE3', 'Example 3', 'example3', CORE_NAMESPACE, ['exists'])
+        Rule rule = new ComponentAttributeValueRule('EXAMPLE3', 'Example 3', 'example3', Namespace.CORE, ['exists'])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -62,7 +60,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attributes empty should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE4', 'Example 4', 'example4', CORE_NAMESPACE, ['empty'])
+        Rule rule = new ComponentAttributeValueRule('EXAMPLE4', 'Example 4', 'example4', Namespace.CORE, ['empty'])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -74,7 +72,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'components missing attributes to match should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('example5', CORE_NAMESPACE, [exists:~/exists|or_not/])
+        Rule rule = new ComponentAttributeValueRule('example5', Namespace.CORE, [exists:~/exists|or_not/])
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -86,7 +84,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with wrong attribute values should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE6', 'Example 6', 'transform', CORE_EE_NAMESPACE, [right:~/Payload/])
+        Rule rule = new ComponentAttributeValueRule('EXAMPLE6', 'Example 6', 'transform', Namespace.CORE_EE, [right:~/Payload/])
 
         when:
         List<RuleViolation> violations = rule.execute(app)

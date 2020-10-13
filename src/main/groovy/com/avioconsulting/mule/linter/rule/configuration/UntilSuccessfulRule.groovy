@@ -1,10 +1,12 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
+import com.avioconsulting.mule.linter.model.Namespace
+
 class UntilSuccessfulRule extends ComponentCountRule {
     static final String RULE_VIOLATION_MESSAGE = ' should be avoided if possible'
 
     UntilSuccessfulRule() {
         super('UNTIL_SUCCESSFUL_RULE', 'Until Successful Rule', "until-successful",
-                "http://www.mulesoft.org/schema/mule/core", 1)
+                Namespace.CORE, 1)
     }
 }
