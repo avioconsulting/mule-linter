@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
+import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -10,16 +11,24 @@ class ExcessiveLoggersRule extends Rule {
     static final String RULE_NAME = 'Excessive use of Sequential Loggers'
     static final String RULE_VIOLATION_MESSAGE = 'Too many sequential loggers of same level in flow '
 
-    Map<String, Integer> excessiveLoggers = ["TRACE": 2, "DEBUG": 2, "INFO": 2, "WARN": 2, "ERROR": 2]
+    EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers = [(LoggerComponent.LogLevel.TRACE): 2,
+                                                                   (LoggerComponent.LogLevel.DEBUG): 2,
+                                                                   (LoggerComponent.LogLevel.INFO): 2,
+                                                                   (LoggerComponent.LogLevel.WARN): 2,
+                                                                   (LoggerComponent.LogLevel.ERROR): 2]
 
     ExcessiveLoggersRule() {}
 
     ExcessiveLoggersRule(Integer excessiveLoggers) {
-        this(["TRACE": excessiveLoggers, "DEBUG": excessiveLoggers, "INFO": excessiveLoggers,
-               "WARN": excessiveLoggers, "ERROR": excessiveLoggers])
+        this([(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
+              (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
+              (LoggerComponent.LogLevel.INFO): excessiveLoggers,
+              (LoggerComponent.LogLevel.WARN): excessiveLoggers,
+              (LoggerComponent.LogLevel.ERROR): excessiveLoggers]
+        )
     }
 
-    ExcessiveLoggersRule(Map<String, Integer> excessiveLoggers) {
+    ExcessiveLoggersRule(Map<LoggerComponent.LogLevel, Integer> excessiveLoggers) {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
         this.excessiveLoggers.putAll excessiveLoggers
@@ -48,10 +57,11 @@ class ExcessiveLoggersRule extends Rule {
         Integer count = 0
         RuleViolation violation = null
         flow.children.each {
-            if (it.componentName == "logger") {
+            if (it.componentName == LoggerComponent.COMPONENT_NAME) {
                 if (it.getAttributeValue("level") == logLevel) {
                     count++
-                    if (count >= excessiveLoggers.get(it.getAttributeValue("level"))) {
+                    if (count >= excessiveLoggers.get(LoggerComponent.LogLevel.valueOf(
+                            it.getAttributeValue("level")))) {
                         violation = new RuleViolation(this, flow.file.path, flow.lineNumber, RULE_VIOLATION_MESSAGE
                                 + flow.getAttributeValue("name"))
                     }
