@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -61,7 +62,7 @@ class GlobalConfigRuleTest extends Specification {
     def 'Additional global configuration element check'() {
         given:
         Rule rule = new GlobalConfigRule('global-config.xml',
-                    ['listener-config':'http://www.mulesoft.org/schema/mule/http'])
+                    ['listener-config': Namespace.HTTP])
 
         when:
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)

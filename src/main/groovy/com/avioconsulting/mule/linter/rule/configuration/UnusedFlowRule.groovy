@@ -23,7 +23,7 @@ class UnusedFlowRule extends Rule {
         List<String> flowRefs = app.flowrefs*.name
 
         app.allFlows.each { flow ->
-            if ( !flow.isApiKitFlow() && !flow.hasListner() ) {
+            if ( !flow.isApiKitFlow() && !flow.hasSource() ) {
                 if ( !flowRefs.contains(flow.name) ) {
                     violations.add(new RuleViolation(this, flow.file.path,
                             flow.getLineNumber(), RULE_VIOLATION_MESSAGE + flow.name))

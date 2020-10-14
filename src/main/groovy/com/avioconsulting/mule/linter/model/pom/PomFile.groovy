@@ -73,6 +73,18 @@ class PomFile extends ProjectFile {
         return plugin
     }
 
+    PomDependency getDependency(String groupId, String artifactId) {
+        PomDependency dependency
+        GPathResult dependencyPath = pomXml.dependencies.dependency.find {
+            it.groupId == groupId && it.artifactId == artifactId
+        } as GPathResult
+
+        if (dependencyPath != null && dependencyPath.size() > 0) {
+            dependency = new PomDependency(dependencyPath, this)
+        }
+        return dependency
+    }
+
     MunitMavenPlugin getMunitPlugin() {
         PomPlugin pp = getPlugin(MunitMavenPlugin.GROUP_ID, MunitMavenPlugin.ARTIFACT_ID)
         return pp == null ? null : new MunitMavenPlugin(pp.pluginXml, this)
