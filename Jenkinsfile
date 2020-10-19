@@ -75,7 +75,9 @@ pipeline {
 
         stage('Increment SNAPSHOT Version') {
             when {
-                environment name:'IS_RELEASE_TAG', value:'true'
+                not {
+                    environment name:'IS_SNAPSHOT', value:'true'
+                }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId[0], passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
