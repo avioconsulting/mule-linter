@@ -47,7 +47,13 @@ publishing {
                 password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
             }
             def repo = "https://devops.avioconsulting.com/nexus/repository/avio-"
-            url = version.endsWith('SNAPSHOT') ? "${repo}snapshots" : "${repo}releases"
+            def versionProperty = 'version.semver'
+            def versionFile = 'version.properties'
+            Properties props = new Properties()
+            props.load(new File(versionFile).newDataInputStream())
+            def currentVersion = props.getProperty(versionProperty)
+            println "Version ${currentVersion}"
+            url = currentVersion.contains('SNAPSHOT') ? "${repo}snapshots" : "${repo}releases"
         }
     }
 }
