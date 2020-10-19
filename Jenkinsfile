@@ -2,6 +2,7 @@ pipeline {
 	environment {
       VERSION = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim()
       IS_SNAPSHOT = VERSION.endsWith('SNAPSHOT')
+      NEXUS_CREDENTIAL = 'nexus'
 	}
 	agent any
     tools {
@@ -36,7 +37,7 @@ pipeline {
                 }
                 stage('Deploy Artifact') {
                     steps {
-                        withCredentials([usernamePassword(credentialsId: 'nexus',
+                        withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIAL,
                             usernameVariable: 'MVN_USER',
                             passwordVariable: 'MVN_PASSWORD')]) {
                                 withGradle {
@@ -58,7 +59,7 @@ pipeline {
                 stage('Generate Release Notes') {
                     steps {
                         sh 'git checkout ${BRANCH_NAME}'
-                        sh "echo 'test' > CHANGELOG.md"
+                        sh "echo '${VERSION}' >> CHANGELOG.md"
                         sh "git add CHANGELOG.md"
                         sh "git commit -m \"Adding v${VERSION} changelog\""
                     }
