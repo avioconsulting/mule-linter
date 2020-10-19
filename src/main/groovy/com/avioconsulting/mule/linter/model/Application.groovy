@@ -66,6 +66,10 @@ class Application {
         }
     }
 
+    List<MuleComponent> getGlobalConfigs() {
+        return configurationFiles.collect {it.findGlobalConfigs() }.flatten()
+    }
+
     List<MuleComponent> findComponents(String componentType, String namespace) {
         return configurationFiles.collect { it.findComponents(componentType, namespace) }.flatten()
     }

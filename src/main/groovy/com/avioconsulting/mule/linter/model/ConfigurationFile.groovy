@@ -52,7 +52,8 @@ class ConfigurationFile extends ProjectFile {
         }
 
         comps.each { comp ->
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile()))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile(),
+                    getNestedComponent(comp)))
         }
         return componentList
     }
@@ -68,7 +69,7 @@ class ConfigurationFile extends ProjectFile {
         }
 
         comps.each { comp ->
-            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile()))
+            componentList.add(new MuleComponent(comp.name(), comp.namespaceURI(), comp.attributes(), getFile(), getNestedComponent(comp)))
         }
         return componentList
     }
@@ -100,6 +101,15 @@ class ConfigurationFile extends ProjectFile {
         comp.children().each {
             componentList.add(new MuleComponent(it.name(), it.namespaceURI(), it.attributes(), getFile(),
                     getNestedComponent(it)))
+        }
+        return componentList
+    }
+
+    List<MuleComponent> getNestedComponent(Node comp) {
+        List<MuleComponent> componentList = []
+        comp.childNodes().each {
+            componentList.add(new MuleComponent(it.name(), it.namespaceURI(), it.attributes(), getFile(),
+                    getNestedComponent((Node) it)))
         }
         return componentList
     }
