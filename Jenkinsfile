@@ -1,6 +1,5 @@
 pipeline {
 	environment {
-// 	  IS_RELEASE_TAG = sh(returnStdout: true, script: 'git tag --contains').trim().matches(/v\d{1,3}\.\d{1,3}\.\d{1,3}/)
       VERSION = sh(returnStdout: true, script: "./gradlew properties -q | grep version: | awk '{print \$2}'").trim()
       IS_SNAPSHOT = VERSION.endsWith('SNAPSHOT')
 	}
@@ -14,7 +13,6 @@ pipeline {
                 stage('Compile') {
                     steps {
                         script {
-                            currentBuild.displayName = "v${VERSION}"
                             currentBuild.description = "v${VERSION}"
                         }
                         withGradle {
@@ -90,6 +88,9 @@ pipeline {
                     sh 'git add version.properties'
                     sh 'git commit -m "Incrementing to next SNAPSHOT patch version"'
                     sh 'git push'
+                }
+                script {
+                    currentBuild.displayName = "v${VERSION}"
                 }
             }
         }
