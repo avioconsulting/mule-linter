@@ -13,6 +13,9 @@ pipeline {
             stages {
                 stage('Compile') {
                     steps {
+                        script {
+                            currentBuild.displayName = "v${VERSION}"
+                        }
                         withGradle {
                 	        sh './gradlew classes'
                 	    }
@@ -55,6 +58,7 @@ pipeline {
             stages {
                 stage('Generate Release Notes') {
                     steps {
+                        sh 'git checkout ${BRANCH_NAME}'
                         sh "echo 'test' > CHANGELOG.md"
                         sh "git add CHANGELOG.md"
                         sh "git commit -m \"Adding v${VERSION} changelog\""
@@ -65,7 +69,6 @@ pipeline {
                         sh "git tag -a v${VERSION} -m \"Version ${VERSION}\""
                         withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId[0], passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             sh 'git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"'
-                            sh 'git checkout ${BRANCH_NAME}'
                             sh 'git push --follow-tags'
                         }
                     }
@@ -83,7 +86,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId[0], passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh 'git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"'
                     sh './gradlew incrementPatch -Dversion.prerelease=SNAPSHOT'
-                    sh 'git add versions.properties'
+                    sh 'git add version.properties'
                     sh 'git commit -m "Incrementing to next SNAPSHOT patch version"'
                     sh 'git push'
                 }
