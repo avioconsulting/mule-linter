@@ -15,6 +15,7 @@ pipeline {
                     steps {
                         script {
                             currentBuild.displayName = "v${VERSION}"
+                            currentBuild.description = "v${VERSION}"
                         }
                         withGradle {
                 	        sh './gradlew classes'
