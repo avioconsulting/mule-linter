@@ -4,8 +4,8 @@ plugins {
     id 'application'
     id 'codenarc'
     id 'maven-publish'
-    id 'org.hibernate.build.maven-repo-auth' version '3.0.3'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'net.thauvin.erik.gradle.semver' version '1.0.4'
 }
 
 group 'com.avioconsulting.mule'

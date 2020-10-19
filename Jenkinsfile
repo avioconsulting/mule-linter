@@ -10,15 +10,9 @@ pipeline {
     }
 	stages {
 		stage('Build') {
-//             when {
-//                 not {
-//                     environment name:'IS_RELEASE_TAG', value:'true'
-//                 }
-//             }
             stages {
                 stage('Compile') {
                     steps {
-                        sh "echo ${scm.userRemoteConfigs.credentialsId}"
                         withGradle {
                 	        sh './gradlew classes'
                 	    }
@@ -38,11 +32,6 @@ pipeline {
                         }
                 	}
                 }
-                stage('Integration Test') {
-                    steps {
-                	    echo 'NO INTEGRATION TESTS - ./gradlew integration-test'
-                	}
-                }
                 stage('Deploy Artifact') {
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'nexus',
@@ -59,13 +48,8 @@ pipeline {
 
 		stage('Release') {
             when {
-                allOf {
-//                     not {
-//                         environment name:'IS_RELEASE_TAG', value:'true'
-//                     }
-                    not {
-                        environment name:'IS_SNAPSHOT', value:'true'
-                    }
+                not {
+                    environment name:'IS_SNAPSHOT', value:'true'
                 }
             }
             stages {
@@ -73,6 +57,7 @@ pipeline {
                     steps {
                         sh "echo 'test' > CHANGELOG.md"
                         sh "git add CHANGELOG.md"
+                        sh "git commit -m \"Adding v${VERSION} changelog\""
                     }
                 }
                 stage('Tag Release') {
@@ -93,8 +78,13 @@ pipeline {
                 environment name:'IS_RELEASE_TAG', value:'true'
             }
             steps {
-                    echo 'Incrementing SNAPSHOT version'
-                    echo 'git add pom.xml, commit, push'
+                withCredentials([usernamePassword(credentialsId: scm.userRemoteConfigs.credentialsId[0], passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh 'git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"'
+                    sh './gradlew incrementPatch -Dversion.prerelease=SNAPSHOT'
+                    sh 'git add versions.properties'
+                    sh 'git commit -m "Incrementing to next SNAPSHOT patch version"'
+                    sh 'git push'
+                }
             }
         }
     }
