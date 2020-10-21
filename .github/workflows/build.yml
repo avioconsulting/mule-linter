@@ -24,3 +24,6 @@ jobs:
       - name: Perform Release
         if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') }}
         run: echo "Releasing version ${{ steps.set-version.outputs.version }}"
+      - name: Perform Release
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') }}
+        run: git tag -a v${{ steps.set-version.outputs.version }} -m \"Version ${{ steps.set-version.outputs.version }}\"
