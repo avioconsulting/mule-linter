@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -14,11 +14,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Set Version
+        id: set-version
+        run: "./gradlew properties -q | grep version: | awk '{print \"::set-output name=version::\" $2}'"
       - name: Compile
-        run: ./gradlew classes
+        run: ./gradlew assemble
       - name: Verify
         run: ./gradlew check -x test
       - name: JUnit Test
         run: ./gradlew test
-      - name: Publish
+      - name: Publish Artifact
+        if: github.event_name != 'pull_request'
         run: ./gradlew publishToMavenLocal
