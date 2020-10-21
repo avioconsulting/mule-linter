@@ -1,0 +1,170 @@
+classDiagram
+	class Application{
+        File applicationPath
+        List<PropertyFile> propertyFiles
+        List<ConfigurationFile> configurationFiles
+        PomFile pomFile
+        JenkinsFile jenkinsFile
+        String name
+        GitIgnoreFile gitignoreFile
+        MuleArtifact muleArtifact
+        loadPropertyFiles()
+        loadConfigurationFiles()
+        loadMuleArtifact()
+        findComponents(compnentType, namespace) List<MuleComponent>
+        getFlows() List<FlowComponent>
+        getSubFlows() List<FlowComponent>
+        getAllFlows() List<FlowComponent>
+        getFlowRefs() List<MuleComponent>
+        hasFile(name) Boolean
+        getPropertyFiles() List<PropertyFile>
+        getConfigurationFiles() List<ConfigurationFile>
+        getMuleArtifact() MuleArtifact
+        getPomFile() PomFile
+        getJenkinsfile() JenkinsFile
+
+    }
+    Application "1" --> "*" ProjectFile
+    class ProjectFile{
+        String name
+        String File
+    }
+    ProjectFile <|-- PomFile
+    class PomFile {
+		String POM_XML
+		String PROPERTIES
+		MuleXmlParser parser
+		doesExist() Boolean
+		getPath() String
+		getPomProperty(propertyName) PomElement
+		getPropertiesLineNo() Integer
+		getPlugin(groupId, artifactId) PomPlugin
+		getMunitPlugin() MunitMavenPlugin
+    }
+    ProjectFile <|-- PropertyFile
+    class PropertyFile {
+        Properties properties
+        loadProperties()
+        getProperty(propName) String
+        getPropertyCount() Integer
+    }
+    ProjectFile <|-- MuleArtifactJson
+    class MuleArtifactJson {
+		String MULE_ARTIFACT_JSON
+		getSecureProperties() JsonArray
+		getMinMuleVersion() JsonString
+		getRequiredProduct() JsonString
+		getAppName() JsonString
+		getRedeploymentEnabled() JsonBoolean
+		getConfigs() JsonArray
+		getProperty(propertyName) Object
+    }
+    ProjectFile <|-- GitIgnore
+    class GitIgnore {
+		String GITIGNORE
+		loadExpressions()
+        contains(expression) Boolean
+    }
+    ProjectFile <|-- JenkinsFile
+    class JenkinsFile {
+		String JENKINSFILE
+	}
+
+    ProjectFile <|-- ConfigurationFile
+    class ConfigurationFile{
+		String MULE_CORE_NAMESPACE
+		String ELEMENT_FLOWREF
+		MuleXmlParser parser
+		doesExists() Boolean
+		addAdditionalGlobalConfig(nonGlobalConfig)
+		findGlobalConfigs() List<MuleComponent>
+		findNonGlobalConfigs() List<MuleComponent>
+		findComponents() List<MuleComponent>
+		getNestedComponent() List<MuleComponent>
+		findLoggerComponent() List<LoggerComponent>
+        getFlows() List<FlowComponent>
+        getSubFlows() List<FlowComponent>
+        getAllFlows() List<FlowComponent>
+        getFlowRefs() List<MuleComponent>
+    }
+
+    ConfigurationFile "1" --> "*" MuleComponent
+    class MuleComponent{
+        Map<String, String> attributes
+        hasAttributeValue(name) Boolean
+        getAttributeValue(name) String
+        getComponentName() String
+        getLineNumber() Integer
+        getChildren() List<MuleComponent>
+    }
+    MuleComponent <|-- FlowComponent
+    class FlowComponent{
+		hasListner() Boolean
+		isApiKitFlow() Boolean
+    }
+    MuleComponent <|-- LoggerComponent
+    class LoggerComponent{
+        getMessage() String
+        getCategory() String
+        getName() String
+        getLevel() String
+    }
+    PomPlugin <|-- MunitMavenPlugin
+    class MunitMavenPlugin {
+		getIgnoreFiles() List<String>
+		getIgnoreFilesLineNo() Integer
+    }
+	class PomPlugin {
+		String groupId
+		String artifactId
+		String version
+		Integer lineNo
+		PomFile pomFile
+		GPathResult pluginXml
+		getConfigProperty(propertyName) PomElement
+
+	}
+	PomElement --> PomFile
+    PomElement --> PomPlugin
+	class PomElement {
+		getName() String
+		setName(name)
+		getValue() String
+		setValue(value)
+		getLineNo() Integer
+		setLineNo(lineNo)
+	}
+
+
+
+    class RuleExecuter {
+        RuleSet rules
+        executeRules()
+        displayResults(outputStream)
+    }
+
+    RuleExecuter "1" --> "1" RuleSet
+    class RuleSet {
+		List<Rule> rules
+		addRule(rule)
+		getRules() List<Rule>
+		setRules(rules)
+    }
+    RuleSet "0" --> "*" Rule
+    class Rule{
+        String ruleId
+        String ruleName
+        RuleSeverity severity
+        execute() List<RuleViolation>
+    }
+    Rule --> RuleViolation
+    class RuleViolation{
+        Rule rule
+        Integer lineNumber
+        String fileName
+        String message
+    }
+    Rule <|-- ASpecificRule
+    class ASpecificRule {
+
+    }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+      xmlns:avio-core="http://www.mulesoft.org/schema/mule/avio-core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+      http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+      http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
+      http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <flow name="digital-display-exp-api-main" doc:id="360ec8d1-c5e9-4f56-99da-6877ba87ff4c">
+    <http:listener doc:name="Listener" doc:id="8aeaffe6-3892-4377-a2c0-609416062b35" config-ref="HTTPS_Listener_config" path="/api/v2/*">
+      <http:response statusCode="#[vars.http_status default 200]" />
+      <http:error-response statusCode="#[vars.http_status default 500]">
+        <http:body><![CDATA[#[payload]]]></http:body>
+      </http:error-response>
+    </http:listener>
+    <apikit:router xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" config-ref="sample-mule-app-api-config" />
+  </flow>
+  <flow name="get:\details:sample-mule-app-api-config">
+    <flow-ref doc:name="details" doc:id="eebe3a9c-c246-4dc1-96ec-99e496610e2d" name="details" />
+  </flow>
+</mule>

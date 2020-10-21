@@ -1,0 +1,36 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'application'
+    id 'codenarc'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+group 'com.avioconsulting.mule'
+version '1.0-SNAPSHOT'
+mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.0'
+    implementation 'info.picocli:picocli-groovy:4.3.2'
+
+    testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html
+codenarc {
+    configFile = file("${project.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
+    ignoreFailures = true
+}
+
