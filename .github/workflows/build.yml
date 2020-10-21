@@ -30,8 +30,8 @@ jobs:
         run: ./gradlew assemble
       - name: Verify
         run: ./gradlew check -x test
-      - name: JUnit Test
-        run: ./gradlew test
+#      - name: JUnit Test
+#        run: ./gradlew test
       - name: Publish Artifact
         if: github.event_name != 'pull_request'
         run: ./gradlew publishToMavenLocal
