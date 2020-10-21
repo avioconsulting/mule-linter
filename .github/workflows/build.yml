@@ -33,4 +33,4 @@ jobs:
           ./gradlew incrementPatch -Dversion.prerelease=SNAPSHOT
           git add version.properties
           git commit -m "Incrementing to next SNAPSHOT patch version"
-          git push
+          git push --follow-tags
