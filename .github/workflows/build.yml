@@ -34,3 +34,17 @@ jobs:
           git add version.properties
           git commit -m "Incrementing to next SNAPSHOT patch version"
           git push --follow-tags
+      - name: Create Github Release
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: v${{ steps.set-version.outputs.version }}
+          release_name: Release v${{ steps.set-version.outputs.version }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
