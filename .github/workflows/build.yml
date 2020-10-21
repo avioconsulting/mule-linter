@@ -14,5 +14,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Compile
+        run: ./gradlew classes
+      - name: Verify
+        run: ./gradlew check -x test
+      - name: JUnit Test
+        run: ./gradlew test
+      - name: Publish
+        run: ./gradlew publishToMavenLocal
