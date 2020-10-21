@@ -17,6 +17,8 @@ jobs:
       - name: Set Version
         id: set-version
         run: "./gradlew properties -q | grep version: | awk '{print \"::set-output name=version::\" $2}'"
+      - name: Print Version
+        run: echo "Version ${{ steps.set-version.outputs.version }}"
       - name: Compile
         run: ./gradlew assemble
       - name: Verify
