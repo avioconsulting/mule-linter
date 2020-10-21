@@ -30,3 +30,7 @@ jobs:
           git config --global user.email "${{ github.actor }}"
           git config --global user.name "${{ github.actor }}"
           git tag -a v${{ steps.set-version.outputs.version }} -m "Version ${{ steps.set-version.outputs.version }}"
+          ./gradlew incrementPatch -Dversion.prerelease=SNAPSHOT
+          git add version.properties
+          git commit -m "Incrementing to next SNAPSHOT patch version"
+          git push
