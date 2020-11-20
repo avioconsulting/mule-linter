@@ -8,9 +8,9 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class PomPropertyValueRule extends Rule {
 
     static final String RULE_ID = 'MAVEN_PROPERTY'
-    static final String RULE_NAME = 'maven property match'
+    static final String RULE_NAME = 'Maven property match'
     static final String RULE_VIOLATION_MESSAGE = ' maven property value does not match expected value. '
-    static final String ATTRIBUTE_MISSING_MESSAGE = ' maven property does not exist in <properties></properties>'
+    static final String ATTRIBUTE_MISSING_MESSAGE = ' does not exist in <properties></properties>'
 
     private final String propertyName
     private final String propertyValue

@@ -1,11 +1,10 @@
-package com.avioconsulting.mule.linter.cicd
+package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
-import com.avioconsulting.mule.linter.rule.cicd.JenkinsFileExistsRule
 import spock.lang.Specification
 
 class JenkinsFileExistsRuleTest extends Specification {

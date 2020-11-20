@@ -76,6 +76,9 @@ class AVIOCustomRuleConfiguration {
 
 }
 ```
+
+For a full breakdown on available rules, [check here](docs/available_rules.md).
+
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag
 

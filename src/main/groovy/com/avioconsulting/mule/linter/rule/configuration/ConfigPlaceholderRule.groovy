@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class ConfigPlaceholderRule extends Rule{
 
-    static final String RULE_ID = 'CONFIG_PLACEHOLDER_RULE'
+    static final String RULE_ID = 'CONFIG_PLACEHOLDER'
     static final String RULE_NAME = 'Common Configs should have placeholders for certain elements'
     static final String RULE_VIOLATION_MESSAGE = 'Config should have a placeholder for attribute: '
 
