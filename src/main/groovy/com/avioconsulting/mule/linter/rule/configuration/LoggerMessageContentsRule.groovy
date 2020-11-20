@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 
 class LoggerMessageContentsRule extends Rule {
 
-    static final String RULE_ID = 'LOGGER_MESSAGE_CONTENTS_RULE'
+    static final String RULE_ID = 'LOGGER_MESSAGE_CONTENTS'
     static final String RULE_NAME = 'Logger Message Contents Rule'
     static final String RULE_VIOLATION_MESSAGE = 'Logger is not allowed to have this message '
     static final String LOGGER_LEVEL = "INFO"

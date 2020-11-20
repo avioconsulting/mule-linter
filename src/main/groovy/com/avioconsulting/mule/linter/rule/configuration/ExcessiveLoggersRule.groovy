@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class ExcessiveLoggersRule extends Rule {
-    static final String RULE_ID = 'EXCESSIVE_LOGGERS_RULE'
+    static final String RULE_ID = 'EXCESSIVE_LOGGERS'
     static final String RULE_NAME = 'Excessive use of Sequential Loggers'
     static final String RULE_VIOLATION_MESSAGE = 'Too many sequential loggers of same level in flow '
 
