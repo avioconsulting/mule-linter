@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 class HostnamePropertyRule extends Rule{
 
     static final String RULE_ID = 'HOSTNAME_PROPERTY'
-    static final String RULE_NAME = 'Hostname is not an IP Address'
+    static final String RULE_NAME = 'Hostname is not an IP Address. '
     static final String RULE_VIOLATION_MESSAGE = 'Hostname should not be an IP Address: '
     static final Pattern IPV4_REGEX = ~/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}\u0024/
     static final Pattern IPV6_REGEX = ~/^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}\u0024/

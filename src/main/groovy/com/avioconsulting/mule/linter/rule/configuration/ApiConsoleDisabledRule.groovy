@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class ApiConsoleDisabledRule extends Rule {
 
     static final String RULE_ID = 'API_CONSOLE_DISABLED'
-    static final String RULE_NAME = 'API Console Disabled Rule'
+    static final String RULE_NAME = 'API Console Disabled Rule. '
     static final String RULE_VIOLATION_MESSAGE = 'API Console should be removed or disabled before deployment'
 
     ApiConsoleDisabledRule() {

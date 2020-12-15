@@ -9,7 +9,7 @@ import groovy.text.SimpleTemplateEngine
 class PropertyExistsRule extends Rule {
 
     static final String RULE_ID = 'PROPERTY_EXISTS'
-    static final String RULE_NAME = 'Property File contain specified property.'
+    static final String RULE_NAME = 'The Property File contains the specified property.'
     static final String RULE_VIOLATION_MESSAGE = 'Property missing: '
     static final String MISSING_FILE_MESSAGE = 'Property cannot be found, Property File is missing: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'

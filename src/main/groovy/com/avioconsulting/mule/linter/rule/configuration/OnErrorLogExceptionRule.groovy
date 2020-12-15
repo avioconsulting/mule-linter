@@ -8,7 +8,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class OnErrorLogExceptionRule extends Rule {
 
     static final String RULE_ID = 'ON_ERROR_LOG_EXCEPTION'
-    static final String RULE_NAME = 'On Error Enable Log Exception Rule'
+    static final String RULE_NAME = 'Exception should be logged after an error. '
     static final String RULE_VIOLATION_MESSAGE = 'Log exception enabled is required for ' +
                                                     'on-error-continue and on-error-propagate'
     private static final List<String> ON_ERROR_COMPONENTS = ['on-error-continue', 'on-error-propagate']

@@ -6,7 +6,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class ComponentCountRule extends Rule {
     static final String RULE_ID = 'COMPONENT_COUNT'
-    static final String RULE_NAME = 'Component count rule'
+    static final String RULE_NAME = 'A component should not be used more than the allowed number of times. '
     static final String RULE_VIOLATION_MESSAGE = ' was used more times than allowed'
 
     String ruleId

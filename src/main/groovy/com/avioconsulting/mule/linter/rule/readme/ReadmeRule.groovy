@@ -8,9 +8,9 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class ReadmeRule extends Rule {
 
     static final String RULE_ID = 'README'
-    static final String RULE_NAME = 'README.md exists and has content'
-    static final String RULE_VIOLATION_MESSAGE = 'README.md has no content'
-    static final String FILE_MISSING_VIOLATION_MESSAGE = 'README.md does not exist'
+    static final String RULE_NAME = 'The README.md exists and has content. '
+    static final String RULE_VIOLATION_MESSAGE = 'The README.md has no content'
+    static final String FILE_MISSING_VIOLATION_MESSAGE = 'The README.md does not exist'
 
     ReadmeRule() {
         this.ruleId = RULE_ID

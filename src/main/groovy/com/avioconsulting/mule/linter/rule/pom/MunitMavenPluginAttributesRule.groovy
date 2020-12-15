@@ -10,7 +10,7 @@ import com.avioconsulting.mule.linter.model.pom.PomFile
 class MunitMavenPluginAttributesRule extends Rule {
 
     static final String RULE_ID = 'MUNIT_MAVEN_PLUGIN_ATTRIBUTES'
-    static final String RULE_NAME = 'Munit Maven plugins attribute values'
+    static final String RULE_NAME = 'The Munit Maven plugins attribute contains required values. '
     static final String RULE_MESSAGE = 'Munit Maven plugin has incorrect or missing configuration coverage value '
     static final String RULE_MESSAGE_MISSING = 'Munit Maven plugin is missing element '
     static final Map<String, String> COVERAGE_DEFAULTS = ['runCoverage':'true',

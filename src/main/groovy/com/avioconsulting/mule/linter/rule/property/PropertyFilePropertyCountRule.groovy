@@ -10,7 +10,7 @@ import groovy.text.SimpleTemplateEngine
 class PropertyFilePropertyCountRule extends Rule {
 
     static final String RULE_ID = 'PROPERTY_FILE_COUNT_MISMATCH'
-    static final String RULE_NAME = 'Property File Count Mismatch'
+    static final String RULE_NAME = 'Property Files should exist for each environment. '
     static final String RULE_VIOLATION_MESSAGE = 'Properties files do not have matching number of properties. '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
 

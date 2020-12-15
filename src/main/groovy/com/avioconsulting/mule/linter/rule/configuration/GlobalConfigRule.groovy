@@ -8,7 +8,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class GlobalConfigRule extends Rule {
 
     static final String RULE_ID = 'GLOBAL_CONFIG'
-    static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration.'
+    static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration. '
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist'
     static final String DEFAULT_FILE_NAME = 'globals.xml'

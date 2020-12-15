@@ -6,7 +6,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
 
     static final String RULE_ID = 'MULE_MAVEN_PLUGIN'
-    static final String RULE_NAME = 'mule maven plugin version'
+    static final String RULE_NAME = 'The mule maven plugin is a valid version. '
     static final String GROUP_ID = 'org.mule.tools.maven'
     static final String ARTIFACT_ID = 'mule-maven-plugin'
 

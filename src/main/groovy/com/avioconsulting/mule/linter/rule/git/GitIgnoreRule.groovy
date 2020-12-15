@@ -8,9 +8,9 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class GitIgnoreRule extends Rule {
 
     static final String RULE_ID = 'GIT_IGNORE'
-    static final String RULE_NAME = '.gitignore exists and contains required expressions'
-    static final String RULE_VIOLATION_MESSAGE = '.git ignore is missing required expression: '
-    static final String FILE_MISSING_VIOLATION_MESSAGE = '.gitignore does not exist'
+    static final String RULE_NAME = 'A .gitignore exists and contains required expressions. '
+    static final String RULE_VIOLATION_MESSAGE = 'The .gitignore is missing required expression: '
+    static final String FILE_MISSING_VIOLATION_MESSAGE = 'The .gitignore does not exist'
     static final List<String> DEFAULT_EXPRESSIONS = ['*.jar', '*.class', 'target/',
                                                      '.project', '.classpath', '.idea', 'build']
     static List<String> ignoredFiles
