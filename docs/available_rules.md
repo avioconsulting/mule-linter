@@ -68,7 +68,7 @@ Examples include `"flow"` or `"request"`.
 Examples include `"http://www.mulesoft.org/schema/mule/core"` or `"http://www.mulesoft.org/schema/mule/http"`. 
 The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`. 
 
-*requiredAttributes* is a List of the attributes that are expected to be found on the component being checked by the rule. 
+*requiredAttributes* is a List of the attributes expected to be found on the component being checked by the rule. 
 An example for this list might be: 
 ```groovy
 ['clientId','clientSecret']
@@ -506,7 +506,7 @@ Current options are `EQUAL` or `GREATER_THAN`.
 ### POM_EXISTS
 
 This rule checks for the existence of a `pom.xml` file at the root of the project. 
-Maven is required in Mule 4 and your project won't build if you don't have a `pom.xml`, so this rule might not be strictly necessary for a project. 
+Maven is required in Mule 4, and your project won't build if you don't have a `pom.xml`, so this rule might not be strictly necessary for a project. 
 
 The constructor for this rule is: 
 
@@ -576,7 +576,7 @@ The MAVEN_PROPERTY rule also allows for a custom ruleId and ruleName.
 ### ENCRYPTED_VALUE
 
 This rule checks that properties containing `secret` or `password` are encrypted. 
-AVIO always recommends that passwords and secrets be encrypted with a proper encryption key (Like AES or Blowfish). 
+AVIO always recommends that passwords and secrets are encrypted with a proper encryption key (Like AES or Blowfish). 
 Unencrypted secrets within property files are dangerous in cases where code or files could be leaked, and past Mulesoft security issues have exposed or made visible arbitrary project files. 
 
 The constructor for this rule is: 

@@ -5,23 +5,27 @@ The Mule Linter will enforce that all Mule projects are developed with a baselin
 
 ## Execution
 
+The mule-linter can be run as a jar with the following command: 
+
 ```
 ~/code/avio/mule-linter$ java -jar mule-linter-1.0-SNAPSHOT.jar --dir=SampleMuleApp --rules='AVIOCustomRuleConfiguration.groovy'
 ```
 
+`--dir` is the root directory of the Mule project. `--rules` is the path to the rule configuration file. 
+
 ## Rule Configuration
 
-Create a Groovy class that implements a method, and build and return a RuleSet.
+Create a Groovy class that implements a static method called `getRules` and returns a RuleSet object. 
 
-```
+```groovy
 static RuleSet getRules() { }
 ```
 
-
-Make sure to have the proper imports.
+Initialize the Rules you would like to use, and add them to the RuleSet with the `.addRule(Rule)` method. 
+Make sure to import the rules and helper classes you intend to use. 
 
 Sample configuration:
-```
+```groovy
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.rule.cicd.*
@@ -77,7 +81,7 @@ class AVIOCustomRuleConfiguration {
 }
 ```
 
-For a full breakdown on available rules, [check here](docs/available_rules.md).
+For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag
