@@ -10,8 +10,8 @@ import java.util.regex.Pattern
 class CommentedCodeRule extends Rule {
 
     static final String RULE_ID = 'COMMENTED_CODE'
-    static final String RULE_NAME = 'Commented out code should be removed.'
-    static final String RULE_VIOLATION_MESSAGE = 'Code is commented out in a configuration file.'
+    static final String RULE_NAME = 'Commented out code should be removed. '
+    static final String RULE_VIOLATION_MESSAGE = 'Code is commented out in a configuration file'
 
     Pattern COMMENT_REGEX = ~/<!--[\s\S\n]*?-->/
     Pattern CODE_REGEX = ~/<.[\s\S\n]*?(?:\/>|<\/)/

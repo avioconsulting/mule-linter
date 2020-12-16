@@ -8,10 +8,10 @@ import org.apache.groovy.json.internal.JsonString
 class MuleArtifactMinMuleVersionRule extends Rule {
 
     static final String RULE_ID = 'MULE_ARTIFACT_MIN_MULE_VERSION'
-    static final String RULE_NAME = 'minMuleVersion attribute in mule-artifact.json should be less than ' +
-            'the app.runtime value in the pom.xml'
-    static final String MISSING_PROPERTY_MESSAGE = 'minMuleVersion property is missing from mule-artifact.json'
-    static final String PROPERTY_MISMATCH_MESSAGE = 'minMuleVersion property in mule-artifact.json is greater ' +
+    static final String RULE_NAME = 'The minMuleVersion attribute in mule-artifact.json should be less than ' +
+            'the app.runtime value in the pom.xml. '
+    static final String MISSING_PROPERTY_MESSAGE = 'The minMuleVersion property is missing from mule-artifact.json'
+    static final String PROPERTY_MISMATCH_MESSAGE = 'The minMuleVersion property in mule-artifact.json is greater ' +
             'than the app.runtime version in the pom.xml. '
 
     MuleArtifactMinMuleVersionRule() {

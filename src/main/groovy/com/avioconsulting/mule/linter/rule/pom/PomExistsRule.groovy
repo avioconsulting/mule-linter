@@ -8,8 +8,8 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class PomExistsRule extends Rule {
 
     static final String RULE_ID = 'POM_EXISTS'
-    static final String RULE_NAME = 'pom.xml file exists'
-    static final String FILE_NOT_EXISTS = 'pom.xml does not exist.'
+    static final String RULE_NAME = 'The pom.xml file exists. '
+    static final String FILE_NOT_EXISTS = 'The pom.xml does not exist'
 
     PomExistsRule() {
         this.ruleId = RULE_ID

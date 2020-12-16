@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 class ComponentAttributeValueRule extends Rule {
 
     static final String RULE_ID = 'COMPONENT_ATTRIBUTE_VALUE'
-    static final String RULE_NAME = 'Component Attribute Required Rule'
+    static final String RULE_NAME = 'A specified component has the required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Component is missing attribute '
     static final String EXTENDING = ' with value '
     String component

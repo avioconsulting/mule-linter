@@ -9,7 +9,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class PomPluginAttributeRule extends Rule {
 
     static final String RULE_ID = 'POM_PLUGIN_ATTRIBUTE'
-    static final String RULE_NAME = 'Maven plugin exists in pom.xml and matches the attributes.'
+    static final String RULE_NAME = 'The given Maven plugin exists in the pom.xml and matches the given attributes. '
     static final String MISSING_PLUGIN = 'Plugin does not exits: '
     static final String RULE_VIOLATION_MESSAGE = 'Plugin exist but does not matches the attribute: '
 

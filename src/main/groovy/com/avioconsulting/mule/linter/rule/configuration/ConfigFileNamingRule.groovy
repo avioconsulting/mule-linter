@@ -8,8 +8,8 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class ConfigFileNamingRule extends Rule {
 
     static final String RULE_ID = 'CONFIG_FILE_NAMING'
-    static final String RULE_NAME = 'Config files are following naming conventions.'
-    static final String RULE_VIOLATION_MESSAGE = 'Config file is not following naming conventions.'
+    static final String RULE_NAME = 'Config files are following naming conventions. '
+    static final String RULE_VIOLATION_MESSAGE = 'A Config file is not following naming conventions'
     CaseNaming caseNaming = new CaseNaming()
 
     ConfigFileNamingRule(CaseNaming.CaseFormat format) {

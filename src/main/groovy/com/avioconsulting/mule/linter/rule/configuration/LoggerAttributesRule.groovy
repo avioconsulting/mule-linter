@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class LoggerAttributesRule extends Rule {
 
     static final String RULE_ID = 'LOGGER_ATTRIBUTES_RULE'
-    static final String RULE_NAME = 'Logger Attributes Required Rule'
+    static final String RULE_NAME = 'Loggers have required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Logger is missing attribute '
     List<String> requiredAttributes
 

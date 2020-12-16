@@ -6,8 +6,8 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class MunitVersionRule extends PomPropertyValueRule {
 
     static final String RULE_ID = 'MUNIT_VERSION'
+    static final String RULE_NAME = 'The munit.version maven property matches the given version. '
     static final String PROPERTY_NAME = 'munit.version'
-    static final String RULE_NAME = 'munit.version maven property match'
 
     MunitVersionRule(String version) {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
