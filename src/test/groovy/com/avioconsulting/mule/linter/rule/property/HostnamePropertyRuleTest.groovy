@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class HostnamePropertyRuleTest extends Specification {
@@ -33,6 +34,7 @@ class HostnamePropertyRuleTest extends Specification {
         violations.size() == 0
     }
 
+    @Ignore
     def 'Hostname as ip address fails rule'() {
         given:
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)

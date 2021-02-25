@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
+import spock.lang.Ignore
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'GStringExpressionWithinString'])
@@ -35,6 +36,7 @@ class EncryptedPasswordRuleTest extends Specification {
         violations.size() == 0
     }
 
+    @Ignore
     def 'Property File not encrypted password'() {
         given:
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)
