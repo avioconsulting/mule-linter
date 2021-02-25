@@ -3,11 +3,12 @@ plugins {
     id 'java'
     id 'application'
     id 'codenarc'
+    id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'net.thauvin.erik.gradle.semver' version '1.0.4'
 }
 
 group 'com.avioconsulting.mule'
-version '1.0-SNAPSHOT'
 mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -19,7 +20,6 @@ repositories {
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.0'
     implementation 'info.picocli:picocli-groovy:4.3.2'
-
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'
 }
@@ -34,3 +34,19 @@ codenarc {
     ignoreFailures = true
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
+                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
+            }
+            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
+        }
+    }
+}
