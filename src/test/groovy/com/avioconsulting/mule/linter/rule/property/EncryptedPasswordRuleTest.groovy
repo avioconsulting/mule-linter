@@ -4,7 +4,6 @@ import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
-import spock.lang.Ignore
 import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'GStringExpressionWithinString'])
@@ -36,7 +35,6 @@ class EncryptedPasswordRuleTest extends Specification {
         violations.size() == 0
     }
 
-    @Ignore
     def 'Property File not encrypted password'() {
         given:
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)
@@ -50,11 +48,19 @@ class EncryptedPasswordRuleTest extends Specification {
         then:
         app.propertyFiles.size() == 2
         violations.size() == 3
-        violations[0].fileName.contains('sample-mule-app.test.properties')
-        violations[0].message.endsWith('db.secret')
-        violations[1].fileName.contains('sample-mule-app.dev.properties')
-        violations[1].message.endsWith('db.secret')
-        violations[2].message.endsWith('password')
+        RuleViolation testPropertiesViolation = violations.find {
+            it.fileName.contains('sample-mule-app.test.properties')
+        }
+        testPropertiesViolation.message.endsWith('db.secret')
+        List<RuleViolation> devPropertiesViolation = violations.findAll {
+            it.fileName.contains('sample-mule-app.dev.properties')
+        }
+        devPropertiesViolation.find {
+            it.message.contains('db.secret')
+        }
+        devPropertiesViolation.find {
+            it.message.contains('password')
+        }
     }
 
     private static final String GOOD_PROPERTY_1 = '''

@@ -4,7 +4,6 @@ import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class HostnamePropertyRuleTest extends Specification {
@@ -34,7 +33,6 @@ class HostnamePropertyRuleTest extends Specification {
         violations.size() == 0
     }
 
-    @Ignore
     def 'Hostname as ip address fails rule'() {
         given:
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)
@@ -48,10 +46,14 @@ class HostnamePropertyRuleTest extends Specification {
         then:
         app.propertyFiles.size() == 2
         violations.size() == 2
-        violations[0].fileName.contains('sample-mule-app.test.properties')
-        violations[0].message == HostnamePropertyRule.RULE_VIOLATION_MESSAGE + 'db.host'
-        violations[1].fileName.contains('sample-mule-app.dev.properties')
-        violations[1].message == HostnamePropertyRule.RULE_VIOLATION_MESSAGE + 'db.hostname'
+        RuleViolation testPropertiesViolation = violations.find {
+            it.fileName.contains('sample-mule-app.test.properties')
+        }
+        testPropertiesViolation.message == HostnamePropertyRule.RULE_VIOLATION_MESSAGE + 'db.host'
+        RuleViolation devPropertiesViolation = violations.find {
+            it.fileName.contains('sample-mule-app.dev.properties')
+        }
+        devPropertiesViolation.message == HostnamePropertyRule.RULE_VIOLATION_MESSAGE + 'db.hostname'
     }
 
     def 'Exempt properties pass rule'() {
