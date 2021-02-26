@@ -71,18 +71,6 @@ jobs:
           git commit -m "Incrementing to next SNAPSHOT patch version"
           git push --follow-tags
 
-      # - name: Create Github Release
-      #   if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' }}
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     tag_name: v${{ steps.set-version.outputs.version }}
-      #     release_name: Release v${{ steps.set-version.outputs.version }}
-      #     body: ''
-      #     draft: false
-      #     prerelease: false
-
       - name: Add Release Note and Create Github Release
         if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' }}
         uses: release-drafter/release-drafter@v5
