@@ -51,7 +51,9 @@ class PropertyFileNamingRule extends Rule {
         List propertyFilenames = app.propertyFiles*.getName()
         environments.each { env ->
             Map<String, String> binding = ['appname':app.name, 'env':env]
-            String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
+            // Bootcamp rules don't include an appname
+            //String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
+            String fileName = env + ".properties"
             if (!(fileName in propertyFilenames)) {
                 violations.add(new RuleViolation(this, fileName, 0, RULE_VIOLATION_MESSAGE + pattern))
             }
