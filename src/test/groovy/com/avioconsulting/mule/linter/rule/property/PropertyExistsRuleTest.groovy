@@ -18,17 +18,17 @@ class PropertyExistsRuleTest extends Specification {
         testApp.initialize()
         testApp.addPom()
         testApp.cleanDirectory(PROPERTY_DIRECTORY)
-        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-dev.properties', GOOD_PROPERTY_1)
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.properties', GOOD_PROPERTY_1)
     }
 
     def cleanup() {
         testApp.remove()
     }
 
-    def 'Property Exists'() {
+    def 'Property Does not Exist'() {
         given:
-        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-prod.properties', GOOD_PROPERTY_1)
-        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
+        testApp.addFile(PROPERTY_DIRECTORY + 'prod.properties', GOOD_PROPERTY_1)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.properties', GOOD_PROPERTY_1)
         Rule rule = new PropertyExistsRule('sample.property')
 
         when:
@@ -36,12 +36,12 @@ class PropertyExistsRuleTest extends Specification {
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        violations.size() == 0
+        violations.size() == 3
     }
 
     def 'Property Exists with env list'() {
         given:
-        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.properties', GOOD_PROPERTY_1)
         Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
 
         when:
@@ -67,7 +67,7 @@ class PropertyExistsRuleTest extends Specification {
 
     def 'Property Missing'() {
         given:
-        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', MISSING_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.properties', MISSING_PROPERTY)
         Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
 
         when:
@@ -76,7 +76,7 @@ class PropertyExistsRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName.endsWith('sample-mule-app-test.properties')
+        violations[0].fileName.endsWith('test.properties')
         violations[0].message.endsWith('sample.property')
         violations[0].rule.ruleId == PropertyExistsRule.RULE_ID
     }
@@ -91,8 +91,8 @@ class PropertyExistsRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName.endsWith('sample-mule-app-test.properties')
-        violations[0].message.endsWith('sample-mule-app-test.properties')
+        violations[0].fileName.endsWith('test.properties')
+        violations[0].message.endsWith('test.properties')
         violations[0].rule.ruleId == PropertyExistsRule.RULE_ID
     }
 

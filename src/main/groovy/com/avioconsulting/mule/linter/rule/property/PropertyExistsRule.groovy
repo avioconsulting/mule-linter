@@ -13,7 +13,7 @@ class PropertyExistsRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Property missing: '
     static final String MISSING_FILE_MESSAGE = 'Property cannot be found, Property File is missing: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
-    static final List<String> DEFAULT_ENVIRONMENT_LIST = ['dev', 'test', 'prod']
+    static final List<String> DEFAULT_ENVIRONMENT_LIST = ['AVIO-DEV', 'AVIO-QA', 'AVIO-PROD']
     final String propertyName
     final List<String> environments
     final String pattern
@@ -39,8 +39,11 @@ class PropertyExistsRule extends Rule {
     List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []
         environments.each { env ->
+            // originally prefixed the key with "'appname':application.name, "
             Map<String, String> binding = ['appname':application.name, 'env':env]
-            String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
+            //String fileName = new SimpleTemplateEngine().createTemplate(pattern).make(binding)
+            String fileName = env + ".properties"
+
             PropertyFile pf = application.propertyFiles.find { it.getName() == fileName }
             if (pf == null) {
                 violations.add(new RuleViolation(this, fileName, 0, MISSING_FILE_MESSAGE + fileName))

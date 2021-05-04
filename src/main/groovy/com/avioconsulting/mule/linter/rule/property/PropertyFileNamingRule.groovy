@@ -11,7 +11,8 @@ class PropertyFileNamingRule extends Rule {
     static final String RULE_ID = 'PROPERTY_FILE_NAMING'
     static final String RULE_NAME = 'The Property Files match the given naming scheme. '
     static final String RULE_VIOLATION_MESSAGE = 'Missing property file, files must match naming pattern: '
-    static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
+    // originally prepended with "${appname}-"
+    static final String DEFAULT_PATTERN = '${env}.properties'
 
     String[] environments
     String pattern

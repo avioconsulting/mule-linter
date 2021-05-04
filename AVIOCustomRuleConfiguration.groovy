@@ -8,23 +8,25 @@ import com.avioconsulting.mule.linter.rule.pom.*
 import com.avioconsulting.mule.linter.rule.property.*
 
 class AVIOCustomRuleConfiguration {
-	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
+	static final List<String> ENVIRONMENTS = ['DEV','QA','PROD']
+	static final String GLOBALS_FILENAME = 'global-config.xml'
 
 	static RuleSet getRules() {
 		RuleSet rules = new RuleSet()
 
 		//cicd
-		rules.addRule(new JenkinsFileExistsRule())
+		//rules.addRule(new JenkinsFileExistsRule())
 
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
+		// not using this rule in MF
+		//rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
 		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
 		rules.addRule(new LoggerCategoryExistsRule())
 		rules.addRule(new LoggerMessageExistsRule())
-		rules.addRule(new OnErrorLogExceptionRule())
+		// not using this rule in MF
+		//rules.addRule(new OnErrorLogExceptionRule())
 		rules.addRule(new UnusedFlowRule())
 
 		//git
@@ -35,10 +37,11 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new MuleArtifactMinMuleVersionRule())
 
 		//pom
-		rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
-		rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
-		rules.addRule(new MunitMavenPluginAttributesRule())
-		rules.addRule(new MunitVersionRule('2.2.1'))
+		rules.addRule(new MuleMavenPluginVersionRule('3.4.1'))
+		rules.addRule(new MuleRuntimeVersionRule('4.3.0'))
+		// not using this rule in MF
+		//rules.addRule(new MunitMavenPluginAttributesRule())
+		rules.addRule(new MunitVersionRule('2.3.2'))
 		rules.addRule(new PomExistsRule())
 
 		//property
