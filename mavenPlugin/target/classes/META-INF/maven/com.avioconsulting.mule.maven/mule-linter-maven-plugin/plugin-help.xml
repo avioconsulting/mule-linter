@@ -12,7 +12,7 @@
   <mojos>
     <mojo>
       <goal>mule-linter</goal>
-      <description>An example Maven Mojo that resolves the current project&apos;s git revision and adds that a new exampleVersion property to the current Maven project.</description>
+      <description>Mojo mule-linter goal Allows to execute mule-linter given the project source directory and groovy rules</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
       <requiresReports>false</requiresReports>

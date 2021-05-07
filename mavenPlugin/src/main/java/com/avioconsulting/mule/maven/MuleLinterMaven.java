@@ -7,8 +7,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * An example Maven Mojo that resolves the current project's git revision and adds
- * that a new {@code exampleVersion} property to the current Maven project.
+ * Mojo mule-linter goal
+ * Allows to execute mule-linter given the project source directory and groovy rules
  */
 @Mojo(name = "mule-linter", defaultPhase = LifecyclePhase.INITIALIZE)
 public class MuleLinterMaven extends AbstractMojo {

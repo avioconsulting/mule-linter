@@ -14,8 +14,8 @@
   <mojos>
     <mojo>
       <goal>mule-linter</goal>
-      <description>An example Maven Mojo that resolves the current project&apos;s git revision and adds
-that a new {@code exampleVersion} property to the current Maven project.</description>
+      <description>Mojo mule-linter goal
+Allows to execute mule-linter given the project source directory and groovy rules</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
       <requiresReports>false</requiresReports>
@@ -422,6 +422,24 @@ that a new {@code exampleVersion} property to the current Maven project.</descri
       <artifactId>groovy-xml</artifactId>
       <type>jar</type>
       <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.avioconsulting.mule</groupId>
+      <artifactId>mule-linter</artifactId>
+      <type>jar</type>
+      <version>2.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli-groovy</artifactId>
+      <type>jar</type>
+      <version>4.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <type>jar</type>
+      <version>4.3.2</version>
     </dependency>
   </dependencies>
 </plugin>

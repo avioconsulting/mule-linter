@@ -85,15 +85,19 @@
       <artifactId>groovy-all</artifactId>
       <version>3.0.0</version>
       <type>pom</type>
-      <scope>compile</scope>
     </dependency>
 
-    <!-- dependency>
+    <dependency>
       <groupId>com.avioconsulting.mule</groupId>
       <artifactId>mule-linter</artifactId>
       <version>2.0.8</version>
-      <classifier>all</classifier>
-    </dependency -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
   </dependencies>
 </project>

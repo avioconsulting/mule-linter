@@ -16,7 +16,7 @@ class AVIOCustomRuleConfiguration {
 
 		//cicd
 		rules.addRule(new JenkinsFileExistsRule())
-/*
+
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
@@ -46,7 +46,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-*/
+
 		return rules
 	}
 
