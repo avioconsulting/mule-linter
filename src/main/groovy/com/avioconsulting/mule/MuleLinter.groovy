@@ -25,14 +25,25 @@ class MuleLinter {
 
     @SuppressWarnings('UnnecessaryObjectReferences')
     void runLinter() {
+
+        // Create the executor
+        RuleExecutor exe = this.buildLinterExecutor()
+
+        // Display Results
+        exe.displayResults(System.out)
+
+    }
+
+    @SuppressWarnings('UnnecessaryObjectReferences')
+    RuleExecutor buildLinterExecutor() {
+
         // Create the executor
         RuleExecutor exe = new RuleExecutor(app, ruleSetList)
 
         // Execute
         exe.executeRules()
 
-        // Display Results
-        exe.displayResults(System.out)
+        return exe
     }
 
 }

@@ -27,9 +27,30 @@
         </executions>
       </plugin>
 
+      <!-- use this polugin to load source from mule-linter -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>../src/main</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version><!-- 3.6.2 is the minimum -->
+        <version>3.6.2</version><!-- 3.6.2 is the minimum -->
         <configuration>
           <compilerId>groovy-eclipse-compiler</compilerId>
           <compilerArguments>
@@ -87,7 +108,7 @@
       <type>pom</type>
     </dependency>
 
-    <dependency>
+    <!--dependency>
       <groupId>com.avioconsulting.mule</groupId>
       <artifactId>mule-linter</artifactId>
       <version>2.0.8</version>
@@ -97,6 +118,12 @@
           <artifactId>groovy-all</artifactId>
         </exclusion>
       </exclusions>
+    </dependency-->
+    <!-- https://mvnrepository.com/artifact/info.picocli/picocli -->
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>4.3.2</version>
     </dependency>
 
   </dependencies>

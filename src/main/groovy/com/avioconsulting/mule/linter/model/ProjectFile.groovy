@@ -6,7 +6,7 @@ class ProjectFile {
     String name
 
     ProjectFile(File f) {
-        file = f
+        this.file = f
         this.name = f.name
     }
 

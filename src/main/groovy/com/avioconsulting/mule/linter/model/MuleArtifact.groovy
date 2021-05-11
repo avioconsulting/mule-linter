@@ -15,8 +15,11 @@ class MuleArtifact extends ProjectFile {
 
     MuleArtifact(File f) {
         super(new File(f, MULE_ARTIFACT_JSON))
+
+        File file = new File(f, MULE_ARTIFACT_JSON)
+
         if (file.exists()) {
-            parseMuleArtifact()
+            parseMuleArtifact(file)
             this.exists = true
         } else {
             this.exists = false
@@ -56,7 +59,7 @@ class MuleArtifact extends ProjectFile {
         }
     }
 
-    private void parseMuleArtifact() {
+    private void parseMuleArtifact(File file) {
         JsonSlurper slurper = new JsonSlurper()
         muleArtifact = slurper.parse(file) as JsonMap
     }
