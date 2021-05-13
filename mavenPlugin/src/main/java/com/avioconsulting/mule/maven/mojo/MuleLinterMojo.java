@@ -36,6 +36,9 @@ public class MuleLinterMojo extends AbstractMavenReport {
     @Parameter(property = "formats", readonly = true, required = false)
     private List<String> formats;
 
+    @Parameter(property = "failBuild", readonly = true, required = false, defaultValue = "false")
+    private Boolean failBuild;
+
     public String getOutputName() {
         // This report will generate simple-report.html when invoked in a project with `mvn site`
         return "mule-linter-results";
@@ -70,6 +73,8 @@ public class MuleLinterMojo extends AbstractMavenReport {
             MuleLinter ml = new MuleLinter(appDir, ruleConfiguration);
             com.avioconsulting.mule.linter.model.rule.RuleExecutor re = ml.buildLinterExecutor();
             generateReport(re);
+            if(failBuild && re.hasErrors())
+                throw new MavenReportException("Errors detected in mule validation");
 
         }catch (Exception e) {
             getLog().error(e);

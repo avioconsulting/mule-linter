@@ -98,4 +98,8 @@ class RuleExecutor {
         return xmlOutput.getWriter().toString();
     }
 
+    boolean hasErrors(){
+        this.results.size()>0
+    }
+
 }
