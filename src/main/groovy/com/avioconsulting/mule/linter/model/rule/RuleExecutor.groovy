@@ -7,7 +7,7 @@ class RuleExecutor {
     List<RuleSet> rules
     Application application
     List<RuleViolation> results = []
-    private Integer ruleCount = 0
+    Integer ruleCount = 0
 
     RuleExecutor(Application application, List<RuleSet> rules) {
         this.rules = rules
