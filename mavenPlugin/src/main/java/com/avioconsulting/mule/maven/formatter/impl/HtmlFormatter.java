@@ -30,7 +30,9 @@ public class HtmlFormatter extends AbstractFormatter {
         // Page title
         mainSink.head();
         mainSink.title();
+        mainSink.sectionTitle1();
         mainSink.text("AVIO Mule linter execution results for  " + projectName + ":" + projectVersion);
+        mainSink.sectionTitle1_();
         mainSink.title_();
         mainSink.head_();
 
@@ -39,9 +41,12 @@ public class HtmlFormatter extends AbstractFormatter {
         // Heading 1
         mainSink.section1();
         mainSink.sectionTitle1();
-        mainSink.text(String.format("%s rules executed.", rulesCount));
-        
+        mainSink.text("AVIO Mule linter execution results for  " + projectName + ":" + projectVersion);
         mainSink.sectionTitle1_();
+        mainSink.sectionTitle2();
+        mainSink.text(String.format("%s rules executed.", rulesCount));
+        mainSink.sectionTitle2_();
+
 
         final SinkEventAttributes tableAtt = new SinkEventAttributeSet();
         tableAtt.addAttribute(SinkEventAttributes.WIDTH, "%90");
@@ -107,7 +112,9 @@ public class HtmlFormatter extends AbstractFormatter {
                     for( String el : Arrays.asList(ruleSeverity, ruleId, ruleName) )
                     {
                         mainSink.tableCell();
+                        mainSink.paragraph();
                         mainSink.text(el);
+                        mainSink.paragraph_();
                         mainSink.tableCell_();
                     }
                     String fileLine = violation.getFileName();
@@ -115,23 +122,30 @@ public class HtmlFormatter extends AbstractFormatter {
                         fileLine+=":"+violation.getLineNumber().toString();
                     }
                     mainSink.tableCell();
+                    mainSink.paragraph();
                     mainSink.text(fileLine);
+                    mainSink.paragraph_();
                     mainSink.tableCell_();
 
                     mainSink.tableCell();
+                    mainSink.paragraph();
                     mainSink.text(violation.getMessage() );
+                    mainSink.paragraph_();
                     mainSink.tableCell_();
 
                     mainSink.tableRow_();
                 }
         );
         mainSink.table_();
-        
+
+        mainSink.section2_();
         
         mainSink.paragraph_();
 
         // Close
         mainSink.section1_();
+
+
         mainSink.body_();
 
     }
