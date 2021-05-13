@@ -29,8 +29,10 @@ public class ConsoleFormatter extends AbstractFormatter {
                     String ruleName = rule.getRuleName();
                     StringBuilder messageLogBuilder = new StringBuilder();
                     messageLogBuilder.append(String.format(" - [%s] %s - %s : ",ruleSeverity, ruleId, ruleName  ));
+                    String lineNumber = "";
                     if (violation.getLineNumber() > 0)
-                        messageLogBuilder.append(String.format("Line number: %s ", violation.getLineNumber()));
+                        lineNumber=violation.getLineNumber().toString();
+                    messageLogBuilder.append(String.format("File:Linenumber: %s:%s ", violation.getFileName(), lineNumber));
 
                     messageLogBuilder.append(violation.getMessage());
                     log.info( messageLogBuilder.toString());

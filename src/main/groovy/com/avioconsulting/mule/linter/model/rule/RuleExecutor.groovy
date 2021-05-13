@@ -47,12 +47,16 @@ class RuleExecutor {
     }
 
     void displayResults(outputFormat,OutputStream outputStream) {
-        outputStream.write("$ruleCount rules executed.\n".bytes)
-        outputStream.write('Rule Results\n'.bytes)
         if(outputFormat == 'json'){
+            outputStream.write("{\n".bytes)
+            outputStream.write("   rulesExecuted:$ruleCount,\n".bytes)
+
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(results)
-            outputStream.write(json.bytes)
+            outputStream.write(("   ruleViolations:"+json+",\n").bytes )
+
+                    outputStream.write("   totalViolations:$results.size\n".bytes)
+            outputStream.write("}".bytes)
         }
         else if(outputFormat == 'xml')
         {  final StringBuilder builder = new StringBuilder();
@@ -67,13 +71,17 @@ class RuleExecutor {
             String xmlOutput = convertToXML(xmlString);
             outputStream.write(xmlOutput)
         }
-        else
+        else {
+            outputStream.write("$ruleCount rules executed.\n".bytes)
+            outputStream.write('Rule Results\n'.bytes)
+
             results.each { violation ->
                 outputStream.write("    [$violation.rule.severity] $violation.rule.ruleId - $violation.fileName ".bytes)
                 outputStream.write((violation.lineNumber > 0 ? "( $violation.lineNumber ) " : '').bytes)
                 outputStream.write("$violation.message \n".bytes)
             }
-        outputStream.write("\nFound a total of $results.size violations.\n".bytes)
+            outputStream.write("\nFound a total of $results.size violations.\n".bytes)
+        }
         outputStream.flush()
         outputStream.close()
     }

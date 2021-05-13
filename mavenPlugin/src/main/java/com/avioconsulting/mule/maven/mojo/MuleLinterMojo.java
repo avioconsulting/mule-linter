@@ -14,6 +14,7 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -37,13 +38,22 @@ public class MuleLinterMojo extends AbstractMavenReport {
 
     public String getOutputName() {
         // This report will generate simple-report.html when invoked in a project with `mvn site`
-        return "simple-report";
+        return "mule-linter-results";
     }
 
     public String getName(Locale locale) {
         // Name of the report when listed in the project-reports.html page of a project
-        return "Simple Report";
+        return "Mule linter";
     }
+
+    public String getProjectName (){
+        return this.project.getName();
+    }
+
+    public String getProjectVersion (){
+        return this.project.getVersion();
+    }
+
 
     public String getDescription(Locale locale) {
         // Description of the report when listed in the project-reports.html page of a project
@@ -69,8 +79,13 @@ public class MuleLinterMojo extends AbstractMavenReport {
         getLog().debug("mule-linter end");
     }
 
-    private void generateReport(com.avioconsulting.mule.linter.model.rule.RuleExecutor re) throws IOException {
+    private void generateReport(com.avioconsulting.mule.linter.model.rule.RuleExecutor re) throws IOException, MavenReportException {
         for( String format: formats ){
+            if (this.outputDirectory.exists() && !this.outputDirectory.isDirectory())
+                throw new MavenReportException("Cannot create directory");
+            else if (!this.outputDirectory.exists())
+                this.outputDirectory.mkdir();
+
             Optional<FormatOptionsEnum> formatOptionsOptional = FormatOptionsEnum.fromString(format);
             if (formatOptionsOptional.isPresent())
             {

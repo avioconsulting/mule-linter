@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.maven.formatter;
 
 import com.avioconsulting.mule.maven.formatter.impl.ConsoleFormatter;
+import com.avioconsulting.mule.maven.formatter.impl.HtmlFormatter;
 import com.avioconsulting.mule.maven.formatter.impl.JsonFormatter;
 import com.avioconsulting.mule.maven.mojo.MuleLinterMojo;
 
@@ -17,6 +18,9 @@ public class FormatterBuilder {
                 break;
             case JSON:
                 formatter = new JsonFormatter();
+                break;
+            case HTML:
+                formatter = new HtmlFormatter();
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Formatter not supported for %s", format.getValue()));

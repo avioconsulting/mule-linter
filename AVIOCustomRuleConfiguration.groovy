@@ -16,10 +16,10 @@ class AVIOCustomRuleConfiguration {
 
 		JenkinsFileExistsRule jk = new JenkinsFileExistsRule()
 
-		jk.setSeverity(RuleSeverity.CRITICAL)
+
 		//cicd
 		rules.addRule(jk)
-/*
+
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
@@ -29,7 +29,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new LoggerMessageExistsRule())
 		rules.addRule(new OnErrorLogExceptionRule())
 		rules.addRule(new UnusedFlowRule())
-
+/*
 		//git
 		rules.addRule(new GitIgnoreRule())
 
