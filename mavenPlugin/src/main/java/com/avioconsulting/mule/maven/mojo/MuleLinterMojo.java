@@ -14,6 +14,7 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class MuleLinterMojo extends AbstractMavenReport {
         getLog().debug("mule-linter end");
     }
 
-    private void generateReport(com.avioconsulting.mule.linter.model.rule.RuleExecutor re) {
+    private void generateReport(com.avioconsulting.mule.linter.model.rule.RuleExecutor re) throws IOException {
         for( String format: formats ){
             Optional<FormatOptionsEnum> formatOptionsOptional = FormatOptionsEnum.fromString(format);
             if (formatOptionsOptional.isPresent())

@@ -1,13 +1,19 @@
 package com.avioconsulting.mule.maven.formatter.impl;
 
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class JsonFormatter extends AbstractFormatter {
 
     @Override
-    public void buildReport() {
-        throw new NotImplementedException();
+    public void buildReport() throws IOException {
+        String reportPath = this.mojo.getReportOutputDirectory().getAbsolutePath() + File.separator + "output.txt";
+        com.avioconsulting.mule.linter.model.rule.RuleExecutor re = this.ruleExecutor;
+        FileOutputStream out = new FileOutputStream(reportPath);
+        re.displayResults("json", out );
+        this.mojo.getLog().info("Mule linter report saved in "+ reportPath);
     }
 
 }
