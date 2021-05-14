@@ -46,6 +46,8 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
+		
+		rules.addRule(new CronExpressionConfigurableRule())
 
 		return rules
 	}
