@@ -29,7 +29,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new LoggerMessageExistsRule())
 		rules.addRule(new OnErrorLogExceptionRule())
 		rules.addRule(new UnusedFlowRule())
-/*
+
 		//git
 		rules.addRule(new GitIgnoreRule())
 
@@ -49,7 +49,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-*/
+
 		return rules
 	}
 

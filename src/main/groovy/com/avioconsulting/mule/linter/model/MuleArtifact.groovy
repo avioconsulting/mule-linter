@@ -29,11 +29,11 @@ class MuleArtifact extends ProjectFile {
     JsonArray getSecureProperties() {
         return muleArtifact.secureProperties
     }
-
+/*
     JsonString getMinMuleVersion() {
         return muleArtifact.minMuleVersion
     }
-
+*/
     JsonString getRequiredProduct() {
         return muleArtifact.requiredProduct
     }
@@ -51,9 +51,9 @@ class MuleArtifact extends ProjectFile {
     }
 
     Object getProperty(String propertyName) {
-        MetaProperty meta = this.metaClass.getMetaProperty(propertyName)
+        MetaProperty meta = this.getMetaClass().getMetaProperty(propertyName)
         if (meta) {
-            meta.getProperty(this)
+            meta.getProperty(this )
         } else {
             return muleArtifact[propertyName]
         }

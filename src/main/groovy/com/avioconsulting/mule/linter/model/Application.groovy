@@ -94,7 +94,7 @@ class Application {
         muleArtifact = new MuleArtifact(applicationPath)
     }
 
-    File getApplicationPath() {
+    public File getApplicationPath() {
         return applicationPath
     }
 

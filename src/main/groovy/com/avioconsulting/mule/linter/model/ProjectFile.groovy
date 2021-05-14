@@ -10,22 +10,6 @@ class ProjectFile {
         this.name = f.name
     }
 
-    File getFile() {
-        return file
-    }
-
-    void setFile(File file) {
-        this.file = file
-    }
-
-    String getName() {
-        return name
-    }
-
-    void setName(String name) {
-        this.name = name
-    }
-
     String getPath() {
         return file.absolutePath
     }
