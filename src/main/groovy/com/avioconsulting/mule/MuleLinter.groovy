@@ -9,6 +9,7 @@ class MuleLinter {
 
     Application app
     List<RuleSet> ruleSetList = []
+    String  outputFormat
 
     MuleLinter(String applicationDirectory, String ruleConfigFile) {
         this.app = new Application(new File(applicationDirectory))
@@ -32,7 +33,7 @@ class MuleLinter {
         exe.executeRules()
 
         // Display Results
-        exe.displayResults(System.out)
+        exe.displayResults(outputFormat,System.out)
     }
 
 }

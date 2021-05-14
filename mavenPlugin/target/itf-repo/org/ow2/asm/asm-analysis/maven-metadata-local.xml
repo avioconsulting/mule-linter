@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.ow2.asm</groupId>
+  <artifactId>asm-analysis</artifactId>
+  <versioning>
+    <versions>
+      <version>9.1</version>
+    </versions>
+    <lastUpdated>20210513174253</lastUpdated>
+  </versioning>
+</metadata>

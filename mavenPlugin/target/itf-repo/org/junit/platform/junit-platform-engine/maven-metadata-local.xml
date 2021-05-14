@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.junit.platform</groupId>
+  <artifactId>junit-platform-engine</artifactId>
+  <versioning>
+    <versions>
+      <version>1.8.0-M1</version>
+    </versions>
+    <lastUpdated>20210513174255</lastUpdated>
+  </versioning>
+</metadata>

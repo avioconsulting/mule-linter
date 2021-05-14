@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.codehaus.plexus</groupId>
+  <artifactId>plexus-interpolation</artifactId>
+  <versioning>
+    <versions>
+      <version>1.11</version>
+    </versions>
+    <lastUpdated>20210513174254</lastUpdated>
+  </versioning>
+</metadata>

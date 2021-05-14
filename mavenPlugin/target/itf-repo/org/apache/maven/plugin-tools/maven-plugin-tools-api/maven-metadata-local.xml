@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.apache.maven.plugin-tools</groupId>
+  <artifactId>maven-plugin-tools-api</artifactId>
+  <versioning>
+    <versions>
+      <version>3.6.1</version>
+    </versions>
+    <lastUpdated>20210513174252</lastUpdated>
+  </versioning>
+</metadata>

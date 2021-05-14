@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu May 13 13:42:55 EDT 2021
+mule-linter-maven-plugin-0.0.1-SNAPSHOT.jar>=
+mule-linter-maven-plugin-0.0.1-SNAPSHOT.pom>=

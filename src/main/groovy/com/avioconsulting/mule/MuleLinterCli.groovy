@@ -11,13 +11,15 @@ class MuleLinterCli implements Runnable {
     @CommandLine.Option(names = ['-d', '--dir'], required = true, description = 'Application Directory')
     String appDir
 
+    @CommandLine.Option(names = ['-f', '--format'], description = 'required output')
+    String outputFormat
     static void main(String... args) {
         new CommandLine(new MuleLinterCli()).execute(args)
     }
 
     @Override
     void run() {
-        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration)
+        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat)
         ml.runLinter()
     }
 
