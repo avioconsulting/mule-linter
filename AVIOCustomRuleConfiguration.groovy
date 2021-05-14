@@ -62,7 +62,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new HostnamePropertyRule('0.0.0.0'))
 
 		rules.addRule(new PomDependencyVersionRule("org.mule.connectors", "mule-http-connector", "1.5.14"))
-
+		rules.addRule(new CronExpressionConfigurableRule())
 
 
 

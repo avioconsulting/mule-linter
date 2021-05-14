@@ -50,8 +50,7 @@ class AutoDiscoveryRuleTest extends Specification {
         then:
         violations.size() == 1
 
-        violations[0].rule.getSeverity().equals(RuleSeverity.CRITICAL)
-        violations[0].rule.ruleId == 'AUTO_DISCOVERY_CONFIG_PRESENT'
+        violations[0].lineNumber==0
         violations[0].message == AutoDiscoveryRule.MISSING_AUTODISCOVERY_MESSAGE
 
     }
@@ -67,11 +66,25 @@ class AutoDiscoveryRuleTest extends Specification {
 
         then:
         violations.size() == 1
-
-        violations[0].rule.getSeverity().equals(RuleSeverity.CRITICAL)
         violations[0].lineNumber == 22
-        violations[0].rule.ruleId == 'AUTO_DISCOVERY_CONFIG_PRESENT'
-        //violations[0].message == AutoDiscoveryRule.AUTODISCOVERY_NOT_EXTERNALIZED_MESSAGE
+        violations[0].message == AutoDiscoveryRule.AUTODISCOVERY_NOT_EXTERNALIZED_MESSAGE+AutoDiscoveryRule.DEFAULT_GLOBAL_CONFIG_FILE_NAME
+
+    }
+
+    def 'Global Configuration File Not available'() {
+        given:
+        testApp.addFile('src/main/mule/global-config.xml', BAD_CONFIG_1)
+        Rule rule = new AutoDiscoveryRule("global-config-unknown.xml")
+
+        when:
+        Application app = new Application(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 1
+
+        violations[0].lineNumber==0
+        violations[0].message == AutoDiscoveryRule.FILE_MISSING_VIOLATION_MESSAGE
 
     }
 

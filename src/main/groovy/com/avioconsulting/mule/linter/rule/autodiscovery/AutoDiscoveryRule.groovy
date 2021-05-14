@@ -64,9 +64,9 @@ class AutoDiscoveryRule extends Rule {
                 }
         }
 
-        // If Autodiscovery is not found in Global config throw the below error
+        // If Global config file exits but Autodiscovery is present in Global config throw the below error
 
-        if (!autoDiscoveryFound) {
+        if (globalConfigFileFound && !autoDiscoveryFound) {
             violations.add(new RuleViolation(this, app.applicationPath.absolutePath + "/"+ app.CONFIGURATION_PATH+"/"+DEFAULT_GLOBAL_CONFIG_FILE_NAME,
                     0, MISSING_AUTODISCOVERY_MESSAGE))
         }
