@@ -11,10 +11,9 @@ class MuleLinter {
     List<RuleSet> ruleSetList = []
     String  outputFormat
 
-    MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
+    MuleLinter(String applicationDirectory, String ruleConfigFile) {
         this.app = new Application(new File(applicationDirectory))
         ruleSetList = parseConfigurationFile(ruleConfigFile)
-        this.outputFormat=outputFormat
     }
 
     List<RuleSet> parseConfigurationFile(String ruleConfigFile) {
@@ -34,7 +33,7 @@ class MuleLinter {
         exe.executeRules()
 
         // Display Results
-        exe.displayResults('json',System.out )
+        exe.displayResults(outputFormat,System.out)
     }
 
 }

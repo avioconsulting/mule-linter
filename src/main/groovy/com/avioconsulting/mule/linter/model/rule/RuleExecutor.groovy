@@ -34,76 +34,85 @@ class RuleExecutor {
         }
     }
 
-
-
-    static class SonarQubeReport{
-
-        static class SonarQubeReportIssues {
-            static class SonarQubeReportLocation {
-
-                static class TextRange {
-                    Integer startLine
-                    Integer endLine
-                    Integer startColumn
-                    Integer endColumn
-                }
-
-                String message
-                String filePath
-                TextRange textRange;
-
-            }
-
-            String engineId
-            String ruleId
-            String severity
-            String type
-            SonarQubeReportLocation primaryLocation;
-            SonarQubeReportIssues(violation){
-
-                ruleId = violation.rule.ruleId
-                engineId = violation.rule.ruleName
-                severity = violation.rule.severity
-                type = violation.rule.severity
-                this.primaryLocation = new SonarQubeReportLocation();
-                this.primaryLocation.filePath = violation.fileName
-                this.primaryLocation.message = violation.message
-                this.primaryLocation.textRange = new SonarQubeReportLocation.TextRange();
-                this.primaryLocation.textRange.startLine=violation.lineNumber
-            }
-
-
-        }
-
-        List<SonarQubeReportIssues> issues
-        SonarQubeReport(){
-            this.issues = new ArrayList<>();
-        }
-
-    }
-
     void displayResults(outputFormat,OutputStream outputStream) {
         outputStream.write("$ruleCount rules executed.\n".bytes)
         outputStream.write('Rule Results\n'.bytes)
         if(outputFormat == 'json'){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json1 = gson.toJson(results)
-
+            outputStream.write(json1)
+            //String message;
             JSONObject json = new JSONObject();
 
             JSONArray array = new JSONArray();
 
-
+            json.put("issues", array);
             JSONObject objtobeadded =  new JSONObject();
             JsonObject innerObject = new JsonObject();
-            SonarQubeReport sq = new SonarQubeReport();
+
             results.each { violation ->
 
-                sq.getIssues().add( new SonarQubeReport.SonarQubeReportIssues(violation) )
+                objtobeadded.put("ruleId", violation.rule.ruleId);
+                objtobeadded.put("engineId", violation.rule.ruleName);
+                objtobeadded.put("severity", violation.rule.severity);
+                objtobeadded.put("type", violation.rule.severity);
+                innerObject.addProperty("filePath", violation.fileName);
+                innerObject.addProperty("message", violation.message);
+                objtobeadded.put("primaryLocation", innerObject);
+                array.put(objtobeadded)
+                System.out.println(objtobeadded);
 
+//                item.put("ruleId", violation.rule.ruleId);
+//                item.put("engineId", violation.rule.ruleName)
+//                item.put("severity", violation.rule.severity)
+//                item.put("type", violation.rule.severity)
+//                innerObject.addProperty("filePath", violation.fileName);
+//                innerObject.addProperty("message", violation.message);
+//                //innerObject.addProperty("filePath", "violation.fileName");
+//                jsonObject.add("primaryLocation", innerObject);
+//                item.put("primaryLocation",innerObject)
+//                def builder = new JsonBuilder()
+//                def data = builder {
+//                    "ruleId" violation.rule.ruleId
+//                    "engineId" violation.rule.ruleName
+//                    "severity" violation.rule.severity
+//                    "type" "CODE_SMELL"
+//                    "primaryLocation" {
+//                        "filePath" violation.fileName
+//                        //"message" violation.message
+//                        "textRange" {"startLine" violation.lineNumber}
+//                    }
+//                }
+
+//                appendToList(jsonObj, data);
+                //outputStream.write(data)
+                //outputStream.write(builder.toPrettyString())
+
+//                item.add(builder.toPrettyString())
+//                ArrayUtils.add(item, builder.toPrettyString())
+                //outputStream.write(json)
+//                JsonObject inputObj  = gson.fromJson(json, JsonObject.class);
+//                JsonObject newObject = new JsonObject() ;
+//                newObject.addProperty("ruleId" ,"violation.rule.ruleId");
+//                newObject.addProperty("engineId", "violation.rule.ruleName");
+//                inputObj.get("results").getAsJsonArray().add(newObject);
+//                message = json.toString();
+//                System.out.println(message);
+//                System.out.println(builder);
+//                System.out.println(builder.toPrettyString());
+//                builder.eachWithIndex{ JsonBuilder entry, int i ->
+//                    array.put(entry.getAt("content").collect());
+//                }
+                //array.put(builder.toPrettyString())
+                // outputStream.write(json)
+//                String json1 = gson.toJson(json.toString())
+////                outputStream.write(json1)
+//                System.out.println(array.myArrayList);
+                //System.out.println(json.toString());
+                //outputStream(json1)
             }
-            json.put("issues", array);
-            String prettyJsonString = gson.toJson(sq);
+            //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJsonString = gson.toJson(json);
             System.out.println(prettyJsonString);
             File file = new File('/Users/anusha.konakalla/Desktop/sample.json')
             file.write(prettyJsonString)

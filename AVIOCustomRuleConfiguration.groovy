@@ -16,7 +16,7 @@ class AVIOCustomRuleConfiguration {
 
 		//cicd
 		rules.addRule(new JenkinsFileExistsRule())
-/*
+
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
@@ -40,7 +40,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new MunitMavenPluginAttributesRule())
 		rules.addRule(new MunitVersionRule('2.2.1'))
 		rules.addRule(new PomExistsRule())
-*/
+
 		//property
 		rules.addRule(new EncryptedPasswordRule())
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
