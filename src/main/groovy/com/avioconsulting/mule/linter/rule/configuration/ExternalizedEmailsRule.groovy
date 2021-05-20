@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.configuration.EmailComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity
@@ -18,9 +19,7 @@ class ExternalizedEmailsRule extends Rule {
         this.setSeverity(RuleSeverity.MINOR)
     }
 
-    boolean isExternalizedValue(String str) {
-        return str.startsWith('#[') || str.startsWith('${') || str.startsWith('p(')
-    }
+
 
     @Override
     List<RuleViolation> execute(Application app) {
@@ -28,29 +27,15 @@ class ExternalizedEmailsRule extends Rule {
 
         app.getAllFlows().each {flow ->
             flow.getChildren().each {
-                if(it.componentNamespace.contains("/schema/mule/email")) {
-                    it.attributes.each {entry->
-                        if(entry.key.toLowerCase().contains("address")) {
-                            if(!isExternalizedValue(entry.value)) {
-                                violations.add(new RuleViolation(this, flow.file.path,
-                                        it.lineNumber, RULE_VIOLATION_MESSAGE + it.componentName))
-                            }
-                        }
-                    }
-                    it.children.each {child->
-                        if(child.componentName.toLowerCase().contains("address")) {
-                            child.children.each {
-                                if(!isExternalizedValue(it.attributes.get("value"))) {
-                                    violations.add(new RuleViolation(this, flow.file.path,
-                                            it.lineNumber, RULE_VIOLATION_MESSAGE + it.componentName))
-                                }
-                            }
-                        }
+                EmailComponent ec = new EmailComponent(it, it.file)
+                ec.getAllEmails().each { email ->
+                    if(!ec.isExternalizedValue(email)) {
+                        violations.add(new RuleViolation(this, flow.file.path,
+                                ec.lineNumber, RULE_VIOLATION_MESSAGE + ec.componentName))
                     }
                 }
             }
         }
-
         return violations
     }
 }

@@ -61,4 +61,8 @@ class MuleComponent {
         }
     }
 
+    boolean isExternalizedValue(String str) {
+        return str.startsWith('#[') || str.startsWith('${') || str.startsWith('p(')
+    }
+
 }
