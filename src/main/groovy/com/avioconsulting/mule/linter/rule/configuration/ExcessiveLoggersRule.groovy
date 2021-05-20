@@ -63,8 +63,8 @@ class ExcessiveLoggersRule extends Rule {
                     count++
                     if (count >= excessiveLoggers.get(LoggerComponent.LogLevel.valueOf(
                             it.getAttributeValue("level")))) {
-                        violation = new RuleViolation(this, flow.file.path, flow.lineNumber, RULE_VIOLATION_MESSAGE
-                                + flow.getAttributeValue("name"))
+                        violation = new RuleViolation(this, flow.file.path, flow.lineNumber, RULE_VIOLATION_MESSAGE +
+                                flow.getAttributeValue("name"))
                     }
                 } else {
                     logLevel = it.getAttributeValue("level")
