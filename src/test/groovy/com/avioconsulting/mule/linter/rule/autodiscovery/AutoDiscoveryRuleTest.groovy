@@ -67,7 +67,7 @@ class AutoDiscoveryRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 22
-        violations[0].message == AutoDiscoveryRule.AUTODISCOVERY_NOT_EXTERNALIZED_MESSAGE+AutoDiscoveryRule.DEFAULT_GLOBAL_CONFIG_FILE_NAME
+        violations[0].message == AutoDiscoveryRule.AUTODISCOVERY_NOT_EXTERNALIZED_MESSAGE+AutoDiscoveryRule.DEFAULT_GLOBAL_CONFIG_FILE_NAME+". The Hard coded value for API ID is : 123"
 
     }
 
@@ -368,7 +368,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
         <secure-properties:encrypt algorithm="Blowfish" />
     </secure-properties:config>
     <!-- This is the configuration to let this mule app talk to API Manager's corresponding API -->
-    <api-gateway:autodiscovery apiId="1" doc:name="API Autodiscovery" doc:id="64e53ea9-8f3d-4165-8451-fc9e075835f3" flowRef="sv-sales-order-api-main" />
+    <api-gateway:autodiscovery apiId="123" doc:name="API Autodiscovery" doc:id="64e53ea9-8f3d-4165-8451-fc9e075835f3" flowRef="sv-sales-order-api-main" />
     <!-- Added to expedite the Bootcamp project archetype -->
     <global-property doc:name="Global Property" doc:id="0a76d4c0-842d-40b6-9fc5-2f5cf73b0360" name="secureKey" value="password" />
     <configuration-properties doc:name="Configuration properties" doc:id="8fc9b091-15c5-4485-9ce6-43c05083e8da" file="properties/common.properties" />
