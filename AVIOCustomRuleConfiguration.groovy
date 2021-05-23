@@ -6,10 +6,13 @@ import com.avioconsulting.mule.linter.rule.git.*
 import com.avioconsulting.mule.linter.rule.muleartifact.*
 import com.avioconsulting.mule.linter.rule.pom.*
 import com.avioconsulting.mule.linter.rule.property.*
+import com.avioconsulting.mule.linter.rule.readme.*
+import com.avioconsulting.mule.linter.rule.autodiscovery.*
 
 class AVIOCustomRuleConfiguration {
 	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
+	// updated global config file name based on AVIO standards
+	static final String GLOBALS_FILENAME = 'global-config.xml'
 
 	static RuleSet getRules() {
 		RuleSet rules = new RuleSet()
@@ -46,6 +49,20 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
+
+		// Added Readme File Rule
+		rules.addRule(new ReadmeRule())
+
+		//Added MuleConfigFileSize Rule
+		rules.addRule(new MuleConfigSizeRule())
+
+		//Added HostnamePropertyRule
+		rules.addRule(new HostnamePropertyRule('0.0.0.0'))
+
+		rules.addRule(new PomDependencyVersionRule("org.mule.connectors", "mule-http-connector", "1.5.14"))
+		// Added Autodiscovery Configuration Rule
+		rules.addRule(new AutoDiscoveryRule("global-config.xml"))
+
 
 		return rules
 	}

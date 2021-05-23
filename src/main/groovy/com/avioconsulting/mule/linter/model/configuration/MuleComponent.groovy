@@ -23,6 +23,17 @@ class MuleComponent {
         this.file = file
     }
 
+    Boolean isExternalized(String value) {
+        if (value != null) {
+            return value.startsWith('Mule::p(')
+                    || value.startsWith('p(')
+                    || value.startsWith('${')
+                    || value.startsWith('#[')
+        }
+        else {
+            return false
+        }
+    }
     Boolean hasAttributeValue(String name) {
         return attributes.get(name)?.length() > 0
     }
