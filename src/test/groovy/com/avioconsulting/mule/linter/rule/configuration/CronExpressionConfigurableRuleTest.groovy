@@ -50,10 +50,10 @@ class CronExpressionConfigurableRuleTest extends Specification{
 
         then:
         violations.size() == 2
-        violations[0].message == CronExpressionConfigurableRule.CRON_EXPRESSION_HARD_CODED+"sales-orders-csv-impl.xml"
+        violations[0].message == CronExpressionConfigurableRule.CRON_EXPRESSION_HARD_CODED+"sales-orders-csv-impl.xml"+". The hard coded cron expression is : * * 10 * * * *"
         violations[0].lineNumber == 12
 
-        violations[1].message == CronExpressionConfigurableRule.CRON_EXPRESSION_HARD_CODED+"sales-orders-csv-impl.xml"
+        violations[1].message == CronExpressionConfigurableRule.CRON_EXPRESSION_HARD_CODED+"sales-orders-csv-impl.xml"+". The hard coded cron expression is : * * 12 * * * *"
         violations[1].lineNumber == 84
     }
 
