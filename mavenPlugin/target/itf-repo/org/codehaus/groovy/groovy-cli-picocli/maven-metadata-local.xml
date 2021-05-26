@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.codehaus.groovy</groupId>
+  <artifactId>groovy-cli-picocli</artifactId>
+  <versioning>
+    <versions>
+      <version>3.0.0</version>
+    </versions>
+    <lastUpdated>20210513174254</lastUpdated>
+  </versioning>
+</metadata>

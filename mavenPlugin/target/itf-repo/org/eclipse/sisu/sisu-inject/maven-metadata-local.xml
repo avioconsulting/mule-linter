@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.eclipse.sisu</groupId>
+  <artifactId>sisu-inject</artifactId>
+  <versioning>
+    <versions>
+      <version>0.3.4</version>
+    </versions>
+    <lastUpdated>20210513174254</lastUpdated>
+  </versioning>
+</metadata>

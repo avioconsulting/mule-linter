@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.jboss.weld</groupId>
+  <artifactId>weld-parent</artifactId>
+  <versioning>
+    <versions>
+      <version>6</version>
+    </versions>
+    <lastUpdated>20210513174254</lastUpdated>
+  </versioning>
+</metadata>

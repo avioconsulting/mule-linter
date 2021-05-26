@@ -1,0 +1,10 @@
+<metadata>
+  <groupId>org.codehaus.groovy</groupId>
+  <artifactId>groovy-test-junit5</artifactId>
+  <versioning>
+    <versions>
+      <version>3.0.0</version>
+    </versions>
+    <lastUpdated>20210513174255</lastUpdated>
+  </versioning>
+</metadata>
