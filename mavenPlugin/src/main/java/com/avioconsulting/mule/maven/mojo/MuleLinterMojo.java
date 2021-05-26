@@ -70,7 +70,7 @@ public class MuleLinterMojo extends AbstractMavenReport {
         getLog().debug(String.format("RuleConfiguration file: %s appDirectory %s", ruleConfiguration, appDir));
         getLog().debug(String.format("Formats: %s", this.formats));
         try {
-            MuleLinter ml = new MuleLinter(appDir, ruleConfiguration);
+            MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, null);
             com.avioconsulting.mule.linter.model.rule.RuleExecutor re = ml.buildLinterExecutor();
             generateReport(re);
             if(failBuild && re.hasErrors())
@@ -86,11 +86,10 @@ public class MuleLinterMojo extends AbstractMavenReport {
 
     private void generateReport(com.avioconsulting.mule.linter.model.rule.RuleExecutor re) throws IOException, MavenReportException {
         for( String format: formats ){
-            if (this.outputDirectory.exists() && !this.outputDirectory.isDirectory())
+            if (this.getReportOutputDirectory().exists() && !this.getReportOutputDirectory().isDirectory())
                 throw new MavenReportException("Cannot create directory");
-            else if (!this.outputDirectory.exists())
-                this.outputDirectory.mkdir();
-
+            else if (!this.getReportOutputDirectory().exists())
+                this.getReportOutputDirectory().mkdirs();
             Optional<FormatOptionsEnum> formatOptionsOptional = FormatOptionsEnum.fromString(format);
             if (formatOptionsOptional.isPresent())
             {
