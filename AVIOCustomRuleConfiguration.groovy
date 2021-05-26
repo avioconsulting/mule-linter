@@ -23,7 +23,7 @@ class AVIOCustomRuleConfiguration {
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
+/*		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
 		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
 		rules.addRule(new LoggerCategoryExistsRule())
 		rules.addRule(new LoggerMessageExistsRule())
@@ -49,7 +49,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-
+*/
 		return rules
 	}
 

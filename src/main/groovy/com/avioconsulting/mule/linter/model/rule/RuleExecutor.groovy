@@ -46,17 +46,65 @@ class RuleExecutor {
         outputStream.close()
     }
 
+    static class SonarQubeReport{
+
+        static class SonarQubeReportIssues {
+            static class SonarQubeReportLocation {
+
+                static class TextRange {
+                    Integer startLine
+                    Integer endLine
+                    Integer startColumn
+                    Integer endColumn
+                }
+
+                String message
+                String filePath
+                TextRange textRange;
+
+            }
+
+            String engineId
+            String ruleId
+            String severity
+            String type
+            SonarQubeReportLocation primaryLocation;
+            SonarQubeReportIssues(violation){
+
+                ruleId = violation.rule.ruleId
+                engineId = violation.rule.ruleName
+                severity = violation.rule.severity
+                type = violation.rule.severity
+                this.primaryLocation = new SonarQubeReportLocation();
+                this.primaryLocation.filePath = violation.fileName
+                this.primaryLocation.message = violation.message
+                this.primaryLocation.textRange = new SonarQubeReportLocation.TextRange();
+                this.primaryLocation.textRange.startLine=violation.lineNumber
+            }
+
+
+        }
+
+        List<SonarQubeReportIssues> issues
+        SonarQubeReport(){
+            this.issues = new ArrayList<>();
+        }
+
+    }
+
+
     void displayResults(outputFormat,OutputStream outputStream) {
         if(outputFormat == 'json'){
-            outputStream.write("{\n".bytes)
-            outputStream.write("   rulesExecuted:$ruleCount,\n".bytes)
-
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(results)
-            outputStream.write(("   ruleViolations:"+json+",\n").bytes )
 
-                    outputStream.write("   totalViolations:$results.size\n".bytes)
-            outputStream.write("}".bytes)
+          SonarQubeReport sq = new SonarQubeReport();
+
+            results.each { violation ->
+                sq.getIssues().add( new SonarQubeReport.SonarQubeReportIssues(violation) )
+            }
+            String prettyJsonString = gson.toJson(sq)
+            outputStream.write(prettyJsonString.bytes)
+
         }
         else if(outputFormat == 'xml')
         {  final StringBuilder builder = new StringBuilder();
@@ -64,14 +112,15 @@ class RuleExecutor {
                 String json = new Gson().toJson(violation);
                 JsonObject jsonObject = new JsonObject(json);
                 String xml =  "<"+'rules'+">" + XML.toString(jsonObject) + "</"+'rules'+">"
-                builder.append(xml.bytes)
+                builder.append(xml + "")
             }
             String concatenatedString = builder.toString();
             String xmlString = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n<"+'root'+">" + concatenatedString + "</"+'root'+">";
             String xmlOutput = convertToXML(xmlString);
-            outputStream.write(xmlOutput)
+            outputStream.write(xmlOutput.bytes)
+
         }
-        else {
+        else{
             outputStream.write("$ruleCount rules executed.\n".bytes)
             outputStream.write('Rule Results\n'.bytes)
 
@@ -80,6 +129,7 @@ class RuleExecutor {
                 outputStream.write((violation.lineNumber > 0 ? "( $violation.lineNumber ) " : '').bytes)
                 outputStream.write("$violation.message \n".bytes)
             }
+
             outputStream.write("\nFound a total of $results.size violations.\n".bytes)
         }
         outputStream.flush()
