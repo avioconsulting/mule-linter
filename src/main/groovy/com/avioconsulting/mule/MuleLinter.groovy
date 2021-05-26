@@ -32,7 +32,7 @@ class MuleLinter {
         RuleExecutor exe = this.buildLinterExecutor()
 
         // Display Results
-        exe.displayResults(System.out)
+        exe.displayResults(outputFormat,System.out)
 
     }
 
