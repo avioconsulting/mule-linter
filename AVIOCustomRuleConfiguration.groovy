@@ -9,7 +9,7 @@ import com.avioconsulting.mule.linter.rule.property.*
 
 class AVIOCustomRuleConfiguration {
 	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
+	static final String GLOBALS_FILENAME = 'global(.*).xml'
 
 	static RuleSet getRules() {
 		RuleSet rules = new RuleSet()

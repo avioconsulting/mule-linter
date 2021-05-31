@@ -22,6 +22,8 @@ dependencies {
     implementation 'info.picocli:picocli-groovy:4.3.2'
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.json:json:20171018'
 }
 
 test {
