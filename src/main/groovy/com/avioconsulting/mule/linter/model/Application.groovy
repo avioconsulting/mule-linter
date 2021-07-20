@@ -10,7 +10,8 @@ class Application {
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
     static final String README = 'README.md'
-    static final String JENKINS_FILE = 'Jenkinsfile'
+    static final String JENKINS_FILE = JenkinsFile.JENKINSFILE
+    static final String AZURE_PIPELINES_FILE = AzurePipelinesFile.AZURE_PIPELINES
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
 
@@ -20,6 +21,7 @@ class Application {
     PomFile pomFile
     ReadmeFile readmeFile
     JenkinsFile jenkinsFile
+    AzurePipelinesFile azurePipelinesFile
     String name
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
@@ -33,6 +35,7 @@ class Application {
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
         jenkinsFile =  new JenkinsFile(applicationPath, JENKINS_FILE)
+        azurePipelinesFile = new AzurePipelinesFile(applicationPath, AZURE_PIPELINES_FILE)
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
@@ -114,7 +117,9 @@ class Application {
         return jenkinsFile
     }
 
-
+    AzurePipelinesFile getAzurePipelinesFile() {
+        this.azurePipelinesFile
+    }
 
     Boolean hasFile(String filename) {
         File file = new File(applicationPath, filename)
