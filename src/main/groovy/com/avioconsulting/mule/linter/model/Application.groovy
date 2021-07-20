@@ -46,10 +46,8 @@ class Application {
     void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, PROPERTY_PATH)
         if (resourcePath.exists()) {
-            resourcePath.eachDirRecurse { dir ->
-                dir.eachFileMatch(~/.*.properties/) { file ->
-                    propertyFiles.add(new PropertyFile(file))
-                }
+            resourcePath.traverse(nameFilter: ~/.*.properties/) { file->
+                propertyFiles.add(new PropertyFile(file))
             }
         }
     }
