@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.linter
 
+import com.avioconsulting.mule.linter.model.AzurePipelinesFile
 import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.pom.PomFile
@@ -34,6 +35,13 @@ class TestApplication {
     void addGitIgnore() {
         File gitIgnore = new File(appDir, GitIgnoreFile.GITIGNORE)
         writeFile(gitIgnore, GITIGNORE_CONTENTS)
+    }
+
+    void addAzurePipelinesFile(boolean validYaml = true) {
+        File azurePipelinesFile = new File(appDir, AzurePipelinesFile.AZURE_PIPELINES)
+        def content = validYaml ? "pool:\n" +
+                "  vmImage: 'ubuntu-latest'" : 'foobar'
+        writeFile(azurePipelinesFile, content)
     }
 
     void addJenkinsfile() {
