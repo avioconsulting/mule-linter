@@ -3,7 +3,6 @@ package com.avioconsulting.mule.linter.rule.cicd
 import com.avioconsulting.mule.linter.TestApplication
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.AzurePipelinesFile
-import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -52,7 +51,7 @@ class AzurePipelinesExistsRuleTest extends Specification {
         Rule rule = new AzurePipelinesExistsRule()
         Application app = new Application(testApp.appDir)
         testApp.removeFile(AzurePipelinesFile.AZURE_PIPELINES)
-        testApp.addAzurePipelinesFile(false)
+        testApp.addAzurePipelinesFile("-some\n   - invalid: yaml")
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -60,6 +59,6 @@ class AzurePipelinesExistsRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 0
-        violations[0].message == AzurePipelinesExistsRule.RULE_VIOLATION_MESSAGE
+        violations[0].message.contains AzurePipelinesExistsRule.RULE_FORMAT_VIOLATION_MESSAGE
     }
 }

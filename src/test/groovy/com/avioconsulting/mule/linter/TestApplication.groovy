@@ -37,11 +37,11 @@ class TestApplication {
         writeFile(gitIgnore, GITIGNORE_CONTENTS)
     }
 
-    void addAzurePipelinesFile(boolean validYaml = true) {
+    void addAzurePipelinesFile(String yamlContents = null) {
         File azurePipelinesFile = new File(appDir, AzurePipelinesFile.AZURE_PIPELINES)
-        def content = validYaml ? "pool:\n" +
-                "  vmImage: 'ubuntu-latest'" : 'foobar'
-        writeFile(azurePipelinesFile, content)
+        yamlContents = yamlContents ?: "pool:\n" +
+                "  vmImage: 'ubuntu-latest'"
+        writeFile(azurePipelinesFile, yamlContents)
     }
 
     void addJenkinsfile() {
