@@ -31,7 +31,9 @@ class EncryptedPasswordRule extends Rule {
             file.getProperties().each {
                 String propName = it.key.toLowerCase()
                 if ( propName.contains('password') || propName.contains('secret')) {
-                    if (!isEncrypted(it.value.toString())) {
+                    def propertyValue = it.value.toString()
+                    // if the property references another property, that should not be a violation
+                    if (!isEncrypted(propertyValue) && !propertyValue.startsWith('${secure::')) {
                         violations.add(new RuleViolation(this, file.getFile().absolutePath,
                                 0, RULE_VIOLATION_MESSAGE + propName))
                     }

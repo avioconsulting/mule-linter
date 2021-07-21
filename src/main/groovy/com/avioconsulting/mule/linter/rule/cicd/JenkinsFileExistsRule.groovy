@@ -3,6 +3,7 @@ package com.avioconsulting.mule.linter.rule.cicd
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleSeverity
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class JenkinsFileExistsRule extends Rule{
@@ -11,9 +12,11 @@ class JenkinsFileExistsRule extends Rule{
     static final String RULE_NAME = 'A Jenkinsfile exists. '
     static final String RULE_VIOLATION_MESSAGE = 'A Jenkinsfile file does not exist'
 
+
     JenkinsFileExistsRule() {
         this.ruleId = RULE_ID
         this.ruleName = RULE_NAME
+        this.setSeverity(RuleSeverity.CRITICAL);
     }
     @Override
     List<RuleViolation> execute(Application app) {

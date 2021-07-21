@@ -48,4 +48,11 @@ class PropertyFile {
         this.name = name
     }
 
+
+    @Override
+    String toString() {
+        return "PropertyFile{" +
+                "file=" + file +
+                '}';
+    }
 }

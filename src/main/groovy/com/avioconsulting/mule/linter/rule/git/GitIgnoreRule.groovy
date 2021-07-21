@@ -11,6 +11,7 @@ class GitIgnoreRule extends Rule {
     static final String RULE_NAME = 'A .gitignore exists and contains required expressions. '
     static final String RULE_VIOLATION_MESSAGE = 'The .gitignore is missing required expression: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'The .gitignore does not exist'
+    // TODO: When using Groovy unit testing with code gen, since Studio 7 is challenged at deriving source paths from Maven, sometimes it helps to version .classpath. It might help to allow opting out of this
     static final List<String> DEFAULT_EXPRESSIONS = ['*.jar', '*.class', 'target/',
                                                      '.project', '.classpath', '.idea', 'build']
     static List<String> ignoredFiles

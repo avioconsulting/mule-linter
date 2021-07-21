@@ -74,10 +74,9 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
         then:
         app.muleArtifact != null
-        violations.size() == 2
+        violations.size() == 1
         violations[0].lineNumber == 3
-        violations[0].message.contains('client_id')
-        violations[1].message.contains('client_secret')
+        violations[0].message.contains('client_secret')
     }
 
     def 'Missing Secure Properties'() {
@@ -91,10 +90,9 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
         then:
         app.muleArtifact != null
-        violations.size() == 2
+        violations.size() == 1
         violations[0].lineNumber == 0
-        violations[0].message.contains('client_id')
-        violations[1].message.contains('client_secret')
+        violations[0].message.contains('client_secret')
     }
 
     private static final String MISSING_PROPS_MULE_ARTIFACT = '''{

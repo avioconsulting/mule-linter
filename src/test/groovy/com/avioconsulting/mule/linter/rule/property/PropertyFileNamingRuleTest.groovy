@@ -10,7 +10,6 @@ import spock.lang.Specification
 class PropertyFileNamingRuleTest extends Specification {
 
     private static final List<String> ENVS = ['dev', 'test', 'prod']
-    private static final String NAMING_PATTERN = '${appname}.${env}.properties'
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
@@ -24,20 +23,21 @@ class PropertyFileNamingRuleTest extends Specification {
 
     def 'Property File Naming Rule check with pattern'() {
         given:
-        testApp.addPropertyFiles(['sample-mule-app.test.properties',
-                                  'sample-mule-app.prod.properties',
+        testApp.addPropertyFiles(['prod.properties',
                                   'dev.properties'])
-        Rule rule = new PropertyFileNamingRule(ENVS, NAMING_PATTERN)
+        def customNamingPattern = '${env}.properties'
+        Rule rule = new PropertyFileNamingRule(ENVS,
+                                               customNamingPattern)
 
         when:
         Application app = new Application(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        app.propertyFiles.size() == 3
+        app.propertyFiles.size() == 2
         violations.size() == 1
-        violations[0].fileName == 'sample-mule-app.dev.properties'
-        violations[0].message.contains(NAMING_PATTERN)
+        violations[0].fileName == 'test.properties'
+        violations[0].message.contains(customNamingPattern)
     }
 
     def 'Property File Naming Rule check default pattern'() {

@@ -6,7 +6,7 @@ import com.avioconsulting.mule.linter.rule.git.*
 import com.avioconsulting.mule.linter.rule.muleartifact.*
 import com.avioconsulting.mule.linter.rule.pom.*
 import com.avioconsulting.mule.linter.rule.property.*
-
+import com.avioconsulting.mule.linter.model.rule.*
 class AVIOCustomRuleConfiguration {
 	static final List<String> ENVIRONMENTS = ['dev','test','prod']
 	static final String GLOBALS_FILENAME = 'globals.xml'
@@ -14,13 +14,16 @@ class AVIOCustomRuleConfiguration {
 	static RuleSet getRules() {
 		RuleSet rules = new RuleSet()
 
+		JenkinsFileExistsRule jk = new JenkinsFileExistsRule()
+
+
 		//cicd
-		rules.addRule(new JenkinsFileExistsRule())
+		rules.addRule(jk)
 
 		//configuration
 		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
 		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
+/*		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
 		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
 		rules.addRule(new LoggerCategoryExistsRule())
 		rules.addRule(new LoggerMessageExistsRule())
@@ -46,7 +49,7 @@ class AVIOCustomRuleConfiguration {
 		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
 		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
 		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-
+*/
 		return rules
 	}
 

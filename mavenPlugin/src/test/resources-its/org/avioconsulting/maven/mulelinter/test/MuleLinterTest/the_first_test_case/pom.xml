@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.avioconsulting.maven.test</groupId>
+    <artifactId>project-to-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Test MyMojo</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.avioconsulting.mule.maven</groupId>
+                <artifactId>mule-linter-maven-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>mule-linter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <ruleConfiguration>D:\ivalsoft\AVIO\mule-linter\mule-linter\AVIOCustomRuleConfiguration.groovy</ruleConfiguration>
+                    <appDir>.</appDir>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
