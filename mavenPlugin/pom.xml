@@ -4,7 +4,7 @@
   <groupId>com.avioconsulting.mule.maven</groupId>
   <artifactId>mule-linter-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>mule-linter-maven-plugin Maven Mojo</name>
 
   <build>
@@ -232,8 +232,10 @@
       <artifactId>gson</artifactId>
       <version>2.8.6</version>
     </dependency>
-
-
-
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.29</version>
+    </dependency>
   </dependencies>
 </project>
