@@ -46,4 +46,14 @@ class RuleViolation {
         this.message = message
     }
 
+
+    @Override
+    String toString() {
+        return "RuleViolation{" +
+                "rule=" + rule.ruleId +
+                ", lineNumber=" + lineNumber +
+                ", fileName='" + fileName + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

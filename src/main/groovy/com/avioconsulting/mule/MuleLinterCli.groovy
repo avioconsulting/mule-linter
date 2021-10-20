@@ -13,7 +13,6 @@ class MuleLinterCli implements Runnable {
 
     @CommandLine.Option(names = ['-f', '--format'], description = 'required output')
     String outputFormat
-
     static void main(String... args) {
         new CommandLine(new MuleLinterCli()).execute(args)
     }

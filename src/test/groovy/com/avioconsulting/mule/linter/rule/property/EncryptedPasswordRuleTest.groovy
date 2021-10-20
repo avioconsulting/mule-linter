@@ -71,6 +71,7 @@ db.port = 1521
 db.host = localhost
 db.user = areed
 db.secret = ![abcdef==]
+other.secret = ${secure::shared.secret}
 '''
 
     private static final String BAD_PROPERTY_1 = '''

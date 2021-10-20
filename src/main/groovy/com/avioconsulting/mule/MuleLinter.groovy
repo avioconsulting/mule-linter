@@ -11,15 +11,10 @@ class MuleLinter {
     List<RuleSet> ruleSetList = []
     String  outputFormat
 
-    MuleLinter(String applicationDirectory, String ruleConfigFile) {
-        this.app = new Application(new File(applicationDirectory))
-        ruleSetList = parseConfigurationFile(ruleConfigFile)
-    }
-
     MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
         this.app = new Application(new File(applicationDirectory))
         ruleSetList = parseConfigurationFile(ruleConfigFile)
-        this.outputFormat = outputFormat
+        this.outputFormat= outputFormat
     }
 
     List<RuleSet> parseConfigurationFile(String ruleConfigFile) {
@@ -32,14 +27,25 @@ class MuleLinter {
 
     @SuppressWarnings('UnnecessaryObjectReferences')
     void runLinter() {
+
+        // Create the executor
+        RuleExecutor exe = this.buildLinterExecutor()
+
+        // Display Results
+        exe.displayResults(outputFormat,System.out)
+
+    }
+
+    @SuppressWarnings('UnnecessaryObjectReferences')
+    RuleExecutor buildLinterExecutor() {
+
         // Create the executor
         RuleExecutor exe = new RuleExecutor(app, ruleSetList)
 
         // Execute
         exe.executeRules()
 
-        // Display Results
-        exe.displayResults(outputFormat, System.out)
+        return exe
     }
 
 }

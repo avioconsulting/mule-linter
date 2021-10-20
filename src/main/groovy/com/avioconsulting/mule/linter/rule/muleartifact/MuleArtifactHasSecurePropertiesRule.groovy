@@ -10,7 +10,7 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final String RULE_ID = 'MULE_ARTIFACT_SECURE_PROPERTIES'
     static final String RULE_NAME = 'The mule-artifact.json should contain certain secured properties. '
     static final String RULE_VIOLATION_MESSAGE = 'The secureProperties array does not contain the property '
-    static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_id', 'anypoint.platform.client_secret']
+    static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_secret']
 
     private final List secureProperties
 
