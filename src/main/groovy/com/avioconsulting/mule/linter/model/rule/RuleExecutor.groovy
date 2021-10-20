@@ -135,56 +135,6 @@ class RuleExecutor {
         return xmlOutput.getWriter().toString();
     }
 
-    static class SonarQubeReport{
-         static class SonarQubeReportIssues {
-            static class SonarQubeReportLocation {
-                static class TextRange {
-                    Integer startLine
-                    Integer endLine
-                    Integer startColumn
-                    Integer endColumn
-                }
-                String message
-                String filePath
-                TextRange textRange;
-            }
-            String engineId
-            String ruleId
-            String severity
-            String type
-            SonarQubeReportLocation primaryLocation;
-            SonarQubeReportIssues(violation){
-                ruleId = violation.rule.ruleId
-                engineId = violation.rule.ruleName
-                severity = violation.rule.severity
-                type = violation.rule.ruleType
-                this.primaryLocation = new SonarQubeReportLocation();
-                this.primaryLocation.filePath = violation.fileName
-                this.primaryLocation.message = violation.message
-                this.primaryLocation.textRange = new SonarQubeReportLocation.TextRange();
-                this.primaryLocation.textRange.startLine=(violation.lineNumber > 0  ?  violation.lineNumber  : Integer.parseInt('1'))
-            }
-        }
-
-        List<SonarQubeReportIssues> issues
-        SonarQubeReport(){
-            this.issues = new ArrayList<>();
-        }
-
-    }
-
-    String convertToXML(String xml){
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute("indent-number", 2);
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        StringWriter stringWriter = new StringWriter();
-        StreamResult xmlOutput = new StreamResult(stringWriter);
-        Source xmlInput = new StreamSource(new StringReader(xml));
-        transformer.transform(xmlInput, xmlOutput);
-        return xmlOutput.getWriter().toString();
-    }
-
     boolean hasErrors(){
         this.results.size()>0
     }

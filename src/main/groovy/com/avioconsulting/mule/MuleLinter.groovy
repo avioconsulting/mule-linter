@@ -17,12 +17,6 @@ class MuleLinter {
         this.outputFormat= outputFormat
     }
 
-    MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
-        this.app = new Application(new File(applicationDirectory))
-        ruleSetList = parseConfigurationFile(ruleConfigFile)
-        this.outputFormat = outputFormat
-    }
-
     List<RuleSet> parseConfigurationFile(String ruleConfigFile) {
         GroovyClassLoader gcl = new GroovyClassLoader()
         File config = new File(ruleConfigFile)
