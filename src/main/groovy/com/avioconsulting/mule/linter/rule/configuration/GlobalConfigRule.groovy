@@ -40,13 +40,13 @@ class GlobalConfigRule extends Rule {
                 configFile.addAdditionalGlobalConfig(noneGlobalElements)
             }
             List<MuleComponent> globalConfigs = configFile.findGlobalConfigs()
-            if (globalConfigs.size() > 0 && configFile.name != globalFileName) {
+            if (globalConfigs.size() > 0 && !(configFile.name.matches(globalFileName))) {
                 globalConfigs.each {
                     violations.add(new RuleViolation(this, configFile.path,
                             it.lineNumber, RULE_VIOLATION_MESSAGE + it.componentName))
                 }
             }
-            if (configFile.name == globalFileName) {
+            if (configFile.name.matches(globalFileName) ) {
                 globalFound = true
             }
         }

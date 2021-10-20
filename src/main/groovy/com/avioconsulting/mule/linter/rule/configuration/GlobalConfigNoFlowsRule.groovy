@@ -31,7 +31,8 @@ class GlobalConfigNoFlowsRule extends Rule {
 
         app.configurationFiles.each {
             configFile ->
-                if (configFile.name == globalFileName) {
+                //if (configFile.name == globalFileName) {
+                    if (configFile.name.matches(globalFileName)) {
                     globalFound = true
                     List<MuleComponent> flowsSubflowsConfigs =  configFile.findNonGlobalConfigs()
                     if (flowsSubflowsConfigs.size() > 0) {
