@@ -7,6 +7,7 @@ abstract class Rule {
     String ruleId
     String ruleName
     RuleSeverity severity = RuleSeverity.MINOR
+    RuleType ruleType = RuleType.CODE_SMELL
 
     String getRuleName() {
         return ruleName
@@ -18,6 +19,10 @@ abstract class Rule {
 
     void setSeverity(RuleSeverity severity) {
         this.severity = severity
+    }
+
+    void setRuleType(RuleType ruleType) {
+        this.ruleType = ruleType
     }
 
     abstract List<RuleViolation> execute(Application application)
