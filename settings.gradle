@@ -1,2 +1,4 @@
 rootProject.name = 'mule-linter'
+include 'mule-linter-spi'
+include 'mule-linter-core'
 

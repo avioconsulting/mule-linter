@@ -1,56 +1,20 @@
+
 plugins {
-    id 'groovy'
-    id 'java'
-    id 'application'
-    id 'codenarc'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'base'
     id 'net.thauvin.erik.gradle.semver' version '1.0.4'
 }
 
-group 'com.avioconsulting.mule'
-mainClassName = 'com.avioconsulting.mule.MuleLinterCli'
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'net.thauvin.erik.gradle.semver'
 
-repositories {
-    mavenCentral()
-}
+    group 'com.avioconsulting.mule'
 
-dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.0'
-    implementation 'info.picocli:picocli-groovy:4.3.2'
-    testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
-    testImplementation 'org.spockframework:spock-core'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'org.json:json:20171018'
-    implementation 'org.yaml:snakeyaml:1.29'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-// https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html
-codenarc {
-    configFile = file("${project.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
-    ignoreFailures = true
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
     repositories {
-        maven {
-            credentials {
-                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
-                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
-            }
-            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
-        }
+        mavenCentral()
     }
+
+
 }
