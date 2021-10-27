@@ -83,17 +83,7 @@ class AVIOCustomRuleConfiguration {
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
 ## Maven Plugin
-The mule linter can be run as mvn plugin
-
-The Maven Plugin is located in the *mavenPlugin* folder. Install it with the following command:
-
-```mvn install```
-
-This is an example of how to use the maven plugin by command line
-```mvn com.avioconsulting.mule.maven:mule-linter-maven-plugin:0.0.1-SNAPSHOT:mule-linter -DappDir=<<Path to the Mule project>> -DruleConfiguration=<<Path to groovy rules file>> -Dformats=console,html,json```
-
-Reports from JSON and HTML format will be saved in the *target/site* directory  
-
+See Readme in `mule-linter-maven-plugin` module.
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag
