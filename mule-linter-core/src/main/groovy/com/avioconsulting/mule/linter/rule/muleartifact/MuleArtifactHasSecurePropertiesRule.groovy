@@ -5,6 +5,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import org.apache.groovy.json.internal.JsonArray
 
+
 class MuleArtifactHasSecurePropertiesRule extends Rule {
 
     static final String RULE_ID = 'MULE_ARTIFACT_SECURE_PROPERTIES'

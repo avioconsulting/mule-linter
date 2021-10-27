@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.linter.model.pom
 
-import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 
 /**
@@ -60,7 +59,7 @@ class MunitMavenPlugin extends PomPlugin {
     }
 
     Integer getIgnoreFilesLineNo() {
-        MuleXmlParser.getNodeLineNumber(pluginXml.configuration.coverage.ignoreFiles)
+        ArtifactDescriptor.getNodeLineNumber(pluginXml.configuration.coverage.ignoreFiles)
     }
 
 }

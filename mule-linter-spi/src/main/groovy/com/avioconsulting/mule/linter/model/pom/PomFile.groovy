@@ -1,31 +1,28 @@
 package com.avioconsulting.mule.linter.model.pom
 
 import com.avioconsulting.mule.linter.model.ProjectFile
-import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 
 class PomFile extends ProjectFile {
 
     public static final String POM_XML = 'pom.xml'
     static final String PROPERTIES = 'properties'
-    MuleXmlParser parser
     private final GPathResult pomXml
     private final Boolean exists
 
-    PomFile(File file) {
+    PomFile(File file, GPathResult pomXml) {
         super(file)
         if (file.exists()) {
             exists = true
-            parser = new MuleXmlParser()
-            pomXml = parser.parse(file)
+            this.pomXml = pomXml
         } else {
             exists = false
-            pomXml = null
+            this.pomXml = null
         }
     }
 
-    PomFile(File application, String fileName) {
-        this(new File(application, fileName))
+    PomFile(File application, String fileName, GPathResult pomXml) {
+        this(new File(application, fileName), pomXml)
     }
 
     String getArtifactId() {
@@ -53,14 +50,12 @@ class PomFile extends ProjectFile {
         PomElement prop = new PomElement()
         prop.name = propertyName
         prop.value = p.text()
-        prop.lineNo = parser.getNodeLineNumber(p)
+        prop.lineNo = ArtifactDescriptor.getNodeLineNumber(p)
         return prop
     }
-
     Integer getPropertiesLineNo() {
-        return parser.getNodeLineNumber(pomProperties)
+        return ArtifactDescriptor.getNodeLineNumber(pomProperties)
     }
-
     PomPlugin getPlugin(String groupId, String artifactId) {
         PomPlugin plugin
         GPathResult pluginPath = pomXml.build.plugins.plugin.find {

@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.linter.model
 
-import com.avioconsulting.mule.linter.parser.JsonSlurper
 import org.apache.groovy.json.internal.JsonArray
 import org.apache.groovy.json.internal.JsonBoolean
 import org.apache.groovy.json.internal.JsonMap
@@ -13,13 +12,10 @@ class MuleArtifact extends ProjectFile {
     private JsonMap muleArtifact
     private final Boolean exists
 
-    MuleArtifact(File f) {
-        super(new File(f, MULE_ARTIFACT_JSON))
-
-        File file = new File(f, MULE_ARTIFACT_JSON)
-
+    MuleArtifact(File f, JsonMap content) {
+        super(f)
         if (file.exists()) {
-            parseMuleArtifact(file)
+            muleArtifact = content
             this.exists = true
         } else {
             this.exists = false
@@ -59,9 +55,5 @@ class MuleArtifact extends ProjectFile {
         }
     }
 
-    private void parseMuleArtifact(File file) {
-        JsonSlurper slurper = new JsonSlurper()
-        muleArtifact = slurper.parse(file) as JsonMap
-    }
 
 }

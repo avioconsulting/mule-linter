@@ -3,8 +3,11 @@ package com.avioconsulting.mule.linter.model
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
+import com.avioconsulting.mule.linter.parser.JsonSlurper
+import com.avioconsulting.mule.linter.parser.MuleXmlParser
+import org.apache.groovy.json.internal.JsonMap
 
-class Application {
+class Application implements MApplication {
 
     static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
     static final String POM_FILE = 'pom.xml'
@@ -31,7 +34,8 @@ class Application {
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
-        pomFile = new PomFile(applicationPath, POM_FILE)
+        File pFile = new File(applicationPath, POM_FILE);
+        pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
         jenkinsFile =  new JenkinsFile(applicationPath, JENKINS_FILE)
@@ -92,7 +96,13 @@ class Application {
     }
 
     void loadMuleArtifact() {
-        muleArtifact = new MuleArtifact(applicationPath)
+        File file = new File(applicationPath, MuleArtifact.MULE_ARTIFACT_JSON)
+        def content = null
+        if (file.exists()) {
+            JsonSlurper slurper = new JsonSlurper()
+            content = slurper.parse(file) as JsonMap
+        }
+        muleArtifact = new MuleArtifact(file, content)
     }
 
     public File getApplicationPath() {

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.linter.model.pom
 
-import com.avioconsulting.mule.linter.parser.MuleXmlParser
+import com.avioconsulting.mule.linter.model.Namespace
 import groovy.xml.slurpersupport.GPathResult
 
 class ArtifactDescriptor {
@@ -16,7 +16,7 @@ class ArtifactDescriptor {
         this.pluginXml = pluginXml
         this.groupId = pluginXml.groupId as String
         this.artifactId = pluginXml.artifactId as String
-        this.lineNo = MuleXmlParser.getNodeLineNumber(pluginXml)
+        this.lineNo = getNodeLineNumber(pluginXml)
         this.pomFile = pomFile
         this.version = getAttribute('version')
     }
@@ -34,7 +34,7 @@ class ArtifactDescriptor {
                 pElement = new PomElement()
                 pElement.name = element.name()
                 pElement.value = element.text()
-                pElement.lineNo = MuleXmlParser.getNodeLineNumber(element)
+                pElement.lineNo = getNodeLineNumber(element)
             }
         }
 
@@ -48,7 +48,7 @@ class ArtifactDescriptor {
                 pElement = new PomElement()
                 pElement.name = propertyName
                 pElement.value = it.text()
-                pElement.lineNo = MuleXmlParser.getNodeLineNumber(it)
+                pElement.lineNo = getNodeLineNumber(it)
             }
         }
         return pElement
@@ -62,4 +62,7 @@ class ArtifactDescriptor {
         expression.takeAfter('${').takeBefore('}')
     }
 
+    static Integer getNodeLineNumber(GPathResult node) {
+        return Integer.valueOf(String.valueOf(node["@${Namespace.START_LINE_NO_NAMESPACE_PREFIX}:${Namespace.START_LINE_NO_ATTRIBUTE}"]))
+    }
 }

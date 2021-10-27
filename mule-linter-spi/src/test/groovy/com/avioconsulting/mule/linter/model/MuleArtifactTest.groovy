@@ -1,5 +1,9 @@
 package com.avioconsulting.mule.linter.model
 
+import org.apache.groovy.json.internal.JsonArray
+import org.apache.groovy.json.internal.JsonBoolean
+import org.apache.groovy.json.internal.JsonMap
+import org.apache.groovy.json.internal.JsonString
 import spock.lang.Specification
 
 class MuleArtifactTest extends Specification {
@@ -17,37 +21,25 @@ class MuleArtifactTest extends Specification {
         appDir.deleteDir()
     }
 
+    static def toJsonArray(strings, startIdx){
+        JsonArray array = new JsonArray(startIdx);
+        strings.eachWithIndex { str, idx -> array.add(new JsonString(str, startIdx + idx))}
+        return array
+    }
+
     def "MuleArtifact attributes"() {
         given:
-        String artifactString = '''{
-  "configs": [
-    "ch-usage-sync.xml"
-  ],
-  "redeploymentEnabled": true,
-  "name": "ch-usage-sync",
-  "minMuleVersion": "4.0.0",
-  "requiredProduct": "MULE_EE",
-  "classLoaderModelLoaderDescriptor": {
-    "id": "mule",
-    "attributes": {
-      "exportedResources": []
-    }
-  },
-  "bundleDescriptorLoader": {
-    "id": "mule",
-    "attributes": {}
-  },
-  "secureProperties": [
-    "anypoint.platform.client_id",
-    "anypoint.platform.client_secret"
-  ]
-}'''
-        muleArtifactFile.withPrintWriter { pw ->
-            pw.print(artifactString)
-        }
+        JsonMap jsonMap = new JsonMap(1);
+        jsonMap.put("configs", toJsonArray(["ch-usage-sync.xml"], 2))
+        jsonMap.put("name",new JsonString("ch-usage-sync", 1))
+        jsonMap.put("minMuleVersion",new JsonString('4.0.0',1))
+        jsonMap.put("requiredProduct",new JsonString('MULE_EE',1))
+        jsonMap.put("secureProperties", toJsonArray(["anypoint.platform.client_id", "anypoint.platform.client_secret"], 1))
+        jsonMap.put("configs", toJsonArray(['ch-usage-sync.xml'], 1))
+        jsonMap.put("redeploymentEnabled", new JsonBoolean(true,1))
 
         when:
-        MuleArtifact muleArtifact = new MuleArtifact(appDir)
+        MuleArtifact muleArtifact = new MuleArtifact(appDir, jsonMap)
 
         then:
         muleArtifact.appName == 'ch-usage-sync'
@@ -64,26 +56,20 @@ class MuleArtifactTest extends Specification {
     @SuppressWarnings('UnnecessaryGetter')
     def "MuleArtifact dynamic attributes"() {
         given:
-        String artifactString = '''{
-  "configs": [
-    "ch-usage-sync.xml"
-  ],
-  "redeploymentEnabled": true,
-  "name": "ch-usage-sync",
-  "minMuleVersion": "4.0.0",
-  "classLoaderModelLoaderDescriptor": {
-    "id": "mule",
-    "attributes": {
-      "exportedResources": []
-    }
-  }
-}'''
-        muleArtifactFile.withPrintWriter { pw ->
-            pw.print(artifactString)
-        }
+        JsonMap jsonMap = new JsonMap(1);
+        jsonMap.put("configs", toJsonArray(["ch-usage-sync.xml"], 2))
+        jsonMap.put("name",new JsonString("ch-usage-sync", 1))
+        jsonMap.put("minMuleVersion",new JsonString('4.0.0',7))
+
+        JsonMap descriptor = new JsonMap(9);
+        descriptor.put("id", new JsonString("mule",9))
+        JsonMap attributes = new JsonMap(10)
+        attributes.put("exportedResources", new JsonArray(11))
+        descriptor.put("attributes", attributes)
+        jsonMap.put("classLoaderModelLoaderDescriptor", descriptor)
 
         when:
-        MuleArtifact muleArtifact = new MuleArtifact(appDir)
+        MuleArtifact muleArtifact = new MuleArtifact(appDir, jsonMap)
 
         then:
         muleArtifact.appName == 'ch-usage-sync'
