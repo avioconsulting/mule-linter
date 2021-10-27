@@ -58,7 +58,7 @@ class RuleExecutor {
                 ruleId = violation.rule.ruleId
                 engineId = violation.rule.ruleName
                 severity = violation.rule.severity
-                type = violation.rule.severity
+                type = violation.rule.ruleType
                 this.primaryLocation = new SonarQubeReportLocation();
                 this.primaryLocation.filePath = violation.fileName
                 this.primaryLocation.message = violation.message
