@@ -78,7 +78,8 @@ class RuleExecutor {
 
 
     void displayResults(outputFormat,OutputStream outputStream) {
-        if(outputFormat == 'json'){
+        def format = outputFormat.toLowerCase()
+        if(format == 'json'){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
           SonarQubeReport sq = new SonarQubeReport();
@@ -90,7 +91,7 @@ class RuleExecutor {
             outputStream.write(prettyJsonString.bytes)
 
         }
-        else if(outputFormat == 'xml')
+        else if(format == 'xml')
         {  final StringBuilder builder = new StringBuilder();
             results.each { violation ->
                 String json = new Gson().toJson(violation);
@@ -102,7 +103,6 @@ class RuleExecutor {
             String xmlString = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n<"+'root'+">" + concatenatedString + "</"+'root'+">";
             String xmlOutput = convertToXML(xmlString);
             outputStream.write(xmlOutput.bytes)
-
         }
         else{
             outputStream.write("$ruleCount rules executed.\n".bytes)
@@ -117,7 +117,6 @@ class RuleExecutor {
             outputStream.write("\nFound a total of $results.size violations.\n".bytes)
         }
         outputStream.flush()
-        outputStream.close()
     }
 
     String convertToXML(String xml){

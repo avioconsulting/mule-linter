@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'de.benediktritter.maven-plugin-development' version "0.3.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // required dependencies for building a Maven Plugin
+    implementation 'org.apache.maven.plugins:maven-plugin-plugin:3.6.1'
+    implementation project(':mule-linter-core')
+    implementation project(':mule-linter-spi')
+    // annotations are only needed at compile time
+    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
+                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
+            }
+            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
+        }
+    }
+}
