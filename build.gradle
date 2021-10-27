@@ -16,5 +16,10 @@ subprojects {
         mavenCentral()
     }
 
+    dependencies {
+        implementation (group: 'org.codehaus.groovy', name: 'groovy-all', version: '3.0.8', ext: 'pom'){
+            transitive= true
+        }
+    }
 
 }

@@ -10,7 +10,6 @@ application {
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.0'
     implementation 'info.picocli:picocli-groovy:4.3.2'
     implementation project(':mule-linter-spi')
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
