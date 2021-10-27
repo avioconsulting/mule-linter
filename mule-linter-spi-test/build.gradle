@@ -1,0 +1,20 @@
+plugins {
+    id 'groovy'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    implementation project(":mule-linter-spi")
+    testImplementation project(":mule-linter-core")
+    testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core'
+}
+
+test {
+    useJUnitPlatform()
+}
