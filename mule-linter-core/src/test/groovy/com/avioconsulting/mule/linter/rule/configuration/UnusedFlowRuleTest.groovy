@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -27,7 +27,7 @@ class UnusedFlowRuleTest extends Specification {
         when:
         testApp.addFile('src/main/mule/main.xml', MAIN_GOOD)
         testApp.buildConfigContent('business-logic.xml', BUSINESS_GOOD)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -40,7 +40,7 @@ class UnusedFlowRuleTest extends Specification {
 
         when:
         testApp.addFile('src/main/mule/main.xml', MANY_SOURCES)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -54,7 +54,7 @@ class UnusedFlowRuleTest extends Specification {
         when:
         testApp.addFile('src/main/mule/main.xml', MAIN_BAD)
         testApp.buildConfigContent('business-logic.xml', BUSINESS_BAD)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

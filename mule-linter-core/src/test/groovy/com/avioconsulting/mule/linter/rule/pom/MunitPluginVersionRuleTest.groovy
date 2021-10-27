@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -23,7 +23,7 @@ class MunitPluginVersionRuleTest extends Specification {
     def 'Correct MUnit Version'() {
         given:
         testApp.addPom()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitPluginVersionRule('2.2.1')
@@ -36,7 +36,7 @@ class MunitPluginVersionRuleTest extends Specification {
     def 'Incorrect MUnit Version'() {
         given:
         testApp.addPom()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitPluginVersionRule('3.2.1')
@@ -51,7 +51,7 @@ class MunitPluginVersionRuleTest extends Specification {
     def 'Missing MUnit Plugin'() {
         given:
         testApp.addFile(PomFile.POM_XML, INVALID_POM)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitPluginVersionRule('3.2.1')

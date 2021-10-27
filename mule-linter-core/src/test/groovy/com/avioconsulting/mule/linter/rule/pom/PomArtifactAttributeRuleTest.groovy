@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -10,7 +10,7 @@ import spock.lang.Specification
 class PomArtifactAttributeRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -26,7 +26,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -41,7 +41,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -54,7 +54,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -70,7 +70,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -83,7 +83,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

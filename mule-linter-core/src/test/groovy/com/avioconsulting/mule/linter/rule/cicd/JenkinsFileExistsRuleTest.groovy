@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.JenkinsFile
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -10,7 +10,7 @@ import spock.lang.Specification
 class JenkinsFileExistsRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -26,7 +26,7 @@ class JenkinsFileExistsRuleTest extends Specification {
         Rule rule = new JenkinsFileExistsRule()
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -38,7 +38,7 @@ class JenkinsFileExistsRuleTest extends Specification {
         Rule rule = new JenkinsFileExistsRule()
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         testApp.removeFile(JenkinsFile.JENKINSFILE)
         List<RuleViolation> violations = rule.execute(app)
 

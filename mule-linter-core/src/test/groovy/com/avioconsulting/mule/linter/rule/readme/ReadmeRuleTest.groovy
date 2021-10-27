@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.readme
 
-import com.avioconsulting.mule.linter.model.Application
+
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.ReadmeFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -34,7 +35,7 @@ I would expect to see this file in a test about the README.md
         readme.withPrintWriter { pw ->
             pw.print(README_CONTENTS)
         }
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new ReadmeRule()
@@ -49,7 +50,7 @@ I would expect to see this file in a test about the README.md
         readme.withPrintWriter { pw ->
             pw.print('')
         }
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new ReadmeRule()
@@ -63,7 +64,7 @@ I would expect to see this file in a test about the README.md
     def 'Missing README.md file'() {
         given:
         readme.delete()
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new ReadmeRule()

@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -10,7 +10,7 @@ import spock.lang.Specification
 class ComponentCountRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -19,7 +19,7 @@ class ComponentCountRuleTest extends Specification {
         testApp.buildConfigContent('first-implementation.xml', FIRST_IMPLEMENTATION)
         testApp.buildConfigContent('second-implementation.xml', SECOND_IMPLEMENTATION)
 
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
     }
 
     def cleanup() {

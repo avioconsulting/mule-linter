@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -12,7 +12,7 @@ import spock.lang.Specification
 class GlobalConfigRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -29,7 +29,7 @@ class GlobalConfigRuleTest extends Specification {
         Rule rule = new GlobalConfigRule('global-config.xml')
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -43,7 +43,7 @@ class GlobalConfigRuleTest extends Specification {
         when:
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)
         testApp.addFile('src/main/mule/bad-global-with-router.xml', BAD_CONFIG_2)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -68,7 +68,7 @@ class GlobalConfigRuleTest extends Specification {
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)
         testApp.addFile('src/main/mule/bad-global-with-router.xml', BAD_CONFIG_2)
         testApp.addFile('src/main/mule/global-error-handler.xml', GLOBAL_ERROR_HANDLER_CONFIG)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -86,7 +86,7 @@ class GlobalConfigRuleTest extends Specification {
 
         when:
         testApp.removeFile('src/main/mule/global-config.xml')
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.linter.rule.pom
 
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
@@ -22,7 +22,7 @@ class MuleRuntimeVersionRuleTest extends Specification {
 
     def 'Mule Runtime Version Check'() {
         given:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MuleRuntimeVersionRule(version)

@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.muleartifact
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -11,7 +11,7 @@ import spock.lang.Specification
 class MuleArtifactMinMuleVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -25,7 +25,7 @@ class MuleArtifactMinMuleVersionRuleTest extends Specification {
     def 'Values match'() {
         given:
         testApp.addMuleArtifact()
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MuleArtifactMinMuleVersionRule()
@@ -38,7 +38,7 @@ class MuleArtifactMinMuleVersionRuleTest extends Specification {
     def 'app.runtime less than minMuleVersion ' () {
         given:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, APPVERSION_LESSTHAN_MINMULE)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MuleArtifactMinMuleVersionRule()
@@ -54,7 +54,7 @@ class MuleArtifactMinMuleVersionRuleTest extends Specification {
     def 'app.runtime greater than minMuleVersion ' () {
         given:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, APPVERSION_GREATERTHAN_MINMULE)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MuleArtifactMinMuleVersionRule()
@@ -67,7 +67,7 @@ class MuleArtifactMinMuleVersionRuleTest extends Specification {
     def 'Missing minMuleVersion from MuleArtifact' () {
         given:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_VERSION_MULE_ARTIFACT)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MuleArtifactMinMuleVersionRule()

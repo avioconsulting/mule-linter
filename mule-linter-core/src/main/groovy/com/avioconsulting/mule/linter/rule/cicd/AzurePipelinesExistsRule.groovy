@@ -2,7 +2,6 @@ package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.AzurePipelinesFile
-import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity
 import com.avioconsulting.mule.linter.model.rule.RuleViolation

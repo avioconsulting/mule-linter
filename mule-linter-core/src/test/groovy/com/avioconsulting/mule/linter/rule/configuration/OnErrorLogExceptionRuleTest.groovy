@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -11,7 +11,7 @@ import spock.lang.Specification
 class OnErrorLogExceptionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -28,7 +28,7 @@ class OnErrorLogExceptionRuleTest extends Specification {
         Rule rule = new OnErrorLogExceptionRule()
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -42,7 +42,7 @@ class OnErrorLogExceptionRuleTest extends Specification {
 
         when:
         testApp.addFile('src/main/mule/on-error-logging-exception.xml', BAD_CONFIG)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

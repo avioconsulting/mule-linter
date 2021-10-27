@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.git
 
-import com.avioconsulting.mule.linter.model.Application
+
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -32,7 +33,7 @@ class GitIgnoreRuleTest extends Specification {
                 pw.println(it)
             }
         }
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new GitIgnoreRule(ignoredFiles)
@@ -49,7 +50,7 @@ class GitIgnoreRuleTest extends Specification {
                 pw.println(it)
             }
         }
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new GitIgnoreRule(extraIgnoredFiles)
@@ -65,7 +66,7 @@ class GitIgnoreRuleTest extends Specification {
 
     def 'Missing .gitignore file'() {
         given:
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
         gitIgnore.delete()
 
         when:
@@ -93,7 +94,7 @@ class GitIgnoreRuleTest extends Specification {
             }
             pw.println('# Ending Comment')
         }
-        Application app = new Application(appDir)
+        MuleApplication app = new MuleApplication(appDir)
 
         when:
         Rule rule = new GitIgnoreRule(ignoredFiles)

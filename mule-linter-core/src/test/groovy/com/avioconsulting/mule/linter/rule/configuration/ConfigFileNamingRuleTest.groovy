@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.CaseNaming
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -10,7 +10,7 @@ import spock.lang.Specification
 class ConfigFileNamingRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -32,7 +32,7 @@ class ConfigFileNamingRuleTest extends Specification {
         Rule rule = new ConfigFileNamingRule()
 
         expect:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
         violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
@@ -50,7 +50,7 @@ class ConfigFileNamingRuleTest extends Specification {
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.CAMEL_CASE)
 
         expect:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
         violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
@@ -68,7 +68,7 @@ class ConfigFileNamingRuleTest extends Specification {
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.PASCAL_CASE)
 
         expect:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
         violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
@@ -86,7 +86,7 @@ class ConfigFileNamingRuleTest extends Specification {
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.SNAKE_CASE)
 
         expect:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
         violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 
@@ -104,7 +104,7 @@ class ConfigFileNamingRuleTest extends Specification {
         Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE)
 
         expect:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
         violations.any { it.fileName.contains(FILE_NAME) } == RESULT
 

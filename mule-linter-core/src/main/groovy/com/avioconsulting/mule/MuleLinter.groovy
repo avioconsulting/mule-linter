@@ -1,6 +1,7 @@
 package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 
@@ -12,7 +13,7 @@ class MuleLinter {
     String  outputFormat
 
     MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
-        this.app = new Application(new File(applicationDirectory))
+        this.app = new MuleApplication(new File(applicationDirectory))
         ruleSetList = parseConfigurationFile(ruleConfigFile)
         this.outputFormat= outputFormat
     }

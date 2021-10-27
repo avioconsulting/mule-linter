@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.muleartifact
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -10,13 +10,13 @@ import spock.lang.Specification
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
-    private Application app
+    private MuleApplication app
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
         testApp.initialize()
         testApp.addMuleArtifact()
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
     }
 
     def cleanup() {
@@ -69,7 +69,7 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
         when:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_PROPS_MULE_ARTIFACT)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -85,7 +85,7 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
         when:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_SECURE_PROPS)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

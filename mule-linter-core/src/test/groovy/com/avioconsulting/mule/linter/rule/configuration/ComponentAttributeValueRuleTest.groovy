@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -10,14 +10,14 @@ import spock.lang.Specification
 class ComponentAttributeValueRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
         testApp.addPom()
         testApp.buildConfigContent('components-missing-attributes-values.xml', FLOWS)
 
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
     }
 
     def cleanup() {

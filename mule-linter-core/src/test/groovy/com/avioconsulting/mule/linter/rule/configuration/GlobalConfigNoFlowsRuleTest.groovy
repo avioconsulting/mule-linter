@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -10,14 +10,14 @@ import spock.lang.Specification
 class GlobalConfigNoFlowsRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
         testApp.addPom()
         testApp.addConfig()
 
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
     }
 
     def 'No flow subflow in global configuration file'() {
@@ -26,7 +26,7 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 
         when:
         testApp.addFile('src/main/mule/global-config.xml', GOOD_CONFIG_1)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -39,7 +39,7 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 
         when:
         testApp.addFile('src/main/mule/global-config.xml', BAD_CONFIG_1)
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -54,7 +54,7 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 
         when:
         testApp.removeFile('src/main/mule/global-config.xml')
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

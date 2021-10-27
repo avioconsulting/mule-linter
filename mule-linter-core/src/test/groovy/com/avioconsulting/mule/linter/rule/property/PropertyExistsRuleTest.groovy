@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -12,7 +12,7 @@ class PropertyExistsRuleTest extends Specification {
 
     private static final String PROPERTY_DIRECTORY = 'src/main/resources/properties/'
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -32,7 +32,7 @@ class PropertyExistsRuleTest extends Specification {
         Rule rule = new PropertyExistsRule('sample.property')
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -45,7 +45,7 @@ class PropertyExistsRuleTest extends Specification {
         Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -58,7 +58,7 @@ class PropertyExistsRuleTest extends Specification {
         Rule rule = new PropertyExistsRule('sample.property', ['prod'], '${env}.properties')
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -71,7 +71,7 @@ class PropertyExistsRuleTest extends Specification {
         Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -86,7 +86,7 @@ class PropertyExistsRuleTest extends Specification {
         Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

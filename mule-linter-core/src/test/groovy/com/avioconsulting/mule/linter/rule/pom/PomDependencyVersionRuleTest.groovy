@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.Version
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
@@ -11,7 +11,7 @@ import spock.lang.Specification
 class PomDependencyVersionRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
@@ -27,7 +27,7 @@ class PomDependencyVersionRuleTest extends Specification {
         Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2')
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -42,7 +42,7 @@ class PomDependencyVersionRuleTest extends Specification {
         Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2')
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -57,7 +57,7 @@ class PomDependencyVersionRuleTest extends Specification {
                 Version.Operator.GREATER_THAN)
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -74,7 +74,7 @@ class PomDependencyVersionRuleTest extends Specification {
                 Version.Operator.GREATER_THAN)
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -96,7 +96,7 @@ class PomDependencyVersionRuleTest extends Specification {
                 Version.Operator.EQUAL)
 
         when:
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

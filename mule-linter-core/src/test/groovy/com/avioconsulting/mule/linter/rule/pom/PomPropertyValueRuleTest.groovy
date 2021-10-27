@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.linter.rule.pom
 
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
@@ -10,13 +10,13 @@ import spock.lang.Specification
 class PomPropertyValueRuleTest extends  Specification {
 
     private final TestApplication testApp = new TestApplication()
-    private Application app
+    private MuleApplication app
 
     def setup() {
         testApp.initialize()
         testApp.addPom()
 
-        app = new Application(testApp.appDir)
+        app = new MuleApplication(testApp.appDir)
     }
 
     def cleanup() {

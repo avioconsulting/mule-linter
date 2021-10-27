@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -23,7 +23,7 @@ class CommentedCodeRuleTest extends Specification {
     def 'Components with default display name fail rule'() {
         given:
         Rule rule = new CommentedCodeRule()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         List<RuleViolation> violations = rule.execute(app)

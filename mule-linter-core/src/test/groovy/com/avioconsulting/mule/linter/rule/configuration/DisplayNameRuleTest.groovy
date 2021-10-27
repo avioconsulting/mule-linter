@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -24,7 +24,7 @@ class DisplayNameRuleTest extends Specification {
     def 'Components with default display name fail rule'() {
         given:
         Rule rule = new DisplayNameRule()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -44,7 +44,7 @@ class DisplayNameRuleTest extends Specification {
                            [name: 'transform', namespace: Namespace.CORE_EE, displayName: 'Transform Message'],
                            [name: 'flow-ref', namespace: Namespace.CORE, displayName: 'Flow Reference'],
                            [name: 'request', namespace: Namespace.HTTP, displayName: 'Request']]
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new DisplayNameRule(components)

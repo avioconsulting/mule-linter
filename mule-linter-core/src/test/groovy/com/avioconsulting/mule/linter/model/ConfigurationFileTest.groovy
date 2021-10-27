@@ -19,7 +19,7 @@ class ConfigurationFileTest extends Specification {
 
     def 'check nested component of flow'() {
         given:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         List<FlowComponent> subFlows = app.configurationFiles[0].flows
@@ -35,7 +35,7 @@ class ConfigurationFileTest extends Specification {
 
     def 'check nested component by find component'() {
         given:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         List<FlowComponent> untilSucess = app.configurationFiles[0].findComponents('until-successful',

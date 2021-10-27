@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.model.pom.PomFile
@@ -23,7 +23,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
     def 'Missing Munit Maven Plugin Check'() {
         given:
         testApp.addFile(PomFile.POM_XML, MISSING_PLUGINS_POM)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()
@@ -38,7 +38,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
     def 'Correct Munit Maven Plugin Check'() {
         given:
         testApp.addPom()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()
@@ -51,7 +51,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
     def 'Custom with Defaults Munit Maven Plugin Check'() {
         given:
         testApp.addPom()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Map<String, String> coverageAttributes = ['sillyproperty':'incorrect']
@@ -67,7 +67,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
     def 'Check ignoreFiles - Missing one'() {
         given:
         testApp.addPom()
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule(['error-handler.xml', 'global-config.xml', 'something-else.xml'])
@@ -81,7 +81,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
     def 'Very wrong Munit Maven Plugin'() {
         given:
         testApp.addFile(PomFile.POM_XML, WRONG_PLUGINS_POM)
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()

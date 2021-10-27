@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -32,7 +32,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
         Rule rule = new PropertyFilePropertyCountRule(ENVS, NAMING_PATTERN)
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -46,7 +46,7 @@ class PropertyFilePropertyCountRuleTest extends Specification {
         Rule rule = new PropertyFilePropertyCountRule(['test', 'uat', 'other'], NAMING_PATTERN)
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

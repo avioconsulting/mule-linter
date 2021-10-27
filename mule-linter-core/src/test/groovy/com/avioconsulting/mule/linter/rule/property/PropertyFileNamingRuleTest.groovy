@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
@@ -30,7 +30,7 @@ class PropertyFileNamingRuleTest extends Specification {
                                                customNamingPattern)
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -49,7 +49,7 @@ class PropertyFileNamingRuleTest extends Specification {
         Rule rule = new PropertyFileNamingRule(ENVS)
 
         when:
-        Application app = new Application(testApp.appDir)
+        MuleApplication app = new MuleApplication(testApp.appDir)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

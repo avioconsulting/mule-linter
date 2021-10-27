@@ -7,9 +7,9 @@ import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import org.apache.groovy.json.internal.JsonMap
 
-class Application implements MApplication {
+class MuleApplication implements Application {
 
-    static final String APPLICATION_DOES_NOT_EXIST = 'Application directory does not exists: '
+    static final String APPLICATION_DOES_NOT_EXIST = 'MuleApplication directory does not exists: '
     static final String POM_FILE = 'pom.xml'
     static final String GITIGNORE_FILE = '.gitignore'
     static final String README = 'README.md'
@@ -29,7 +29,7 @@ class Application implements MApplication {
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
 
-    Application(File applicationPath) {
+    MuleApplication(File applicationPath) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
