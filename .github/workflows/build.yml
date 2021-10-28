@@ -35,21 +35,12 @@ jobs:
       - name: Verify
         run: ./gradlew check
 
-      - name: Publish Core Unit Test Results
+      - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./mule-linter-core/build/test-results/test/*.xml
-
-      - name: Publish SPI Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            ./mule-linter-spi/build/test-results/test/*.xml
-            ./mule-linter-spi-test/build/test-results/test/*.xml
+          files: ./**/build/test-results/test/*.xml
 
       - name: Publish Artifact
         if: github.event_name != 'pull_request'
