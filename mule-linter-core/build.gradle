@@ -1,16 +1,9 @@
 plugins {
-    id 'application'
     id 'codenarc'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
-}
-
-application {
-    mainClassName 'com.avioconsulting.mule.MuleLinterCli'
 }
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'info.picocli:picocli-groovy:4.3.2'
     implementation project(':mule-linter-spi')
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'

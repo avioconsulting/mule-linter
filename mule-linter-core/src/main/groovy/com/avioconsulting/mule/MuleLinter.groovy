@@ -2,6 +2,7 @@ package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.MuleApplication
+import com.avioconsulting.mule.linter.model.ReportFormat
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 
@@ -10,18 +11,17 @@ class MuleLinter {
 
     Application app
     List<RuleSet> ruleSetList = []
-    String  outputFormat
+    ReportFormat  outputFormat
 
-    MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
-        this.app = new MuleApplication(new File(applicationDirectory))
+    MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat) {
+        this.app = new MuleApplication(applicationDirectory)
         ruleSetList = parseConfigurationFile(ruleConfigFile)
         this.outputFormat= outputFormat
     }
 
-    List<RuleSet> parseConfigurationFile(String ruleConfigFile) {
+    List<RuleSet> parseConfigurationFile(File ruleConfigFile) {
         GroovyClassLoader gcl = new GroovyClassLoader()
-        File config = new File(ruleConfigFile)
-        Class dynamicRules = gcl.parseClass(config)
+        Class dynamicRules = gcl.parseClass(ruleConfigFile)
         RuleSet rules = dynamicRules.getRules()
         return [rules]
     }

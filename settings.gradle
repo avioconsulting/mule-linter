@@ -3,4 +3,5 @@ include 'mule-linter-spi'
 include 'mule-linter-core'
 include 'mule-linter-spi-test'
 include 'mule-linter-maven-plugin'
+include 'mule-linter-cli'
 

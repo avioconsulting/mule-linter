@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public enum FormatOptionsEnum {
     CONSOLE("console"),
-    JSON("json"),
-    HTML("html");
+    JSON("json");
 
 
     private static final Map<String, FormatOptionsEnum> mapValues = Collections.unmodifiableMap(initializeMapping());

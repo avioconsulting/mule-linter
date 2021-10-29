@@ -3,15 +3,29 @@ A linter is a tool that analyzes source code looking for patterns that don’t f
 
 The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.  Some basic examples of rules that will be enforced, are the proper usage of property and pom files, useful logging messages, and standard project structure.
 
-## Execution
+## Usage
 
-The mule-linter can be run as a jar with the following command: 
+### Maven Plugin
+See [Readme](mule-linter-maven-plugin/README.md) in `mule-linter-maven-plugin` module.
 
+### CLI
+
+Project uses Gradle build system. Run following command to build all components in local -
+
+```shell
+./gradlew build
 ```
-~/code/avio/mule-linter$ java -jar mule-linter-1.0-SNAPSHOT.jar --dir=SampleMuleApp --rules='AVIOCustomRuleConfiguration.groovy'
+
+The CLI distributions are generated in `./mule-linter-cli/build/distributions/`. 
+Unzip/Untar the distribution. You can run the CLI from expanded files - 
+
+```shell
+./bin/mule-linter-cli
 ```
 
-`--dir` is the root directory of the Mule project. `--rules` is the path to the rule configuration file. 
+You may move expanded distribution folder to other persistent location and add it on OS PATH, 
+and then run cli from anywhere on the system.
+
 
 ## Rule Configuration
 
@@ -82,8 +96,6 @@ class AVIOCustomRuleConfiguration {
 ```
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
-## Maven Plugin
-See Readme in `mule-linter-maven-plugin` module.
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag

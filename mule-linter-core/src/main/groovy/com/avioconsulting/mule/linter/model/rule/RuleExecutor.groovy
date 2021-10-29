@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.model.rule
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.ReportFormat
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -77,9 +78,9 @@ class RuleExecutor {
     }
 
 
-    void displayResults(outputFormat,OutputStream outputStream) {
-        def format = outputFormat.toLowerCase()
-        if(format == 'json'){
+    void displayResults(ReportFormat outputFormat,OutputStream outputStream) {
+        def format = outputFormat
+        if(format == ReportFormat.JSON){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
           SonarQubeReport sq = new SonarQubeReport();
@@ -91,8 +92,9 @@ class RuleExecutor {
             outputStream.write(prettyJsonString.bytes)
 
         }
-        else if(format == 'xml')
-        {  final StringBuilder builder = new StringBuilder();
+        else if(format == ReportFormat.XML)
+        {
+            final StringBuilder builder = new StringBuilder();
             results.each { violation ->
                 String json = new Gson().toJson(violation);
                 JsonObject jsonObject = new JsonObject(json);
