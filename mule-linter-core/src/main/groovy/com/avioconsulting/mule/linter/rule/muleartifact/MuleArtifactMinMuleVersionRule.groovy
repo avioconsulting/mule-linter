@@ -15,8 +15,7 @@ class MuleArtifactMinMuleVersionRule extends Rule {
             'than the app.runtime version in the pom.xml. '
 
     MuleArtifactMinMuleVersionRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

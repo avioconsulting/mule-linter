@@ -11,8 +11,7 @@ class UnusedFlowRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'The following flow is not referenced by any flow ref components: '
 
     UnusedFlowRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

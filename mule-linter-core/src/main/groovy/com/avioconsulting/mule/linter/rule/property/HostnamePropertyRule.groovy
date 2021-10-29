@@ -18,8 +18,7 @@ class HostnamePropertyRule extends Rule{
     String[] exemptions = []
 
     HostnamePropertyRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     HostnamePropertyRule(String[] exemptions) {

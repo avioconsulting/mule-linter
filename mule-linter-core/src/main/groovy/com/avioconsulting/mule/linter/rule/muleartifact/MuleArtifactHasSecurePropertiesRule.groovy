@@ -20,8 +20,7 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     }
 
     MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
-        ruleId = RULE_ID
-        ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
     }
 

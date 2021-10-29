@@ -12,8 +12,7 @@ class PomExistsRule extends Rule {
     static final String FILE_NOT_EXISTS = 'The pom.xml does not exist'
 
     PomExistsRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

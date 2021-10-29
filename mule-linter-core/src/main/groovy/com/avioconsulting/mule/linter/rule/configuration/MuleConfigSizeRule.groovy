@@ -12,8 +12,7 @@ class MuleConfigSizeRule extends Rule {
     Integer flowLimit = 20
 
     MuleConfigSizeRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     MuleConfigSizeRule(Integer flowLimit) {

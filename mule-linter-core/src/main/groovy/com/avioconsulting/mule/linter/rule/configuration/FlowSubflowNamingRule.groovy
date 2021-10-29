@@ -15,9 +15,11 @@ class FlowSubflowNamingRule extends Rule {
                                                             'flow': Namespace.CORE]
     CaseNaming caseNaming = new CaseNaming()
 
+    FlowSubflowNamingRule(){
+        this(CaseNaming.CaseFormat.KEBAB_CASE)
+    }
     FlowSubflowNamingRule(CaseNaming.CaseFormat format) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
 

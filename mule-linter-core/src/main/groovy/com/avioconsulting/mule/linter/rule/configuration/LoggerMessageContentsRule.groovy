@@ -23,14 +23,12 @@ class LoggerMessageContentsRule extends Rule {
     }
 
     LoggerMessageContentsRule(Pattern pattern) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.pattern = pattern
     }
 
     LoggerMessageContentsRule(Map<String, Pattern> rules) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.rules = rules
     }
 

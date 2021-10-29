@@ -23,8 +23,7 @@ class ComponentAttributeValueRule extends Rule {
 
     ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace,
                                 List<String> requiredAttributes) {
-        this.ruleId = ruleId
-        this.ruleName = ruleName
+        super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.requiredAttributes = requiredAttributes
@@ -36,8 +35,7 @@ class ComponentAttributeValueRule extends Rule {
 
     ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, Map<String,
             Pattern> attributeMatchers) {
-        this.ruleId = ruleId
-        this.ruleName = ruleName
+        super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.attributeMatchers = attributeMatchers

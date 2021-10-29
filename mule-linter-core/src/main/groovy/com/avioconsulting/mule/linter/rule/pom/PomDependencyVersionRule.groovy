@@ -26,8 +26,7 @@ class PomDependencyVersionRule extends Rule {
 
     PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion,
                              Version.Operator versionOperator) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.groupId = groupId
         this.artifactId = artifactId
         this.artifactVersion = artifactVersion

@@ -16,8 +16,7 @@ class OnErrorLogExceptionRule extends Rule {
     private static final String ATTRIBUTE_VALUE_CHECK = 'true'
 
     OnErrorLogExceptionRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

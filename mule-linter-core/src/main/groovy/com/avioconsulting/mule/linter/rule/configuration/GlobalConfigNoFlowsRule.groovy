@@ -15,8 +15,7 @@ class GlobalConfigNoFlowsRule extends Rule {
     String globalFileName
 
     GlobalConfigNoFlowsRule(String globalFileName) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.globalFileName = globalFileName
     }
 

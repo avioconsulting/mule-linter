@@ -16,15 +16,11 @@ class PomPropertyValueRule extends Rule {
     private final String propertyValue
 
     PomPropertyValueRule(String propertyName, String propertyValue) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
-        this.propertyName = propertyName
-        this.propertyValue = propertyValue
+        this(RULE_ID, RULE_NAME, propertyName, propertyValue)
     }
 
     PomPropertyValueRule(String ruleId, String ruleName, String propertyName, String propertyValue) {
-        this.ruleId = ruleId
-        this.ruleName = ruleName
+        super(ruleId, ruleName)
         this.propertyName = propertyName
         this.propertyValue = propertyValue
     }

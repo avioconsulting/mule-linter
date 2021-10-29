@@ -16,9 +16,7 @@ class LoggerAttributesRule extends Rule {
  * @param requiredAttributes A list of required attributes
  */
     LoggerAttributesRule(List<String> requiredAttributes) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
-        this.requiredAttributes = requiredAttributes
+        this(RULE_ID, RULE_NAME, requiredAttributes)
     }
 
 /**
@@ -28,8 +26,7 @@ class LoggerAttributesRule extends Rule {
  * @param requiredAttributes List of required attributes
  */
     LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttributes) {
-        this.ruleId = ruleId
-        this.ruleName = ruleName
+        super(ruleId, ruleName)
         this.requiredAttributes = requiredAttributes
     }
 

@@ -18,8 +18,7 @@ class ConfigPlaceholderRule extends Rule{
                                       'authorizationUrl', 'passphrase']
 
     ConfigPlaceholderRule() {
-        ruleId = RULE_ID
-        ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     ConfigPlaceholderRule(String[] placeholderAttributes) {

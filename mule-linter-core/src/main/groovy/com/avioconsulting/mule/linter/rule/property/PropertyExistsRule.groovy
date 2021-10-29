@@ -27,8 +27,7 @@ class PropertyExistsRule extends Rule {
     }
 
     PropertyExistsRule(String propertyName, List<String> environments, String pattern) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.propertyName = propertyName
         this.environments = environments
         this.pattern = pattern

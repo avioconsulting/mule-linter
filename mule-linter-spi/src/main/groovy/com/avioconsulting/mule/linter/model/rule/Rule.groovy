@@ -9,6 +9,16 @@ abstract class Rule {
     RuleSeverity severity = RuleSeverity.MINOR
     RuleType ruleType = RuleType.CODE_SMELL
 
+    Rule(String ruleId, String ruleName, RuleSeverity severity, RuleType ruleType) {
+        this.ruleId = ruleId
+        this.ruleName = ruleName
+        this.severity = severity
+        this.ruleType = ruleType
+    }
+    Rule(String ruleId, String ruleName) {
+        this(ruleId, ruleName, RuleSeverity.CRITICAL, RuleType.CODE_SMELL)
+    }
+
     String getRuleName() {
         return ruleName
     }

@@ -3,6 +3,7 @@ package com.avioconsulting.mule.linter.extension.rules
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleSeverity
 import com.avioconsulting.mule.linter.model.rule.RuleType
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -13,9 +14,7 @@ class HttpListenerPathRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'HTTP Listener API Path must be "/api/*"'
 
     HttpListenerPathRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
-        this.ruleType = RuleType.CODE_SMELL
+        super(RULE_ID, RULE_NAME, RuleSeverity.MINOR, RuleType.CODE_SMELL)
     }
 
     @Override

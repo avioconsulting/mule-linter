@@ -22,8 +22,7 @@ class PropertyFilePropertyCountRule extends Rule {
     }
 
     PropertyFilePropertyCountRule(List<String> environments, String pattern) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.environments = environments
         this.pattern = pattern
     }

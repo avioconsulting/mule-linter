@@ -37,8 +37,7 @@ class MunitMavenPluginAttributesRule extends Rule {
 
     MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap,
                                    Boolean includeDefaults, List<String> ignoreFiles) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+       super(RULE_ID, RULE_NAME)
         this.coverageAttributeMap = includeDefaults ? COVERAGE_DEFAULTS + coverageAttributeMap : coverageAttributeMap
         this.ignoreFiles = ignoreFiles
     }

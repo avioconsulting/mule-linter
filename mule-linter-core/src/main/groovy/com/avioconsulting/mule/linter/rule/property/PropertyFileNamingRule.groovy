@@ -36,8 +36,7 @@ class PropertyFileNamingRule extends Rule {
  * @param pattern String pattern to search. ex. '${appname}-${env}.properties'
  */
     PropertyFileNamingRule(List<String> environments, String pattern) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.environments = environments
         this.pattern = pattern
     }

@@ -17,8 +17,7 @@ class GitIgnoreRule extends Rule {
     static List<String> ignoredFiles
 
     GitIgnoreRule(List<String> ignoredFiles) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         this.ignoredFiles = ignoredFiles
     }
 

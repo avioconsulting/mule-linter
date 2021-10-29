@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.AzurePipelinesFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity
+import com.avioconsulting.mule.linter.model.rule.RuleType
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import org.yaml.snakeyaml.Yaml
 
@@ -15,9 +16,7 @@ class AzurePipelinesExistsRule extends Rule{
     static final String RULE_FORMAT_VIOLATION_MESSAGE = 'azure-pipelines.yml file is not in the correct YAML format'
 
     AzurePipelinesExistsRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
-        this.setSeverity(RuleSeverity.CRITICAL);
+        super(RULE_ID, RULE_NAME, RuleSeverity.CRITICAL, RuleType.CODE_SMELL)
     }
 
     @Override

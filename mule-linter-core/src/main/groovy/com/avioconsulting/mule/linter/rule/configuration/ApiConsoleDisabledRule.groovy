@@ -2,6 +2,8 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleSeverity
+import com.avioconsulting.mule.linter.model.rule.RuleType
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class ApiConsoleDisabledRule extends Rule {
@@ -11,8 +13,7 @@ class ApiConsoleDisabledRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'API Console should be removed or disabled before deployment'
 
     ApiConsoleDisabledRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

@@ -17,11 +17,12 @@ class ExcessiveLoggersRule extends Rule {
                                                                    (LoggerComponent.LogLevel.WARN): 2,
                                                                    (LoggerComponent.LogLevel.ERROR): 2]
 
-    ExcessiveLoggersRule() {}
+    ExcessiveLoggersRule() {
+        super(RULE_ID, RULE_NAME)
+    }
 
     ExcessiveLoggersRule(Integer excessiveLoggers) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        this()
         this.excessiveLoggers.putAll([(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
               (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
               (LoggerComponent.LogLevel.INFO): excessiveLoggers,
@@ -30,8 +31,7 @@ class ExcessiveLoggersRule extends Rule {
     }
 
     ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLoggers) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        this()
         this.excessiveLoggers.putAll excessiveLoggers
     }
 

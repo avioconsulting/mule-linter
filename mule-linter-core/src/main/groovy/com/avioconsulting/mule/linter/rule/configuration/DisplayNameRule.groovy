@@ -17,8 +17,7 @@ class DisplayNameRule extends Rule {
                        [name: 'flow-ref', namespace: Namespace.CORE, displayName: 'Flow Reference']]
 
     DisplayNameRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     DisplayNameRule(List components) {

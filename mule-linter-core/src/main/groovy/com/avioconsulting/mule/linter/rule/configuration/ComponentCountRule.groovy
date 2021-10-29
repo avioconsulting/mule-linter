@@ -20,8 +20,7 @@ class ComponentCountRule extends Rule {
     }
 
     ComponentCountRule(String ruleId, String ruleName, String component, String namespace, Integer maxCount) {
-        this.ruleId = ruleId
-        this.ruleName = ruleName
+       super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.maxCount = maxCount

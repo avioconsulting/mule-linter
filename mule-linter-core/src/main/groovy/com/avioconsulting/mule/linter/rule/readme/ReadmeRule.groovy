@@ -13,8 +13,7 @@ class ReadmeRule extends Rule {
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'The README.md does not exist'
 
     ReadmeRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

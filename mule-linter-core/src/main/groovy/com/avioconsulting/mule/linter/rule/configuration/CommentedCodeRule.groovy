@@ -17,8 +17,7 @@ class CommentedCodeRule extends Rule {
     Pattern CODE_REGEX = ~/<.[\s\S\n]*?(?:\/>|<\/)/
 
     CommentedCodeRule() {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
     }
 
     @Override

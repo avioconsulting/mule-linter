@@ -13,8 +13,7 @@ class ConfigFileNamingRule extends Rule {
     CaseNaming caseNaming = new CaseNaming()
 
     ConfigFileNamingRule(CaseNaming.CaseFormat format) {
-        this.ruleId = RULE_ID
-        this.ruleName = RULE_NAME
+        super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
 
