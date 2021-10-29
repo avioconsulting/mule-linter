@@ -97,12 +97,12 @@ class RuleExecutor {
             final StringBuilder builder = new StringBuilder();
             results.each { violation ->
                 String json = new Gson().toJson(violation);
-                JsonObject jsonObject = new JsonObject(json);
-                String xml =  "<"+'rules'+">" + XML.toString(jsonObject) + "</"+'rules'+">"
+                JSONTokener jt = new JSONTokener(json);
+                String xml =  XML.toString(jt.nextValue(), "violation")
                 builder.append(xml + "")
             }
             String concatenatedString = builder.toString();
-            String xmlString = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n<"+'root'+">" + concatenatedString + "</"+'root'+">";
+            String xmlString = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n<"+'violations'+">" + concatenatedString + "</"+'violations'+">";
             String xmlOutput = convertToXML(xmlString);
             outputStream.write(xmlOutput.bytes)
         }
