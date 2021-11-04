@@ -40,7 +40,7 @@ class MuleLinter {
         )
 
         MuleLinterDsl ruleConfig = shell.evaluate(groovyFile) as MuleLinterDsl
-        return [ruleConfig.rulesDsl.rules]
+        return [ruleConfig.getRules(ruleConfig.rulesDsl.ruleObj)]
 
     }
 
