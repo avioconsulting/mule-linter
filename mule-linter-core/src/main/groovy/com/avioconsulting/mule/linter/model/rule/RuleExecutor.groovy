@@ -86,6 +86,7 @@ class RuleExecutor {
           SonarQubeReport sq = new SonarQubeReport();
 
             results.each { violation ->
+                violation.setFileName(violation.getFileName() - (application.getApplicationPath().absolutePath + "/"))
                 sq.getIssues().add( new SonarQubeReport.SonarQubeReportIssues(violation) )
             }
             String prettyJsonString = gson.toJson(sq)
