@@ -89,7 +89,7 @@ class RulesDsl{
     }
 
     def methodMissing(String name, args) {
-        def params = new HashMap()
+        def params = new LinkedHashMap()
         ruleObj.put(name,params)
         if(args != null && args.length > 0 ) {
             Closure cl = args[0]
