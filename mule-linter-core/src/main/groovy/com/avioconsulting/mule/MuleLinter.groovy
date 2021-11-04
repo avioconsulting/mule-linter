@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.dsl.Dsl
 import com.avioconsulting.mule.linter.dsl.MuleLinterDsl
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.MuleApplication
+import com.avioconsulting.mule.linter.model.ReportFormat
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 import org.codehaus.groovy.control.CompilerConfiguration
@@ -13,16 +14,15 @@ class MuleLinter {
 
     Application app
     List<RuleSet> ruleSetList = []
-    String  outputFormat
+    ReportFormat  outputFormat
 
-    MuleLinter(String applicationDirectory, String ruleConfigFile, String outputFormat) {
-        this.app = new MuleApplication(new File(applicationDirectory))
+    MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat) {
+        this.app = new MuleApplication(applicationDirectory)
         //ruleSetList = parseConfigurationFile(ruleConfigFile)
         ruleSetList = processDSL(ruleConfigFile)
         this.outputFormat= outputFormat
     }
-
-    List<RuleSet> processDSL(String ruleConfigFile){
+    List<RuleSet> processDSL(File ruleConfigFile){
 
         def compilerConfig = new CompilerConfiguration().with {
             scriptBaseClass = Dsl.name
@@ -38,7 +38,7 @@ class MuleLinter {
         )
 
         MuleLinterDsl ruleConfig = shell.evaluate(ruleConfigFile) as MuleLinterDsl
-        return [ruleConfig.rulesDsl.rules]
+        return [ruleConfig.getRules(ruleConfig.rulesDsl.ruleObj)]
 
     }
 
