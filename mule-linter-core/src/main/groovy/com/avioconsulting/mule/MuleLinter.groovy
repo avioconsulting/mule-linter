@@ -1,10 +1,13 @@
 package com.avioconsulting.mule
 
+import com.avioconsulting.mule.linter.dsl.Dsl
+import com.avioconsulting.mule.linter.dsl.MuleLinterDsl
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.ReportFormat
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
+import org.codehaus.groovy.control.CompilerConfiguration
 
 @SuppressWarnings(['All', 'GStringExpressionWithinString'])
 class MuleLinter {
@@ -15,8 +18,28 @@ class MuleLinter {
 
     MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat) {
         this.app = new MuleApplication(applicationDirectory)
-        ruleSetList = parseConfigurationFile(ruleConfigFile)
+        //ruleSetList = parseConfigurationFile(ruleConfigFile)
+        ruleSetList = processDSL(ruleConfigFile)
         this.outputFormat= outputFormat
+    }
+    List<RuleSet> processDSL(File ruleConfigFile){
+
+        def compilerConfig = new CompilerConfiguration().with {
+            scriptBaseClass = Dsl.name
+            it
+        }
+        def binding = new Binding()
+        binding.setVariable('params',[:])
+
+        def shell = new GroovyShell(
+                this.class.classLoader,
+                binding,
+                compilerConfig
+        )
+
+        MuleLinterDsl ruleConfig = shell.evaluate(ruleConfigFile) as MuleLinterDsl
+        return [ruleConfig.getRules(ruleConfig.rulesDsl.ruleObj)]
+
     }
 
     List<RuleSet> parseConfigurationFile(File ruleConfigFile) {
