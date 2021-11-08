@@ -15,7 +15,11 @@ class PomPluginAttributeRule extends Rule {
 
     private final String groupId
     private final String artifactId
-    private final Map<String,String> attributes
+    private Map<String,String> attributes
+
+    PomPluginAttributeRule(){
+        super(RULE_ID, RULE_NAME)
+    }
 
     PomPluginAttributeRule(String groupId, String artifactId, Map<String,String> attributes) {
         this(RULE_ID, RULE_NAME, groupId, artifactId, attributes)
@@ -25,6 +29,14 @@ class PomPluginAttributeRule extends Rule {
         super(ruleId, ruleName)
         this.groupId = groupId
         this.artifactId = artifactId
+        this.attributes = attributes
+    }
+
+    Map<String, String> getAttributes() {
+        return attributes
+    }
+
+    void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes
     }
 

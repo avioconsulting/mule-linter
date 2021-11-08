@@ -13,7 +13,9 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'The secureProperties array does not contain the property '
     static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_secret']
 
-    private final List secureProperties
+    private List secureProperties
+    private List properties
+    private Boolean includeDefaults
 
     MuleArtifactHasSecurePropertiesRule() {
         this([], true)
@@ -21,8 +23,28 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
 
     MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
         super(RULE_ID, RULE_NAME)
+        this.includeDefaults = includeDefaults
+        setProperties(properties)
+    }
+
+    List getProperties() {
+        return properties
+    }
+
+    void setProperties(List properties) {
+        this.properties = properties
         secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
     }
+
+    Boolean getIncludeDefaults() {
+        return includeDefaults
+    }
+
+    void setIncludeDefaults(Boolean includeDefaults) {
+        this.includeDefaults = includeDefaults
+        setProperties(this.properties)
+    }
+
 
     @Override
     List<RuleViolation> execute(Application app) {

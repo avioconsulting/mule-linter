@@ -15,10 +15,10 @@ class PomDependencyVersionRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Dependency exist but invalid version: '
     Version version= new Version()
 
-    private final String groupId
-    private final String artifactId
-    private final String artifactVersion
-    private final Version.Operator versionOperator
+    private String groupId
+    private String artifactId
+    private String artifactVersion
+    private Version.Operator versionOperator
 
     PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion) {
         this(groupId, artifactId, artifactVersion, Version.Operator.EQUAL)
@@ -32,6 +32,39 @@ class PomDependencyVersionRule extends Rule {
         this.artifactVersion = artifactVersion
         this.versionOperator = versionOperator
         version.setVersion(artifactVersion)
+    }
+
+    String getGroupId() {
+        return groupId
+    }
+
+    void setGroupId(String groupId) {
+        this.groupId = groupId
+    }
+
+    String getArtifactId() {
+        return artifactId
+    }
+
+    void setArtifactId(String artifactId) {
+        this.artifactId = artifactId
+    }
+
+    String getArtifactVersion() {
+        return artifactVersion
+    }
+
+    void setArtifactVersion(String artifactVersion) {
+        this.artifactVersion = artifactVersion
+        version.setVersion(artifactVersion)
+    }
+
+    Version.Operator getVersionOperator() {
+        return versionOperator
+    }
+
+    void setVersionOperator(String versionOperator) {
+        this.versionOperator = Version.Operator.valueOf(versionOperator)
     }
 
     @Override

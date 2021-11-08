@@ -9,8 +9,20 @@ class MunitVersionRule extends PomPropertyValueRule {
     static final String RULE_NAME = 'The munit.version maven property matches the given version. '
     static final String PROPERTY_NAME = 'munit.version'
 
+    MunitVersionRule() {
+        super(RULE_ID, RULE_NAME, PROPERTY_NAME, "0.0.0")
+    }
+
     MunitVersionRule(String version) {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
+    }
+
+    String getVersion(){
+        return getPropertyValue()
+    }
+
+    void setVersion(String version){
+        setPropertyValue(version)
     }
 
     @Override

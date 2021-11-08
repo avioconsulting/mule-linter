@@ -1,10 +1,16 @@
 package com.avioconsulting.mule.linter.dsl
 
+import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 import com.avioconsulting.mule.linter.rule.cicd.*
 import com.avioconsulting.mule.linter.rule.configuration.*
 import com.avioconsulting.mule.linter.rule.pom.*
 import com.avioconsulting.mule.linter.rule.git.GitIgnoreRule
+import com.avioconsulting.mule.linter.rule.property.PropertyExistsRule
+
+import java.beans.PropertyDescriptor
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 import static groovy.lang.Closure.DELEGATE_ONLY
 
@@ -19,7 +25,8 @@ class MuleLinterDsl {
         GIT_IGNORE(GitIgnoreRule.class),
         CONFIG_FILE_NAMING(ConfigFileNamingRule.class),
         FLOW_SUBFLOW_NAMING(FlowSubflowNamingRule.class),
-        MUNIT_VERSION(MunitVersionRule.class)
+        MUNIT_VERSION(MunitVersionRule.class),
+        PROPERTY_EXISTS(PropertyExistsRule.class)
 
         final Class class_;
         private RULE(Class class_){this.class_ = class_}
@@ -45,37 +52,35 @@ class MuleLinterDsl {
             //this can be replaced by a method for discover the rule
             Class ruleClass = RULE.valueOf(it.key).class_
             def params = it.value
+            Object rule = ruleClass.newInstance()
 
             if(params instanceof Map && !((Map) params).isEmpty()){
-                List paramList
-                ruleClass.constructors.each {constructor ->{
+
+                params.forEach((key,value)->{
                     try {
-                        //paramList for instantiation constructor of rule by reflection
-                        paramList = new ArrayList()
-                        for(int i=0;i<constructor.parameterCount;i++){
-                            Class paramClass = constructor.parameterTypes[i]
-                            String paramValue = (params as Map).values().asList().get(i)
+                        try {
+                            //attempt to use setter method for param
+                            PropertyDescriptor pd = new PropertyDescriptor(String.valueOf(key), rule.getClass());
+                            Method setter = pd.getWriteMethod();
+                            setter.invoke(rule, value.toString());
+                        } catch (Exception e) {
+                            //attempt to set value to param directly
+                            Field field = rule.getClass().getDeclaredField(String.valueOf(key));
+                            field.setAccessible(true)
+                            Class paramClass = field.getClass()
                             if (paramClass.isEnum()) {
-                                paramList.add(Enum.valueOf(paramClass, paramValue.toString()))
+                                field.set(rule, Enum.valueOf(paramClass, value.toString()))
                             } else {
-                                paramList.add(paramValue)
+                                field.set(rule, value)
                             }
                         }
-
-                        if((params as Map).size() == paramList.size()){
-                            return
-                        }
                     }catch(Exception e){
-                        e.printStackTrace()
-                        //do nothing try next constructor
+                        throw new NoSuchFieldException("[${key}] dont have getter and setter methods")
                     }
-                }}
-                if(paramList != null && (params as Map).size() == paramList.size()){
-                    ruleSet.addRule(ruleClass.newInstance(paramList.toArray()))
-                }
-            }else{
-                ruleSet.addRule(ruleClass.newInstance())
+                })
             }
+
+            ruleSet.addRule(rule as Rule)
         }
         return ruleSet
     }

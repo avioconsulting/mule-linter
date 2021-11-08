@@ -21,6 +21,14 @@ class ConfigFileNamingRule extends Rule {
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
+    String getFormat(){
+        return caseNaming.format.name()
+    }
+
+    void setFormat(String format){
+        caseNaming.setFormat(CaseNaming.CaseFormat.valueOf(format))
+    }
+
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
@@ -30,7 +38,7 @@ class ConfigFileNamingRule extends Rule {
             String fileName = configFile.name.substring(0,configFile.name.lastIndexOf("."))
             if (!caseNaming.isValidFormat(fileName)) {
                 violations.add(new RuleViolation(this, configFile.path,
-                        0, RULE_VIOLATION_MESSAGE))
+                        0, RULE_VIOLATION_MESSAGE + "[${caseNaming.format.name()}]"))
             }
         }
         return violations

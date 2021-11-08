@@ -10,6 +10,10 @@ class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
     static final String GROUP_ID = 'org.mule.tools.maven'
     static final String ARTIFACT_ID = 'mule-maven-plugin'
 
+    MuleMavenPluginVersionRule(){
+        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':'0.0.0'])
+    }
+
     MuleMavenPluginVersionRule(String version) {
         super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':version])
     }
@@ -19,4 +23,11 @@ class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
         return super.execute(app)
     }
 
+    String getVersion() {
+        return getAttributes().get('version')
+    }
+
+    void setVersion(String version) {
+        setAttributes(['version':version])
+    }
 }

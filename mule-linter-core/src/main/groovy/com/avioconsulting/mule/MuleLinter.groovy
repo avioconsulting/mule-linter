@@ -7,6 +7,7 @@ import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.ReportFormat
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor
 import com.avioconsulting.mule.linter.model.rule.RuleSet
+import com.avioconsulting.mule.linter.rule.cicd.JenkinsFileExistsRule
 import org.codehaus.groovy.control.CompilerConfiguration
 
 @SuppressWarnings(['All', 'GStringExpressionWithinString'])

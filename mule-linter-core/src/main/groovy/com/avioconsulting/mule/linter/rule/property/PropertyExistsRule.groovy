@@ -14,9 +14,13 @@ class PropertyExistsRule extends Rule {
     static final String MISSING_FILE_MESSAGE = 'Property cannot be found, Property File is missing: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
     static final List<String> DEFAULT_ENVIRONMENT_LIST = ['dev', 'test', 'prod']
-    final String propertyName
-    final List<String> environments
-    final String pattern
+    String propertyName
+    List<String> environments
+    String pattern
+
+    PropertyExistsRule(){
+        this(null)
+    }
 
     PropertyExistsRule(String propertyName) {
         this(propertyName, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
@@ -30,6 +34,30 @@ class PropertyExistsRule extends Rule {
         super(RULE_ID, RULE_NAME)
         this.propertyName = propertyName
         this.environments = environments
+        this.pattern = pattern
+    }
+
+    String getPropertyName() {
+        return propertyName
+    }
+
+    void setPropertyName(String propertyName) {
+        this.propertyName = propertyName
+    }
+
+    List<String> getEnvironments() {
+        return environments
+    }
+
+    void setEnvironments(List<String> environments) {
+        this.environments = environments
+    }
+
+    String getPattern() {
+        return pattern
+    }
+
+    void setPattern(String pattern) {
         this.pattern = pattern
     }
 

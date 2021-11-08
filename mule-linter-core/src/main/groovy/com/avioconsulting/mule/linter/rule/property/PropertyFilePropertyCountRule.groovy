@@ -17,13 +17,33 @@ class PropertyFilePropertyCountRule extends Rule {
     String[] environments
     String pattern
 
+    PropertyFilePropertyCountRule(){
+        super(RULE_ID, RULE_NAME)
+    }
+
     PropertyFilePropertyCountRule(List<String> environments) {
         this(environments, DEFAULT_PATTERN)
     }
 
     PropertyFilePropertyCountRule(List<String> environments, String pattern) {
-        super(RULE_ID, RULE_NAME)
+        this()
         this.environments = environments
+        this.pattern = pattern
+    }
+
+    String[] getEnvironments() {
+        return environments
+    }
+
+    void setEnvironments(String[] environments) {
+        this.environments = environments
+    }
+
+    String getPattern() {
+        return pattern
+    }
+
+    void setPattern(String pattern) {
         this.pattern = pattern
     }
 

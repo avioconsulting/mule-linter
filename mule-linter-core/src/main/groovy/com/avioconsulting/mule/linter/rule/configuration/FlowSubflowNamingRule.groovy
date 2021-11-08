@@ -23,6 +23,14 @@ class FlowSubflowNamingRule extends Rule {
         caseNaming.setFormat(format)
     }
 
+    String getFormat(){
+        return caseNaming.format.name()
+    }
+
+    void setFormat(String format){
+        caseNaming.setFormat(CaseNaming.CaseFormat.valueOf(format))
+    }
+
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
@@ -30,7 +38,7 @@ class FlowSubflowNamingRule extends Rule {
         app.allFlows.each { flow ->
             if ( !flow.isApiKitFlow() && !caseNaming.isValidFormat(flow.name) ) {
                 violations.add(new RuleViolation(this, flow.file.path,
-                        flow.lineNumber, RULE_VIOLATION_MESSAGE + flow.name))
+                        flow.lineNumber, RULE_VIOLATION_MESSAGE + flow.name + " [${this.getFormat()}]"))
             }
         }
         return violations

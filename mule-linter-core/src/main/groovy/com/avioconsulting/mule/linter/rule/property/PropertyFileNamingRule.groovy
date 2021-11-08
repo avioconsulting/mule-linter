@@ -16,6 +16,10 @@ class PropertyFileNamingRule extends Rule {
     String[] environments
     String pattern
 
+    PropertyFileNamingRule() {
+        super(RULE_ID, RULE_NAME)
+    }
+
 /**
  * A new PropertyFileNamingRule for a list of environments.  This ensures that
  * there is at least one file that matches the pattern '${appname}-${env}.properties'
@@ -36,8 +40,24 @@ class PropertyFileNamingRule extends Rule {
  * @param pattern String pattern to search. ex. '${appname}-${env}.properties'
  */
     PropertyFileNamingRule(List<String> environments, String pattern) {
-        super(RULE_ID, RULE_NAME)
+        this()
         this.environments = environments
+        this.pattern = pattern
+    }
+
+    String[] getEnvironments() {
+        return environments
+    }
+
+    void setEnvironments(String[] environments) {
+        this.environments = environments
+    }
+
+    String getPattern() {
+        return pattern
+    }
+
+    void setPattern(String pattern) {
         this.pattern = pattern
     }
 
