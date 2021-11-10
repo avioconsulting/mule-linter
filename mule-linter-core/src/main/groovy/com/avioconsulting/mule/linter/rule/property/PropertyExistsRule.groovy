@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PropertyFile
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import groovy.text.SimpleTemplateEngine
@@ -14,13 +15,9 @@ class PropertyExistsRule extends Rule {
     static final String MISSING_FILE_MESSAGE = 'Property cannot be found, Property File is missing: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
     static final List<String> DEFAULT_ENVIRONMENT_LIST = ['dev', 'test', 'prod']
-    String propertyName
-    List<String> environments
-    String pattern
-
-    PropertyExistsRule(){
-        this(null)
-    }
+    final String propertyName
+    final List<String> environments
+    final String pattern
 
     PropertyExistsRule(String propertyName) {
         this(propertyName, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
@@ -30,35 +27,28 @@ class PropertyExistsRule extends Rule {
         this(propertyName, environments, DEFAULT_PATTERN)
     }
 
-    PropertyExistsRule(String propertyName, List<String> environments, String pattern) {
+    PropertyExistsRule(
+            @Param("propertyName") String propertyName,
+            @Param("environments") List<String> environments,
+            @Param("pattern") String pattern
+    ) {
         super(RULE_ID, RULE_NAME)
         this.propertyName = propertyName
         this.environments = environments
         this.pattern = pattern
     }
 
-    String getPropertyName() {
-        return propertyName
-    }
+    private static PropertyExistsRule createRule(Map<String, Object> params){
+        String propertyName = params.get("propertyName") as String
+        List<String> environments = params.get("environments") as List<String>
+        String pattern = params.get("pattern") as String
 
-    void setPropertyName(String propertyName) {
-        this.propertyName = propertyName
-    }
+        if(propertyName == null){
+            throw new NoSuchFieldException("propertyName")
+        }
 
-    List<String> getEnvironments() {
-        return environments
-    }
+        return new PropertyExistsRule (propertyName, environments ?: DEFAULT_ENVIRONMENT_LIST, pattern ?: DEFAULT_PATTERN)
 
-    void setEnvironments(List<String> environments) {
-        this.environments = environments
-    }
-
-    String getPattern() {
-        return pattern
-    }
-
-    void setPattern(String pattern) {
-        this.pattern = pattern
     }
 
     @SuppressWarnings('UnnecessaryGetter')

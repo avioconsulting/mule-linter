@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -12,14 +13,10 @@ class PomPropertyValueRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = ' maven property value does not match expected value. '
     static final String ATTRIBUTE_MISSING_MESSAGE = ' does not exist in <properties></properties>'
 
-    private String propertyName
-    private String propertyValue
+    private final String propertyName
+    private final String propertyValue
 
-    PomPropertyValueRule(){
-        super(RULE_ID, RULE_NAME)
-    }
-
-    PomPropertyValueRule(String propertyName, String propertyValue) {
+    PomPropertyValueRule(@Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue) {
         this(RULE_ID, RULE_NAME, propertyName, propertyValue)
     }
 
@@ -29,19 +26,11 @@ class PomPropertyValueRule extends Rule {
         this.propertyValue = propertyValue
     }
 
-    String getPropertyValue() {
-        return propertyValue
-    }
+    private static PomPropertyValueRule createRule(Map<String, Object> params){
+        String propertyName = params.get("propertyName") as String
+        String propertyValue = params.get("propertyValue") as String
 
-    void setPropertyValue(String propertyValue) {
-        this.propertyValue = propertyValue
-    }
-    String getPropertyName() {
-        return propertyName
-    }
-
-    void setPropertyName(String propertyName) {
-        this.propertyName = propertyName
+        return new PomPropertyValueRule(propertyName,propertyValue)
     }
 
     @Override

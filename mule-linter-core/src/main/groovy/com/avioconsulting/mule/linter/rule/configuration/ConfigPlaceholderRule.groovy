@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -21,9 +22,18 @@ class ConfigPlaceholderRule extends Rule{
         super(RULE_ID, RULE_NAME)
     }
 
-    ConfigPlaceholderRule(String[] placeholderAttributes) {
+    ConfigPlaceholderRule(@Param("placeholderAttributes") String[] placeholderAttributes) {
         this()
         this.placeholderAttributes = placeholderAttributes
+    }
+
+    private static ConfigPlaceholderRule createRule(Map<String, Object> params){
+        String[] placeholderAttributes = params.get("placeholderAttributes")
+
+        if(placeholderAttributes != null)
+            return new ConfigPlaceholderRule(placeholderAttributes)
+        else
+            return new ConfigPlaceholderRule()
     }
 
     @Override

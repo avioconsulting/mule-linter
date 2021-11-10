@@ -2,6 +2,7 @@ package com.avioconsulting.mule
 
 import com.avioconsulting.mule.linter.dsl.Dsl
 import com.avioconsulting.mule.linter.dsl.MuleLinterDsl
+import com.avioconsulting.mule.linter.dsl.RulesLoader
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.ReportFormat
@@ -39,7 +40,7 @@ class MuleLinter {
         )
 
         MuleLinterDsl ruleConfig = shell.evaluate(ruleConfigFile) as MuleLinterDsl
-        return [ruleConfig.getRules(ruleConfig.rulesDsl.ruleObj)]
+        return [RulesLoader.getRules(ruleConfig.rulesDsl.ruleObj)]
 
     }
 

@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PropertyFile
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import groovy.text.SimpleTemplateEngine
@@ -17,34 +18,28 @@ class PropertyFilePropertyCountRule extends Rule {
     String[] environments
     String pattern
 
-    PropertyFilePropertyCountRule(){
-        super(RULE_ID, RULE_NAME)
-    }
-
     PropertyFilePropertyCountRule(List<String> environments) {
         this(environments, DEFAULT_PATTERN)
     }
 
-    PropertyFilePropertyCountRule(List<String> environments, String pattern) {
-        this()
+    PropertyFilePropertyCountRule(
+            @Param("environments") List<String> environments,
+            @Param("pattern") String pattern
+    ) {
+        super(RULE_ID, RULE_NAME)
         this.environments = environments
         this.pattern = pattern
     }
 
-    String[] getEnvironments() {
-        return environments
-    }
+    private static PropertyFilePropertyCountRule createRule(Map<String, Object> params){
+        List<String> environments = params.get("") as List<String>
+        String pattern = params.get("") as String
 
-    void setEnvironments(String[] environments) {
-        this.environments = environments
-    }
+        if(environments == null)
+            throw new NoSuchFieldException("environments")
 
-    String getPattern() {
-        return pattern
-    }
+        return new PropertyFilePropertyCountRule(environments, pattern ?: DEFAULT_PATTERN)
 
-    void setPattern(String pattern) {
-        this.pattern = pattern
     }
 
     @SuppressWarnings('UnnecessaryGetter')

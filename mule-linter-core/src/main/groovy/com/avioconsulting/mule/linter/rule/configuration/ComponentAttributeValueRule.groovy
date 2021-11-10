@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -21,24 +22,36 @@ class ComponentAttributeValueRule extends Rule {
         this(RULE_ID, RULE_NAME, component, namespace, requiredAttributes)
     }
 
-    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace,
-                                List<String> requiredAttributes) {
+    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, List<String> requiredAttributes) {
         super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.requiredAttributes = requiredAttributes
     }
 
-    ComponentAttributeValueRule(String component, String namespace, Map<String, Pattern> attributeMatchers) {
+    ComponentAttributeValueRule(@Param("component") String component, @Param("namespace") String namespace, @Param("attributeMatchers") Map<String, Pattern> attributeMatchers) {
         this(RULE_ID, RULE_NAME, component, namespace, attributeMatchers)
     }
 
-    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, Map<String,
-            Pattern> attributeMatchers) {
+    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, Map<String,Pattern> attributeMatchers) {
         super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.attributeMatchers = attributeMatchers
+    }
+
+
+    private static ComponentAttributeValueRule createRule(Map<String, Object> params){
+        String component = params.get("component") as String
+        String namespace  = params.get("namespace") as String
+        List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
+        Map<String, Pattern> attributeMatchers = params.get("attributeMatchers") as Map<String, Pattern>
+
+        if(requiredAttributes != null)
+            return new ComponentAttributeValueRule(component,namespace,requiredAttributes)
+        else{
+            return new ComponentAttributeValueRule(component,namespace,attributeMatchers)
+        }
     }
 
     @Override

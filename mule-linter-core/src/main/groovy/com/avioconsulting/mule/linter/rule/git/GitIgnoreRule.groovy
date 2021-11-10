@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.git
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.GitIgnoreFile
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -16,13 +17,21 @@ class GitIgnoreRule extends Rule {
                                                      '.project', '.classpath', '.idea', 'build']
     static List<String> ignoredFiles
 
-    GitIgnoreRule(List<String> ignoredFiles) {
+    GitIgnoreRule(@Param("ignoredFiles") List<String> ignoredFiles) {
         super(RULE_ID, RULE_NAME)
         this.ignoredFiles = ignoredFiles
     }
 
     GitIgnoreRule() {
         this(DEFAULT_EXPRESSIONS)
+    }
+
+    private static GitIgnoreRule createRule(Map<String, Object> params){
+        List<String> ignoredFiles = params.get("ignoredFiles") as List<String>
+        if(ignoredFiles != null)
+            return new GitIgnoreRule(ignoredFiles)
+        else
+            return new GitIgnoreRule()
     }
 
     @Override

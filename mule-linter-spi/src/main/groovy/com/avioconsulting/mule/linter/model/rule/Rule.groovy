@@ -2,6 +2,8 @@ package com.avioconsulting.mule.linter.model.rule
 
 import com.avioconsulting.mule.linter.model.Application
 
+import java.lang.reflect.Method
+
 abstract class Rule {
 
     String ruleId
@@ -17,6 +19,17 @@ abstract class Rule {
     }
     Rule(String ruleId, String ruleName) {
         this(ruleId, ruleName, RuleSeverity.CRITICAL, RuleType.CODE_SMELL)
+    }
+
+    static Rule createRule(Class ruleClass,Map<String, Object> params) {
+        Object ruleObj
+        if(params == null || params.isEmpty())
+            return ruleClass.newInstance() as Rule
+
+        Method method = ruleClass.getDeclaredMethod("createRule", Map<String, Object>.class)
+        method.setAccessible(true)
+        ruleObj = method.invoke(null, params);
+        return ruleObj as Rule
     }
 
     String getRuleName() {

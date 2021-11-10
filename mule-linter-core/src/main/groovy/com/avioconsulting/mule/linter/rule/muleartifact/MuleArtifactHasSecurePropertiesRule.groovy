@@ -1,8 +1,10 @@
 package com.avioconsulting.mule.linter.rule.muleartifact
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.apache.groovy.json.internal.JsonArray
 
 
@@ -13,38 +15,29 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'The secureProperties array does not contain the property '
     static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_secret']
 
-    private List secureProperties
-    private List properties
-    private Boolean includeDefaults
+    private final List secureProperties
 
     MuleArtifactHasSecurePropertiesRule() {
         this([], true)
     }
 
-    MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
+    MuleArtifactHasSecurePropertiesRule(@Param("properties") List<String> properties, @Param("includeDefaults") Boolean includeDefaults) {
         super(RULE_ID, RULE_NAME)
-        this.includeDefaults = includeDefaults
-        setProperties(properties)
-    }
-
-    List getProperties() {
-        return properties
-    }
-
-    void setProperties(List properties) {
-        this.properties = properties
         secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
     }
 
-    Boolean getIncludeDefaults() {
-        return includeDefaults
-    }
+    private static MuleArtifactHasSecurePropertiesRule createRule(Map<String, Object> params){
+        List<String> properties = params.get("properties") as List<String>
+        Boolean includeDefaults = params.get("includeDefaults") as Boolean
 
-    void setIncludeDefaults(Boolean includeDefaults) {
-        this.includeDefaults = includeDefaults
-        setProperties(this.properties)
-    }
+        if(includeDefaults == null)
+            includeDefaults = true
 
+        if(properties != null)
+            return new MuleArtifactHasSecurePropertiesRule(properties,includeDefaults)
+        else
+            return new MuleArtifactHasSecurePropertiesRule()
+    }
 
     @Override
     List<RuleViolation> execute(Application app) {

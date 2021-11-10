@@ -8,7 +8,7 @@ mule_linter {
         FLOW_SUBFLOW_NAMING {
             format = 'CAMEL_CASE'
         }
-        PROPERTY_EXISTS{
+        PROPERTY_EXISTS {
             environments = ['dev', 'test', 'prod']
             propertyName = 'db.user'
         }

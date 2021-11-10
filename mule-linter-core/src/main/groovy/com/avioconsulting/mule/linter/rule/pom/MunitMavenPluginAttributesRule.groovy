@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.model.pom.MunitMavenPlugin
@@ -30,16 +31,37 @@ class MunitMavenPluginAttributesRule extends Rule {
         this([:], true, ignoreFiles)
     }
 
-    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap,
-                                   Boolean includeDefaults) {
+    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap, Boolean includeDefaults) {
         this(coverageAttributeMap, includeDefaults, [])
     }
 
-    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap,
-                                   Boolean includeDefaults, List<String> ignoreFiles) {
-       super(RULE_ID, RULE_NAME)
+    MunitMavenPluginAttributesRule(
+            @Param("coverageAttributeMap") Map<String,String> coverageAttributeMap,
+            @Param("includeDefaults") Boolean includeDefaults,
+            @Param("ignoreFiles") List<String> ignoreFiles
+    ) {
+        super(RULE_ID, RULE_NAME)
         this.coverageAttributeMap = includeDefaults ? COVERAGE_DEFAULTS + coverageAttributeMap : coverageAttributeMap
         this.ignoreFiles = ignoreFiles
+    }
+
+    private static MunitMavenPluginAttributesRule createRule(Map<String, Object> params){
+        Map<String, String> coverageAttributeMap = params.get("coverageAttributeMap") as Map<String, String>
+        Boolean includeDefaults = params.get("includeDefaults") as Boolean
+        List<String> ignoreFiles = params.get("ignoreFiles") as List<String>
+
+        if(coverageAttributeMap == null){
+            coverageAttributeMap = [:]
+        }
+        if(includeDefaults == null){
+            includeDefaults = true
+        }
+
+        if(ignoreFiles == null){
+            ignoreFiles = []
+        }
+
+        return new MunitMavenPluginAttributesRule(coverageAttributeMap, includeDefaults, ignoreFiles)
     }
 
     @Override

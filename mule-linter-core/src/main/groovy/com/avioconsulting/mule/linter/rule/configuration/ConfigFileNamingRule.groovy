@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.CaseNaming
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -12,7 +13,7 @@ class ConfigFileNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'A Config file is not following naming conventions'
     CaseNaming caseNaming = new CaseNaming()
 
-    ConfigFileNamingRule(CaseNaming.CaseFormat format) {
+    ConfigFileNamingRule(@Param("format") CaseNaming.CaseFormat format) {
         super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
@@ -21,12 +22,14 @@ class ConfigFileNamingRule extends Rule {
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
-    String getFormat(){
-        return caseNaming.format.name()
-    }
+    private static ConfigFileNamingRule createRule(Map<String, Object> params){
+        String format = params.get("format")
 
-    void setFormat(String format){
-        caseNaming.setFormat(CaseNaming.CaseFormat.valueOf(format))
+        if(format != null)
+            return new ConfigFileNamingRule(CaseNaming.CaseFormat.valueOf(format))
+        else
+            return new ConfigFileNamingRule()
+
     }
 
     @Override
@@ -35,11 +38,11 @@ class ConfigFileNamingRule extends Rule {
 
         app.configurationFiles.each {
             configFile ->
-            String fileName = configFile.name.substring(0,configFile.name.lastIndexOf("."))
-            if (!caseNaming.isValidFormat(fileName)) {
-                violations.add(new RuleViolation(this, configFile.path,
-                        0, RULE_VIOLATION_MESSAGE + "[${caseNaming.format.name()}]"))
-            }
+                String fileName = configFile.name.substring(0,configFile.name.lastIndexOf("."))
+                if (!caseNaming.isValidFormat(fileName)) {
+                    violations.add(new RuleViolation(this, configFile.path,
+                            0, RULE_VIOLATION_MESSAGE))
+                }
         }
         return violations
     }

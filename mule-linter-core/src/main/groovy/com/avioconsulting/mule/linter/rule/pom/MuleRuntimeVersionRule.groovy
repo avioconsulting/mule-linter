@@ -13,6 +13,14 @@ class MuleRuntimeVersionRule extends PomPropertyValueRule {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
     }
 
+    private static MuleRuntimeVersionRule createRule(Map<String, Object> params){
+        String version = params.get("version")
+        if(version != null)
+            return new MuleRuntimeVersionRule(version)
+        else
+            throw new NoSuchFieldException("version")
+    }
+
     @Override
     List<RuleViolation> execute(Application app) {
         return super.execute(app)
