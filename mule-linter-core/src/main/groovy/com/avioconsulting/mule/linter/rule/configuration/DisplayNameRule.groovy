@@ -28,10 +28,10 @@ class DisplayNameRule extends Rule {
 
     private static DisplayNameRule createRule(Map<String, Object> params){
 
-        List components = params.get("components")
+        List components = params.get("components") as List
 
         if(components != null)
-            return new DisplayNameRule()
+            return new DisplayNameRule(components)
         else
             return new DisplayNameRule()
     }

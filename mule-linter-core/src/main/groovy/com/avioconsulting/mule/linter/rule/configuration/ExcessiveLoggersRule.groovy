@@ -37,10 +37,19 @@ class ExcessiveLoggersRule extends Rule {
     }
 
     private static ExcessiveLoggersRule createRule(Map<String, Object> params){
-        Integer excessiveLoggers = params.get("excessiveLoggers")
-        if(excessiveLoggers != null)
-            return new ExcessiveLoggersRule(excessiveLoggers)
-        else
+        def excessiveLoggers = params.get("excessiveLoggers")
+
+        if(excessiveLoggers != null) {
+            if (excessiveLoggers instanceof Map) {
+                Map<LoggerComponent.LogLevel, Integer> param = new EnumMap<>(LoggerComponent.LogLevel.class)
+                excessiveLoggers.forEach((key, value) -> {
+                    param.put(LoggerComponent.LogLevel.valueOf(key as String),value as Integer)
+                })
+                return new ExcessiveLoggersRule(param)
+            } else {
+                return new ExcessiveLoggersRule(excessiveLoggers as Integer)
+            }
+        } else
             return new ExcessiveLoggersRule()
     }
 

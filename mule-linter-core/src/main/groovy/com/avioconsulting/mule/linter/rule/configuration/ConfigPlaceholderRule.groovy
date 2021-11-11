@@ -28,7 +28,7 @@ class ConfigPlaceholderRule extends Rule{
     }
 
     private static ConfigPlaceholderRule createRule(Map<String, Object> params){
-        String[] placeholderAttributes = params.get("placeholderAttributes")
+        String[] placeholderAttributes = params.get("placeholderAttributes") as String[]
 
         if(placeholderAttributes != null)
             return new ConfigPlaceholderRule(placeholderAttributes)

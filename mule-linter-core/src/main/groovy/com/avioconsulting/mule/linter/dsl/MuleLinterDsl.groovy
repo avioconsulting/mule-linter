@@ -20,8 +20,17 @@ class MuleLinterDsl {
     }
 }
 
+class RuleObject{
+    final String ruleId
+    final Map params
+    RuleObject(String ruleId, Map params){
+        this.ruleId = ruleId
+        this.params = params
+    }
+}
+
 class RulesDsl{
-    def ruleObj = new HashMap()
+    List<RuleObject> ruleObjList = new ArrayList<>()
 
     def propertyMissing(String name) {
         methodMissing(name, null)
@@ -29,7 +38,7 @@ class RulesDsl{
 
     def methodMissing(String name, args) {
         def params = new LinkedHashMap()
-        ruleObj.put(name,params)
+        ruleObjList.add(new RuleObject(name,params))
         if(args != null && args.length > 0 ) {
             Closure cl = args[0]
             cl.resolveStrategy = DELEGATE_ONLY

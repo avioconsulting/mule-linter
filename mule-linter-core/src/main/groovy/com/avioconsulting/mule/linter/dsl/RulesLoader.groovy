@@ -30,14 +30,14 @@ class RulesLoader {
     }
 
 
-    static RuleSet getRules(Map rulesMap){
+    static RuleSet getRules(List<RuleObject> rulesMList){
 
         RuleSet ruleSet = new RuleSet()
 
-        rulesMap.each {
+        rulesMList.each {
             //this can be replaced by a method for discover the rule
-            String ruleId = it.key as String
-            Map<String, Object> params = it.value as Map<String, Object>
+            String ruleId = it.ruleId as String
+            Map<String, Object> params = it.params as Map<String, Object>
 
             Class ruleClass = RulesLoader.getRuleClassById(ruleId)
             if(ruleClass != null){
@@ -45,7 +45,6 @@ class RulesLoader {
                     ruleSet.addRule(Rule.createRule(ruleClass,params))
                 }catch(Exception e){
                     println("error creating rule <<${ruleId}>>")
-                    println(e.getMessage())
                 }
             } else {
                 println("rule <<${ruleId}>> not found!")
