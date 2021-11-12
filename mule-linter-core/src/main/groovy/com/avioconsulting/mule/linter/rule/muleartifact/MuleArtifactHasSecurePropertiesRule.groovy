@@ -26,7 +26,7 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
         secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
     }
 
-    private static MuleArtifactHasSecurePropertiesRule createRule(Map<String, Object> params){
+    static MuleArtifactHasSecurePropertiesRule createRule(Map<String, Object> params){
         List<String> properties = params.get("properties") as List<String>
         Boolean includeDefaults = params.get("includeDefaults") as Boolean
 

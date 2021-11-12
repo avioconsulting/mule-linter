@@ -27,7 +27,7 @@ class HostnamePropertyRule extends Rule{
         this.exemptions = exemptions
     }
 
-    private static HostnamePropertyRule createRule(Map<String, Object> params){
+    static HostnamePropertyRule createRule(Map<String, Object> params){
         String[] exemptions = params.get("exemptions")
         if(exemptions != null)
             return new HostnamePropertyRule(exemptions)

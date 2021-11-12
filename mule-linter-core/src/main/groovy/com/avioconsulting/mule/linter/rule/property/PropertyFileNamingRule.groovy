@@ -45,9 +45,9 @@ class PropertyFileNamingRule extends Rule {
         this.pattern = pattern
     }
 
-    private static PropertyFileNamingRule createRule(Map<String, Object> params){
-        List<String> environments = params.get("") as List<String>
-        String pattern = params.get("") as String
+    static PropertyFileNamingRule createRule(Map<String, Object> params){
+        List<String> environments = params.get("environments") as List<String>
+        String pattern = params.get("pattern") as String
 
         if(environments == null)
             throw new NoSuchFieldException("environments")

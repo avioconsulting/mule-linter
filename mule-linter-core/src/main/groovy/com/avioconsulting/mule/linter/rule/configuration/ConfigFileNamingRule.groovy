@@ -22,7 +22,7 @@ class ConfigFileNamingRule extends Rule {
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
-    private static ConfigFileNamingRule createRule(Map<String, Object> params){
+    static ConfigFileNamingRule createRule(Map<String, Object> params){
         String format = params.get("format")
 
         if(format != null)

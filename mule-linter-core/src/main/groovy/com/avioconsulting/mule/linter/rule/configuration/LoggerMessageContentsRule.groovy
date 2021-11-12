@@ -33,15 +33,21 @@ class LoggerMessageContentsRule extends Rule {
         this.rules = rules
     }
 
-    private static LoggerMessageContentsRule createRule(Map<String, Object> params){
+    static LoggerMessageContentsRule createRule(Map<String, Object> params){
         String pattern = params.get("pattern")
-        Map<String, Pattern> rules = params.get("rules")
+        Map rules = params.get("rules") as Map
 
-        if(pattern != null)
-            return new LoggerMessageContentsRule(Pattern.compile("pattern"))
-        else if(rules != null)
-            return new LoggerMessageContentsRule(rules)
-        else
+        if(pattern != null) {
+            return new LoggerMessageContentsRule(Pattern.compile(pattern))
+        }else if(rules != null) {
+            Map<String, Pattern> rulesParam = new HashMap<>()
+
+            rules.forEach((key,value)->{
+                rulesParam.put(key as String, Pattern.compile(value as String))
+            })
+
+            return new LoggerMessageContentsRule(rulesParam)
+        }else
             return new LoggerMessageContentsRule()
     }
 

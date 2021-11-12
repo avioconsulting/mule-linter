@@ -36,7 +36,7 @@ class ExcessiveLoggersRule extends Rule {
         this.excessiveLoggers.putAll excessiveLoggers
     }
 
-    private static ExcessiveLoggersRule createRule(Map<String, Object> params){
+    static ExcessiveLoggersRule createRule(Map<String, Object> params){
         def excessiveLoggers = params.get("excessiveLoggers")
 
         if(excessiveLoggers != null) {

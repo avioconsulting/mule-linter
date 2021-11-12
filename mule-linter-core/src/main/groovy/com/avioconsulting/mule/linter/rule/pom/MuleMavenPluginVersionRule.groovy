@@ -15,7 +15,7 @@ class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
         super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':version])
     }
 
-    private static MuleMavenPluginVersionRule createRule(Map<String, Object> params){
+    static MuleMavenPluginVersionRule createRule(Map<String, Object> params){
         String version = params.get("version")
         if(version != null)
             return new MuleMavenPluginVersionRule(version)

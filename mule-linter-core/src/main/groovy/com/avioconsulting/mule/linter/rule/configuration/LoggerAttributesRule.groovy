@@ -31,8 +31,8 @@ class LoggerAttributesRule extends Rule {
         this.requiredAttributes = requiredAttributes
     }
 
-    private static LoggerAttributesRule createRule(Map<String, Object> params){
-        String requiredAttributes = params.get("requiredAttributes")
+    static LoggerAttributesRule createRule(Map<String, Object> params){
+        List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
         if(requiredAttributes != null)
             return new LoggerAttributesRule(requiredAttributes)
         else

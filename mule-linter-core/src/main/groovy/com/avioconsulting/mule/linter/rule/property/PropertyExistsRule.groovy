@@ -38,7 +38,7 @@ class PropertyExistsRule extends Rule {
         this.pattern = pattern
     }
 
-    private static PropertyExistsRule createRule(Map<String, Object> params){
+    static PropertyExistsRule createRule(Map<String, Object> params){
         String propertyName = params.get("propertyName") as String
         List<String> environments = params.get("environments") as List<String>
         String pattern = params.get("pattern") as String

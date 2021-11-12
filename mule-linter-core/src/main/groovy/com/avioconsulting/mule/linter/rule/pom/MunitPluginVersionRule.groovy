@@ -15,7 +15,7 @@ class MunitPluginVersionRule extends PomPluginAttributeRule {
         super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':version])
     }
 
-    private static MunitPluginVersionRule createRule(Map<String, Object> params){
+    static MunitPluginVersionRule createRule(Map<String, Object> params){
         String version = params.get("version")  as String
         if(version != null)
             return new MunitPluginVersionRule(version)

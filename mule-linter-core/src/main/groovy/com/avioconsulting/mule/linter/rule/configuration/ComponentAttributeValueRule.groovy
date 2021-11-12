@@ -41,16 +41,23 @@ class ComponentAttributeValueRule extends Rule {
     }
 
 
-    private static ComponentAttributeValueRule createRule(Map<String, Object> params){
+    static ComponentAttributeValueRule createRule(Map<String, Object> params){
         String component = params.get("component") as String
         String namespace  = params.get("namespace") as String
         List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
-        Map<String, Pattern> attributeMatchers = params.get("attributeMatchers") as Map<String, Pattern>
+        Map attributeMatchers = params.get("attributeMatchers") as Map
 
         if(requiredAttributes != null)
             return new ComponentAttributeValueRule(component,namespace,requiredAttributes)
-        else{
-            return new ComponentAttributeValueRule(component,namespace,attributeMatchers)
+        else if(attributeMatchers != null){
+
+            Map<String, Pattern> attributeMatchersParam = new HashMap<>()
+
+            attributeMatchers.forEach((key,value)->{
+                attributeMatchersParam.put(key as String, Pattern.compile(value as String))
+            })
+
+            return new ComponentAttributeValueRule(component,namespace,attributeMatchersParam)
         }
     }
 

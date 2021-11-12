@@ -26,7 +26,7 @@ class DisplayNameRule extends Rule {
         this.components = components
     }
 
-    private static DisplayNameRule createRule(Map<String, Object> params){
+    static DisplayNameRule createRule(Map<String, Object> params){
 
         List components = params.get("components") as List
 

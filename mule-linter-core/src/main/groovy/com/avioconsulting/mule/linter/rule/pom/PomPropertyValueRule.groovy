@@ -26,7 +26,7 @@ class PomPropertyValueRule extends Rule {
         this.propertyValue = propertyValue
     }
 
-    private static PomPropertyValueRule createRule(Map<String, Object> params){
+    static PomPropertyValueRule createRule(Map<String, Object> params){
         String propertyName = params.get("propertyName") as String
         String propertyValue = params.get("propertyValue") as String
 

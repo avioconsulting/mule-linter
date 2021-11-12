@@ -21,7 +21,7 @@ class MuleConfigSizeRule extends Rule {
         this.flowLimit = flowLimit
     }
 
-    private static MuleConfigSizeRule createRule(Map<String, Object> params){
+    static MuleConfigSizeRule createRule(Map<String, Object> params){
         Integer flowLimit = params.get("flowLimit") as Integer
         if(flowLimit != null)
             return new MuleConfigSizeRule(flowLimit)

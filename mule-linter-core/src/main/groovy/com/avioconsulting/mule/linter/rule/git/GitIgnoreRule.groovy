@@ -26,7 +26,7 @@ class GitIgnoreRule extends Rule {
         this(DEFAULT_EXPRESSIONS)
     }
 
-    private static GitIgnoreRule createRule(Map<String, Object> params){
+    static GitIgnoreRule createRule(Map<String, Object> params){
         List<String> ignoredFiles = params.get("ignoredFiles") as List<String>
         if(ignoredFiles != null)
             return new GitIgnoreRule(ignoredFiles)

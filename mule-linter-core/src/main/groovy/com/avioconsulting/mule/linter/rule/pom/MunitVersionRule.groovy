@@ -14,7 +14,7 @@ class MunitVersionRule extends PomPropertyValueRule {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
     }
 
-    private static MunitVersionRule createRule(Map<String, Object> params){
+    static MunitVersionRule createRule(Map<String, Object> params){
         String version = params.get("version") as String
         if(version != null)
             return new MunitVersionRule(version)

@@ -24,7 +24,7 @@ class GlobalConfigNoFlowsRule extends Rule {
         this(DEFAULT_FILE_NAME)
     }
 
-    private static GlobalConfigNoFlowsRule createRule(Map<String, Object> params){
+    static GlobalConfigNoFlowsRule createRule(Map<String, Object> params){
         String globalFileName = params.get("globalFileName")
         if(globalFileName != null)
             return new GlobalConfigNoFlowsRule(globalFileName)

@@ -24,7 +24,7 @@ class FlowSubflowNamingRule extends Rule {
         caseNaming.setFormat(format)
     }
 
-    private static FlowSubflowNamingRule createRule(Map<String, Object> params){
+    static FlowSubflowNamingRule createRule(Map<String, Object> params){
         String format = params.get("format")
         if(format != null)
             return new FlowSubflowNamingRule(CaseNaming.CaseFormat.valueOf(format))

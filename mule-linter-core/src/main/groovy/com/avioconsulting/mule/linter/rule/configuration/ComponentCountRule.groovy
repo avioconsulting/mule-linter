@@ -25,7 +25,7 @@ class ComponentCountRule extends Rule {
         this.maxCount = maxCount
     }
 
-    private static ComponentCountRule createRule(Map<String, Object> params){
+    static ComponentCountRule createRule(Map<String, Object> params){
         String component = params.get("component") as String
         String namespace = params.get("namespace") as String
         Integer maxCount = params.get("maxCount") as Integer

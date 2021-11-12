@@ -30,7 +30,7 @@ class GlobalConfigRule extends Rule {
         this(DEFAULT_FILE_NAME)
     }
 
-    private static GlobalConfigRule createRule(Map<String, Object> params){
+    static GlobalConfigRule createRule(Map<String, Object> params){
         String globalFileName = params.get("globalFileName")
         Map<String, String> noneGlobalElements = params.get("noneGlobalElements")
 

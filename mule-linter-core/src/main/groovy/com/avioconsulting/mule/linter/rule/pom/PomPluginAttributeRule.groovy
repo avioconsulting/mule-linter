@@ -33,7 +33,7 @@ class PomPluginAttributeRule extends Rule {
         this.attributes = attributes
     }
 
-    private static PomPluginAttributeRule createRule(Map<String, Object> params){
+    static PomPluginAttributeRule createRule(Map<String, Object> params){
         String groupId = params.get("groupId") as String
         String artifactId = params.get("artifactId") as String
         Map<String,String> attributes = params.get("attributes") as Map<String,String>

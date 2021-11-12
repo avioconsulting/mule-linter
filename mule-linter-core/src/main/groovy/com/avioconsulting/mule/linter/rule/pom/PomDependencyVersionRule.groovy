@@ -39,7 +39,7 @@ class PomDependencyVersionRule extends Rule {
         version.setVersion(artifactVersion)
     }
 
-    private static PomDependencyVersionRule createRule(Map<String, Object> params){
+    static PomDependencyVersionRule createRule(Map<String, Object> params){
         String groupId = params.get("groupId") as String
         String artifactId = params.get("artifactId") as String
         String artifactVersion = params.get("artifactVersion") as String
