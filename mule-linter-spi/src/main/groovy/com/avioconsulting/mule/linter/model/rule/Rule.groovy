@@ -19,6 +19,15 @@ abstract class Rule {
         this(ruleId, ruleName, RuleSeverity.CRITICAL, RuleType.CODE_SMELL)
     }
 
+    static Rule createRule(Class ruleClass,Map<String, Object> params) {
+        Object ruleObj
+        if(params == null || params.isEmpty())
+            return ruleClass.newInstance() as Rule
+
+        ruleObj = ruleClass.createRule(params)
+        return ruleObj as Rule
+    }
+
     String getRuleName() {
         return ruleName
     }

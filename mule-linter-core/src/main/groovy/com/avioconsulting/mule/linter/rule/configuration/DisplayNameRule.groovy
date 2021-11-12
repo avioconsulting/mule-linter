@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Namespace
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -20,9 +21,19 @@ class DisplayNameRule extends Rule {
         super(RULE_ID, RULE_NAME)
     }
 
-    DisplayNameRule(List components) {
+    DisplayNameRule(@Param("components") List components) {
         this()
         this.components = components
+    }
+
+    static DisplayNameRule createRule(Map<String, Object> params){
+
+        List components = params.get("components") as List
+
+        if(components != null)
+            return new DisplayNameRule(components)
+        else
+            return new DisplayNameRule()
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -9,13 +10,11 @@ class ComponentCountRule extends Rule {
     static final String RULE_NAME = 'A component should not be used more than the allowed number of times. '
     static final String RULE_VIOLATION_MESSAGE = ' was used more times than allowed'
 
-    String ruleId
-    String ruleName
     String component
     String namespace
     Integer maxCount
 
-    ComponentCountRule(String component, String namespace, Integer maxCount) {
+    ComponentCountRule(@Param("component") String component, @Param("namespace") String namespace, @Param("maxCount") Integer maxCount) {
         this(RULE_ID, RULE_NAME, component, namespace, maxCount)
     }
 
@@ -24,6 +23,14 @@ class ComponentCountRule extends Rule {
         this.component = component
         this.namespace = namespace
         this.maxCount = maxCount
+    }
+
+    static ComponentCountRule createRule(Map<String, Object> params){
+        String component = params.get("component") as String
+        String namespace = params.get("namespace") as String
+        Integer maxCount = params.get("maxCount") as Integer
+
+        return new ComponentCountRule(component, namespace, maxCount)
     }
 
     @Override

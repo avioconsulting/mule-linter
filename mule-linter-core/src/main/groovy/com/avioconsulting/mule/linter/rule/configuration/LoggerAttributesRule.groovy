@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -15,7 +16,7 @@ class LoggerAttributesRule extends Rule {
  * A logger attribute rule to enforce that an attribute exists and is not empty.
  * @param requiredAttributes A list of required attributes
  */
-    LoggerAttributesRule(List<String> requiredAttributes) {
+    LoggerAttributesRule(@Param("requiredAttributes") List<String> requiredAttributes) {
         this(RULE_ID, RULE_NAME, requiredAttributes)
     }
 
@@ -28,6 +29,14 @@ class LoggerAttributesRule extends Rule {
     LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttributes) {
         super(ruleId, ruleName)
         this.requiredAttributes = requiredAttributes
+    }
+
+    static LoggerAttributesRule createRule(Map<String, Object> params){
+        List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
+        if(requiredAttributes != null)
+            return new LoggerAttributesRule(requiredAttributes)
+        else
+            throw new NoSuchFieldException("requiredAttributes")
     }
 
     @Override

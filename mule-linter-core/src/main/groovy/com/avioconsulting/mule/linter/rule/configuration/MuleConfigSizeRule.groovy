@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -15,9 +16,17 @@ class MuleConfigSizeRule extends Rule {
         super(RULE_ID, RULE_NAME)
     }
 
-    MuleConfigSizeRule(Integer flowLimit) {
+    MuleConfigSizeRule(@Param("flowLimit") Integer flowLimit) {
         this()
         this.flowLimit = flowLimit
+    }
+
+    static MuleConfigSizeRule createRule(Map<String, Object> params){
+        Integer flowLimit = params.get("flowLimit") as Integer
+        if(flowLimit != null)
+            return new MuleConfigSizeRule(flowLimit)
+        else
+            return new MuleConfigSizeRule()
     }
 
     @Override

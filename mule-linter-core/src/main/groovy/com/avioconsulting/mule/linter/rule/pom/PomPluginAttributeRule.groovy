@@ -3,6 +3,7 @@ package com.avioconsulting.mule.linter.rule.pom
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.pom.PomElement
 import com.avioconsulting.mule.linter.model.pom.PomPlugin
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -17,7 +18,11 @@ class PomPluginAttributeRule extends Rule {
     private final String artifactId
     private final Map<String,String> attributes
 
-    PomPluginAttributeRule(String groupId, String artifactId, Map<String,String> attributes) {
+    PomPluginAttributeRule(
+            @Param("groupId") String groupId,
+            @Param("artifactId") String artifactId,
+            @Param("attributes") Map<String,String> attributes
+    ) {
         this(RULE_ID, RULE_NAME, groupId, artifactId, attributes)
     }
 
@@ -26,6 +31,14 @@ class PomPluginAttributeRule extends Rule {
         this.groupId = groupId
         this.artifactId = artifactId
         this.attributes = attributes
+    }
+
+    static PomPluginAttributeRule createRule(Map<String, Object> params){
+        String groupId = params.get("groupId") as String
+        String artifactId = params.get("artifactId") as String
+        Map<String,String> attributes = params.get("attributes") as Map<String,String>
+
+        return new PomPluginAttributeRule(groupId, artifactId, attributes)
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.Version
 import com.avioconsulting.mule.linter.model.pom.PomDependency
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -24,14 +25,30 @@ class PomDependencyVersionRule extends Rule {
         this(groupId, artifactId, artifactVersion, Version.Operator.EQUAL)
     }
 
-    PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion,
-                             Version.Operator versionOperator) {
+    PomDependencyVersionRule(
+            @Param("groupId") String groupId,
+            @Param("artifactId") String artifactId,
+            @Param("artifactVersion") String artifactVersion,
+            @Param("versionOperator") Version.Operator versionOperator
+    ) {
         super(RULE_ID, RULE_NAME)
         this.groupId = groupId
         this.artifactId = artifactId
         this.artifactVersion = artifactVersion
         this.versionOperator = versionOperator
         version.setVersion(artifactVersion)
+    }
+
+    static PomDependencyVersionRule createRule(Map<String, Object> params){
+        String groupId = params.get("groupId") as String
+        String artifactId = params.get("artifactId") as String
+        String artifactVersion = params.get("artifactVersion") as String
+        String versionOperator = params.get("versionOperator") as String
+
+        if(versionOperator == null)
+            versionOperator = "EQUAL"
+
+        return new PomDependencyVersionRule(groupId, artifactId, artifactVersion, Version.Operator.valueOf(versionOperator))
     }
 
     @Override

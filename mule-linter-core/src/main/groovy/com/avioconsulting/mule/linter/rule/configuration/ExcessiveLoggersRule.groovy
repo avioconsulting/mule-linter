@@ -3,6 +3,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -21,7 +22,7 @@ class ExcessiveLoggersRule extends Rule {
         super(RULE_ID, RULE_NAME)
     }
 
-    ExcessiveLoggersRule(Integer excessiveLoggers) {
+    ExcessiveLoggersRule(@Param("excessiveLoggers") Integer excessiveLoggers) {
         this()
         this.excessiveLoggers.putAll([(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
               (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
@@ -33,6 +34,23 @@ class ExcessiveLoggersRule extends Rule {
     ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLoggers) {
         this()
         this.excessiveLoggers.putAll excessiveLoggers
+    }
+
+    static ExcessiveLoggersRule createRule(Map<String, Object> params){
+        def excessiveLoggers = params.get("excessiveLoggers")
+
+        if(excessiveLoggers != null) {
+            if (excessiveLoggers instanceof Map) {
+                Map<LoggerComponent.LogLevel, Integer> param = new EnumMap<>(LoggerComponent.LogLevel.class)
+                excessiveLoggers.forEach((key, value) -> {
+                    param.put(LoggerComponent.LogLevel.valueOf(key as String),value as Integer)
+                })
+                return new ExcessiveLoggersRule(param)
+            } else {
+                return new ExcessiveLoggersRule(excessiveLoggers as Integer)
+            }
+        } else
+            return new ExcessiveLoggersRule()
     }
 
     @Override

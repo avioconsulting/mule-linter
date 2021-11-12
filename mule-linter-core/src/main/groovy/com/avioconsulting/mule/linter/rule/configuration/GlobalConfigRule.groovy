@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -15,7 +16,7 @@ class GlobalConfigRule extends Rule {
     static Map<String, String> noneGlobalElements = [:]
     String globalFileName
 
-    GlobalConfigRule(String globalFileName, Map<String, String> noneGlobalElements) {
+    GlobalConfigRule(@Param("globalFileName") String globalFileName, @Param("noneGlobalElements") Map<String, String> noneGlobalElements) {
         this(globalFileName)
         this.noneGlobalElements += noneGlobalElements
     }
@@ -27,6 +28,20 @@ class GlobalConfigRule extends Rule {
 
     GlobalConfigRule() {
         this(DEFAULT_FILE_NAME)
+    }
+
+    static GlobalConfigRule createRule(Map<String, Object> params){
+        String globalFileName = params.get("globalFileName")
+        Map<String, String> noneGlobalElements = params.get("noneGlobalElements")
+
+        if(globalFileName == null && noneGlobalElements == null)
+            return new GlobalConfigRule()
+        else if (globalFileName == null)
+            throw new NoSuchFieldException("param <globalFileName> is missing")
+        else if (noneGlobalElements == null)
+            return new GlobalConfigRule(globalFileName)
+        else
+            return new GlobalConfigRule(globalFileName,noneGlobalElements)
     }
 
     @Override

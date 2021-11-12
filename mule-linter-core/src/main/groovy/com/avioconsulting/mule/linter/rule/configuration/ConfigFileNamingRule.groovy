@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.CaseNaming
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -12,7 +13,7 @@ class ConfigFileNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'A Config file is not following naming conventions'
     CaseNaming caseNaming = new CaseNaming()
 
-    ConfigFileNamingRule(CaseNaming.CaseFormat format) {
+    ConfigFileNamingRule(@Param("format") CaseNaming.CaseFormat format) {
         super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
@@ -21,17 +22,27 @@ class ConfigFileNamingRule extends Rule {
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
+    static ConfigFileNamingRule createRule(Map<String, Object> params){
+        String format = params.get("format")
+
+        if(format != null)
+            return new ConfigFileNamingRule(CaseNaming.CaseFormat.valueOf(format))
+        else
+            return new ConfigFileNamingRule()
+
+    }
+
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
 
         app.configurationFiles.each {
             configFile ->
-            String fileName = configFile.name.substring(0,configFile.name.lastIndexOf("."))
-            if (!caseNaming.isValidFormat(fileName)) {
-                violations.add(new RuleViolation(this, configFile.path,
-                        0, RULE_VIOLATION_MESSAGE))
-            }
+                String fileName = configFile.name.substring(0,configFile.name.lastIndexOf("."))
+                if (!caseNaming.isValidFormat(fileName)) {
+                    violations.add(new RuleViolation(this, configFile.path,
+                            0, RULE_VIOLATION_MESSAGE))
+                }
         }
         return violations
     }

@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -22,7 +23,7 @@ class LoggerMessageContentsRule extends Rule {
         this(DEFAULT_REGEX)
     }
 
-    LoggerMessageContentsRule(Pattern pattern) {
+    LoggerMessageContentsRule(@Param("pattern") Pattern pattern) {
         super(RULE_ID, RULE_NAME)
         this.pattern = pattern
     }
@@ -30,6 +31,24 @@ class LoggerMessageContentsRule extends Rule {
     LoggerMessageContentsRule(Map<String, Pattern> rules) {
         super(RULE_ID, RULE_NAME)
         this.rules = rules
+    }
+
+    static LoggerMessageContentsRule createRule(Map<String, Object> params){
+        String pattern = params.get("pattern")
+        Map rules = params.get("rules") as Map
+
+        if(pattern != null) {
+            return new LoggerMessageContentsRule(Pattern.compile(pattern))
+        }else if(rules != null) {
+            Map<String, Pattern> rulesParam = new HashMap<>()
+
+            rules.forEach((key,value)->{
+                rulesParam.put(key as String, Pattern.compile(value as String))
+            })
+
+            return new LoggerMessageContentsRule(rulesParam)
+        }else
+            return new LoggerMessageContentsRule()
     }
 
     @Override

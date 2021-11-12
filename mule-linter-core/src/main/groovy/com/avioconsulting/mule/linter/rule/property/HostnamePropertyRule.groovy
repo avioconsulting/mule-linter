@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PropertyFile
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -21,9 +22,17 @@ class HostnamePropertyRule extends Rule{
         super(RULE_ID, RULE_NAME)
     }
 
-    HostnamePropertyRule(String[] exemptions) {
+    HostnamePropertyRule(@Param("exemptions") String[] exemptions) {
         this()
         this.exemptions = exemptions
+    }
+
+    static HostnamePropertyRule createRule(Map<String, Object> params){
+        String[] exemptions = params.get("exemptions")
+        if(exemptions != null)
+            return new HostnamePropertyRule(exemptions)
+        else
+            return new HostnamePropertyRule()
     }
 
     @Override

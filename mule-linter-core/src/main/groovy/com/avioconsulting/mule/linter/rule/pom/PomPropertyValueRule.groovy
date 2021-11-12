@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
@@ -15,7 +16,7 @@ class PomPropertyValueRule extends Rule {
     private final String propertyName
     private final String propertyValue
 
-    PomPropertyValueRule(String propertyName, String propertyValue) {
+    PomPropertyValueRule(@Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue) {
         this(RULE_ID, RULE_NAME, propertyName, propertyValue)
     }
 
@@ -23,6 +24,13 @@ class PomPropertyValueRule extends Rule {
         super(ruleId, ruleName)
         this.propertyName = propertyName
         this.propertyValue = propertyValue
+    }
+
+    static PomPropertyValueRule createRule(Map<String, Object> params){
+        String propertyName = params.get("propertyName") as String
+        String propertyValue = params.get("propertyValue") as String
+
+        return new PomPropertyValueRule(propertyName,propertyValue)
     }
 
     @Override

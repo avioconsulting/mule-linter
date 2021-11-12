@@ -1,8 +1,10 @@
 package com.avioconsulting.mule.linter.rule.muleartifact
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.apache.groovy.json.internal.JsonArray
 
 
@@ -19,9 +21,22 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
         this([], true)
     }
 
-    MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
+    MuleArtifactHasSecurePropertiesRule(@Param("properties") List<String> properties, @Param("includeDefaults") Boolean includeDefaults) {
         super(RULE_ID, RULE_NAME)
         secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
+    }
+
+    static MuleArtifactHasSecurePropertiesRule createRule(Map<String, Object> params){
+        List<String> properties = params.get("properties") as List<String>
+        Boolean includeDefaults = params.get("includeDefaults") as Boolean
+
+        if(includeDefaults == null)
+            includeDefaults = true
+
+        if(properties != null)
+            return new MuleArtifactHasSecurePropertiesRule(properties,includeDefaults)
+        else
+            return new MuleArtifactHasSecurePropertiesRule()
     }
 
     @Override

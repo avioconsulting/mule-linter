@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.property
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.model.rule.Rule
 import groovy.text.SimpleTemplateEngine
@@ -35,10 +36,24 @@ class PropertyFileNamingRule extends Rule {
  * @param environments List of environments to check for files
  * @param pattern String pattern to search. ex. '${appname}-${env}.properties'
  */
-    PropertyFileNamingRule(List<String> environments, String pattern) {
+    PropertyFileNamingRule(
+            @Param("environments") List<String> environments,
+            @Param("pattern") String pattern
+    ) {
         super(RULE_ID, RULE_NAME)
         this.environments = environments
         this.pattern = pattern
+    }
+
+    static PropertyFileNamingRule createRule(Map<String, Object> params){
+        List<String> environments = params.get("environments") as List<String>
+        String pattern = params.get("pattern") as String
+
+        if(environments == null)
+            throw new NoSuchFieldException("environments")
+
+        return new PropertyFileNamingRule(environments, pattern ?: DEFAULT_PATTERN)
+
     }
 
     @SuppressWarnings('UnnecessaryGetter')
