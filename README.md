@@ -35,11 +35,6 @@ Generated Distribution and install in local -
 
 `./gradlew installDist`
 
-If rules are modified, regenerate GDSL file (before assembling) - 
-
-`./gradlew generateGDSL`
-
-
 
 ## Rule Configuration
 

@@ -44,6 +44,7 @@ task generateGDSL (type: JavaExec) {
     classpath += sourceSets.main.runtimeClasspath
 }
 
+jar.dependsOn(generateGDSL)
 
 publishing {
     publications {
