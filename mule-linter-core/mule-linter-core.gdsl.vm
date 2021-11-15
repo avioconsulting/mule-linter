@@ -1,0 +1,66 @@
+#macro(methodParam $param $type)
+method name: '$param',
+        params: [
+            $param: $type
+        ]
+#end
+#macro(stringParam $param)
+    #methodParam($param 'String.name')
+#end
+#macro(boolParam $param)
+    #methodParam($param 'Boolean.name')
+#end
+#macro(mapParam $param)
+    #methodParam($param 'Map.name')
+#end
+#macro(closureParam $param)
+        method name: '$param',
+                params: [
+                        closure: Closure.name
+                ]
+#end
+#macro(prop $propName)
+            property name: '$propName',
+                    type: String.name
+#end
+#macro(typedProp $propName $propType)
+            property name: '$propName',
+                    type: '$propType'
+#end
+
+def linterCtx = context(scriptScope: 'muleLinter.groovy')
+contributor([linterCtx]) {
+    method name: 'mule_linter',
+            params: [
+                    closure: Closure.name
+            ]
+}
+
+def closureScopeContext = context(scope: closureScope())
+contributor([closureScopeContext]) {
+    def call = enclosingCall('mule_linter')
+    if(call) {
+        method name: 'rules',
+                params: [
+                        closure: Closure.name
+                ]
+    }
+    call = enclosingCall("rules")
+    if(call) {
+        #foreach($ruleId in $ruleIds)
+            #closureParam($ruleId)
+        #end
+    }
+    #set($paramSuffix = '-param')
+    #foreach($ruleId in $ruleIds)
+        #set( $ruleKey= $ruleId+$paramSuffix )
+        call = enclosingCall("$ruleId")
+        if(call) {
+            #foreach($param in $rules.get($ruleId).params)
+                #typedProp($param.v1, $param.v2)
+            #end
+        }
+
+    #end
+
+}

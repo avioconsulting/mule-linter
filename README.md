@@ -26,6 +26,20 @@ Unzip/Untar the distribution. You can run the CLI from expanded files -
 You may move expanded distribution folder to other persistent location and add it on OS PATH, 
 and then run cli from anywhere on the system.
 
+## Build
+To build the project run - 
+
+`./gradlew build`
+
+Generated Distribution and install in local - 
+
+`./gradlew installDist`
+
+If rules are modified, regenerate GDSL file (before assembling) - 
+
+`./gradlew generateGDSL`
+
+
 
 ## Rule Configuration
 
