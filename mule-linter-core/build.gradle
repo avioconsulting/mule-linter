@@ -1,3 +1,4 @@
+
 plugins {
     id 'codenarc'
 }
@@ -23,6 +24,27 @@ codenarc {
     ignoreFailures = true
 }
 
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+task generateGDSL (type: JavaExec) {
+    //Generates GDSL file using `GDSLGenerator.groovy`.
+    // Generated file is added in src/main/resources.
+    // Run `./gradlew generateGDSL`
+    main = 'GDSLGeneratorScript'
+    classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
+    classpath += sourceSets.main.runtimeClasspath
+}
+
+jar.dependsOn(generateGDSL)
 
 publishing {
     publications {

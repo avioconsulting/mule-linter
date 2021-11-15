@@ -1,0 +1,421 @@
+
+def linterCtx = context(scriptScope: 'muleLinter.groovy')
+contributor([linterCtx]) {
+    method name: 'mule_linter',
+            params: [
+                    closure: Closure.name
+            ]
+}
+
+def closureScopeContext = context(scope: closureScope())
+contributor([closureScopeContext]) {
+    def call = enclosingCall('mule_linter')
+    if(call) {
+        method name: 'rules',
+                params: [
+                        closure: Closure.name
+                ]
+    }
+    call = enclosingCall("rules")
+    if(call) {
+        method name: 'CONFIG_FILE_NAMING',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'PROPERTY_FILE_COUNT_MISMATCH',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'POM_PLUGIN_ATTRIBUTE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'UNUSED_FLOW',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'FLOW_SUBFLOW_NAMING',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'GIT_IGNORE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MULE_ARTIFACT_SECURE_PROPERTIES',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'DISPLAY_NAME',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'GLOBAL_CONFIG_NO_FLOWS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'COMPONENT_COUNT',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'LOGGER_ATTRIBUTES_RULE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MULE_ARTIFACT_MIN_MULE_VERSION',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'COMMENTED_CODE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'CONFIG_PLACEHOLDER',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'POM_EXISTS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'ENCRYPTED_VALUE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MULE_CONFIG_SIZE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'PROPERTY_FILE_NAMING',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'LOGGER_MESSAGE_CONTENTS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'HOSTNAME_PROPERTY',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'README',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'ON_ERROR_LOG_EXCEPTION',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'API_CONSOLE_DISABLED',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MAVEN_PROPERTY',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'AZURE_PIPELINES_EXISTS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'JENKINS_EXISTS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'COMPONENT_ATTRIBUTE_VALUE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'EXCESSIVE_LOGGERS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MUNIT_MAVEN_PLUGIN_ATTRIBUTES',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'POM_DEPENDENCY_VERSION',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'PROPERTY_EXISTS',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'GLOBAL_CONFIG',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MUNIT_PLUGIN_VERSION',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MULE_MAVEN_PLUGIN',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'UNTIL_SUCCESSFUL',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'LOGGER_CATEGORY_HASVALUE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'LOGGER_MESSAGE_HASVALUE',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MULE_RUNTIME',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'MUNIT_VERSION',
+                params: [
+                        closure: Closure.name
+                ]
+    }
+        call = enclosingCall("CONFIG_FILE_NAMING")
+        if(call) {
+            property name: 'format',
+                    type: 'com.avioconsulting.mule.linter.model.CaseNaming$CaseFormat'
+        }
+
+        call = enclosingCall("PROPERTY_FILE_COUNT_MISMATCH")
+        if(call) {
+            property name: 'environments',
+                    type: 'java.util.List<java.lang.String>'
+            property name: 'pattern',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("POM_PLUGIN_ATTRIBUTE")
+        if(call) {
+            property name: 'groupId',
+                    type: 'java.lang.String'
+            property name: 'artifactId',
+                    type: 'java.lang.String'
+            property name: 'attributes',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+        }
+
+        call = enclosingCall("UNUSED_FLOW")
+        if(call) {
+        }
+
+        call = enclosingCall("FLOW_SUBFLOW_NAMING")
+        if(call) {
+            property name: 'format',
+                    type: 'com.avioconsulting.mule.linter.model.CaseNaming$CaseFormat'
+        }
+
+        call = enclosingCall("GIT_IGNORE")
+        if(call) {
+            property name: 'ignoredFiles',
+                    type: 'java.util.List<java.lang.String>'
+        }
+
+        call = enclosingCall("MULE_ARTIFACT_SECURE_PROPERTIES")
+        if(call) {
+            property name: 'properties',
+                    type: 'java.util.List<java.lang.String>'
+            property name: 'includeDefaults',
+                    type: 'java.lang.Boolean'
+        }
+
+        call = enclosingCall("DISPLAY_NAME")
+        if(call) {
+            property name: 'components',
+                    type: 'java.util.List'
+        }
+
+        call = enclosingCall("GLOBAL_CONFIG_NO_FLOWS")
+        if(call) {
+            property name: 'globalFileName',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("COMPONENT_COUNT")
+        if(call) {
+            property name: 'component',
+                    type: 'java.lang.String'
+            property name: 'namespace',
+                    type: 'java.lang.String'
+            property name: 'maxCount',
+                    type: 'java.lang.Integer'
+        }
+
+        call = enclosingCall("LOGGER_ATTRIBUTES_RULE")
+        if(call) {
+            property name: 'requiredAttributes',
+                    type: 'java.util.List<java.lang.String>'
+        }
+
+        call = enclosingCall("MULE_ARTIFACT_MIN_MULE_VERSION")
+        if(call) {
+        }
+
+        call = enclosingCall("COMMENTED_CODE")
+        if(call) {
+        }
+
+        call = enclosingCall("CONFIG_PLACEHOLDER")
+        if(call) {
+            property name: 'placeholderAttributes',
+                    type: 'java.lang.String[]'
+        }
+
+        call = enclosingCall("POM_EXISTS")
+        if(call) {
+        }
+
+        call = enclosingCall("ENCRYPTED_VALUE")
+        if(call) {
+        }
+
+        call = enclosingCall("MULE_CONFIG_SIZE")
+        if(call) {
+            property name: 'flowLimit',
+                    type: 'java.lang.Integer'
+        }
+
+        call = enclosingCall("PROPERTY_FILE_NAMING")
+        if(call) {
+            property name: 'environments',
+                    type: 'java.util.List<java.lang.String>'
+            property name: 'pattern',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("LOGGER_MESSAGE_CONTENTS")
+        if(call) {
+            property name: 'pattern',
+                    type: 'java.util.regex.Pattern'
+        }
+
+        call = enclosingCall("HOSTNAME_PROPERTY")
+        if(call) {
+            property name: 'exemptions',
+                    type: 'java.lang.String[]'
+        }
+
+        call = enclosingCall("README")
+        if(call) {
+        }
+
+        call = enclosingCall("ON_ERROR_LOG_EXCEPTION")
+        if(call) {
+        }
+
+        call = enclosingCall("API_CONSOLE_DISABLED")
+        if(call) {
+        }
+
+        call = enclosingCall("MAVEN_PROPERTY")
+        if(call) {
+            property name: 'propertyName',
+                    type: 'java.lang.String'
+            property name: 'propertyValue',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("AZURE_PIPELINES_EXISTS")
+        if(call) {
+        }
+
+        call = enclosingCall("JENKINS_EXISTS")
+        if(call) {
+        }
+
+        call = enclosingCall("COMPONENT_ATTRIBUTE_VALUE")
+        if(call) {
+            property name: 'component',
+                    type: 'java.lang.String'
+            property name: 'namespace',
+                    type: 'java.lang.String'
+            property name: 'attributeMatchers',
+                    type: 'java.util.Map<java.lang.String, java.util.regex.Pattern>'
+        }
+
+        call = enclosingCall("EXCESSIVE_LOGGERS")
+        if(call) {
+            property name: 'excessiveLoggers',
+                    type: 'java.lang.Integer'
+        }
+
+        call = enclosingCall("MUNIT_MAVEN_PLUGIN_ATTRIBUTES")
+        if(call) {
+            property name: 'coverageAttributeMap',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+            property name: 'includeDefaults',
+                    type: 'java.lang.Boolean'
+            property name: 'ignoreFiles',
+                    type: 'java.util.List<java.lang.String>'
+        }
+
+        call = enclosingCall("POM_DEPENDENCY_VERSION")
+        if(call) {
+            property name: 'groupId',
+                    type: 'java.lang.String'
+            property name: 'artifactId',
+                    type: 'java.lang.String'
+            property name: 'artifactVersion',
+                    type: 'java.lang.String'
+            property name: 'versionOperator',
+                    type: 'com.avioconsulting.mule.linter.model.Version$Operator'
+        }
+
+        call = enclosingCall("PROPERTY_EXISTS")
+        if(call) {
+            property name: 'propertyName',
+                    type: 'java.lang.String'
+            property name: 'environments',
+                    type: 'java.util.List<java.lang.String>'
+            property name: 'pattern',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("GLOBAL_CONFIG")
+        if(call) {
+            property name: 'globalFileName',
+                    type: 'java.lang.String'
+            property name: 'noneGlobalElements',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+        }
+
+        call = enclosingCall("MUNIT_PLUGIN_VERSION")
+        if(call) {
+            property name: 'version',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("MULE_MAVEN_PLUGIN")
+        if(call) {
+            property name: 'version',
+                    type: 'java.lang.String'
+        }
+
+        call = enclosingCall("UNTIL_SUCCESSFUL")
+        if(call) {
+        }
+
+        call = enclosingCall("LOGGER_CATEGORY_HASVALUE")
+        if(call) {
+        }
+
+        call = enclosingCall("LOGGER_MESSAGE_HASVALUE")
+        if(call) {
+        }
+
+        call = enclosingCall("MULE_RUNTIME")
+        if(call) {
+        }
+
+        call = enclosingCall("MUNIT_VERSION")
+        if(call) {
+            property name: 'version',
+                    type: 'java.lang.String'
+        }
+
+
+}
