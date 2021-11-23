@@ -14,41 +14,37 @@ class PomDependencyVersionRule extends Rule {
     static final String RULE_NAME = 'The given Maven dependency exists in pom.xml and matches given version criteria. '
     static final String MISSING_DEPENDENCY = 'Dependency does not exist: '
     static final String RULE_VIOLATION_MESSAGE = 'Dependency exist but invalid version: '
-    Version version= new Version()
+    Version version
 
-    private final String groupId
-    private final String artifactId
-    private final String artifactVersion
-    private final Version.Operator versionOperator
+    @Param("groupId") String groupId
+    @Param("artifactId") String artifactId
+    @Param("artifactVersion") String artifactVersion
+    @Param("versionOperator") String versionOperator
+
+    private Version.Operator operator
+
+    PomDependencyVersionRule(){
+        super(RULE_ID, RULE_NAME)
+        version= new Version()
+    }
 
     PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion) {
         this(groupId, artifactId, artifactVersion, Version.Operator.EQUAL)
     }
 
-    PomDependencyVersionRule(
-            @Param("groupId") String groupId,
-            @Param("artifactId") String artifactId,
-            @Param("artifactVersion") String artifactVersion,
-            @Param("versionOperator") Version.Operator versionOperator
-    ) {
-        super(RULE_ID, RULE_NAME)
+    PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion, Version.Operator versionOperator){
+        this()
         this.groupId = groupId
         this.artifactId = artifactId
         this.artifactVersion = artifactVersion
-        this.versionOperator = versionOperator
-        version.setVersion(artifactVersion)
+        this.versionOperator = versionOperator.name()
+        init()
     }
 
-    static PomDependencyVersionRule createRule(Map<String, Object> params){
-        String groupId = params.get("groupId") as String
-        String artifactId = params.get("artifactId") as String
-        String artifactVersion = params.get("artifactVersion") as String
-        String versionOperator = params.get("versionOperator") as String
-
-        if(versionOperator == null)
-            versionOperator = "EQUAL"
-
-        return new PomDependencyVersionRule(groupId, artifactId, artifactVersion, Version.Operator.valueOf(versionOperator))
+    @Override
+    void init(){
+        this.operator = Version.Operator.valueOf(versionOperator)
+        version.setVersion(artifactVersion)
     }
 
     @Override
@@ -63,7 +59,7 @@ class PomDependencyVersionRule extends Rule {
             Boolean isViolated = false;
             PomElement attribute = dependency.getAttribute('version')
             String dependencyVersion = attribute.value
-            switch (versionOperator) {
+            switch (operator) {
                 case Version.Operator.EQUAL:
                     isViolated = (!version.isEqual(dependencyVersion)) ? true : false
                     break;

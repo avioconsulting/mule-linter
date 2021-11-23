@@ -13,10 +13,16 @@ class ComponentAttributeValueRule extends Rule {
     static final String RULE_NAME = 'A specified component has the required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Component is missing attribute '
     static final String EXTENDING = ' with value '
-    String component
-    String namespace
-    List<String> requiredAttributes
-    Map<String, Pattern> attributeMatchers
+
+    @Param("component") String component
+    @Param("namespace") String namespace
+    @Param("requiredAttributes") List<String> requiredAttributes
+    @Param("attributeMatchers") Map<String, String> attributeMatchers
+    private Map<String, Pattern> privateAttributeMatchers
+
+    ComponentAttributeValueRule(){
+        super(RULE_ID, RULE_NAME)
+    }
 
     ComponentAttributeValueRule(String component, String namespace, List<String> requiredAttributes) {
         this(RULE_ID, RULE_NAME, component, namespace, requiredAttributes)
@@ -29,7 +35,7 @@ class ComponentAttributeValueRule extends Rule {
         this.requiredAttributes = requiredAttributes
     }
 
-    ComponentAttributeValueRule(@Param("component") String component, @Param("namespace") String namespace, @Param("attributeMatchers") Map<String, Pattern> attributeMatchers) {
+    ComponentAttributeValueRule(String component, String namespace, Map<String, Pattern> attributeMatchers) {
         this(RULE_ID, RULE_NAME, component, namespace, attributeMatchers)
     }
 
@@ -37,27 +43,16 @@ class ComponentAttributeValueRule extends Rule {
         super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
-        this.attributeMatchers = attributeMatchers
+        this.privateAttributeMatchers = attributeMatchers
     }
 
-
-    static ComponentAttributeValueRule createRule(Map<String, Object> params){
-        String component = params.get("component") as String
-        String namespace  = params.get("namespace") as String
-        List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
-        Map attributeMatchers = params.get("attributeMatchers") as Map
-
-        if(requiredAttributes != null)
-            return new ComponentAttributeValueRule(component,namespace,requiredAttributes)
-        else if(attributeMatchers != null){
-
-            Map<String, Pattern> attributeMatchersParam = new HashMap<>()
-
+    @Override
+    void init(){
+        if(attributeMatchers != null){
+            privateAttributeMatchers = new HashMap<>()
             attributeMatchers.forEach((key,value)->{
-                attributeMatchersParam.put(key as String, Pattern.compile(value as String))
+                privateAttributeMatchers.put(key as String, Pattern.compile(value as String))
             })
-
-            return new ComponentAttributeValueRule(component,namespace,attributeMatchersParam)
         }
     }
 
@@ -74,8 +69,8 @@ class ComponentAttributeValueRule extends Rule {
                     }
                 }
             }
-            if (!(attributeMatchers != null && attributeMatchers.isEmpty())) {
-                attributeMatchers.each {attribute ->
+            if (!(privateAttributeMatchers != null && privateAttributeMatchers.isEmpty())) {
+                privateAttributeMatchers.each {attribute ->
                     if (!component.hasAttributeValue(attribute.key) ||
                             component.getAttributeValue(attribute.key).empty) {
                         violations.add(new RuleViolation(this, component.file.path,

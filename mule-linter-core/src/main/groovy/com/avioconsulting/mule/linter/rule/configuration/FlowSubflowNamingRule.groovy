@@ -16,20 +16,20 @@ class FlowSubflowNamingRule extends Rule {
                                                              'flow': Namespace.CORE]
     CaseNaming caseNaming = new CaseNaming()
 
+    @Param("format") String format
+
     FlowSubflowNamingRule(){
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
-    FlowSubflowNamingRule(@Param("format") CaseNaming.CaseFormat format) {
+    FlowSubflowNamingRule(CaseNaming.CaseFormat format) {
         super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
 
-    static FlowSubflowNamingRule createRule(Map<String, Object> params){
-        String format = params.get("format")
+    @Override
+    void init(){
         if(format != null)
-            return new FlowSubflowNamingRule(CaseNaming.CaseFormat.valueOf(format))
-        else
-            return new FlowSubflowNamingRule()
+            caseNaming.setFormat((CaseNaming.CaseFormat.valueOf(format)))
     }
 
     @Override

@@ -14,31 +14,26 @@ class PomPluginAttributeRule extends Rule {
     static final String MISSING_PLUGIN = 'Plugin does not exits: '
     static final String RULE_VIOLATION_MESSAGE = 'Plugin exist but does not matches the attribute: '
 
-    private final String groupId
-    private final String artifactId
-    private final Map<String,String> attributes
+    @Param("groupId") String groupId
+    @Param("artifactId") String artifactId
+    @Param("attributes") Map<String,String> attributes
 
-    PomPluginAttributeRule(
-            @Param("groupId") String groupId,
-            @Param("artifactId") String artifactId,
-            @Param("attributes") Map<String,String> attributes
-    ) {
+    PomPluginAttributeRule(){
+        super(RULE_ID, RULE_NAME)
+    }
+    PomPluginAttributeRule(String ruleId, String ruleName, String groupId, String artifactId){
+        super(ruleId, ruleName)
+        this.groupId = groupId
+        this.artifactId = artifactId
+    }
+
+    PomPluginAttributeRule(String groupId, String artifactId, Map<String,String> attributes) {
         this(RULE_ID, RULE_NAME, groupId, artifactId, attributes)
     }
 
     PomPluginAttributeRule(String ruleId, String ruleName, String groupId, String artifactId, Map<String,String> attributes) {
-        super(ruleId, ruleName)
-        this.groupId = groupId
-        this.artifactId = artifactId
+        this(ruleId, ruleName, groupId, artifactId)
         this.attributes = attributes
-    }
-
-    static PomPluginAttributeRule createRule(Map<String, Object> params){
-        String groupId = params.get("groupId") as String
-        String artifactId = params.get("artifactId") as String
-        Map<String,String> attributes = params.get("attributes") as Map<String,String>
-
-        return new PomPluginAttributeRule(groupId, artifactId, attributes)
     }
 
     @Override

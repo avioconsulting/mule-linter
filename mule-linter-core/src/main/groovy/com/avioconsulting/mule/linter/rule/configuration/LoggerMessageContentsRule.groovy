@@ -16,39 +16,39 @@ class LoggerMessageContentsRule extends Rule {
     static final String LOGGER_LEVEL = "INFO"
     static final Pattern DEFAULT_REGEX = ~/payload]/
 
-    Pattern pattern
-    Map<String, Pattern> rules
+    Pattern rulePattern
+    Map<String, Pattern> rulesMap
+
+    @Param("pattern") String pattern
+    @Param("rules") Map<String, String> rules
 
     LoggerMessageContentsRule() {
         this(DEFAULT_REGEX)
     }
 
-    LoggerMessageContentsRule(@Param("pattern") Pattern pattern) {
+    LoggerMessageContentsRule(Pattern pattern) {
         super(RULE_ID, RULE_NAME)
-        this.pattern = pattern
+        this.rulePattern = pattern
     }
 
     LoggerMessageContentsRule(Map<String, Pattern> rules) {
         super(RULE_ID, RULE_NAME)
-        this.rules = rules
+        this.rulesMap = rules
     }
 
-    static LoggerMessageContentsRule createRule(Map<String, Object> params){
-        String pattern = params.get("pattern")
-        Map rules = params.get("rules") as Map
-
+    @Override
+    void init(){
         if(pattern != null) {
-            return new LoggerMessageContentsRule(Pattern.compile(pattern))
-        }else if(rules != null) {
+            this.rulePattern = Pattern.compile(pattern)
+        }
+        if(rules != null) {
             Map<String, Pattern> rulesParam = new HashMap<>()
 
-            rules.forEach((key,value)->{
+            rules.forEach((key, value)->{
                 rulesParam.put(key as String, Pattern.compile(value as String))
             })
-
-            return new LoggerMessageContentsRule(rulesParam)
-        }else
-            return new LoggerMessageContentsRule()
+            this.rulesMap = rulesParam
+        }
     }
 
     @Override
@@ -56,12 +56,12 @@ class LoggerMessageContentsRule extends Rule {
         List<RuleViolation> violations = []
         application.configurationFiles.collect({it.findLoggerComponents()}).flatten().each {
             LoggerComponent loggerComponent ->
-                if (rules != null) {
-                    if (rules.any {loggerComponent.level == it.key && loggerComponent.message =~ it.value}) {
+                if (rulesMap != null) {
+                    if (rulesMap.any {loggerComponent.level == it.key && loggerComponent.message =~ it.value}) {
                         violations.add(new RuleViolation(this, loggerComponent.file.path, loggerComponent.lineNumber,
                                 RULE_VIOLATION_MESSAGE + loggerComponent.message))
                     }
-                } else if (loggerComponent.level == LOGGER_LEVEL && loggerComponent.message =~ pattern) {
+                } else if (loggerComponent.level == LOGGER_LEVEL && loggerComponent.message =~ rulePattern) {
                     violations.add(new RuleViolation(this, loggerComponent.file.path, loggerComponent.lineNumber,
                             RULE_VIOLATION_MESSAGE + loggerComponent.message))
                 }}

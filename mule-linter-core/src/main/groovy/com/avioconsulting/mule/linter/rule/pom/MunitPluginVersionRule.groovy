@@ -11,14 +11,22 @@ class MunitPluginVersionRule extends PomPluginAttributeRule {
     static final String GROUP_ID = 'com.mulesoft.munit.tools'
     static final String ARTIFACT_ID = 'munit-maven-plugin'
 
-    MunitPluginVersionRule(@Param("version") String version) {
-        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':version])
+    @Param("version") String version
+
+    MunitPluginVersionRule() {
+        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID)
     }
 
-    static MunitPluginVersionRule createRule(Map<String, Object> params){
-        String version = params.get("version")  as String
+    MunitPluginVersionRule(String version) {
+        this()
+        this.version = version
+        init()
+    }
+
+    @Override
+    void init(){
         if(version != null)
-            return new MunitPluginVersionRule(version)
+            this.attributes = ['version':version]
         else
             throw new NoSuchFieldException("version")
     }

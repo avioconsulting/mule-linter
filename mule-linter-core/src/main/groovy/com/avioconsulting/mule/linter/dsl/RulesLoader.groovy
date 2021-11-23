@@ -6,6 +6,8 @@ import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 
+import java.lang.reflect.Field
+
 class RulesLoader {
 
     private static final def Map<String, Class<? extends Rule>> rulesMap = [:]
@@ -38,13 +40,30 @@ class RulesLoader {
             //this can be replaced by a method for discover the rule
             String ruleId = it.ruleId as String
             Map<String, Object> params = it.params as Map<String, Object>
-
             Class ruleClass = RulesLoader.getRuleClassById(ruleId)
             if(ruleClass != null){
                 try {
-                    ruleSet.addRule(Rule.createRule(ruleClass,params))
+                    Rule rule = ruleClass.newInstance()
+
+                    /* setProperty not working properly */
+/*
+                    params.forEach((param,value)->{
+                        rule.setProperty(param.trim(),value)
+                    })
+*/
+
+                    params.forEach((param,value)->{
+                        Field field = ruleClass.getDeclaredField(param)
+                        field.setAccessible(true)
+                        field.set(rule,value)
+                        field.setAccessible(false)
+                    })
+
+                    rule.init()
+                    ruleSet.addRule(rule)
+
                 }catch(Exception e){
-                    println("error creating rule <<${ruleId}>>")
+                    println("error creating rule <<${ruleId}>> " + e.getMessage())
                 }
             } else {
                 println("rule <<${ruleId}>> not found!")

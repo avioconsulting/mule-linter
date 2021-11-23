@@ -13,24 +13,25 @@ class PomPropertyValueRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = ' maven property value does not match expected value. '
     static final String ATTRIBUTE_MISSING_MESSAGE = ' does not exist in <properties></properties>'
 
-    private final String propertyName
-    private final String propertyValue
+    @Param("propertyName") String propertyName
+    @Param("propertyValue") String propertyValue
 
-    PomPropertyValueRule(@Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue) {
+    PomPropertyValueRule(){
+        super(RULE_ID, RULE_NAME)
+    }
+
+    PomPropertyValueRule(String ruleId, String ruleName, String propertyName){
+        super(ruleId, ruleName)
+        this.propertyName = propertyName
+    }
+
+    PomPropertyValueRule(String propertyName, String propertyValue) {
         this(RULE_ID, RULE_NAME, propertyName, propertyValue)
     }
 
     PomPropertyValueRule(String ruleId, String ruleName, String propertyName, String propertyValue) {
-        super(ruleId, ruleName)
-        this.propertyName = propertyName
+        this(ruleId, ruleName,propertyName)
         this.propertyValue = propertyValue
-    }
-
-    static PomPropertyValueRule createRule(Map<String, Object> params){
-        String propertyName = params.get("propertyName") as String
-        String propertyValue = params.get("propertyValue") as String
-
-        return new PomPropertyValueRule(propertyName,propertyValue)
     }
 
     @Override

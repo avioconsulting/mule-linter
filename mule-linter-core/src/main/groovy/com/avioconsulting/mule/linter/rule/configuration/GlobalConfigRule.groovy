@@ -13,10 +13,10 @@ class GlobalConfigRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain global configuration: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist'
     static final String DEFAULT_FILE_NAME = 'globals.xml'
-    static Map<String, String> noneGlobalElements = [:]
-    String globalFileName
+    @Param("noneGlobalElements") Map<String, String> noneGlobalElements = [:]
+    @Param("globalFileName") String globalFileName
 
-    GlobalConfigRule(@Param("globalFileName") String globalFileName, @Param("noneGlobalElements") Map<String, String> noneGlobalElements) {
+    GlobalConfigRule(String globalFileName, Map<String, String> noneGlobalElements) {
         this(globalFileName)
         this.noneGlobalElements += noneGlobalElements
     }
@@ -30,19 +30,6 @@ class GlobalConfigRule extends Rule {
         this(DEFAULT_FILE_NAME)
     }
 
-    static GlobalConfigRule createRule(Map<String, Object> params){
-        String globalFileName = params.get("globalFileName")
-        Map<String, String> noneGlobalElements = params.get("noneGlobalElements")
-
-        if(globalFileName == null && noneGlobalElements == null)
-            return new GlobalConfigRule()
-        else if (globalFileName == null)
-            throw new NoSuchFieldException("param <globalFileName> is missing")
-        else if (noneGlobalElements == null)
-            return new GlobalConfigRule(globalFileName)
-        else
-            return new GlobalConfigRule(globalFileName,noneGlobalElements)
-    }
 
     @Override
     List<RuleViolation> execute(Application app) {

@@ -13,7 +13,9 @@ class ConfigFileNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'A Config file is not following naming conventions'
     CaseNaming caseNaming = new CaseNaming()
 
-    ConfigFileNamingRule(@Param("format") CaseNaming.CaseFormat format) {
+    @Param("format") String format
+
+    ConfigFileNamingRule(CaseNaming.CaseFormat format) {
         super(RULE_ID, RULE_NAME)
         caseNaming.setFormat(format)
     }
@@ -22,13 +24,10 @@ class ConfigFileNamingRule extends Rule {
         this(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
-    static ConfigFileNamingRule createRule(Map<String, Object> params){
-        String format = params.get("format")
-
+    @Override
+    void init(){
         if(format != null)
-            return new ConfigFileNamingRule(CaseNaming.CaseFormat.valueOf(format))
-        else
-            return new ConfigFileNamingRule()
+            caseNaming.setFormat(CaseNaming.CaseFormat.valueOf(format))
 
     }
 

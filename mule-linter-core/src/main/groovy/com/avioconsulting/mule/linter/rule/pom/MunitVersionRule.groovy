@@ -10,14 +10,22 @@ class MunitVersionRule extends PomPropertyValueRule {
     static final String RULE_NAME = 'The munit.version maven property matches the given version. '
     static final String PROPERTY_NAME = 'munit.version'
 
-    MunitVersionRule(@Param("version") String version) {
-        super(RULE_ID, RULE_NAME, PROPERTY_NAME, version)
+    @Param("version") String version
+
+    MunitVersionRule() {
+        super(RULE_ID, RULE_NAME, PROPERTY_NAME)
     }
 
-    static MunitVersionRule createRule(Map<String, Object> params){
-        String version = params.get("version") as String
+    MunitVersionRule(@Param("version") String version) {
+        this()
+        this.version = version
+        init()
+    }
+
+    @Override
+    void init(){
         if(version != null)
-            return new MunitVersionRule(version)
+            this.propertyValue = version
         else
             throw new NoSuchFieldException("version")
     }

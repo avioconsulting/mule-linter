@@ -14,8 +14,12 @@ class PropertyFileNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Missing property file, files must match naming pattern: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
 
-    String[] environments
-    String pattern
+    @Param("environments") List<String> environments
+    @Param("pattern") String pattern
+
+    PropertyFileNamingRule() {
+        this([])
+    }
 
 /**
  * A new PropertyFileNamingRule for a list of environments.  This ensures that
@@ -36,24 +40,10 @@ class PropertyFileNamingRule extends Rule {
  * @param environments List of environments to check for files
  * @param pattern String pattern to search. ex. '${appname}-${env}.properties'
  */
-    PropertyFileNamingRule(
-            @Param("environments") List<String> environments,
-            @Param("pattern") String pattern
-    ) {
+    PropertyFileNamingRule(List<String> environments, String pattern) {
         super(RULE_ID, RULE_NAME)
         this.environments = environments
         this.pattern = pattern
-    }
-
-    static PropertyFileNamingRule createRule(Map<String, Object> params){
-        List<String> environments = params.get("environments") as List<String>
-        String pattern = params.get("pattern") as String
-
-        if(environments == null)
-            throw new NoSuchFieldException("environments")
-
-        return new PropertyFileNamingRule(environments, pattern ?: DEFAULT_PATTERN)
-
     }
 
     @SuppressWarnings('UnnecessaryGetter')

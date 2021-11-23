@@ -9,6 +9,8 @@ abstract class Rule {
     RuleSeverity severity = RuleSeverity.MINOR
     RuleType ruleType = RuleType.CODE_SMELL
 
+    Rule(){}
+
     Rule(String ruleId, String ruleName, RuleSeverity severity, RuleType ruleType) {
         this.ruleId = ruleId
         this.ruleName = ruleName
@@ -17,15 +19,6 @@ abstract class Rule {
     }
     Rule(String ruleId, String ruleName) {
         this(ruleId, ruleName, RuleSeverity.CRITICAL, RuleType.CODE_SMELL)
-    }
-
-    static Rule createRule(Class ruleClass,Map<String, Object> params) {
-        Object ruleObj
-        if(params == null || params.isEmpty())
-            return ruleClass.newInstance() as Rule
-
-        ruleObj = ruleClass.createRule(params)
-        return ruleObj as Rule
     }
 
     String getRuleName() {
@@ -43,6 +36,8 @@ abstract class Rule {
     void setRuleType(RuleType ruleType) {
         this.ruleType = ruleType
     }
+
+    void init(){}
 
     abstract List<RuleViolation> execute(Application application)
 

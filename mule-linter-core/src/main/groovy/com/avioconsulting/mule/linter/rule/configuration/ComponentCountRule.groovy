@@ -10,28 +10,25 @@ class ComponentCountRule extends Rule {
     static final String RULE_NAME = 'A component should not be used more than the allowed number of times. '
     static final String RULE_VIOLATION_MESSAGE = ' was used more times than allowed'
 
-    String component
-    String namespace
-    Integer maxCount
+    @Param("component") String component
+    @Param("namespace") String namespace
+    @Param("maxCount") Integer maxCount
 
-    ComponentCountRule(@Param("component") String component, @Param("namespace") String namespace, @Param("maxCount") Integer maxCount) {
+    ComponentCountRule(){
+        super(RULE_ID, RULE_NAME)
+    }
+
+    ComponentCountRule(String component, String namespace, Integer maxCount) {
         this(RULE_ID, RULE_NAME, component, namespace, maxCount)
     }
 
     ComponentCountRule(String ruleId, String ruleName, String component, String namespace, Integer maxCount) {
-       super(ruleId, ruleName)
+        super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.maxCount = maxCount
     }
 
-    static ComponentCountRule createRule(Map<String, Object> params){
-        String component = params.get("component") as String
-        String namespace = params.get("namespace") as String
-        Integer maxCount = params.get("maxCount") as Integer
-
-        return new ComponentCountRule(component, namespace, maxCount)
-    }
 
     @Override
     List<RuleViolation> execute(Application application) {

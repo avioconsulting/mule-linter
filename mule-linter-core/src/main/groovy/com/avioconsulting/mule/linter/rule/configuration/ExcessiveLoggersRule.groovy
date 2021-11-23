@@ -12,11 +12,14 @@ class ExcessiveLoggersRule extends Rule {
     static final String RULE_NAME = 'Loggers are not used excessively in sequence. '
     static final String RULE_VIOLATION_MESSAGE = 'Too many sequential loggers of same level in flow '
 
-    EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers = [(LoggerComponent.LogLevel.TRACE): 2,
-                                                                   (LoggerComponent.LogLevel.DEBUG): 2,
-                                                                   (LoggerComponent.LogLevel.INFO): 2,
-                                                                   (LoggerComponent.LogLevel.WARN): 2,
-                                                                   (LoggerComponent.LogLevel.ERROR): 2]
+    private final EnumMap<LoggerComponent.LogLevel, Integer> privateExcessiveLoggers = [(LoggerComponent.LogLevel.TRACE): 2,
+                                                                          (LoggerComponent.LogLevel.DEBUG): 2,
+                                                                          (LoggerComponent.LogLevel.INFO) : 2,
+                                                                          (LoggerComponent.LogLevel.WARN) : 2,
+                                                                          (LoggerComponent.LogLevel.ERROR): 2]
+
+
+    @Param("excessiveLoggers") def excessiveLoggers
 
     ExcessiveLoggersRule() {
         super(RULE_ID, RULE_NAME)
@@ -24,33 +27,39 @@ class ExcessiveLoggersRule extends Rule {
 
     ExcessiveLoggersRule(@Param("excessiveLoggers") Integer excessiveLoggers) {
         this()
-        this.excessiveLoggers.putAll([(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
-              (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
-              (LoggerComponent.LogLevel.INFO): excessiveLoggers,
-              (LoggerComponent.LogLevel.WARN): excessiveLoggers,
-              (LoggerComponent.LogLevel.ERROR): excessiveLoggers])
+        this.excessiveLoggers = [(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
+                                             (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
+                                             (LoggerComponent.LogLevel.INFO) : excessiveLoggers,
+                                             (LoggerComponent.LogLevel.WARN) : excessiveLoggers,
+                                             (LoggerComponent.LogLevel.ERROR): excessiveLoggers]
+        init()
     }
 
     ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLoggers) {
         this()
-        this.excessiveLoggers.putAll excessiveLoggers
+        this.excessiveLoggers = excessiveLoggers
+        init()
     }
 
-    static ExcessiveLoggersRule createRule(Map<String, Object> params){
-        def excessiveLoggers = params.get("excessiveLoggers")
-
+    @Override
+    void init(){
         if(excessiveLoggers != null) {
             if (excessiveLoggers instanceof Map) {
+
                 Map<LoggerComponent.LogLevel, Integer> param = new EnumMap<>(LoggerComponent.LogLevel.class)
                 excessiveLoggers.forEach((key, value) -> {
                     param.put(LoggerComponent.LogLevel.valueOf(key as String),value as Integer)
                 })
-                return new ExcessiveLoggersRule(param)
-            } else {
-                return new ExcessiveLoggersRule(excessiveLoggers as Integer)
+
+                this.privateExcessiveLoggers.putAll(param)
+            } else if(excessiveLoggers instanceof Integer){
+                this.privateExcessiveLoggers.putAll([(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
+                                                     (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
+                                                     (LoggerComponent.LogLevel.INFO) : excessiveLoggers,
+                                                     (LoggerComponent.LogLevel.WARN) : excessiveLoggers,
+                                                     (LoggerComponent.LogLevel.ERROR): excessiveLoggers])
             }
-        } else
-            return new ExcessiveLoggersRule()
+        }
     }
 
     @Override
@@ -79,7 +88,7 @@ class ExcessiveLoggersRule extends Rule {
             if (it.componentName == LoggerComponent.COMPONENT_NAME) {
                 if (it.getAttributeValue("level") == logLevel) {
                     count++
-                    if (count >= excessiveLoggers.get(LoggerComponent.LogLevel.valueOf(
+                    if (count >= privateExcessiveLoggers.get(LoggerComponent.LogLevel.valueOf(
                             it.getAttributeValue("level")))) {
                         violation = new RuleViolation(this, flow.file.path, flow.lineNumber, RULE_VIOLATION_MESSAGE
                                 + flow.getAttributeValue("name"))
