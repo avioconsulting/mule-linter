@@ -30,20 +30,23 @@ class RuleObject{
 }
 
 class RulesDsl{
-    List<RuleObject> ruleObjList = new ArrayList<>()
+    RuleSet ruleSet = new RuleSet()
 
     def propertyMissing(String name) {
         methodMissing(name, null)
     }
 
     def methodMissing(String name, args) {
-        def params = new LinkedHashMap()
-        ruleObjList.add(new RuleObject(name,params))
-        if(args != null && args.length > 0 ) {
-            Closure cl = args[0]
-            cl.resolveStrategy = DELEGATE_ONLY
-            cl.delegate = params
-            cl.call()
+        def ruleClass = RulesLoader.getRuleClassById(name)
+        if(ruleClass){
+            def ruleObj = ruleClass.newInstance()
+            ruleSet.addRule(ruleObj)
+            if(args != null && args.length > 0 ) {
+                Closure cl = args[0]
+                cl.resolveStrategy = DELEGATE_ONLY
+                cl.delegate = ruleObj
+                cl.call()
+            }
         }
     }
 }

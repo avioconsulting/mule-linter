@@ -30,46 +30,4 @@ class RulesLoader {
     static def Class<Rule> getRuleClassById(String ruleId) {
         return rulesMap.get(ruleId)
     }
-
-
-    static RuleSet getRules(List<RuleObject> rulesMList){
-
-        RuleSet ruleSet = new RuleSet()
-
-        rulesMList.each {
-            //this can be replaced by a method for discover the rule
-            String ruleId = it.ruleId as String
-            Map<String, Object> params = it.params as Map<String, Object>
-            Class ruleClass = RulesLoader.getRuleClassById(ruleId)
-            if(ruleClass != null){
-                try {
-                    Rule rule = ruleClass.newInstance()
-
-                    /* setProperty not working properly */
-/*
-                    params.forEach((param,value)->{
-                        rule.setProperty(param.trim(),value)
-                    })
-*/
-
-                    params.forEach((param,value)->{
-                        Field field = ruleClass.getDeclaredField(param)
-                        field.setAccessible(true)
-                        field.set(rule,value)
-                        field.setAccessible(false)
-                    })
-
-                    rule.init()
-                    ruleSet.addRule(rule)
-
-                }catch(Exception e){
-                    println("error creating rule <<${ruleId}>> " + e.getMessage())
-                }
-            } else {
-                println("rule <<${ruleId}>> not found!")
-            }
-
-        }
-        return ruleSet
-    }
 }

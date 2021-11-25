@@ -40,7 +40,7 @@ class MuleLinter {
         )
 
         MuleLinterDsl ruleConfig = shell.evaluate(ruleConfigFile) as MuleLinterDsl
-        return [RulesLoader.getRules(ruleConfig.rulesDsl.ruleObjList)]
+        return [ruleConfig.rulesDsl.ruleSet]
 
     }
 
