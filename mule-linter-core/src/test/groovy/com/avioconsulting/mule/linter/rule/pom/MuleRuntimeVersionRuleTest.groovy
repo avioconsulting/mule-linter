@@ -25,7 +25,9 @@ class MuleRuntimeVersionRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MuleRuntimeVersionRule(version)
+        Rule rule = new MuleRuntimeVersionRule()
+        rule.version = version
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:

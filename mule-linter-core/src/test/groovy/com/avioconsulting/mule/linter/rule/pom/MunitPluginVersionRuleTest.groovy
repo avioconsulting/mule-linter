@@ -26,7 +26,9 @@ class MunitPluginVersionRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MunitPluginVersionRule('2.2.1')
+        Rule rule = new MunitPluginVersionRule()
+        rule.version = '2.2.1'
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -39,7 +41,9 @@ class MunitPluginVersionRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MunitPluginVersionRule('3.2.1')
+        Rule rule = new MunitPluginVersionRule()
+        rule.version = '3.2.1'
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -54,7 +58,9 @@ class MunitPluginVersionRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MunitPluginVersionRule('3.2.1')
+        Rule rule = new MunitPluginVersionRule()
+        rule.version = '3.2.1'
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
