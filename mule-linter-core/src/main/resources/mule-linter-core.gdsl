@@ -423,8 +423,6 @@ contributor([closureScopeContext]) {
         if(call) {
             property name: 'version',
                     type: 'java.lang.String'
-            property name: 'version',
-                    type: 'java.lang.String'
         }
 
 

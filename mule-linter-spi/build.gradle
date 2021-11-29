@@ -1,18 +1,7 @@
-plugins {
-    id 'groovy'
-    id 'java'
-}
-
 dependencies {
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
-    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
 }
-
-test {
-    useJUnitPlatform()
-}
-
-
 
 publishing {
     publications {

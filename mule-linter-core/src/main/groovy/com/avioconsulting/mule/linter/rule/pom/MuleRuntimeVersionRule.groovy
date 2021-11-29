@@ -16,23 +16,12 @@ class MuleRuntimeVersionRule extends PomPropertyValueRule {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME)
     }
 
-    MuleRuntimeVersionRule(String version) {
-        this()
-        this.version = version
-        init()
-    }
-
     @Override
     void init(){
         if(version != null)
             this.propertyValue = version
         else
             throw new NoSuchFieldException("version")
-    }
-
-    @Override
-    List<RuleViolation> execute(Application app) {
-        return super.execute(app)
     }
 
 }

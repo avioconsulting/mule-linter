@@ -17,30 +17,11 @@ class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
         super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID)
     }
 
-    MuleMavenPluginVersionRule(String version) {
-        this()
-        this.version = version
-        init()
-    }
-
     @Override
     void init(){
         if(version != null)
             this.attributes = ['version':version]
         else
             throw new NoSuchFieldException("version")
-    }
-
-    @Override
-    List<RuleViolation> execute(Application app) {
-        return super.execute(app)
-    }
-
-    String getVersion() {
-        return getAttributes().get('version')
-    }
-
-    void setVersion(String version) {
-        setAttributes(['version':version])
     }
 }

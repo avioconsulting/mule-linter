@@ -24,6 +24,7 @@ class MuleLinter {
         ruleSetList = processDSL(ruleConfigFile)
         this.outputFormat= outputFormat
     }
+
     List<RuleSet> processDSL(File ruleConfigFile){
 
         def compilerConfig = new CompilerConfiguration().with {

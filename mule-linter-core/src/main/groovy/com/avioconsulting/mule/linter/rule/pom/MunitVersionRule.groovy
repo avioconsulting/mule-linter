@@ -16,12 +16,6 @@ class MunitVersionRule extends PomPropertyValueRule {
         super(RULE_ID, RULE_NAME, PROPERTY_NAME)
     }
 
-    MunitVersionRule(@Param("version") String version) {
-        this()
-        this.version = version
-        init()
-    }
-
     @Override
     void init(){
         if(version != null)
@@ -29,10 +23,4 @@ class MunitVersionRule extends PomPropertyValueRule {
         else
             throw new NoSuchFieldException("version")
     }
-
-    @Override
-    List<RuleViolation> execute(Application app) {
-        return super.execute(app)
-    }
-
 }
