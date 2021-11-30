@@ -16,23 +16,15 @@ class HostnamePropertyRule extends Rule{
     static final Pattern IPV4_REGEX = ~/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}\u0024/
     static final Pattern IPV6_REGEX = ~/^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}\u0024/
 
-    String[] exemptions = []
+    @Param("exemptions") def exemptions = []
 
     HostnamePropertyRule() {
         super(RULE_ID, RULE_NAME)
     }
 
-    HostnamePropertyRule(@Param("exemptions") String[] exemptions) {
+    HostnamePropertyRule(String[] exemptions) {
         this()
         this.exemptions = exemptions
-    }
-
-    static HostnamePropertyRule createRule(Map<String, Object> params){
-        String[] exemptions = params.get("exemptions")
-        if(exemptions != null)
-            return new HostnamePropertyRule(exemptions)
-        else
-            return new HostnamePropertyRule()
     }
 
     @Override

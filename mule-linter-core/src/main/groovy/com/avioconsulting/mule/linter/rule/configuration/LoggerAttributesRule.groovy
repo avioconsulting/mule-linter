@@ -10,13 +10,17 @@ class LoggerAttributesRule extends Rule {
     static final String RULE_ID = 'LOGGER_ATTRIBUTES_RULE'
     static final String RULE_NAME = 'Loggers have required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Logger is missing attribute '
-    List<String> requiredAttributes
+    @Param("requiredAttributes") List<String> requiredAttributes
+
+    LoggerAttributesRule() {
+        this(RULE_ID, RULE_NAME, [])
+    }
 
 /**
  * A logger attribute rule to enforce that an attribute exists and is not empty.
  * @param requiredAttributes A list of required attributes
  */
-    LoggerAttributesRule(@Param("requiredAttributes") List<String> requiredAttributes) {
+    LoggerAttributesRule(List<String> requiredAttributes) {
         this(RULE_ID, RULE_NAME, requiredAttributes)
     }
 
@@ -29,14 +33,6 @@ class LoggerAttributesRule extends Rule {
     LoggerAttributesRule(String ruleId, String ruleName, List<String> requiredAttributes) {
         super(ruleId, ruleName)
         this.requiredAttributes = requiredAttributes
-    }
-
-    static LoggerAttributesRule createRule(Map<String, Object> params){
-        List<String> requiredAttributes = params.get("requiredAttributes") as List<String>
-        if(requiredAttributes != null)
-            return new LoggerAttributesRule(requiredAttributes)
-        else
-            throw new NoSuchFieldException("requiredAttributes")
     }
 
     @Override

@@ -24,6 +24,7 @@ class MuleLinter {
         ruleSetList = processDSL(ruleConfigFile)
         this.outputFormat= outputFormat
     }
+
     List<RuleSet> processDSL(File ruleConfigFile){
 
         def compilerConfig = new CompilerConfiguration().with {
@@ -40,7 +41,7 @@ class MuleLinter {
         )
 
         MuleLinterDsl ruleConfig = shell.evaluate(ruleConfigFile) as MuleLinterDsl
-        return [RulesLoader.getRules(ruleConfig.rulesDsl.ruleObjList)]
+        return [ruleConfig.rulesDsl.ruleSet]
 
     }
 

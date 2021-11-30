@@ -12,7 +12,7 @@ class ConfigPlaceholderRule extends Rule{
     static final String RULE_NAME = 'Common Configs should have placeholders for certain elements. '
     static final String RULE_VIOLATION_MESSAGE = 'Config should have a placeholder for attribute: '
 
-    String[] placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host', 'clientId', 'clientSecret',
+    @Param("placeholderAttributes") def placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host', 'clientId', 'clientSecret',
                                       'tokenUrl', 'domain', 'workstation', 'authDn', 'authPassword', 'authentication',
                                       'url', 'localCallbackUrl', 'externalCallbackUrl',
                                       'localAuthorizationUrlResourceOwnerId', 'localAuthorizationUrl',
@@ -22,18 +22,9 @@ class ConfigPlaceholderRule extends Rule{
         super(RULE_ID, RULE_NAME)
     }
 
-    ConfigPlaceholderRule(@Param("placeholderAttributes") String[] placeholderAttributes) {
+    ConfigPlaceholderRule(String[] placeholderAttributes) {
         this()
         this.placeholderAttributes = placeholderAttributes
-    }
-
-    static ConfigPlaceholderRule createRule(Map<String, Object> params){
-        String[] placeholderAttributes = params.get("placeholderAttributes") as String[]
-
-        if(placeholderAttributes != null)
-            return new ConfigPlaceholderRule(placeholderAttributes)
-        else
-            return new ConfigPlaceholderRule()
     }
 
     @Override

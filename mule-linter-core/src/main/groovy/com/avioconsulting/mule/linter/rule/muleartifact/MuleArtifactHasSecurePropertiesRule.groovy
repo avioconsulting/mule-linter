@@ -15,28 +15,24 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'The secureProperties array does not contain the property '
     static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_secret']
 
-    private final List secureProperties
+    List<String> secureProperties
+    @Param("properties") List<String> properties
+    @Param("includeDefaults") Boolean includeDefaults
 
     MuleArtifactHasSecurePropertiesRule() {
         this([], true)
     }
 
-    MuleArtifactHasSecurePropertiesRule(@Param("properties") List<String> properties, @Param("includeDefaults") Boolean includeDefaults) {
+    MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
         super(RULE_ID, RULE_NAME)
-        secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
+        this.properties = properties
+        this.includeDefaults = includeDefaults
+        init()
     }
 
-    static MuleArtifactHasSecurePropertiesRule createRule(Map<String, Object> params){
-        List<String> properties = params.get("properties") as List<String>
-        Boolean includeDefaults = params.get("includeDefaults") as Boolean
-
-        if(includeDefaults == null)
-            includeDefaults = true
-
-        if(properties != null)
-            return new MuleArtifactHasSecurePropertiesRule(properties,includeDefaults)
-        else
-            return new MuleArtifactHasSecurePropertiesRule()
+    @Override
+    void init(){
+        secureProperties = includeDefaults ? properties + DEFAULT_PROPERTIES : properties
     }
 
     @Override

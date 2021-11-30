@@ -12,28 +12,20 @@ class DisplayNameRule extends Rule {
     static final String RULE_NAME = 'Display name is not default. '
     static final String RULE_VIOLATION_MESSAGE = 'Display name should not be default for component: '
 
-    List components = [[name: 'set-payload', namespace: Namespace.CORE, displayName: 'Set Payload'],
-                       [name: 'set-variable', namespace: Namespace.CORE, displayName: 'Set Variable'],
-                       [name: 'transform', namespace: Namespace.CORE_EE, displayName: 'Transform Message'],
-                       [name: 'flow-ref', namespace: Namespace.CORE, displayName: 'Flow Reference']]
+    @Param("components") List components = [
+                [name: 'set-payload', namespace: Namespace.CORE, displayName: 'Set Payload'],
+                [name: 'set-variable', namespace: Namespace.CORE, displayName: 'Set Variable'],
+                [name: 'transform', namespace: Namespace.CORE_EE, displayName: 'Transform Message'],
+                [name: 'flow-ref', namespace: Namespace.CORE, displayName: 'Flow Reference']
+    ]
 
     DisplayNameRule() {
         super(RULE_ID, RULE_NAME)
     }
 
-    DisplayNameRule(@Param("components") List components) {
+    DisplayNameRule(List components) {
         this()
         this.components = components
-    }
-
-    static DisplayNameRule createRule(Map<String, Object> params){
-
-        List components = params.get("components") as List
-
-        if(components != null)
-            return new DisplayNameRule(components)
-        else
-            return new DisplayNameRule()
     }
 
     @Override

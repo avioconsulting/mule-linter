@@ -13,23 +13,16 @@ class GlobalConfigNoFlowsRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Mule configuration xml contain flow or sub-flow: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist.'
     static final String DEFAULT_FILE_NAME = 'globals.xml'
-    String globalFileName
 
-    GlobalConfigNoFlowsRule(@Param("globalFileName") String globalFileName) {
+    @Param("globalFileName") String globalFileName
+
+    GlobalConfigNoFlowsRule(String globalFileName) {
         super(RULE_ID, RULE_NAME)
         this.globalFileName = globalFileName
     }
 
     GlobalConfigNoFlowsRule() {
         this(DEFAULT_FILE_NAME)
-    }
-
-    static GlobalConfigNoFlowsRule createRule(Map<String, Object> params){
-        String globalFileName = params.get("globalFileName")
-        if(globalFileName != null)
-            return new GlobalConfigNoFlowsRule(globalFileName)
-        else
-            return new GlobalConfigNoFlowsRule()
     }
 
     @Override

@@ -26,7 +26,9 @@ class MuleMavenPluginVersionRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MuleMavenPluginVersionRule(version)
+        Rule rule = new MuleMavenPluginVersionRule()
+        rule.version = version
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:

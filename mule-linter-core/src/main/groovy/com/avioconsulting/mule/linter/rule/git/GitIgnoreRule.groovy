@@ -15,23 +15,15 @@ class GitIgnoreRule extends Rule {
     // TODO: When using Groovy unit testing with code gen, since Studio 7 is challenged at deriving source paths from Maven, sometimes it helps to version .classpath. It might help to allow opting out of this
     static final List<String> DEFAULT_EXPRESSIONS = ['*.jar', '*.class', 'target/',
                                                      '.project', '.classpath', '.idea', 'build']
-    static List<String> ignoredFiles
+    @Param("ignoredFiles") static List<String> ignoredFiles
 
-    GitIgnoreRule(@Param("ignoredFiles") List<String> ignoredFiles) {
+    GitIgnoreRule(List<String> ignoredFiles) {
         super(RULE_ID, RULE_NAME)
         this.ignoredFiles = ignoredFiles
     }
 
     GitIgnoreRule() {
         this(DEFAULT_EXPRESSIONS)
-    }
-
-    static GitIgnoreRule createRule(Map<String, Object> params){
-        List<String> ignoredFiles = params.get("ignoredFiles") as List<String>
-        if(ignoredFiles != null)
-            return new GitIgnoreRule(ignoredFiles)
-        else
-            return new GitIgnoreRule()
     }
 
     @Override

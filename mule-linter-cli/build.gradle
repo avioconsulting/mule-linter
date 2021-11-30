@@ -1,21 +1,12 @@
 plugins {
-    id 'groovy'
     id 'application'
-}
-
-repositories {
-    mavenCentral()
-}
-
-application {
-    mainClassName 'com.avioconsulting.mule.linter.MuleLinterCli'
 }
 
 dependencies {
     implementation project(':mule-linter-core')
-    implementation 'info.picocli:picocli-groovy:4.3.2'
+    implementation 'info.picocli:picocli-groovy:4.6.2'
 }
 
-test {
-    useJUnitPlatform()
+application {
+    mainClassName 'com.avioconsulting.mule.linter.MuleLinterCli'
 }

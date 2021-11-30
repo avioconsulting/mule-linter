@@ -11,28 +11,17 @@ class MuleMavenPluginVersionRule extends PomPluginAttributeRule {
     static final String GROUP_ID = 'org.mule.tools.maven'
     static final String ARTIFACT_ID = 'mule-maven-plugin'
 
-    MuleMavenPluginVersionRule(@Param("version") String version) {
-        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID, ['version':version])
-    }
+    @Param("version") String version
 
-    static MuleMavenPluginVersionRule createRule(Map<String, Object> params){
-        String version = params.get("version")
-        if(version != null)
-            return new MuleMavenPluginVersionRule(version)
-        else
-            throw new NoSuchFieldException("version")
+    MuleMavenPluginVersionRule(){
+        super(RULE_ID, RULE_NAME, GROUP_ID, ARTIFACT_ID)
     }
 
     @Override
-    List<RuleViolation> execute(Application app) {
-        return super.execute(app)
-    }
-
-    String getVersion() {
-        return getAttributes().get('version')
-    }
-
-    void setVersion(String version) {
-        setAttributes(['version':version])
+    void init(){
+        if(version != null)
+            this.attributes = ['version':version]
+        else
+            throw new NoSuchFieldException("version")
     }
 }

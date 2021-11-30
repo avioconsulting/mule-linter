@@ -20,8 +20,10 @@ class MunitMavenPluginAttributesRule extends Rule {
                                                           'requiredResourceCoverage':'80',
                                                           'requiredFlowCoverage':'80']
     private static final String IGNORE_FILES = 'ignoreFiles'
-    Map<String, String> coverageAttributeMap
-    List<String> ignoreFiles = []
+
+    @Param("coverageAttributeMap") Map<String, String> coverageAttributeMap
+    @Param("ignoreFiles") List<String> ignoreFiles
+    @Param("includeDefaults") Boolean includeDefaults
 
     MunitMavenPluginAttributesRule() {
         this([:], true, [])
@@ -35,33 +37,19 @@ class MunitMavenPluginAttributesRule extends Rule {
         this(coverageAttributeMap, includeDefaults, [])
     }
 
-    MunitMavenPluginAttributesRule(
-            @Param("coverageAttributeMap") Map<String,String> coverageAttributeMap,
-            @Param("includeDefaults") Boolean includeDefaults,
-            @Param("ignoreFiles") List<String> ignoreFiles
-    ) {
+    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap,Boolean includeDefaults,List<String> ignoreFiles){
         super(RULE_ID, RULE_NAME)
-        this.coverageAttributeMap = includeDefaults ? COVERAGE_DEFAULTS + coverageAttributeMap : coverageAttributeMap
+        this.coverageAttributeMap = coverageAttributeMap
         this.ignoreFiles = ignoreFiles
+        this.includeDefaults = includeDefaults
+        init()
     }
 
-    static MunitMavenPluginAttributesRule createRule(Map<String, Object> params){
-        Map<String, String> coverageAttributeMap = params.get("coverageAttributeMap") as Map<String, String>
-        Boolean includeDefaults = params.get("includeDefaults") as Boolean
-        List<String> ignoreFiles = params.get("ignoreFiles") as List<String>
-
-        if(coverageAttributeMap == null){
-            coverageAttributeMap = [:]
+    @Override
+    void init(){
+        if(includeDefaults){
+            this.coverageAttributeMap = COVERAGE_DEFAULTS + coverageAttributeMap
         }
-        if(includeDefaults == null){
-            includeDefaults = true
-        }
-
-        if(ignoreFiles == null){
-            ignoreFiles = []
-        }
-
-        return new MunitMavenPluginAttributesRule(coverageAttributeMap, includeDefaults, ignoreFiles)
     }
 
     @Override

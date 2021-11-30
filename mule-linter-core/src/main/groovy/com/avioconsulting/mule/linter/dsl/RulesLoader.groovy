@@ -6,6 +6,8 @@ import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 
+import java.lang.reflect.Field
+
 class RulesLoader {
 
     private static final def Map<String, Class<? extends Rule>> rulesMap = [:]
@@ -27,30 +29,5 @@ class RulesLoader {
     }
     static def Class<Rule> getRuleClassById(String ruleId) {
         return rulesMap.get(ruleId)
-    }
-
-
-    static RuleSet getRules(List<RuleObject> rulesMList){
-
-        RuleSet ruleSet = new RuleSet()
-
-        rulesMList.each {
-            //this can be replaced by a method for discover the rule
-            String ruleId = it.ruleId as String
-            Map<String, Object> params = it.params as Map<String, Object>
-
-            Class ruleClass = RulesLoader.getRuleClassById(ruleId)
-            if(ruleClass != null){
-                try {
-                    ruleSet.addRule(Rule.createRule(ruleClass,params))
-                }catch(Exception e){
-                    println("error creating rule <<${ruleId}>>")
-                }
-            } else {
-                println("rule <<${ruleId}>> not found!")
-            }
-
-        }
-        return ruleSet
     }
 }

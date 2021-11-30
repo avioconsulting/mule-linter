@@ -178,7 +178,7 @@ contributor([closureScopeContext]) {
         call = enclosingCall("CONFIG_FILE_NAMING")
         if(call) {
             property name: 'format',
-                    type: 'com.avioconsulting.mule.linter.model.CaseNaming$CaseFormat'
+                    type: 'java.lang.String'
         }
 
         call = enclosingCall("PROPERTY_FILE_COUNT_MISMATCH")
@@ -191,12 +191,12 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("POM_PLUGIN_ATTRIBUTE")
         if(call) {
+            property name: 'attributes',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
             property name: 'groupId',
                     type: 'java.lang.String'
             property name: 'artifactId',
                     type: 'java.lang.String'
-            property name: 'attributes',
-                    type: 'java.util.Map<java.lang.String, java.lang.String>'
         }
 
         call = enclosingCall("UNUSED_FLOW")
@@ -206,7 +206,7 @@ contributor([closureScopeContext]) {
         call = enclosingCall("FLOW_SUBFLOW_NAMING")
         if(call) {
             property name: 'format',
-                    type: 'com.avioconsulting.mule.linter.model.CaseNaming$CaseFormat'
+                    type: 'java.lang.String'
         }
 
         call = enclosingCall("GIT_IGNORE")
@@ -217,10 +217,10 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("MULE_ARTIFACT_SECURE_PROPERTIES")
         if(call) {
-            property name: 'properties',
-                    type: 'java.util.List<java.lang.String>'
             property name: 'includeDefaults',
                     type: 'java.lang.Boolean'
+            property name: 'properties',
+                    type: 'java.util.List<java.lang.String>'
         }
 
         call = enclosingCall("DISPLAY_NAME")
@@ -262,7 +262,7 @@ contributor([closureScopeContext]) {
         call = enclosingCall("CONFIG_PLACEHOLDER")
         if(call) {
             property name: 'placeholderAttributes',
-                    type: 'java.lang.String[]'
+                    type: 'java.lang.Object'
         }
 
         call = enclosingCall("POM_EXISTS")
@@ -281,22 +281,24 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("PROPERTY_FILE_NAMING")
         if(call) {
-            property name: 'environments',
-                    type: 'java.util.List<java.lang.String>'
             property name: 'pattern',
                     type: 'java.lang.String'
+            property name: 'environments',
+                    type: 'java.util.List<java.lang.String>'
         }
 
         call = enclosingCall("LOGGER_MESSAGE_CONTENTS")
         if(call) {
             property name: 'pattern',
-                    type: 'java.util.regex.Pattern'
+                    type: 'java.lang.String'
+            property name: 'rules',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
         }
 
         call = enclosingCall("HOSTNAME_PROPERTY")
         if(call) {
             property name: 'exemptions',
-                    type: 'java.lang.String[]'
+                    type: 'java.lang.Object'
         }
 
         call = enclosingCall("README")
@@ -313,9 +315,9 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("MAVEN_PROPERTY")
         if(call) {
-            property name: 'propertyName',
-                    type: 'java.lang.String'
             property name: 'propertyValue',
+                    type: 'java.lang.String'
+            property name: 'propertyName',
                     type: 'java.lang.String'
         }
 
@@ -329,49 +331,53 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("COMPONENT_ATTRIBUTE_VALUE")
         if(call) {
-            property name: 'component',
-                    type: 'java.lang.String'
             property name: 'namespace',
                     type: 'java.lang.String'
+            property name: 'requiredAttributes',
+                    type: 'java.util.List<java.lang.String>'
             property name: 'attributeMatchers',
-                    type: 'java.util.Map<java.lang.String, java.util.regex.Pattern>'
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+            property name: 'component',
+                    type: 'java.lang.String'
         }
 
         call = enclosingCall("EXCESSIVE_LOGGERS")
         if(call) {
+            property name: 'excessiveLoggers',
+                    type: 'java.lang.Object'
             property name: 'excessiveLoggers',
                     type: 'java.lang.Integer'
         }
 
         call = enclosingCall("MUNIT_MAVEN_PLUGIN_ATTRIBUTES")
         if(call) {
+            property name: 'ignoreFiles',
+                    type: 'java.util.List<java.lang.String>'
             property name: 'coverageAttributeMap',
                     type: 'java.util.Map<java.lang.String, java.lang.String>'
             property name: 'includeDefaults',
                     type: 'java.lang.Boolean'
-            property name: 'ignoreFiles',
-                    type: 'java.util.List<java.lang.String>'
         }
 
         call = enclosingCall("POM_DEPENDENCY_VERSION")
         if(call) {
-            property name: 'groupId',
+            property name: 'artifactVersion',
                     type: 'java.lang.String'
             property name: 'artifactId',
                     type: 'java.lang.String'
-            property name: 'artifactVersion',
-                    type: 'java.lang.String'
             property name: 'versionOperator',
-                    type: 'com.avioconsulting.mule.linter.model.Version$Operator'
+                    type: 'java.lang.String'
+            property name: 'groupId',
+                    type: 'java.lang.String'
         }
 
         call = enclosingCall("PROPERTY_EXISTS")
         if(call) {
-            property name: 'propertyName',
+            property name: 'pattern',
                     type: 'java.lang.String'
             property name: 'environments',
                     type: 'java.util.List<java.lang.String>'
-            property name: 'pattern',
+            property name: 'propertyName',
                     type: 'java.lang.String'
         }
 
@@ -409,6 +415,8 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("MULE_RUNTIME")
         if(call) {
+            property name: 'version',
+                    type: 'java.lang.String'
         }
 
         call = enclosingCall("MUNIT_VERSION")

@@ -1,21 +1,16 @@
-
 plugins {
     id 'codenarc'
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation project(':mule-linter-spi')
     compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
-    testImplementation 'org.spockframework:spock-core'
-    implementation 'org.json:json:20171018'
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    implementation 'org.json:json:20210307'
     implementation 'org.yaml:snakeyaml:1.29'
     implementation 'org.reflections:reflections:0.10.2'
-}
-
-test {
-    useJUnitPlatform()
 }
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html

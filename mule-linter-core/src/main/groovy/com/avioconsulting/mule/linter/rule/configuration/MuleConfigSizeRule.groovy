@@ -10,23 +10,15 @@ class MuleConfigSizeRule extends Rule {
     static final String RULE_ID = 'MULE_CONFIG_SIZE'
     static final String RULE_NAME = 'Mule Config files should not be too long. '
     static final String RULE_VIOLATION_MESSAGE = 'Mule Config has too many flows in it.'
-    Integer flowLimit = 20
+    @Param("flowLimit") Integer flowLimit = 20
 
     MuleConfigSizeRule() {
         super(RULE_ID, RULE_NAME)
     }
 
-    MuleConfigSizeRule(@Param("flowLimit") Integer flowLimit) {
+    MuleConfigSizeRule(Integer flowLimit) {
         this()
         this.flowLimit = flowLimit
-    }
-
-    static MuleConfigSizeRule createRule(Map<String, Object> params){
-        Integer flowLimit = params.get("flowLimit") as Integer
-        if(flowLimit != null)
-            return new MuleConfigSizeRule(flowLimit)
-        else
-            return new MuleConfigSizeRule()
     }
 
     @Override

@@ -15,9 +15,14 @@ class PropertyExistsRule extends Rule {
     static final String MISSING_FILE_MESSAGE = 'Property cannot be found, Property File is missing: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
     static final List<String> DEFAULT_ENVIRONMENT_LIST = ['dev', 'test', 'prod']
-    final String propertyName
-    final List<String> environments
-    final String pattern
+
+    @Param("propertyName") String propertyName
+    @Param("environments") List<String> environments
+    @Param("pattern") String pattern
+
+    PropertyExistsRule() {
+        this(null as String, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
+    }
 
     PropertyExistsRule(String propertyName) {
         this(propertyName, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
@@ -27,28 +32,18 @@ class PropertyExistsRule extends Rule {
         this(propertyName, environments, DEFAULT_PATTERN)
     }
 
-    PropertyExistsRule(
-            @Param("propertyName") String propertyName,
-            @Param("environments") List<String> environments,
-            @Param("pattern") String pattern
-    ) {
+    PropertyExistsRule(String propertyName, List<String> environments,String pattern) {
         super(RULE_ID, RULE_NAME)
         this.propertyName = propertyName
         this.environments = environments
         this.pattern = pattern
     }
 
-    static PropertyExistsRule createRule(Map<String, Object> params){
-        String propertyName = params.get("propertyName") as String
-        List<String> environments = params.get("environments") as List<String>
-        String pattern = params.get("pattern") as String
-
+    @Override
+    void init(){
         if(propertyName == null){
             throw new NoSuchFieldException("propertyName")
         }
-
-        return new PropertyExistsRule (propertyName, environments ?: DEFAULT_ENVIRONMENT_LIST, pattern ?: DEFAULT_PATTERN)
-
     }
 
     @SuppressWarnings('UnnecessaryGetter')
