@@ -16,13 +16,10 @@ class GlobalConfigNoFlowsRule extends Rule {
 
     @Param("globalFileName") String globalFileName
 
-    GlobalConfigNoFlowsRule(String globalFileName) {
-        super(RULE_ID, RULE_NAME)
-        this.globalFileName = globalFileName
-    }
 
     GlobalConfigNoFlowsRule() {
-        this(DEFAULT_FILE_NAME)
+        super(RULE_ID, RULE_NAME)
+        this.globalFileName = DEFAULT_FILE_NAME
     }
 
     @Override

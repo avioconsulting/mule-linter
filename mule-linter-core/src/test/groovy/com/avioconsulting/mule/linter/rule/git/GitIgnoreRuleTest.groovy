@@ -36,7 +36,8 @@ class GitIgnoreRuleTest extends Specification {
         MuleApplication app = new MuleApplication(appDir)
 
         when:
-        Rule rule = new GitIgnoreRule(ignoredFiles)
+        Rule rule = new GitIgnoreRule()
+        rule.setProperty("ignoredFiles",ignoredFiles)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -53,7 +54,8 @@ class GitIgnoreRuleTest extends Specification {
         MuleApplication app = new MuleApplication(appDir)
 
         when:
-        Rule rule = new GitIgnoreRule(extraIgnoredFiles)
+        Rule rule = new GitIgnoreRule()
+        rule.setProperty("ignoredFiles",extraIgnoredFiles)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -70,7 +72,8 @@ class GitIgnoreRuleTest extends Specification {
         gitIgnore.delete()
 
         when:
-        Rule rule = new GitIgnoreRule(ignoredFiles)
+        Rule rule = new GitIgnoreRule()
+        rule.setProperty("ignoredFiles",ignoredFiles)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -97,7 +100,8 @@ class GitIgnoreRuleTest extends Specification {
         MuleApplication app = new MuleApplication(appDir)
 
         when:
-        Rule rule = new GitIgnoreRule(ignoredFiles)
+        Rule rule = new GitIgnoreRule()
+        rule.setProperty("ignoredFiles",ignoredFiles)
         List<RuleViolation> violations = rule.execute(app)
 
         then:

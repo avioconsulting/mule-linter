@@ -29,7 +29,9 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
     def 'Property File Count mismatch with pattern'() {
         given:
-        Rule rule = new PropertyFilePropertyCountRule(ENVS, NAMING_PATTERN)
+        Rule rule = new PropertyFilePropertyCountRule()
+        rule.environments = ENVS
+        rule.pattern = NAMING_PATTERN
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -43,7 +45,9 @@ class PropertyFilePropertyCountRuleTest extends Specification {
 
     def 'Property File Count matching with pattern'() {
         given:
-        Rule rule = new PropertyFilePropertyCountRule(['test', 'uat', 'other'], NAMING_PATTERN)
+        Rule rule = new PropertyFilePropertyCountRule()
+        rule.environments = ['test', 'uat', 'other']
+        rule.pattern = NAMING_PATTERN
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

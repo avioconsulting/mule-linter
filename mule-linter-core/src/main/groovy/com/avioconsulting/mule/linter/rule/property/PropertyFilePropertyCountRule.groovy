@@ -12,24 +12,16 @@ class PropertyFilePropertyCountRule extends Rule {
 
     static final String RULE_ID = 'PROPERTY_FILE_COUNT_MISMATCH'
     static final String RULE_NAME = 'Property Files should exist for each environment. '
-    static final String RULE_VIOLATION_MESSAGE = 'Properties files do not have matching number of properties. '
+    static final String RULE_VIOLATION_MESSAGE = 'Properties files do not have matching number of properties per environment. '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
 
     @Param("environments") List<String> environments
     @Param("pattern") String pattern
 
     PropertyFilePropertyCountRule() {
-        this([])
-    }
-
-    PropertyFilePropertyCountRule(List<String> environments) {
-        this(environments, DEFAULT_PATTERN)
-    }
-
-    PropertyFilePropertyCountRule(List<String> environments,String pattern) {
         super(RULE_ID, RULE_NAME)
-        this.environments = environments
-        this.pattern = pattern
+        this.environments = []
+        this.pattern = DEFAULT_PATTERN
     }
 
     @SuppressWarnings('UnnecessaryGetter')

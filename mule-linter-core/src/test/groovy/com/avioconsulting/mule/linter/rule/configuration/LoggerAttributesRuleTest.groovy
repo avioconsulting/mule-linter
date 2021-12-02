@@ -24,7 +24,8 @@ class LoggerAttributesRuleTest extends Specification {
 
     def 'Logger Attributes check'() {
         given:
-        Rule rule = new LoggerAttributesRule(['category', 'message'])
+        Rule rule = new LoggerAttributesRule()
+        rule.setProperty("requiredAttributes",['category', 'message'])
 
         when:
         testApp.buildConfigContent('logging-flow-with-errors.xml', ERROR_SUB_FLOWS)

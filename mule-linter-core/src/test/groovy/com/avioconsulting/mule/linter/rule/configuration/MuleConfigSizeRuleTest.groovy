@@ -37,7 +37,8 @@ class MuleConfigSizeRuleTest extends Specification {
 
     def 'Config files fail rule when flow limit decreased'() {
         given:
-        Rule rule = new MuleConfigSizeRule(15)
+        Rule rule = new MuleConfigSizeRule()
+        rule.setProperty("flowLimit",15)
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

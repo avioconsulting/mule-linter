@@ -44,7 +44,8 @@ class ConfigPlaceholderRuleTest extends Specification {
     def 'Global Config tested attributes without placeholders fail rule less with custom list'() {
         given:
         String[] placeholderAttributes = ['password', 'key', 'host', 'nonProxyHosts', 'keyPassword']
-        Rule rule = new ConfigPlaceholderRule(placeholderAttributes)
+        Rule rule = new ConfigPlaceholderRule()
+        rule.setProperty('placeholderAttributes',placeholderAttributes)
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

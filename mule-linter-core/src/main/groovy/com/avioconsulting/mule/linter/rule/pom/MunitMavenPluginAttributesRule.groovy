@@ -26,23 +26,10 @@ class MunitMavenPluginAttributesRule extends Rule {
     @Param("includeDefaults") Boolean includeDefaults
 
     MunitMavenPluginAttributesRule() {
-        this([:], true, [])
-    }
-
-    MunitMavenPluginAttributesRule(List<String> ignoreFiles) {
-        this([:], true, ignoreFiles)
-    }
-
-    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap, Boolean includeDefaults) {
-        this(coverageAttributeMap, includeDefaults, [])
-    }
-
-    MunitMavenPluginAttributesRule(Map<String,String> coverageAttributeMap,Boolean includeDefaults,List<String> ignoreFiles){
         super(RULE_ID, RULE_NAME)
-        this.coverageAttributeMap = coverageAttributeMap
-        this.ignoreFiles = ignoreFiles
-        this.includeDefaults = includeDefaults
-        init()
+        this.coverageAttributeMap = [:]
+        this.ignoreFiles = []
+        this.includeDefaults = true
     }
 
     @Override

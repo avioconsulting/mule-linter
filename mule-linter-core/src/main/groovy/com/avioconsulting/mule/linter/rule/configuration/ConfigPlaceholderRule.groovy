@@ -22,11 +22,6 @@ class ConfigPlaceholderRule extends Rule{
         super(RULE_ID, RULE_NAME)
     }
 
-    ConfigPlaceholderRule(String[] placeholderAttributes) {
-        this()
-        this.placeholderAttributes = placeholderAttributes
-    }
-
     @Override
     List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []

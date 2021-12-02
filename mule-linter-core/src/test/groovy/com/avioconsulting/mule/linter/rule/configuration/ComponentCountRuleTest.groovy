@@ -28,7 +28,11 @@ class ComponentCountRuleTest extends Specification {
 
     def 'Rule for less than 6 loggers fails'() {
         given:
-        Rule rule = new ComponentCountRule("logger", Namespace.CORE, 6)
+        Rule rule = new ComponentCountRule()
+        rule.setProperty('component','logger')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('maxCount',6)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -40,7 +44,11 @@ class ComponentCountRuleTest extends Specification {
 
     def 'Rule for less than 1 http passes'() {
         given:
-        Rule rule = new ComponentCountRule("listener", Namespace.HTTP, 1)
+        Rule rule = new ComponentCountRule()
+        rule.setProperty('component','listener')
+        rule.setProperty('namespace',Namespace.HTTP)
+        rule.setProperty('maxCount',1)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -51,7 +59,11 @@ class ComponentCountRuleTest extends Specification {
 
     def 'Rule for less than 12 loggers passes'() {
         given:
-        Rule rule = new ComponentCountRule("logger", Namespace.CORE, 12)
+        Rule rule = new ComponentCountRule()
+        rule.setProperty('component','logger')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('maxCount',12)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)

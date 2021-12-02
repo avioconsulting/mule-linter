@@ -37,7 +37,9 @@ class ExcessiveLoggersRuleTest extends Specification{
 
     def '3 Count excessive loggers rule fails one flow'() {
         given:
-        Rule rule = new ExcessiveLoggersRule(3)
+        Rule rule = new ExcessiveLoggersRule()
+        rule.setProperty('excessiveLoggers',3)
+        rule.init()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -55,7 +57,9 @@ class ExcessiveLoggersRuleTest extends Specification{
                                                                        (LoggerComponent.LogLevel.INFO): 3,
                                                                        (LoggerComponent.LogLevel.WARN): 2,
                                                                        (LoggerComponent.LogLevel.ERROR): 4]
-        Rule rule = new ExcessiveLoggersRule(excessiveLoggers)
+        Rule rule = new ExcessiveLoggersRule()
+        rule.setProperty('excessiveLoggers',excessiveLoggers)
+        rule.init()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

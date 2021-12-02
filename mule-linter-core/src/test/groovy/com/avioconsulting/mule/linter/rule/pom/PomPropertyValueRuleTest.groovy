@@ -25,7 +25,9 @@ class PomPropertyValueRuleTest extends  Specification {
 
     def 'Correct Property Value'() {
         when:
-        Rule rule = new PomPropertyValueRule('munit.version', '2.2.1')
+        Rule rule = new PomPropertyValueRule()
+        rule.propertyName = 'munit.version'
+        rule.propertyValue = '2.2.1'
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -34,7 +36,9 @@ class PomPropertyValueRuleTest extends  Specification {
 
     def 'Incorrect Property Value'() {
         when:
-        Rule rule = new PomPropertyValueRule('munit.version', '3.2.1')
+        Rule rule = new PomPropertyValueRule()
+        rule.propertyName = 'munit.version'
+        rule.propertyValue = '3.2.1'
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -44,7 +48,9 @@ class PomPropertyValueRuleTest extends  Specification {
 
     def 'Missing Property'() {
         when:
-        Rule rule = new PomPropertyValueRule('invalid.munit.version', '2.2.1')
+        Rule rule = new PomPropertyValueRule()
+        rule.propertyName = 'invalid.munit.version'
+        rule.propertyValue = '2.2.1'
         List<RuleViolation> violations = rule.execute(app)
 
         then:

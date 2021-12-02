@@ -26,6 +26,7 @@ class LoggerMessageContentsRuleTest extends Specification {
     def 'Loggers logging payload should fail'() {
         given:
         Rule rule = new LoggerMessageContentsRule()
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -38,7 +39,9 @@ class LoggerMessageContentsRuleTest extends Specification {
 
     def 'Loggers logging only the payload should fail'() {
         given:
-        Rule rule = new LoggerMessageContentsRule(~/#\[payload]/)
+        Rule rule = new LoggerMessageContentsRule()
+        rule.setProperty("pattern",~/#\[payload]/)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -50,7 +53,9 @@ class LoggerMessageContentsRuleTest extends Specification {
 
     def 'Loggers logging payload at multiple levels should fail'() {
         given:
-        Rule rule = new LoggerMessageContentsRule(["INFO":~/payload]/, "DEBUG":~/payload]/, "WARN":~/payload]/])
+        Rule rule = new LoggerMessageContentsRule()
+        rule.setProperty("rules",["INFO":~/payload]/, "DEBUG":~/payload]/, "WARN":~/payload]/])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)

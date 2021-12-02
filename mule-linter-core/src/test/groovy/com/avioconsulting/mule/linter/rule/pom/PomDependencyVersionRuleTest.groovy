@@ -24,7 +24,11 @@ class PomDependencyVersionRuleTest extends Specification {
     def 'Missing Maven Dependency'() {
         given:
         testApp.addFile(PomFile.POM_XML, MISSING_DEPENDENCY_POM)
-        Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2')
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = '1.3.2'
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -39,7 +43,11 @@ class PomDependencyVersionRuleTest extends Specification {
     def 'Correct Equal Maven Dependency version'() {
         given:
         testApp.addFile(PomFile.POM_XML, WITH_DEPENDENCY_POM)
-        Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2')
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = '1.3.2'
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -53,8 +61,12 @@ class PomDependencyVersionRuleTest extends Specification {
         given:
         testApp.addFile(PomFile.POM_XML, WITH_DEPENDENCY_POM)
 
-        Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.9',
-                Version.Operator.GREATER_THAN)
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = '1.3.9'
+        rule.versionOperator = 'GREATER_THAN'
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -70,8 +82,12 @@ class PomDependencyVersionRuleTest extends Specification {
         given:
         testApp.addFile(PomFile.POM_XML, WITH_DEPENDENCY_POM)
 
-        Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', version,
-                Version.Operator.GREATER_THAN)
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = version
+        rule.versionOperator = 'GREATER_THAN'
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -92,8 +108,12 @@ class PomDependencyVersionRuleTest extends Specification {
     def 'Correct Version in Maven Property for Dependency'() {
         given:
         testApp.addFile(PomFile.POM_XML, DEPENDENCY_PROPERTY_VERSION_POM);
-        Rule rule = new PomDependencyVersionRule('org.mule.connectors', 'mule-http-connector', '1.3.2',
-                Version.Operator.EQUAL)
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = '1.3.2'
+        rule.versionOperator = 'EQUAL'
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)

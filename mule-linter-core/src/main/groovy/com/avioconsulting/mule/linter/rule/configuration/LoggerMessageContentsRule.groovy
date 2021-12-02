@@ -23,17 +23,8 @@ class LoggerMessageContentsRule extends Rule {
     @Param("rules") Map<String, String> rules
 
     LoggerMessageContentsRule() {
-        this(DEFAULT_REGEX)
-    }
-
-    LoggerMessageContentsRule(Pattern pattern) {
         super(RULE_ID, RULE_NAME)
-        this.rulePattern = pattern
-    }
-
-    LoggerMessageContentsRule(Map<String, Pattern> rules) {
-        super(RULE_ID, RULE_NAME)
-        this.rulesMap = rules
+        this.rulePattern = DEFAULT_REGEX
     }
 
     @Override

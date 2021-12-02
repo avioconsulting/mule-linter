@@ -22,7 +22,8 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 
     def 'No flow subflow in global configuration file'() {
         given:
-        Rule rule = new GlobalConfigNoFlowsRule('global-config.xml')
+        Rule rule = new GlobalConfigNoFlowsRule()
+        rule.setProperty('globalFileName','global-config.xml')
 
         when:
         testApp.addFile('src/main/mule/global-config.xml', GOOD_CONFIG_1)
@@ -35,7 +36,8 @@ class GlobalConfigNoFlowsRuleTest extends Specification {
 
     def 'flow subflow in global configuration file'() {
         given:
-        Rule rule = new GlobalConfigNoFlowsRule('global-config.xml')
+        Rule rule = new GlobalConfigNoFlowsRule()
+        rule.setProperty('globalFileName','global-config.xml')
 
         when:
         testApp.addFile('src/main/mule/global-config.xml', BAD_CONFIG_1)

@@ -8,7 +8,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 class DisplayNameRule extends Rule {
 
-    static final String RULE_ID = 'DISPLAY_NAME'
+    static final String RULE_ID = 'COMPONENT_DISPLAY_NAME'
     static final String RULE_NAME = 'Display name is not default. '
     static final String RULE_VIOLATION_MESSAGE = 'Display name should not be default for component: '
 
@@ -21,11 +21,6 @@ class DisplayNameRule extends Rule {
 
     DisplayNameRule() {
         super(RULE_ID, RULE_NAME)
-    }
-
-    DisplayNameRule(List components) {
-        this()
-        this.components = components
     }
 
     @Override

@@ -17,13 +17,9 @@ class GitIgnoreRule extends Rule {
                                                      '.project', '.classpath', '.idea', 'build']
     @Param("ignoredFiles") static List<String> ignoredFiles
 
-    GitIgnoreRule(List<String> ignoredFiles) {
-        super(RULE_ID, RULE_NAME)
-        this.ignoredFiles = ignoredFiles
-    }
-
     GitIgnoreRule() {
-        this(DEFAULT_EXPRESSIONS)
+        super(RULE_ID, RULE_NAME)
+        this.ignoredFiles = DEFAULT_EXPRESSIONS
     }
 
     @Override
