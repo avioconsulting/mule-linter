@@ -29,7 +29,8 @@ class PropertyExistsRuleTest extends Specification {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-prod.properties', GOOD_PROPERTY_1)
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
-        Rule rule = new PropertyExistsRule('sample.property')
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
 
         when:
         app = new MuleApplication(testApp.appDir)
