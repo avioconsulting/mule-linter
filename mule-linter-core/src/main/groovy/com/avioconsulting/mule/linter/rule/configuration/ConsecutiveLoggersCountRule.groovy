@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class ExcessiveLoggersRule extends Rule {
+class ConsecutiveLoggersCountRule extends Rule {
     static final String RULE_ID = 'CONSECUTIVE_LOGGERS_COUNT'
     static final String RULE_NAME = 'Loggers are not used excessively in sequence. '
     static final String RULE_VIOLATION_MESSAGE = 'Too many sequential loggers of same level in flow '
@@ -20,7 +20,7 @@ class ExcessiveLoggersRule extends Rule {
 
     @Param("excessiveLoggers") def excessiveLoggers
 
-    ExcessiveLoggersRule() {
+    ConsecutiveLoggersCountRule() {
         super(RULE_ID, RULE_NAME)
     }
 

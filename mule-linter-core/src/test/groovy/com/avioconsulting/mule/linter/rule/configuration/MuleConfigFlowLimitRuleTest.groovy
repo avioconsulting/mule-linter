@@ -6,7 +6,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class MuleConfigSizeRuleTest extends Specification {
+class MuleConfigFlowLimitRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private MuleApplication app
@@ -24,7 +24,7 @@ class MuleConfigSizeRuleTest extends Specification {
 
     def 'Config file with too many flows fails rule'() {
         given:
-        Rule rule = new MuleConfigSizeRule()
+        Rule rule = new MuleConfigFlowLimitRule()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -32,12 +32,12 @@ class MuleConfigSizeRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].message == MuleConfigSizeRule.RULE_VIOLATION_MESSAGE
+        violations[0].message == MuleConfigFlowLimitRule.RULE_VIOLATION_MESSAGE
     }
 
     def 'Config files fail rule when flow limit decreased'() {
         given:
-        Rule rule = new MuleConfigSizeRule()
+        Rule rule = new MuleConfigFlowLimitRule()
         rule.setProperty("flowLimit",15)
 
         when:
@@ -46,8 +46,8 @@ class MuleConfigSizeRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].message == MuleConfigSizeRule.RULE_VIOLATION_MESSAGE
-        violations[1].message == MuleConfigSizeRule.RULE_VIOLATION_MESSAGE
+        violations[0].message == MuleConfigFlowLimitRule.RULE_VIOLATION_MESSAGE
+        violations[1].message == MuleConfigFlowLimitRule.RULE_VIOLATION_MESSAGE
     }
 
     private static final String FIRST_CONFIG = '''

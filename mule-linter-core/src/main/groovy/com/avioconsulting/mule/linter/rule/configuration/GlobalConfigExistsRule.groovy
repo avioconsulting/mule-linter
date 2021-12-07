@@ -6,7 +6,7 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class GlobalConfigRule extends Rule {
+class GlobalConfigExistsRule extends Rule {
 
     static final String RULE_ID = 'GLOBAL_CONFIG_EXISTS'
     static final String RULE_NAME = 'Global mule configuration xml exists and contain required configuration. '
@@ -16,7 +16,7 @@ class GlobalConfigRule extends Rule {
     @Param("noneGlobalElements") Map<String, String> noneGlobalElements
     @Param("globalFileName") String globalFileName
 
-    GlobalConfigRule() {
+    GlobalConfigExistsRule() {
         super(RULE_ID, RULE_NAME)
         this.noneGlobalElements = [:]
         this.globalFileName = DEFAULT_FILE_NAME

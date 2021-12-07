@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 import java.util.regex.Pattern
 
-class ComponentAttributeValueRule extends Rule {
+class ComponentAttributesValueRule extends Rule {
 
     static final String RULE_ID = 'COMPONENT_REQUIRED_ATTRIBUTES'
     static final String RULE_NAME = 'A specified component has the required attributes. '
@@ -20,7 +20,7 @@ class ComponentAttributeValueRule extends Rule {
     @Param("attributeMatchers") Map<String, String> attributeMatchers
     private Map<String, Pattern> privateAttributeMatchers
 
-    ComponentAttributeValueRule(){
+    ComponentAttributesValueRule(){
         super(RULE_ID, RULE_NAME)
     }
 

@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class ComponentAttributeValueRuleTest extends Specification {
+class ComponentAttributesValueRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private MuleApplication app
@@ -26,7 +26,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attributes should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('component','example1')
         rule.setProperty('namespace',Namespace.CORE)
         rule.setProperty('requiredAttributes',['exists'])
@@ -41,7 +41,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attribute values should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('ruleId','EXAMPLE2')
         rule.setProperty('ruleName','Example 2')
         rule.setProperty('component','example2')
@@ -58,7 +58,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component missing required attributes should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('ruleId','EXAMPLE3')
         rule.setProperty('ruleName','Example 3')
         rule.setProperty('component','example3')
@@ -71,12 +71,12 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with required attributes empty should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('ruleId','EXAMPLE4')
         rule.setProperty('ruleName','Example 4')
         rule.setProperty('component','example4')
@@ -89,12 +89,12 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'components missing attributes to match should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('component','example5')
         rule.setProperty('namespace',Namespace.CORE)
         rule.setProperty('attributeMatchers',[exists:~/exists|or_not/])
@@ -105,12 +105,12 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with wrong attribute values should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule()
+        Rule rule = new ComponentAttributesValueRule()
         rule.setProperty('ruleId','EXAMPLE6')
         rule.setProperty('ruleName','Example 6')
         rule.setProperty('component','transform')
@@ -123,7 +123,7 @@ class ComponentAttributeValueRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String FLOWS = '''
