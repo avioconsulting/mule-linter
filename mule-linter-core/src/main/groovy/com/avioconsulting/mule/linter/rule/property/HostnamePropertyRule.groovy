@@ -8,6 +8,10 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 import java.util.regex.Pattern
 
+/**
+ * This rule checks that properties containing host or hostname should be fully qualified domain names, and not IP addresses.
+ * AVIO recommends that developers avoid using IP addresses, as they can be frequently changed and constrain routing options.
+ */
 class HostnamePropertyRule extends Rule{
 
     static final String RULE_ID = 'HOSTNAME_PROPERTY'
@@ -16,6 +20,9 @@ class HostnamePropertyRule extends Rule{
     static final Pattern IPV4_REGEX = ~/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}\u0024/
     static final Pattern IPV6_REGEX = ~/^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}\u0024/
 
+    /**
+     * exemptions: is a list of properties the rule should ignore.
+     */
     @Param("exemptions") def exemptions = []
 
     HostnamePropertyRule() {

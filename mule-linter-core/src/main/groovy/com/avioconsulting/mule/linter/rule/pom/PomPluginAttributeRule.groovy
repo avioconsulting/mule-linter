@@ -7,6 +7,10 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for the existence of a given set of attributes in a given maven plugin within the `pom.xml`.
+ * It exists as a customizable tool for a company to enforce a standard in their maven plugins.
+ */
 class PomPluginAttributeRule extends Rule {
 
     static final String RULE_ID = 'POM_PLUGIN_ATTRIBUTE'
@@ -14,8 +18,23 @@ class PomPluginAttributeRule extends Rule {
     static final String MISSING_PLUGIN = 'Plugin does not exits: '
     static final String RULE_VIOLATION_MESSAGE = 'Plugin exist but does not matches the attribute: '
 
+    /**
+     * groupId: is a String representing the group id of the plugin to match against.
+     * An example might be `"com.companyname"`.
+     */
     @Param("groupId") String groupId
+
+    /**
+     * artifactId: is a String representing the artifact id of the plugin to match against.
+     * An example might be `"example-plugin"`.
+     */
     @Param("artifactId") String artifactId
+
+    /**
+     * attributes: is a Map representing the attributes that must be present in the plugin.
+     * An example for the map might be:
+     * ['examplekey':'examplevalue']
+     */
     @Param("attributes") Map<String,String> attributes
 
     PomPluginAttributeRule(){

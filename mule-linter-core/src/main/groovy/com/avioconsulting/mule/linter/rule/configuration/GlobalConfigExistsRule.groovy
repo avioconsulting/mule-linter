@@ -6,6 +6,10 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that a global mule config exists, and that the expected configuration elements are not in other files.
+ * AVIO expects this file to be called `globals.xml` by default.
+ */
 class GlobalConfigExistsRule extends Rule {
 
     static final String RULE_ID = 'GLOBAL_CONFIG_EXISTS'
@@ -13,7 +17,13 @@ class GlobalConfigExistsRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist: '
     static final String FILE_MISSING_VIOLATION_MESSAGE = 'Mule global configuration xml does not exist'
     static final String DEFAULT_FILE_NAME = 'globals.xml'
+
     @Param("noneGlobalElements") Map<String, String> noneGlobalElements
+
+    /**
+     * globalFileName: is the name of the file expected to contain global configuration elements for the Mule Application.
+     * This value is expected to be `globals.xml` by default.
+     */
     @Param("globalFileName") String globalFileName
 
     GlobalConfigExistsRule() {

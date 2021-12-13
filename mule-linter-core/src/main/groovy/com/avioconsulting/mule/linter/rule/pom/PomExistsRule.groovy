@@ -5,6 +5,10 @@ import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for the existence of a `pom.xml` file at the root of the project.
+ * Maven is required in Mule 4, and your project won't build if you don't have a `pom.xml`, so this rule might not be strictly necessary for a project.
+ */
 class PomExistsRule extends Rule {
 
     static final String RULE_ID = 'POM_FILE_EXISTS'

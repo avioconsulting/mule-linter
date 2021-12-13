@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.Version
 import com.avioconsulting.mule.linter.model.pom.PomDependency
 import com.avioconsulting.mule.linter.model.pom.PomElement
@@ -8,6 +9,9 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for the presence of a given dependency with a given version in the `pom.xml`.
+ */
 class PomDependencyVersionRule extends Rule {
 
     static final String RULE_ID = 'POM_DEPENDENCY_VERSION'
@@ -16,9 +20,28 @@ class PomDependencyVersionRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Dependency exist but invalid version: '
     Version version
 
+    /**
+     * groupId: is the group id for the jar in your artifact repository.
+     * An example might be `"com.companyname"`.
+     */
     @Param("groupId") String groupId
+
+    /**
+     * artifactId: is the artifact id for the jar in your artifact repository.
+     * An example might be `"example-plugin"`.
+     */
     @Param("artifactId") String artifactId
+
+    /**
+     * artifactVersion: is the artifact version for the jar in your artifact repository.
+     * An example might be `"1.0.0-SNAPSHOT"`.
+     */
     @Param("artifactVersion") String artifactVersion
+
+    /**
+     * versionOperator: is an Enum `Operator` found within class `com.avioconsulting.mule.linter.model.Version` describing how to match the provided `artifactVersion` to the one in the `pom.xml`.
+     * Current options are `EQUAL` or `GREATER_THAN`.
+     */
     @Param("versionOperator") String versionOperator
 
     private Version.Operator operator
@@ -31,8 +54,12 @@ class PomDependencyVersionRule extends Rule {
 
     @Override
     void init(){
-        this.operator = Version.Operator.valueOf(versionOperator)
-        version.setVersion(artifactVersion)
+        try{
+            this.operator = Version.Operator.valueOf(versionOperator)
+            version.setVersion(artifactVersion)
+        }catch(Exception e){
+            throw new IllegalArgumentException("Invalid value: '"+versionOperator+"'. Current options are: " + Version.Operator.values() )
+        }
     }
 
     @Override

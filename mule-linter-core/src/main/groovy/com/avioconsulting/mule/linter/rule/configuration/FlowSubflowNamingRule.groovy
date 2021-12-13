@@ -7,6 +7,11 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule ensures that `flow` and `sub-flow` names follow a given case format.
+ * Files, properties, and certain name attributes should follow a self consistent case pattern for readability and predictability.
+ * Here, we require the user to specify a particular case convention.
+ */
 class FlowSubflowNamingRule extends Rule {
 
     static final String RULE_ID = 'FLOW_SUBFLOW_NAMING'
@@ -16,6 +21,10 @@ class FlowSubflowNamingRule extends Rule {
                                                              'flow': Namespace.CORE]
     CaseNaming caseNaming
 
+    /**
+     * naming format for this rule. the default value is `KEBAB_CASE`
+     * Current options are `CAMEL_CASE`, `PASCAL_CASE`, `SNAKE_CASE`, or `KEBAB_CASE`.
+     */
     @Param("format") String format
 
     FlowSubflowNamingRule(){
@@ -25,7 +34,12 @@ class FlowSubflowNamingRule extends Rule {
     @Override
     void init(){
         if(format != null)
-            caseNaming.setFormat((CaseNaming.CaseFormat.valueOf(format)))
+            try {
+                caseNaming.setFormat((CaseNaming.CaseFormat.valueOf(format)))
+            }catch(Exception e){
+                throw new IllegalArgumentException("Invalid format value: '"+format+"'. Current options are: " + CaseNaming.CaseFormat.values() )
+            }
+
     }
 
     @Override

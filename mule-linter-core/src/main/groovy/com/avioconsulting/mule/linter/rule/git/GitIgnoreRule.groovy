@@ -6,6 +6,9 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that a `.gitignore` file is present at root and contains the expected files and folders.
+ */
 class GitIgnoreRule extends Rule {
 
     static final String RULE_ID = 'GIT_IGNORE'
@@ -15,6 +18,12 @@ class GitIgnoreRule extends Rule {
     // TODO: When using Groovy unit testing with code gen, since Studio 7 is challenged at deriving source paths from Maven, sometimes it helps to version .classpath. It might help to allow opting out of this
     static final List<String> DEFAULT_EXPRESSIONS = ['*.jar', '*.class', 'target/',
                                                      '.project', '.classpath', '.idea', 'build']
+
+    /**
+     * ignoredFiles: is a List of the expressions to look for in the `.gitignore` file.
+     * This argument is optional. By default the List is:
+     * ['*.jar', '*.class', 'target/', '.project', '.classpath', '.idea', 'build']
+     */
     @Param("ignoredFiles") static List<String> ignoredFiles
 
     GitIgnoreRule() {

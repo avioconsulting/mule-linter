@@ -6,6 +6,11 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.model.rule.Rule
 import groovy.text.SimpleTemplateEngine
 
+/**
+ * This rule ensures that property files exist for each deployment environment, according to an optionally given pattern.
+ * Using string interpolation, it is possible to load a specific property file depending on other parameters such as environment.
+ * AVIO highly recommends that organizations take full advantage of that feature to avoid cross contamination between testing environments and production.
+ */
 @SuppressWarnings(['GStringExpressionWithinString'])
 class PropertyFileNamingRule extends Rule {
 
@@ -14,7 +19,16 @@ class PropertyFileNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Missing property file, files must match naming pattern: '
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
 
+    /**
+     * environments: is a list of environments used to check for the existence of property files for those environments.
+     * For example: ['dev', 'test', 'prod']
+     */
     @Param("environments") List<String> environments
+
+    /**
+     * pattern: is the basis for how a property file for a given environment is named.
+     * The default pattern is `"${appname}-${env}.properties"`.
+     */
     @Param("pattern") String pattern
 
     PropertyFileNamingRule() {

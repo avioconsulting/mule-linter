@@ -5,6 +5,10 @@ import com.avioconsulting.mule.linter.model.ReadmeFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for the existence of a `README.md` file at the root of the project.
+ * Projects should have a README in the project, explaining the purpose and content of the project.
+ */
 class ReadmeRule extends Rule {
 
     static final String RULE_ID = 'README'

@@ -4,6 +4,11 @@ import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that all flows or sub-flows are currently in use by this application.
+ * If the flow does not contain a source, is not named for the API Kit router, and is not mentioned by a flow-ref, it will fail this rule.
+ * Unused code should be removed before deployment.
+ */
 class UnusedFlowRule extends Rule {
 
     static final String RULE_ID = 'UNUSED_FLOW'

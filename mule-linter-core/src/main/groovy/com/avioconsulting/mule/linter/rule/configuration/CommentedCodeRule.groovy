@@ -7,6 +7,10 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 import java.util.regex.Pattern
 
+/**
+ * This rule checks that no code is found within comments inside mule configuration files.
+ * Commented out code should be removed or fixed prior to deployment.
+ */
 class CommentedCodeRule extends Rule {
 
     static final String RULE_ID = 'COMMENTED_CODE'

@@ -8,6 +8,11 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 import java.util.regex.Pattern
 
+/**
+ * This rule checks that the contents of a logger do not match a given Regular Expression.
+ * AVIO recommends that a developer never deploy code that logs the full payload at the level of INFO.
+ * The Mule message payload can contain sensitive information, and logging it at the default log level might persist sensitive information for longer than intended or make it visible to people who shouldn't see it.
+ */
 class LoggerMessageContentsRule extends Rule {
 
     static final String RULE_ID = 'LOGGER_MESSAGE_CONTENTS'
@@ -19,7 +24,17 @@ class LoggerMessageContentsRule extends Rule {
     Pattern rulePattern
     Map<String, Pattern> rulesMap
 
+    /**
+     * pattern: is an optional rule to specify the regex that you would like to search for in the log message.
+     * By default, the regex is `~/payload]/`, which will catch basic payload logging, but allow for selecting individual fields.
+     */
     @Param("pattern") String pattern
+
+    /**
+     * rules: is a map where the key is the level of the logger, and the value is the regex that you would like to search for in the log message.
+     * The default stance of the rule is to only check INFO, which is equivalent to:
+     *  ['INFO':'~/payload]/']
+     */
     @Param("rules") Map<String, String> rules
 
     LoggerMessageContentsRule() {

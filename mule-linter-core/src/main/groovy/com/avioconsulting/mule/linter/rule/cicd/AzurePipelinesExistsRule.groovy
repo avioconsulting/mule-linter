@@ -7,7 +7,9 @@ import com.avioconsulting.mule.linter.model.rule.RuleSeverity
 import com.avioconsulting.mule.linter.model.rule.RuleType
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import org.yaml.snakeyaml.Yaml
-
+/**
+ * This rule checks that a azure-pipelines.yml file exists.
+ */
 class AzurePipelinesExistsRule extends Rule{
 
     static final String RULE_ID = 'AZURE_PIPELINES_EXISTS'
