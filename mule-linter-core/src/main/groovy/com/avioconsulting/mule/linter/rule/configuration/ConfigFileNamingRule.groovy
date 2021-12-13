@@ -19,7 +19,7 @@ class ConfigFileNamingRule extends Rule {
     CaseNaming caseNaming
 
     /**
-     * naming format for this rule. the default value is `KEBAB_CASE`
+     * format: naming format for this rule. the default value is `KEBAB_CASE`
      * Current options are `CAMEL_CASE`, `PASCAL_CASE`, `SNAKE_CASE`, or `KEBAB_CASE`.
      */
     @Param("format") String format

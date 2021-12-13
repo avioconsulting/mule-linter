@@ -12,7 +12,7 @@ class MuleRuntimeVersionRule extends PomPropertyValueRule {
     static final String PROPERTY_NAME = 'app.runtime'
 
     /**
-     * *version* is the version number for the property `app.runtime` that is expected within the `pom.xml`.
+     * version: is the version number for the property `app.runtime` that is expected within the `pom.xml`.
      */
     @Param("version") String version
 

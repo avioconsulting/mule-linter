@@ -18,27 +18,27 @@ class ComponentAttributesValueRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Component is missing attribute '
     static final String EXTENDING = ' with value '
 
-    /** is the name of the mule component this rule should search for.
+    /** component: is the name of the mule component this rule should search for.
      * Examples include `"flow"` or `"request"`.
      */
     @Param("component") String component
 
     /**
-     * is the namespace of the given mule component.
+     * namespace: is the namespace of the given mule component.
      * Examples include `"http://www.mulesoft.org/schema/mule/core"` or `"http://www.mulesoft.org/schema/mule/http"`.
      * The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`.
      */
     @Param("namespace") String namespace
 
     /**
-     * is a List of the attributes expected to be found on the component being checked by the rule.
+     * requiredAttributes: is a List of the attributes expected to be found on the component being checked by the rule.
      * An example for this list might be:
      * ['clientId','clientSecret']
      */
     @Param("requiredAttributes") List<String> requiredAttributes
 
     /**
-     * is a map of attributes whose values are expected to match the provided patterns.
+     * attributeMatchers: is a map of attributes whose values are expected to match the provided patterns.
      * An example for this Map might be:
      * [
      *     'clientId':'~/\$\{org\.client\.id}/',

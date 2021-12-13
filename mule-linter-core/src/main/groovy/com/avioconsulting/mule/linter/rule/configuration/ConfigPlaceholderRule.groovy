@@ -19,7 +19,7 @@ class ConfigPlaceholderRule extends Rule{
     static final String RULE_VIOLATION_MESSAGE = 'Config should have a placeholder for attribute: '
 
     /**
-     * placeholderAttributes are the component attributes that the rule should require to be placeholders.
+     * placeholderAttributes: are the component attributes that the rule should require to be placeholders.
      * This argument is optional. The default array is as follows:
      * ['key', 'password', 'keyPassword', 'username', 'host', 'clientId', 'clientSecret',
      * 'tokenUrl', 'domain', 'workstation', 'authDn', 'authPassword', 'authentication',

@@ -13,20 +13,20 @@ class ComponentCountRule extends Rule {
     static final String RULE_ID = 'COMPONENT_COUNT'
     static final String RULE_NAME = 'A component should not be used more than the allowed number of times. '
     static final String RULE_VIOLATION_MESSAGE = ' was used more times than allowed'
-    /** is the name of the mule component this rule should search for.
+    /** component: is the name of the mule component this rule should search for.
      * Examples include `"flow"` or `"request"`.
      */
     @Param("component") String component
 
     /**
-     * is the namespace of the given mule component.
+     * namespace: is the namespace of the given mule component.
      * Examples include `"http://www.mulesoft.org/schema/mule/core"` or `"http://www.mulesoft.org/schema/mule/http"`.
      * The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`.
      */
     @Param("namespace") String namespace
 
     /**
-     * usage limit for the component
+     * maxCount: usage limit for the component
      */
     @Param("maxCount") Integer maxCount
 

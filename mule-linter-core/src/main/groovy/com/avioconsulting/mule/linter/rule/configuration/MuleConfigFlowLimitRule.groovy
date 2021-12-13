@@ -15,7 +15,7 @@ class MuleConfigFlowLimitRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Mule Config has too many flows in it.'
 
     /**
-     * *flowLimit* is the number of flows and subflows required to fail the rule.
+     * flowLimit: is the number of flows and subflows required to fail the rule.
      * By default this number of flows to fail the rule is `20`.
      */
     @Param("flowLimit") Integer flowLimit

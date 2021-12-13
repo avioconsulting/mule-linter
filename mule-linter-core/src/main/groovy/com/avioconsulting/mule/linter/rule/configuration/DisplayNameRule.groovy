@@ -18,7 +18,7 @@ class DisplayNameRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Display name should not be default for component: '
 
     /**
-     * components is a List of Maps containing `name`, `namespace`, and `displayName`.
+     * components: is a List of Maps containing `name`, `namespace`, and `displayName`.
      * The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`.
      * This argument is optional. The default list is as follows:
      * [
