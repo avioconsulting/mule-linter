@@ -25,15 +25,6 @@ class PomPropertyValueRule extends Rule {
         this.propertyName = propertyName
     }
 
-    PomPropertyValueRule(String propertyName, String propertyValue) {
-        this(RULE_ID, RULE_NAME, propertyName, propertyValue)
-    }
-
-    PomPropertyValueRule(String ruleId, String ruleName, String propertyName, String propertyValue) {
-        this(ruleId, ruleName,propertyName)
-        this.propertyValue = propertyValue
-    }
-
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []

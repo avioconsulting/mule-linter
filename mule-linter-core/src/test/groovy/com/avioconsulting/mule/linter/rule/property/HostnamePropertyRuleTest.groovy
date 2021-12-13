@@ -61,7 +61,8 @@ class HostnamePropertyRuleTest extends Specification {
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)
         testApp.addFile('src/main/resources/properties/sample-mule-app.dev.properties', BAD_PROPERTY_2)
         String[] exemptions = ['db.host','db.hostname']
-        Rule rule = new HostnamePropertyRule(exemptions)
+        Rule rule = new HostnamePropertyRule()
+        rule.exemptions = exemptions
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

@@ -27,6 +27,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -42,6 +43,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -55,7 +57,10 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         when:
         Map<String, String> coverageAttributes = ['sillyproperty':'incorrect']
-        Rule rule = new MunitMavenPluginAttributesRule(coverageAttributes, true)
+        Rule rule = new MunitMavenPluginAttributesRule()
+        rule.setCoverageAttributeMap(coverageAttributes)
+        rule.setIncludeDefaults(true)
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -70,7 +75,9 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new MunitMavenPluginAttributesRule(['error-handler.xml', 'global-config.xml', 'something-else.xml'])
+        Rule rule = new MunitMavenPluginAttributesRule()
+        rule.ignoreFiles = ['error-handler.xml', 'global-config.xml', 'something-else.xml']
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -85,6 +92,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         when:
         Rule rule = new MunitMavenPluginAttributesRule()
+        rule.init()
         List<RuleViolation> violations = rule.execute(app)
 
         then:

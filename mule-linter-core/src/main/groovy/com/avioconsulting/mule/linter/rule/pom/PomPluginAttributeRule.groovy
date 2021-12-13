@@ -27,15 +27,6 @@ class PomPluginAttributeRule extends Rule {
         this.artifactId = artifactId
     }
 
-    PomPluginAttributeRule(String groupId, String artifactId, Map<String,String> attributes) {
-        this(RULE_ID, RULE_NAME, groupId, artifactId, attributes)
-    }
-
-    PomPluginAttributeRule(String ruleId, String ruleName, String groupId, String artifactId, Map<String,String> attributes) {
-        this(ruleId, ruleName, groupId, artifactId)
-        this.attributes = attributes
-    }
-
     @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []

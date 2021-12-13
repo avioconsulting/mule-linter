@@ -22,11 +22,6 @@ class HostnamePropertyRule extends Rule{
         super(RULE_ID, RULE_NAME)
     }
 
-    HostnamePropertyRule(String[] exemptions) {
-        this()
-        this.exemptions = exemptions
-    }
-
     @Override
     List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []

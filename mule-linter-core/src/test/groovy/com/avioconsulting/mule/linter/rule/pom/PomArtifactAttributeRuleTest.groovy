@@ -23,7 +23,11 @@ class PomArtifactAttributeRuleTest extends Specification {
     def 'Missing Maven Plugin'() {
         given:
         testApp.addFile(PomFile.POM_XML, MISSING_PLUGINS_POM)
-        Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
+        Rule rule = new PomPluginAttributeRule()
+        rule.groupId = 'org.mule.tools.maven'
+        rule.artifactId = 'mule-maven-plugin'
+        rule.attributes = ['version':'3.3.5']
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -38,7 +42,11 @@ class PomArtifactAttributeRuleTest extends Specification {
     def 'Correct Maven Plugin version'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_POM)
-        Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
+        Rule rule = new PomPluginAttributeRule()
+        rule.groupId = 'org.mule.tools.maven'
+        rule.artifactId = 'mule-maven-plugin'
+        rule.attributes = ['version':'3.3.5']
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -51,7 +59,11 @@ class PomArtifactAttributeRuleTest extends Specification {
     def 'Incorrect Maven Plugin version'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_POM)
-        Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
+        Rule rule = new PomPluginAttributeRule()
+        rule.groupId = 'org.mule.tools.maven'
+        rule.artifactId = 'mule-maven-plugin'
+        rule.attributes = ['version':'3.3.6']
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -67,7 +79,11 @@ class PomArtifactAttributeRuleTest extends Specification {
     def 'Correct Maven Plugin version check as property'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_WITHPROPERTY_POM)
-        Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.5'])
+        Rule rule = new PomPluginAttributeRule()
+        rule.groupId = 'org.mule.tools.maven'
+        rule.artifactId = 'mule-maven-plugin'
+        rule.attributes = ['version':'3.3.5']
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -80,7 +96,11 @@ class PomArtifactAttributeRuleTest extends Specification {
     def 'Incorrect Maven Plugin version check as property'() {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_WITHPROPERTY_POM)
-        Rule rule = new PomPluginAttributeRule('org.mule.tools.maven', 'mule-maven-plugin', ['version':'3.3.6'])
+        Rule rule = new PomPluginAttributeRule()
+        rule.groupId = 'org.mule.tools.maven'
+        rule.artifactId = 'mule-maven-plugin'
+        rule.attributes = ['version':'3.3.6']
+        rule.init()
 
         when:
         app = new MuleApplication(testApp.appDir)

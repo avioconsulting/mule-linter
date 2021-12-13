@@ -18,32 +18,9 @@ class PropertyFileNamingRule extends Rule {
     @Param("pattern") String pattern
 
     PropertyFileNamingRule() {
-        this([])
-    }
-
-/**
- * A new PropertyFileNamingRule for a list of environments.  This ensures that
- * there is at least one file that matches the pattern '${appname}-${env}.properties'
- * for each environment.
- *
- * @param environments List of environments to check for files
- */
-    PropertyFileNamingRule(List<String> environments) {
-        this(environments, DEFAULT_PATTERN)
-    }
-
-/**
- * A new PropertyFileNamingRule for a list of environments.  This ensures that
- * there is at least one file that matches the pattern for each environment.
- * Possible pattern variables ${env} and ${appname}.
- *
- * @param environments List of environments to check for files
- * @param pattern String pattern to search. ex. '${appname}-${env}.properties'
- */
-    PropertyFileNamingRule(List<String> environments, String pattern) {
         super(RULE_ID, RULE_NAME)
-        this.environments = environments
-        this.pattern = pattern
+        this.environments = []
+        this.pattern = DEFAULT_PATTERN
     }
 
     @SuppressWarnings('UnnecessaryGetter')

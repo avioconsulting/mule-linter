@@ -26,8 +26,9 @@ class PropertyFileNamingRuleTest extends Specification {
         testApp.addPropertyFiles(['prod.properties',
                                   'dev.properties'])
         def customNamingPattern = '${env}.properties'
-        Rule rule = new PropertyFileNamingRule(ENVS,
-                                               customNamingPattern)
+        Rule rule = new PropertyFileNamingRule()
+        rule.environments = ENVS
+        rule.pattern = customNamingPattern
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -46,7 +47,8 @@ class PropertyFileNamingRuleTest extends Specification {
                                   'sample-mule-app-test.properties',
                                   'prod.properties',
                                   'other.properties'])
-        Rule rule = new PropertyFileNamingRule(ENVS)
+        Rule rule = new PropertyFileNamingRule()
+        rule.environments = ENVS
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class ExcessiveLoggersRuleTest extends Specification{
+class ConsecutiveLoggersCountRuleTest extends Specification{
     private final TestApplication testApp = new TestApplication()
 
     def setup() {
@@ -22,7 +22,7 @@ class ExcessiveLoggersRuleTest extends Specification{
 
     def 'Default excessive loggers rule fails two flows'() {
         given:
-        Rule rule = new ExcessiveLoggersRule()
+        Rule rule = new ConsecutiveLoggersCountRule()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -30,14 +30,16 @@ class ExcessiveLoggersRuleTest extends Specification{
 
         then:
         violations.size() == 2
-        violations[0].message == ExcessiveLoggersRule.RULE_VIOLATION_MESSAGE +
+        violations[0].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE +
                 "get:\\user\\(id)\\roles:application\\json:my-api-config"
-        violations[1].message == ExcessiveLoggersRule.RULE_VIOLATION_MESSAGE + "business-subflow-three"
+        violations[1].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE + "business-subflow-three"
     }
 
     def '3 Count excessive loggers rule fails one flow'() {
         given:
-        Rule rule = new ExcessiveLoggersRule(3)
+        Rule rule = new ConsecutiveLoggersCountRule()
+        rule.setProperty('excessiveLoggers',3)
+        rule.init()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -45,7 +47,7 @@ class ExcessiveLoggersRuleTest extends Specification{
 
         then:
         violations.size() == 1
-        violations[0].message == ExcessiveLoggersRule.RULE_VIOLATION_MESSAGE + "business-subflow-three"
+        violations[0].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE + "business-subflow-three"
     }
 
     def 'Custom excessive loggers rule fails no flows'() {
@@ -55,7 +57,9 @@ class ExcessiveLoggersRuleTest extends Specification{
                                                                        (LoggerComponent.LogLevel.INFO): 3,
                                                                        (LoggerComponent.LogLevel.WARN): 2,
                                                                        (LoggerComponent.LogLevel.ERROR): 4]
-        Rule rule = new ExcessiveLoggersRule(excessiveLoggers)
+        Rule rule = new ConsecutiveLoggersCountRule()
+        rule.setProperty('excessiveLoggers',excessiveLoggers)
+        rule.init()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

@@ -14,16 +14,12 @@ class FlowSubflowNamingRule extends Rule {
     static final String RULE_VIOLATION_MESSAGE = 'Flow or subflow is not following naming conventions: '
     static final Map<String, String> flowSubFlowComponent = ['sub-flow': Namespace.CORE,
                                                              'flow': Namespace.CORE]
-    CaseNaming caseNaming = new CaseNaming()
+    CaseNaming caseNaming
 
     @Param("format") String format
 
     FlowSubflowNamingRule(){
-        this(CaseNaming.CaseFormat.KEBAB_CASE)
-    }
-    FlowSubflowNamingRule(CaseNaming.CaseFormat format) {
-        super(RULE_ID, RULE_NAME)
-        caseNaming.setFormat(format)
+        caseNaming = new CaseNaming(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
     @Override

@@ -7,8 +7,8 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
-class ExcessiveLoggersRule extends Rule {
-    static final String RULE_ID = 'EXCESSIVE_LOGGERS'
+class ConsecutiveLoggersCountRule extends Rule {
+    static final String RULE_ID = 'CONSECUTIVE_LOGGERS_COUNT'
     static final String RULE_NAME = 'Loggers are not used excessively in sequence. '
     static final String RULE_VIOLATION_MESSAGE = 'Too many sequential loggers of same level in flow '
 
@@ -18,27 +18,10 @@ class ExcessiveLoggersRule extends Rule {
                                                                           (LoggerComponent.LogLevel.WARN) : 2,
                                                                           (LoggerComponent.LogLevel.ERROR): 2]
 
-
     @Param("excessiveLoggers") def excessiveLoggers
 
-    ExcessiveLoggersRule() {
+    ConsecutiveLoggersCountRule() {
         super(RULE_ID, RULE_NAME)
-    }
-
-    ExcessiveLoggersRule(@Param("excessiveLoggers") Integer excessiveLoggers) {
-        this()
-        this.excessiveLoggers = [(LoggerComponent.LogLevel.TRACE): excessiveLoggers,
-                                             (LoggerComponent.LogLevel.DEBUG): excessiveLoggers,
-                                             (LoggerComponent.LogLevel.INFO) : excessiveLoggers,
-                                             (LoggerComponent.LogLevel.WARN) : excessiveLoggers,
-                                             (LoggerComponent.LogLevel.ERROR): excessiveLoggers]
-        init()
-    }
-
-    ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLoggers) {
-        this()
-        this.excessiveLoggers = excessiveLoggers
-        init()
     }
 
     @Override

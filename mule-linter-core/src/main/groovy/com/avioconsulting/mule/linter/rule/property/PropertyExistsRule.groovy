@@ -21,22 +21,9 @@ class PropertyExistsRule extends Rule {
     @Param("pattern") String pattern
 
     PropertyExistsRule() {
-        this(null as String, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
-    }
-
-    PropertyExistsRule(String propertyName) {
-        this(propertyName, DEFAULT_ENVIRONMENT_LIST, DEFAULT_PATTERN)
-    }
-
-    PropertyExistsRule(String propertyName, List<String> environments) {
-        this(propertyName, environments, DEFAULT_PATTERN)
-    }
-
-    PropertyExistsRule(String propertyName, List<String> environments,String pattern) {
         super(RULE_ID, RULE_NAME)
-        this.propertyName = propertyName
-        this.environments = environments
-        this.pattern = pattern
+        this.environments = DEFAULT_ENVIRONMENT_LIST
+        this.pattern = DEFAULT_PATTERN
     }
 
     @Override

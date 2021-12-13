@@ -26,19 +26,7 @@ class PomDependencyVersionRule extends Rule {
     PomDependencyVersionRule(){
         super(RULE_ID, RULE_NAME)
         version= new Version()
-    }
-
-    PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion) {
-        this(groupId, artifactId, artifactVersion, Version.Operator.EQUAL)
-    }
-
-    PomDependencyVersionRule(String groupId, String artifactId, String artifactVersion, Version.Operator versionOperator){
-        this()
-        this.groupId = groupId
-        this.artifactId = artifactId
-        this.artifactVersion = artifactVersion
-        this.versionOperator = versionOperator.name()
-        init()
+        this.versionOperator = Version.Operator.EQUAL
     }
 
     @Override

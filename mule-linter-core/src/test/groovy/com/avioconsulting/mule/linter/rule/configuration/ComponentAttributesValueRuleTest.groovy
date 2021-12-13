@@ -7,7 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class ComponentAttributeValueRuleTest extends Specification {
+class ComponentAttributesValueRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private MuleApplication app
@@ -26,7 +26,11 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attributes should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('example1', Namespace.CORE, ['exists'])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('component','example1')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('requiredAttributes',['exists'])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -37,7 +41,13 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component with required attribute values should pass'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE2', 'Example 2', 'example2', Namespace.CORE, [exists:~/exists|or_not/])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('ruleId','EXAMPLE2')
+        rule.setProperty('ruleName','Example 2')
+        rule.setProperty('component','example2')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('attributeMatchers',[exists:~/exists|or_not/])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -48,50 +58,72 @@ class ComponentAttributeValueRuleTest extends Specification {
 
     def 'component missing required attributes should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE3', 'Example 3', 'example3', Namespace.CORE, ['exists'])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('ruleId','EXAMPLE3')
+        rule.setProperty('ruleName','Example 3')
+        rule.setProperty('component','example3')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('requiredAttributes',['exists'])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with required attributes empty should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE4', 'Example 4', 'example4', Namespace.CORE, ['empty'])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('ruleId','EXAMPLE4')
+        rule.setProperty('ruleName','Example 4')
+        rule.setProperty('component','example4')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('requiredAttributes',['empty'])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'components missing attributes to match should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('example5', Namespace.CORE, [exists:~/exists|or_not/])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('component','example5')
+        rule.setProperty('namespace',Namespace.CORE)
+        rule.setProperty('attributeMatchers',[exists:~/exists|or_not/])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     def 'component with wrong attribute values should fail'() {
         given:
-        Rule rule = new ComponentAttributeValueRule('EXAMPLE6', 'Example 6', 'transform', Namespace.CORE_EE, [right:~/Payload/])
+        Rule rule = new ComponentAttributesValueRule()
+        rule.setProperty('ruleId','EXAMPLE6')
+        rule.setProperty('ruleName','Example 6')
+        rule.setProperty('component','transform')
+        rule.setProperty('namespace',Namespace.CORE_EE)
+        rule.setProperty('attributeMatchers',[right:~/Payload/])
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
-        violations[0].message.startsWith(ComponentAttributeValueRule.RULE_VIOLATION_MESSAGE)
+        violations[0].message.startsWith(ComponentAttributesValueRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String FLOWS = '''

@@ -26,6 +26,7 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
     def 'Default Secure Properties Exist'() {
         given:
         Rule rule = new MuleArtifactHasSecurePropertiesRule()
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -38,7 +39,10 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
     def 'Different and Default Properties Exist'() {
         given:
-        Rule rule = new MuleArtifactHasSecurePropertiesRule(['new.property'], true)
+        Rule rule = new MuleArtifactHasSecurePropertiesRule()
+        rule.setProperty("properties",['new.property'])
+        rule.setProperty("includeDefaults",true)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -49,7 +53,10 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
 
     def 'Different Properties Missing,  Default Properties Exist'() {
         given:
-        Rule rule = new MuleArtifactHasSecurePropertiesRule(['new.property.2', 'new.property.3'], true)
+        Rule rule = new MuleArtifactHasSecurePropertiesRule()
+        rule.setProperty("properties",['new.property.2', 'new.property.3'])
+        rule.setProperty("includeDefaults",true)
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -66,6 +73,7 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
     def 'Default Properties Missing'() {
         given:
         Rule rule = new MuleArtifactHasSecurePropertiesRule()
+        rule.init()
 
         when:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_PROPS_MULE_ARTIFACT)
@@ -82,6 +90,7 @@ class MuleArtifactHasSecurePropertiesRuleTest extends Specification {
     def 'Missing Secure Properties'() {
         given:
         Rule rule = new MuleArtifactHasSecurePropertiesRule()
+        rule.init()
 
         when:
         testApp.addFile(MuleArtifact.MULE_ARTIFACT_JSON, MISSING_SECURE_PROPS)

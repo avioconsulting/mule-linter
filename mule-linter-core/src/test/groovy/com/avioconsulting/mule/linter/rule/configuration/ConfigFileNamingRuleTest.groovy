@@ -47,7 +47,9 @@ class ConfigFileNamingRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'camelCase config file naming convention check'() {
         given:
-        Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.CAMEL_CASE)
+        Rule rule = new ConfigFileNamingRule()
+        rule.setProperty('format','CAMEL_CASE')
+        rule.init()
 
         expect:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -65,7 +67,9 @@ class ConfigFileNamingRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'PascalCase config file naming convention check'() {
         given:
-        Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.PASCAL_CASE)
+        Rule rule = new ConfigFileNamingRule()
+        rule.setProperty('format','PASCAL_CASE')
+        rule.init()
 
         expect:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -83,7 +87,9 @@ class ConfigFileNamingRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'snake_case config file naming convention check'() {
         given:
-        Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.SNAKE_CASE)
+        Rule rule = new ConfigFileNamingRule()
+        rule.setProperty('format','SNAKE_CASE')
+        rule.init()
 
         expect:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -101,7 +107,9 @@ class ConfigFileNamingRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'kebab_case config file naming convention check'() {
         given:
-        Rule rule = new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE)
+        Rule rule = new ConfigFileNamingRule()
+        rule.setProperty('format','KEBAB_CASE')
+        rule.init()
 
         expect:
         MuleApplication app = new MuleApplication(testApp.appDir)

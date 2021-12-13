@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'GStringExpressionWithinString',
         'StaticFieldsBeforeInstanceFields'])
-class GlobalConfigRuleTest extends Specification {
+class GlobalConfigExistsRuleTest extends Specification {
 
     private final TestApplication testApp = new TestApplication()
     private MuleApplication app
@@ -26,7 +26,8 @@ class GlobalConfigRuleTest extends Specification {
 
     def 'Correct global configuration'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml')
+        Rule rule = new GlobalConfigExistsRule()
+        rule.setProperty("globalFileName","global-config.xml")
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -38,7 +39,8 @@ class GlobalConfigRuleTest extends Specification {
 
     def 'Incorrect global configuration default element check'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml')
+        Rule rule = new GlobalConfigExistsRule()
+        rule.setProperty("globalFileName","global-config.xml")
 
         when:
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)
@@ -61,8 +63,9 @@ class GlobalConfigRuleTest extends Specification {
 
     def 'Additional global configuration element check'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml',
-                    ['listener-config': Namespace.HTTP])
+        Rule rule = new GlobalConfigExistsRule()
+        rule.setProperty("globalFileName","global-config.xml")
+        rule.setProperty("noneGlobalElements",['listener-config': Namespace.HTTP])
 
         when:
         testApp.addFile('src/main/mule/bad-global-with-listener.xml', BAD_CONFIG_1)
@@ -82,7 +85,8 @@ class GlobalConfigRuleTest extends Specification {
     @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired'])
     def 'Missing global configuration file'() {
         given:
-        Rule rule = new GlobalConfigRule('global-config.xml')
+        Rule rule = new GlobalConfigExistsRule()
+        rule.setProperty("globalFileName","global-config.xml")
 
         when:
         testApp.removeFile('src/main/mule/global-config.xml')
@@ -92,7 +96,7 @@ class GlobalConfigRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 0
-        violations[0].message == GlobalConfigRule.FILE_MISSING_VIOLATION_MESSAGE
+        violations[0].message == GlobalConfigExistsRule.FILE_MISSING_VIOLATION_MESSAGE
     }
 
     private static final String BAD_CONFIG_1 = '''<?xml version="1.0" encoding="UTF-8"?>

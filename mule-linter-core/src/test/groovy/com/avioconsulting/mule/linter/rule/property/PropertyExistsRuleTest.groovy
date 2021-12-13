@@ -29,7 +29,8 @@ class PropertyExistsRuleTest extends Specification {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-prod.properties', GOOD_PROPERTY_1)
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
-        Rule rule = new PropertyExistsRule('sample.property')
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
 
         when:
         app = new MuleApplication(testApp.appDir)
@@ -42,7 +43,9 @@ class PropertyExistsRuleTest extends Specification {
     def 'Property Exists with env list'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
-        Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.environments = ['dev', 'test']
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -55,7 +58,10 @@ class PropertyExistsRuleTest extends Specification {
     def 'Property Exists with env list and pattern'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'prod.properties', GOOD_PROPERTY_1)
-        Rule rule = new PropertyExistsRule('sample.property', ['prod'], '${env}.properties')
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.environments = ['prod']
+        rule.pattern = '${env}.properties'
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -68,7 +74,9 @@ class PropertyExistsRuleTest extends Specification {
     def 'Property Missing'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', MISSING_PROPERTY)
-        Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.environments = ['dev', 'test']
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -83,7 +91,9 @@ class PropertyExistsRuleTest extends Specification {
 
     def 'Property File Missing'() {
         given:
-        Rule rule = new PropertyExistsRule('sample.property', ['dev', 'test'])
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.environments = ['dev', 'test']
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)

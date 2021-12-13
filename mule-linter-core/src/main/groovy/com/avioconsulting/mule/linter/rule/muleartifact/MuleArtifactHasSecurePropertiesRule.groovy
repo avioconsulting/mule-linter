@@ -20,14 +20,9 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     @Param("includeDefaults") Boolean includeDefaults
 
     MuleArtifactHasSecurePropertiesRule() {
-        this([], true)
-    }
-
-    MuleArtifactHasSecurePropertiesRule(List<String> properties, Boolean includeDefaults) {
         super(RULE_ID, RULE_NAME)
-        this.properties = properties
-        this.includeDefaults = includeDefaults
-        init()
+        this.properties = []
+        this.includeDefaults = true
     }
 
     @Override

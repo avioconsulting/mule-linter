@@ -47,7 +47,10 @@ class DisplayNameRuleTest extends Specification {
         MuleApplication app = new MuleApplication(testApp.appDir)
 
         when:
-        Rule rule = new DisplayNameRule(components)
+        Rule rule = new DisplayNameRule()
+        rule.setProperty('components',components)
+        rule.init()
+
         List<RuleViolation> violations = rule.execute(app)
 
         then:

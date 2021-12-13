@@ -7,9 +7,9 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
 import java.util.regex.Pattern
 
-class ComponentAttributeValueRule extends Rule {
+class ComponentAttributesValueRule extends Rule {
 
-    static final String RULE_ID = 'COMPONENT_ATTRIBUTE_VALUE'
+    static final String RULE_ID = 'COMPONENT_REQUIRED_ATTRIBUTES'
     static final String RULE_NAME = 'A specified component has the required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Component is missing attribute '
     static final String EXTENDING = ' with value '
@@ -20,30 +20,8 @@ class ComponentAttributeValueRule extends Rule {
     @Param("attributeMatchers") Map<String, String> attributeMatchers
     private Map<String, Pattern> privateAttributeMatchers
 
-    ComponentAttributeValueRule(){
+    ComponentAttributesValueRule(){
         super(RULE_ID, RULE_NAME)
-    }
-
-    ComponentAttributeValueRule(String component, String namespace, List<String> requiredAttributes) {
-        this(RULE_ID, RULE_NAME, component, namespace, requiredAttributes)
-    }
-
-    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, List<String> requiredAttributes) {
-        super(ruleId, ruleName)
-        this.component = component
-        this.namespace = namespace
-        this.requiredAttributes = requiredAttributes
-    }
-
-    ComponentAttributeValueRule(String component, String namespace, Map<String, Pattern> attributeMatchers) {
-        this(RULE_ID, RULE_NAME, component, namespace, attributeMatchers)
-    }
-
-    ComponentAttributeValueRule(String ruleId, String ruleName, String component, String namespace, Map<String,Pattern> attributeMatchers) {
-        super(ruleId, ruleName)
-        this.component = component
-        this.namespace = namespace
-        this.privateAttributeMatchers = attributeMatchers
     }
 
     @Override

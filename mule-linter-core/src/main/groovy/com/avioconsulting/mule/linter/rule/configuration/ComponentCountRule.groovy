@@ -17,18 +17,12 @@ class ComponentCountRule extends Rule {
     ComponentCountRule(){
         super(RULE_ID, RULE_NAME)
     }
-
-    ComponentCountRule(String component, String namespace, Integer maxCount) {
-        this(RULE_ID, RULE_NAME, component, namespace, maxCount)
-    }
-
     ComponentCountRule(String ruleId, String ruleName, String component, String namespace, Integer maxCount) {
         super(ruleId, ruleName)
         this.component = component
         this.namespace = namespace
         this.maxCount = maxCount
     }
-
 
     @Override
     List<RuleViolation> execute(Application application) {

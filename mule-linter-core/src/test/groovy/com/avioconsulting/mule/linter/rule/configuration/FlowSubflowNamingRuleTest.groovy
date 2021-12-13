@@ -28,7 +28,9 @@ class FlowSubflowNamingRuleTest extends Specification {
 
     def 'cameCase flow subflow naming convention check'() {
         given:
-        Rule rule = new FlowSubflowNamingRule(CaseNaming.CaseFormat.CAMEL_CASE)
+        Rule rule = new FlowSubflowNamingRule()
+        rule.setProperty('format','CAMEL_CASE')
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -41,7 +43,9 @@ class FlowSubflowNamingRuleTest extends Specification {
 
     def 'PascalCase flow subflow naming convention check'() {
         given:
-        Rule rule = new FlowSubflowNamingRule(CaseNaming.CaseFormat.PASCAL_CASE)
+        Rule rule = new FlowSubflowNamingRule()
+        rule.setProperty('format','PASCAL_CASE')
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -56,7 +60,9 @@ class FlowSubflowNamingRuleTest extends Specification {
 
     def 'snake_case flow subflow naming convention check'() {
         given:
-        Rule rule = new FlowSubflowNamingRule(CaseNaming.CaseFormat.SNAKE_CASE)
+        Rule rule = new FlowSubflowNamingRule()
+        rule.setProperty('format','SNAKE_CASE')
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -69,7 +75,9 @@ class FlowSubflowNamingRuleTest extends Specification {
 
     def 'kebab-case flow subflow naming convention check'() {
         given:
-        Rule rule = new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE)
+        Rule rule = new FlowSubflowNamingRule()
+        rule.setProperty('format','KEBAB_CASE')
+        rule.init()
 
         when:
         List<RuleViolation> violations = rule.execute(app)
