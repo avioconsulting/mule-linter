@@ -105,6 +105,9 @@ class AVIOCustomRuleConfiguration {
 ```
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
+Mule linter's core library contains the GDSL file to support autocompletion in IntelliJ. 
+To use that feature, com.avioconsulting.mule:mule-linter-core  dependency must be added with provided  scope in the project. 
+That will avoid maven packing core into project jar but still allow intellij to use it as a classpath and detect the GDSL script.
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag
