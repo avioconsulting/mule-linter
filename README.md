@@ -49,58 +49,150 @@ Make sure to import the rules and helper classes you intend to use.
 
 Sample configuration:
 ```groovy
-import com.avioconsulting.mule.linter.model.rule.RuleSet
-import com.avioconsulting.mule.linter.model.CaseNaming
-import com.avioconsulting.mule.linter.rule.cicd.*
-import com.avioconsulting.mule.linter.rule.configuration.*
-import com.avioconsulting.mule.linter.rule.git.*
-import com.avioconsulting.mule.linter.rule.muleartifact.*
-import com.avioconsulting.mule.linter.rule.pom.*
-import com.avioconsulting.mule.linter.rule.property.*
+mule_linter {
+    rules {
+        /* CICD */
+        AZURE_PIPELINES_EXISTS {}
+        JENKINS_EXISTS {}
 
-class AVIOCustomRuleConfiguration {
-	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
+        /* CONFIGURATION */
+        API_CONSOLE_DISABLED{}
+        COMMENTED_CODE {}
+        COMPONENT_ATTRIBUTE_VALUE {
+            component = 'flow-ref'
+            namespace = 'http://www.mulesoft.org/schema/mule/core'
+            requiredAttributes = ['name']
+        }
+        COMPONENT_COUNT {
+            component = 'flow-ref'
+            namespace = 'http://www.mulesoft.org/schema/mule/core'
+            maxCount = 5
+        }
+        CONFIG_FILE_NAMING {}
+        CONFIG_PLACEHOLDER {
+            placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
+        }
+        DISPLAY_NAME {
+            components = [
+                    [name: 'set-payload', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Payload'],
+                    [name: 'set-variable', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Variable'],
+                    [name: 'transform', namespace: "http://www.mulesoft.org/schema/mule/ee/core", displayName: 'Transform Message'],
+                    [name: 'flow-ref', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Flow Reference']
+            ]
+        }
+        EXCESSIVE_LOGGERS {
+            excessiveLoggers = [
+                    'INFO':3,
+                    'DEBUG':2
+            ]
+        }
+        EXCESSIVE_LOGGERS {
+            excessiveLoggers = 2
+        }
+        FLOW_SUBFLOW_NAMING {
+            format = 'KEBAB_CASE'
+        }
+        GLOBAL_CONFIG_NO_FLOWS {
+            globalFileName = 'globals.xml'
+        }
+        GLOBAL_CONFIG_NO_FLOWS {}
+        GLOBAL_CONFIG {
+            globalFileName = 'global-config.xml'
+        }
+        LOGGER_ATTRIBUTES_RULE {
+            requiredAttributes = ['category']
+        }
+        LOGGER_CATEGORY_HASVALUE {}
+        LOGGER_MESSAGE_CONTENTS {
+            pattern = '[0-9]*'
+        }
+        LOGGER_MESSAGE_HASVALUE {}
+        MULE_CONFIG_SIZE {
+            flowLimit = 2
+        }
+        ON_ERROR_LOG_EXCEPTION {}
+        UNTIL_SUCCESSFUL {}
+        UNUSED_FLOW {}
 
-	static RuleSet getRules() {
-		RuleSet rules = new RuleSet()
+        /* GIT */
+        GIT_IGNORE {}
+        GIT_IGNORE {
+            ignoredFiles = ['*.jar', '*.class', 'target/', '.project', '.classpath', '.idea', 'build']
+        }
 
-		//cicd
-		rules.addRule(new JenkinsFileExistsRule())
+        /* MULE ARTIFACT */
+        MULE_ARTIFACT_SECURE_PROPERTIES {
+            properties = [
+                    'anypoint.platform.db.password'
+            ]
+            includeDefaults = false
+        }
+        MULE_ARTIFACT_MIN_MULE_VERSION {}
 
-		//configuration
-		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
-		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
-		rules.addRule(new LoggerCategoryExistsRule())
-		rules.addRule(new LoggerMessageExistsRule())
-		rules.addRule(new OnErrorLogExceptionRule())
-		rules.addRule(new UnusedFlowRule())
+        /* POM */
+        MULE_MAVEN_PLUGIN {
+            version = '3.3.5'
+        }
+        MULE_RUNTIME {
+            version = '4.3.0'
+        }
+        MUNIT_MAVEN_PLUGIN_ATTRIBUTES {
+            coverageAttributeMap =[
+                    'runCoverage':'true',
+                    'failBuild':'true',
+                    'requiredApplicationCoverage':'80',
+                    'requiredResourceCoverage':'80',
+                    'requiredFlowCoverage':'80'
+            ]
+            includeDefaults = false
+        }
+        MUNIT_PLUGIN_VERSION {
+            version = '2.2.1'
+        }
+        MUNIT_VERSION {
+            version = '2.3.6'
+        }
+        POM_DEPENDENCY_VERSION {
+            groupId = 'com.mulesoft.connectors'
+            artifactId = 'mule-amazon-sqs-connector'
+            artifactVersion = '5.11.0'
+            versionOperator = 'GREATER_THAN'
+        }
+        POM_EXISTS {}
+        POM_PLUGIN_ATTRIBUTE {
+            groupId = 'org.mule.tools.maven'
+            artifactId = 'mule-maven-plugin'
+            attributes = [
+                    extensions: true
+            ]
+        }
+        MAVEN_PROPERTY {
+            propertyName = 'cloudhubWorkers'
+            propertyValue = '2'
+        }
 
-		//git
-		rules.addRule(new GitIgnoreRule())
+        /* PROPERTY */
+        ENCRYPTED_VALUE {}
+        HOSTNAME_PROPERTY {
+            exemptions = []
+        }
+        PROPERTY_EXISTS {
+            environments = ['dev', 'test', 'prod']
+            propertyName = 'db.user'
+        }
+        PROPERTY_FILE_NAMING {
+            environments = ['dev', 'test', 'prod']
+            pattern = '${appname}-${env}.properties'
+        }
+        PROPERTY_FILE_COUNT_MISMATCH {
+            environments = ['dev', 'test', 'prod']
+            pattern = '${appname}-${env}.properties'
+        }
 
-		//muleArtifact
-		rules.addRule(new MuleArtifactHasSecurePropertiesRule())
-		rules.addRule(new MuleArtifactMinMuleVersionRule())
+        /* README */
+        README {}
 
-		//pom
-		rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
-		rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
-		rules.addRule(new MunitMavenPluginAttributesRule())
-		rules.addRule(new MunitVersionRule('2.2.1'))
-		rules.addRule(new PomExistsRule())
-
-		//property
-		rules.addRule(new EncryptedPasswordRule())
-		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
-		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
-		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-
-		return rules
-	}
-
+    }
 }
 ```
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
