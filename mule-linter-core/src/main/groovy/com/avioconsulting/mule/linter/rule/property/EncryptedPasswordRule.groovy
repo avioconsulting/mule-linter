@@ -5,6 +5,11 @@ import com.avioconsulting.mule.linter.model.PropertyFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that properties containing `secret` or `password` are encrypted.
+ * AVIO always recommends that passwords and secrets are encrypted with a proper encryption key (Like AES or Blowfish).
+ * Unencrypted secrets within property files are dangerous in cases where code or files could be leaked, and past Mulesoft security issues have exposed or made visible arbitrary project files.
+ */
 class EncryptedPasswordRule extends Rule {
 
     static final String RULE_ID = 'ENCRYPTED_VALUE'

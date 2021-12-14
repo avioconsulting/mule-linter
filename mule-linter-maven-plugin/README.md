@@ -2,6 +2,8 @@
 
 The mule linter can be run as mvn plugin. The maven plugin is located in module `mule-linter-maven-plugin`.
 
+Plugin goal is by default attached to validate which is the first phase of maven lifecycle.
+
 ## Parameters
 - appDir: Defaults to `${basedir}`
 - ruleConfiguration: Defaults to `${basedir}/muleLinter.groovy`
@@ -83,5 +85,10 @@ Adding this library to plugin to use new rule, we can configure it like below -
 Once you add required dependencies, you can add new rule in the rules configuration file - 
 
 ```groovy
-    rules.addRule(new com.avioconsulting.mule.linter.extension.rules.HttpListenerPathRule())
+    MULE_ARTIFACT_SECURE_PROPERTIES {
+        properties = [
+                'anypoint.platform.db.password'
+        ]
+        includeDefaults = false
+    }
 ```

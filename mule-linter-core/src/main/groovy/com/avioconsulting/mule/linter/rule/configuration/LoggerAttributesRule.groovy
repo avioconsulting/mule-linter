@@ -5,11 +5,18 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that the Loggers have required attributes.
+ */
 class LoggerAttributesRule extends Rule {
 
     static final String RULE_ID = 'LOGGER_REQUIRED_ATTRIBUTES'
     static final String RULE_NAME = 'Loggers have required attributes. '
     static final String RULE_VIOLATION_MESSAGE = 'Logger attribute is missing: '
+
+    /**
+     * requiredAttributes: List of required attributes to check in this rule
+     */
     @Param("requiredAttributes") List<String> requiredAttributes
 
     LoggerAttributesRule() {

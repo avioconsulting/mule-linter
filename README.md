@@ -47,64 +47,13 @@ static RuleSet getRules() { }
 Initialize the Rules you would like to use, and add them to the RuleSet with the `.addRule(Rule)` method. 
 Make sure to import the rules and helper classes you intend to use. 
 
-Sample configuration:
-```groovy
-import com.avioconsulting.mule.linter.model.rule.RuleSet
-import com.avioconsulting.mule.linter.model.CaseNaming
-import com.avioconsulting.mule.linter.rule.cicd.*
-import com.avioconsulting.mule.linter.rule.configuration.*
-import com.avioconsulting.mule.linter.rule.git.*
-import com.avioconsulting.mule.linter.rule.muleartifact.*
-import com.avioconsulting.mule.linter.rule.pom.*
-import com.avioconsulting.mule.linter.rule.property.*
+See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
 
-class AVIOCustomRuleConfiguration {
-	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
 
-	static RuleSet getRules() {
-		RuleSet rules = new RuleSet()
-
-		//cicd
-		rules.addRule(new JenkinsFileExistsRule())
-
-		//configuration
-		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
-		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
-		rules.addRule(new LoggerCategoryExistsRule())
-		rules.addRule(new LoggerMessageExistsRule())
-		rules.addRule(new OnErrorLogExceptionRule())
-		rules.addRule(new UnusedFlowRule())
-
-		//git
-		rules.addRule(new GitIgnoreRule())
-
-		//muleArtifact
-		rules.addRule(new MuleArtifactHasSecurePropertiesRule())
-		rules.addRule(new MuleArtifactMinMuleVersionRule())
-
-		//pom
-		rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
-		rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
-		rules.addRule(new MunitMavenPluginAttributesRule())
-		rules.addRule(new MunitVersionRule('2.2.1'))
-		rules.addRule(new PomExistsRule())
-
-		//property
-		rules.addRule(new EncryptedPasswordRule())
-		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
-		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
-		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-
-		return rules
-	}
-
-}
-```
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
+### Using IntelliJ Auto Completion
+Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag

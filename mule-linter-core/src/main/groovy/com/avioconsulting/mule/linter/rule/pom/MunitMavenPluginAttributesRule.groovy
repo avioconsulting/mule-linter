@@ -8,6 +8,11 @@ import com.avioconsulting.mule.linter.model.pom.MunitMavenPlugin
 import com.avioconsulting.mule.linter.model.pom.PomElement
 import com.avioconsulting.mule.linter.model.pom.PomFile
 
+/**
+ * This rule ensures that the `munit-maven-plugin` exists and is configured correctly.
+ * AVIO reccomends that Munit should be used, passing tests should be required, and that an arbitrary amount of code should be covered by Munit tests.
+ * Remember that test coverage does not ensure test quality.
+ */
 class MunitMavenPluginAttributesRule extends Rule {
 
     static final String RULE_ID = 'MUNIT_MAVEN_PLUGIN_ATTRIBUTES'
@@ -21,8 +26,33 @@ class MunitMavenPluginAttributesRule extends Rule {
                                                           'requiredFlowCoverage':'80']
     private static final String IGNORE_FILES = 'ignoreFiles'
 
+    /**
+     * coverageAttributeMap: is a map of attributes expected to be present with given values on the `munit-maven-plugin` in the `pom.xml`.
+     * By default, the expected attributes and values are:
+     * ['runCoverage':'true',
+     * 'failBuild':'true',
+     * 'requiredApplicationCoverage':'80',
+     * 'requiredResourceCoverage':'80',
+     * 'requiredFlowCoverage':'80']
+     */
     @Param("coverageAttributeMap") Map<String, String> coverageAttributeMap
+
+    /**
+     * ignoreFiles: is a list of test files that the `munit-maven-plugin should` ignore.
+     * By default, AVIO does not expect to ignore test suites.
+     * Ignored test suites is a code smell, and should be removed before commiting/merging code.
+     */
     @Param("ignoreFiles") List<String> ignoreFiles
+
+    /**
+     * includeDefaults: is a flag to include AVIO's default set of attributes in addition to whatever is provided by the *coverageAttributeMap*.
+     * The default map is:
+     * ['runCoverage':'true',
+     * 'failBuild':'true',
+     * 'requiredApplicationCoverage':'80',
+     * 'requiredResourceCoverage':'80',
+     * 'requiredFlowCoverage':'80']
+     */
     @Param("includeDefaults") Boolean includeDefaults
 
     MunitMavenPluginAttributesRule() {

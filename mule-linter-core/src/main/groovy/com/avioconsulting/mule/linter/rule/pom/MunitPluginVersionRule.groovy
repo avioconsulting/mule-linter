@@ -4,6 +4,9 @@ import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that the version number for the `munit-maven-version` plugin matches a given value.
+ */
 class MunitPluginVersionRule extends PomPluginAttributeRule {
 
     static final String RULE_ID = 'MUNIT_PLUGIN_VERSION'
@@ -11,6 +14,9 @@ class MunitPluginVersionRule extends PomPluginAttributeRule {
     static final String GROUP_ID = 'com.mulesoft.munit.tools'
     static final String ARTIFACT_ID = 'munit-maven-plugin'
 
+    /**
+     * version: is the version number expected for the `munit-maven-version` plugin.
+     */
     @Param("version") String version
 
     MunitPluginVersionRule() {

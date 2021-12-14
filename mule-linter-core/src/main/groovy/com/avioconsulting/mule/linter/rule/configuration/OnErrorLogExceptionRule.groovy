@@ -5,6 +5,9 @@ import com.avioconsulting.mule.linter.model.Namespace
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks that the logException rule is enabled for all `on-error-continue` and `on-error-propagate` components.
+ */
 class OnErrorLogExceptionRule extends Rule {
 
     static final String RULE_ID = 'ON_ERROR_LOG_EXCEPTION'

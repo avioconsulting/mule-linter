@@ -7,6 +7,9 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import groovy.text.SimpleTemplateEngine
 
+/**
+ * This rule checks that a property exists in a property file, with optional arguments for checking property files for custom environments and property file naming formats.
+ */
 class PropertyExistsRule extends Rule {
 
     static final String RULE_ID = 'PROPERTY_EXISTS'
@@ -16,8 +19,23 @@ class PropertyExistsRule extends Rule {
     static final String DEFAULT_PATTERN = '${appname}-${env}.properties'
     static final List<String> DEFAULT_ENVIRONMENT_LIST = ['dev', 'test', 'prod']
 
+    /**
+     * propertyName: is a String that the property being searched for must contain.
+     * For example, `hostname`.
+     */
     @Param("propertyName") String propertyName
+
+    /**
+     * environments: is a list of environments that the property must be found in.
+     * This value is used when determining the name for property files to be searched.
+     * The default list is: ['dev', 'test', 'prod']
+     */
     @Param("environments") List<String> environments
+
+    /**
+     * pattern: is a custom naming scheme for property files loaded by environment.
+     * The default pattern is `"${appname}-${env}.properties"`.
+     */
     @Param("pattern") String pattern
 
     PropertyExistsRule() {

@@ -7,6 +7,11 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for multiple Logger components of the same level being used back to back.
+ * In general, multiple logging statements back to back at the same level are redundant and make code more difficult to read.
+ * If you disagree with our standards, you can provide a custom limit broken down by logging level.
+ */
 class ConsecutiveLoggersCountRule extends Rule {
     static final String RULE_ID = 'CONSECUTIVE_LOGGERS_COUNT'
     static final String RULE_NAME = 'Loggers are not used excessively in sequence. '
@@ -17,7 +22,18 @@ class ConsecutiveLoggersCountRule extends Rule {
                                                                           (LoggerComponent.LogLevel.INFO) : 2,
                                                                           (LoggerComponent.LogLevel.WARN) : 2,
                                                                           (LoggerComponent.LogLevel.ERROR): 2]
-
+    /**
+     * excessiveLoggers: is an optional param representing the number of sequential loggers of the same level required to fail the rule.
+     * The value can be an integer or an EnumMap, where the Enum is `LogLevel` found within the class `com.avioconsulting.mule.linter.model.configuration.LoggerComponent`.
+     * The default is the integer value `2`, or the equivalent EnumMap:
+     * excessiveLoggers = [
+     *  TRACE: 2,
+     *  DEBUG: 2,
+     *  INFO : 2,
+     *  WARN : 2,
+     *  ERROR: 2
+     * ]
+     */
     @Param("excessiveLoggers") def excessiveLoggers
 
     ConsecutiveLoggersCountRule() {

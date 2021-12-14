@@ -5,6 +5,9 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import org.apache.groovy.json.internal.JsonString
 
+/**
+ * This rule checks that the `minMuleVersion` exists and is not greater than the `app.runtime` version in the `pom.xml`.
+ */
 class MuleArtifactMinMuleVersionRule extends Rule {
 
     static final String RULE_ID = 'MULE_ARTIFACT_MIN_MULE_VERSION'

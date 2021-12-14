@@ -7,7 +7,10 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.sun.org.apache.xpath.internal.operations.Bool
 import org.apache.groovy.json.internal.JsonArray
 
-
+/**
+ * This rule checks that certain properties are secured within the `mule-artifact.json` file found at root.
+ * Some properties should be listed in the securedProperties Array in `mule-artifact.json`, to prevent keys from being shown in plain text in Anypoint Runtime Manager.
+ */
 class MuleArtifactHasSecurePropertiesRule extends Rule {
 
     static final String RULE_ID = 'MULE_ARTIFACT_SECURE_PROPERTIES'
@@ -16,7 +19,18 @@ class MuleArtifactHasSecurePropertiesRule extends Rule {
     static final List<String> DEFAULT_PROPERTIES = ['anypoint.platform.client_secret']
 
     List<String> secureProperties
+
+    /**
+     * properties: is a List of values that should be in the securedProperties Array of the `mule-artifact.json`.
+     * By default, this list is:
+     * ['anypoint.platform.client_id', 'anypoint.platform.client_secret']
+     */
     @Param("properties") List<String> properties
+
+    /**
+     * includeDefaults: should be `true` if the developer wishes to include AVIO's default values, and `false` otherwise.
+     * The defaults to include are `'anypoint.platform.client_id'` and `'anypoint.platform.client_secret'`.
+     */
     @Param("includeDefaults") Boolean includeDefaults
 
     MuleArtifactHasSecurePropertiesRule() {

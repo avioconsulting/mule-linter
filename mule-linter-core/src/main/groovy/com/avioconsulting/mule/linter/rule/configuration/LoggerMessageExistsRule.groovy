@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
-
+/**
+ * This rule checks that the message attribute is present on all loggers.
+ */
 class LoggerMessageExistsRule extends LoggerAttributesRule {
 
     static final String RULE_ID = 'LOGGER_MESSAGE_HASVALUE'

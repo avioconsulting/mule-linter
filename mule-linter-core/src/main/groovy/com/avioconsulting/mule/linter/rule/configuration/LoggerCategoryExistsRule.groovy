@@ -1,5 +1,9 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
+/**
+ * This rule checks that the category attribute is present on all loggers.
+ * The category attribute should be present to make Mule logs easier to search.
+ */
 class LoggerCategoryExistsRule extends LoggerAttributesRule {
 
     static final String RULE_ID = 'LOGGER_CATEGORY_HASVALUE'
