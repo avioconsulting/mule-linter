@@ -43,7 +43,7 @@ jobs:
           files: ./**/build/test-results/test/*.xml
 
       - name: Publish Artifact
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         env:
           MVN_USER: ${{ secrets.GIT_USER }}
           MVN_PASSWORD: ${{ secrets.GIT_TOKEN }}
