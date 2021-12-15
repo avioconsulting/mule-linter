@@ -1,3 +1,4 @@
+import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.rule.RuleSet
 import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.rule.cicd.*

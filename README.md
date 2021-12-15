@@ -3,15 +3,38 @@ A linter is a tool that analyzes source code looking for patterns that don’t f
 
 The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.  Some basic examples of rules that will be enforced, are the proper usage of property and pom files, useful logging messages, and standard project structure.
 
-## Execution
+## Usage
 
-The mule-linter can be run as a jar with the following command: 
+### Maven Plugin
+See [Readme](mule-linter-maven-plugin/README.md) in `mule-linter-maven-plugin` module.
 
+### CLI
+
+Project uses Gradle build system. Run following command to build all components in local -
+
+```shell
+./gradlew build
 ```
-~/code/avio/mule-linter$ java -jar mule-linter-1.0-SNAPSHOT.jar --dir=SampleMuleApp --rules='AVIOCustomRuleConfiguration.groovy'
+
+The CLI distributions are generated in `./mule-linter-cli/build/distributions/`. 
+Unzip/Untar the distribution. You can run the CLI from expanded files - 
+
+```shell
+./bin/mule-linter-cli
 ```
 
-`--dir` is the root directory of the Mule project. `--rules` is the path to the rule configuration file. 
+You may move expanded distribution folder to other persistent location and add it on OS PATH, 
+and then run cli from anywhere on the system.
+
+## Build
+To build the project run - 
+
+`./gradlew build`
+
+Generated Distribution and install in local - 
+
+`./gradlew installDist`
+
 
 ## Rule Configuration
 
@@ -24,76 +47,13 @@ static RuleSet getRules() { }
 Initialize the Rules you would like to use, and add them to the RuleSet with the `.addRule(Rule)` method. 
 Make sure to import the rules and helper classes you intend to use. 
 
-Sample configuration:
-```groovy
-import com.avioconsulting.mule.linter.model.rule.RuleSet
-import com.avioconsulting.mule.linter.model.CaseNaming
-import com.avioconsulting.mule.linter.rule.cicd.*
-import com.avioconsulting.mule.linter.rule.configuration.*
-import com.avioconsulting.mule.linter.rule.git.*
-import com.avioconsulting.mule.linter.rule.muleartifact.*
-import com.avioconsulting.mule.linter.rule.pom.*
-import com.avioconsulting.mule.linter.rule.property.*
+See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
 
-class AVIOCustomRuleConfiguration {
-	static final List<String> ENVIRONMENTS = ['dev','test','prod']
-	static final String GLOBALS_FILENAME = 'globals.xml'
 
-	static RuleSet getRules() {
-		RuleSet rules = new RuleSet()
-
-		//cicd
-		rules.addRule(new JenkinsFileExistsRule())
-
-		//configuration
-		rules.addRule(new ConfigFileNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new FlowSubflowNamingRule(CaseNaming.CaseFormat.KEBAB_CASE))
-		rules.addRule(new GlobalConfigNoFlowsRule(GLOBALS_FILENAME))
-		rules.addRule(new GlobalConfigRule(GLOBALS_FILENAME))
-		rules.addRule(new LoggerCategoryExistsRule())
-		rules.addRule(new LoggerMessageExistsRule())
-		rules.addRule(new OnErrorLogExceptionRule())
-		rules.addRule(new UnusedFlowRule())
-
-		//git
-		rules.addRule(new GitIgnoreRule())
-
-		//muleArtifact
-		rules.addRule(new MuleArtifactHasSecurePropertiesRule())
-		rules.addRule(new MuleArtifactMinMuleVersionRule())
-
-		//pom
-		rules.addRule(new MuleMavenPluginVersionRule('3.3.5'))
-		rules.addRule(new MuleRuntimeVersionRule('4.2.1'))
-		rules.addRule(new MunitMavenPluginAttributesRule())
-		rules.addRule(new MunitVersionRule('2.2.1'))
-		rules.addRule(new PomExistsRule())
-
-		//property
-		rules.addRule(new EncryptedPasswordRule())
-		rules.addRule(new PropertyExistsRule('db.user', ENVIRONMENTS))
-		rules.addRule(new PropertyFileNamingRule(ENVIRONMENTS))
-		rules.addRule(new PropertyFilePropertyCountRule(ENVIRONMENTS))
-
-		return rules
-	}
-
-}
-```
 For a full breakdown on the available rules, [check here](docs/available_rules.md).
 
-## Maven Plugin
-The mule linter can be run as mvn plugin
-
-The Maven Plugin is located in the *mavenPlugin* folder. Install it with the following command:
-
-```mvn install```
-
-This is an example of how to use the maven plugin by command line
-```mvn com.avioconsulting.mule.maven:mule-linter-maven-plugin:0.0.1-SNAPSHOT:mule-linter -DappDir=<<Path to the Mule project>> -DruleConfiguration=<<Path to groovy rules file>> -Dformats=console,html,json```
-
-Reports from JSON and HTML format will be saved in the *target/site* directory  
-
+### Using IntelliJ Auto Completion
+Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
 
 ## Code Checkout
 When cloning add the 'recurse-submodules' flag

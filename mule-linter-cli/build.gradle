@@ -1,0 +1,12 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':mule-linter-core')
+    implementation 'info.picocli:picocli-groovy:4.6.2'
+}
+
+application {
+    mainClassName 'com.avioconsulting.mule.linter.MuleLinterCli'
+}

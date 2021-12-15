@@ -1,0 +1,59 @@
+plugins {
+    id 'codenarc'
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation project(':mule-linter-spi')
+    compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
+    testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    implementation 'org.json:json:20210307'
+    implementation 'org.yaml:snakeyaml:1.29'
+    implementation 'org.reflections:reflections:0.10.2'
+}
+
+// https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html
+codenarc {
+    configFile = file("${rootProject.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
+    ignoreFailures = true
+}
+
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+task generateGDSL (type: JavaExec) {
+    //Generates GDSL file using `GDSLGenerator.groovy`.
+    // Generated file is added in src/main/resources.
+    // Run `./gradlew generateGDSL`
+    main = 'GDSLGeneratorScript'
+    classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
+    classpath += sourceSets.main.runtimeClasspath
+}
+
+jar.dependsOn(generateGDSL)
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
+                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
+            }
+            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
+        }
+    }
+}
