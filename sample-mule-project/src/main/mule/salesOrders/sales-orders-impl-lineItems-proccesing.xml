@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:avio-core="http://www.mulesoft.org/schema/mule/avio-core"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="sales-orders-impl-lineItems-proccesing" doc:id="2ef3a784-58b0-43f7-98f7-4a0f6104b411" >
+		<vm:listener doc:name="Listener SalesOrdersQueue" doc:id="f1cc8db4-20bb-47a2-be83-7c50720bbe6a" config-ref="SalesOrdersQueue_Config" queueName="SalesOrdersQueue"/>
+		<avio-core:custom-logger doc:name="INFO salesOrder" doc:id="8986bbb2-01ff-4019-8c08-1eb35704d2a8" config-ref="avio-core-config" category="${log.cat}" message="#['START::sales-orders-impl-lineItems-proccesing::salesOrder: ' ++ write(payload, &quot;application/json&quot;)]" correlation_id="#[payload.salesOrderId]"/>
+		<set-variable value="sales-orders-impl-lineItems-proccesing" doc:name="currentFlow" doc:id="6811dc96-02b9-47d2-bfe6-463a7061f62f" variableName="currentFlow"/>
+		<set-variable value="#[%dw 2.0&#10;output application/java&#10;---&#10;{&#10;    salesOrder: payload,&#10;    correlationId: payload.salesOrderId&#10;}]" doc:name="salesOrderDetails" doc:id="6297302e-eb77-4b51-94eb-d6bb9e16efb9" variableName="salesOrderDetails"/>
+		<scatter-gather doc:name="Items and Services in Parallel" doc:id="2fa2744c-7d99-4ff6-bafc-c613453a0242">
+			<route>
+				<ee:transform doc:name="itemPayload" doc:id="df31742e-5e89-4879-a631-c697fe01a6e6">
+					<ee:message>
+					</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="itemPayload"><![CDATA[%dw 2.0
+output application/json
+var salesOrder = payload
+var products = salesOrder.lineItems filter ($.itemType == 'Product')
+---
+{
+  "clientId": salesOrder.customerId,
+  "clientName": salesOrder.customerName,
+  "shippingOrderNumber" : salesOrder.salesOrderId,
+  "shippingItems" : products map (productItem, idx)-> {
+      "itemNumber" : productItem.itemNumber,
+      "quantityOrdered" : productItem.quantity,
+      "pricePerUnit" : productItem.pricePerUnit,
+      "itemDescription": productItem.itemDescription
+  }
+}]]></ee:set-variable>
+						</ee:variables>
+				</ee:transform>
+				<choice doc:name="items&gt;0?" doc:id="1192d4d9-7b60-4831-a7f2-d9fb28b0a15a">
+					<when expression="#[(sizeOf(vars.itemPayload.shippingItems) &gt; 0)]">
+					<flow-ref doc:name="productItem-shipping" doc:id="be9a07e4-3555-4d58-872b-5c53e1e02289" name="productItem-shipping" />
+								<ee:transform doc:name="vars salesOrder" doc:id="ef044eb7-5ce3-40eb-9202-bbeae8d1d043">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="salesOrder"><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId":vars.salesOrderDetails.correlationId,
+      "status":"SHIPPED"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="set-status-object-store" doc:id="259e1e00-f099-47a5-beeb-1b2a3fdffa49" name="set-status-object-store" />
+					</when>
+					<otherwise>
+						<avio-core:custom-logger doc:name="DEBUG No Products Items" doc:id="729269d2-dcf9-4c03-b691-097349fb9374" config-ref="avio-core-config" level="DEBUG" category="${log.cat}" message="#['sales-orders-impl-lineItems-proccesing::No Products Items: ' ++ write(vars.itemPayload,'application/json')]" correlation_id="#[vars.salesOrderDetails.correlationId]" logLocationInfo="true" />
+					</otherwise>
+				</choice>
+			</route>
+			<route>
+				<ee:transform doc:name="servicePayload" doc:id="e59a90cd-35d2-4655-9760-5a1d6df1643e">
+					<ee:message>
+					</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="servicePayload"><![CDATA[%dw 2.0
+output application/json
+var salesOrder = payload
+var services = salesOrder.lineItems filter ($.itemType == 'Service')
+---
+[
+  {
+    "clientIdentifier": salesOrder.customerId,
+    "clientName": salesOrder.customerName,
+    "orderNumber" : salesOrder.salesOrderId,
+    "serviceItems" : services map (serviceItem, idx) ->{
+        "itemNumber" : serviceItem.itemNumber,
+        "quantityOrdered" : serviceItem.quantity,
+        "pricePerUnit" : serviceItem.pricePerUnit,
+        "itemDescription": serviceItem.itemDescription
+    }
+  }
+]]]></ee:set-variable>
+						</ee:variables>
+				</ee:transform>
+				<choice doc:name="services&gt;0?" doc:id="31357b8a-f9c8-4254-9903-4c0744f807b1">
+					<when expression="#[(sizeOf(vars.servicePayload.serviceItems[0]) &gt; 0)]">
+						<flow-ref doc:name="serviceItem-scheduling" doc:id="c7750491-1374-49df-9b47-81721c996686" name="serviceItem-scheduling" />
+						<ee:transform doc:name="vars salesOrder" doc:id="430cd5fa-1434-4803-8974-88c651f85018">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="salesOrder"><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId":vars.salesOrderDetails.correlationId,
+      "status":"SCHEDULED"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="set-status-object-store" doc:id="bb39ea52-c204-4fff-aca3-b4e5c02797ee" name="set-status-object-store" />			
+					</when>
+					<otherwise>
+						<avio-core:custom-logger doc:name="DEBUG No Services Items" doc:id="bdc1f46d-e02a-41a0-abca-a5414d443392" config-ref="avio-core-config" message="#['sales-orders-impl-lineItems-proccesing::No Services Items: ' ++ write(vars.servicePayload,'application/json')]" level="DEBUG" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]" logLocationInfo="true" />
+					</otherwise>
+				</choice>
+			</route>
+		</scatter-gather>		
+		<avio-core:custom-logger doc:name="INFO response parallel processing" doc:id="900b85c0-b923-40c7-a3a5-17d3ba6cbefc" config-ref="avio-core-config" message="#['sales-orders-impl-lineItems-proccesing:: Response from Scatter Gather: ' ++ write(payload, &quot;application/json&quot;)]" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<ee:transform doc:name="shippingFail,schedulerFail" doc:id="caaf7764-e292-4a39-8300-75002b5b4aad" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="shippingFail" ><![CDATA[%dw 2.0
+output application/json
+var success = !isEmpty(payload[0].payload.confirmationCode) and (payload[0].attributes.statusCode == 201) as Boolean
+---
+!(success or (sizeOf(vars.itemPayload.shippingItems as Array) == 0))]]></ee:set-variable>
+				<ee:set-variable variableName="schedulerFail" ><![CDATA[%dw 2.0
+output application/json
+var success = !isEmpty(payload[1].payload.confirmationCode) and (payload[1].attributes.statusCode == 201) as Boolean
+---
+!(success or (sizeOf(vars.servicePayload.serviceItems[0] as Array) == 0))]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<avio-core:custom-logger doc:name="INFO  shippingFail,schedulerFail" doc:id="9efc2d62-8790-4665-b242-ade9cd2b5fd6" config-ref="avio-core-config" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]" message="#['sales-orders-impl-lineItems-proccesing::shippingFail: ' ++ write(vars.shippingFail, &quot;application/json&quot;) ++ ' schedulerFail: ' ++ write(vars.schedulerFail, &quot;application/json&quot;)]"/>
+		<choice doc:name="Choice" doc:id="ce2cf882-e7b6-49f9-9528-8f9675810644" >
+			<when expression="#[!vars.shippingFail and !vars.schedulerFail]">
+				<ee:transform doc:name="vars salesOrder, currentFlow" doc:id="03271769-0204-43d1-b5c0-774b7af61797" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="salesOrder" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId":vars.salesOrderDetails.salesOrder.salesOrderId,
+      "status":"PROCESSED"
+}]]></ee:set-variable>
+				<ee:set-variable variableName="currentFlow" ><![CDATA[%dw 2.0
+output application/json
+---
+'sales-orders-impl-lineItems-proccesing']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="set-status-object-store" doc:id="68659981-bc3b-4414-8633-8a82dff051e7" name="set-status-object-store"/>
+			<ee:transform doc:name="sqsPayload, currentFlow" doc:id="1e6e998c-7c3e-4a5e-a46f-822464dab862" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sqsPayload" ><![CDATA[%dw 2.0
+output application/json
+var salesOrder = vars.salesOrderDetails.salesOrder
+var products = salesOrder.lineItems filter ($."itemType" == "Product")
+var services = salesOrder.lineItems filter($."itemType" == "Service")
+var lineSeparator = "\n"
+var totalCost = salesOrder.lineItems default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalItemCost = products default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalServiceCost = services default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+---
+{
+    "customerId": salesOrder.customerId as String,
+    "customerName": salesOrder.customerName,
+    "salesOrderNumber": salesOrder.salesOrderId,
+	"body": 
+       "Customer Name      :" ++ "Vanessa Cobis" as String ++ lineSeparator
+    ++ "Customer Id        : " ++ salesOrder.customerId as String  ++ lineSeparator
+    ++ "Sales Order Number        : " ++ salesOrder.salesOrderId as String  ++ lineSeparator
+    ++ "Total Cost        : " ++ totalCost as String  ++ lineSeparator
+    ++ "Total Item Cost        : " ++ totalItemCost as String  ++ lineSeparator
+    ++ "Total Service Cost        : " ++ totalServiceCost as String  ++ lineSeparator
+}]]></ee:set-variable>
+				<ee:set-variable variableName="currentFlow" ><![CDATA[%dw 2.0
+output application/json
+---
+'sales-orders-impl-lineItems-proccesing']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="sales-order-reporting-sqs" doc:id="9599ad6d-9aaf-4aea-856f-06a360930950" name="sales-order-reporting-sqs"/>
+			</when>		
+			<otherwise >
+				<choice doc:name="Choice" doc:id="33ee22ed-be97-4170-9391-cf93751d7fe5" >
+					<when expression="#[(sizeOf(vars.itemPayload.shippingItems) &gt; 0) and (sizeOf(vars.servicePayload.serviceItems[0]) &gt; 0)]">
+						<flow-ref doc:name="sales-orders-impl-compensation" doc:id="6f3f022e-2ddc-4e1b-a642-40f575eaa531" name="sales-orders-impl-compensation" />
+					</when>
+					<otherwise >
+						<avio-core:custom-logger doc:name="INFO Only Products or Services nothing to Compensate" doc:id="4d6a371b-bda3-4ca5-8b9a-b466f1436804" config-ref="avio-core-config" correlation_id="#[vars.salesOrderDetails.correlationId]" message="#['sales-orders-impl-lineItems-proccesing:: Only Products or Services, nothing to Compensate']" category="${log.cat}"/>
+						<flow-ref doc:name="publish-error-mq" doc:id="cf83e8cd-2fe5-4bf9-af96-dffdf2d3cd0a" name="publish-error-mq"/>
+					</otherwise>
+				</choice>
+			</otherwise>
+		</choice>		
+		<avio-core:custom-logger doc:name="INFO END" doc:id="e11cb53c-6602-4f55-ac3a-27f8ef28ea10" config-ref="avio-core-config" message="#['END::sales-orders-impl-lineItems-proccesing']" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="false" logException="true" doc:name="On Error Continue" doc:id="7f956598-30ed-431e-8b04-7a4c91408b4e" type="ANY">
+				<flow-ref doc:name="post-error-handling-subflow" doc:id="b38d14bf-3dc5-4496-ac5a-b48e783d447a" name="post-error-handling-subflow" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

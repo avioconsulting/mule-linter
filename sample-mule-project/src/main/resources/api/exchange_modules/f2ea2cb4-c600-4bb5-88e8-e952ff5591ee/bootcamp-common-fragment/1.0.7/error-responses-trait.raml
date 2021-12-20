@@ -1,0 +1,49 @@
+#%RAML 1.0 Trait
+
+# v1.0.1
+# Added resourceTypes
+#
+
+responses: 
+      400:
+        description: Bad request
+        body: 
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/bad-request-example.raml
+      404:
+        description: Data not found
+        body:
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/data-not-found-example.raml
+      405:
+        description: Method not allowed
+        body:
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/method-not-allowed-example.raml
+      406:
+        description: Not acceptable
+        body:
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/not-acceptable-example.raml
+      415:
+        description: Unsupported media type
+        body:
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/unsupported-type-example.raml
+      500:
+        description: Internal Server Error
+        body:
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/internal-server-error-example.raml
+      501:
+        description: Not Implemented
+        body: 
+          application/json:
+            type: !include error-responses/schemas/error-response-dataType.raml
+            example: !include error-responses/examples/not-implemented-example.raml

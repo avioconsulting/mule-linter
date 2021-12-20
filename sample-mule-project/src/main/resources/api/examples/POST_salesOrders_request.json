@@ -1,0 +1,24 @@
+[
+{
+  "customerId": "0002",
+  "customerName": "George Constanza",
+  "salesOrderId": "A1002",
+  "lineItems": [
+    {
+      "itemNumber": 1,
+      "quantity": 2,
+      "itemType": "Service",
+      "pricePerUnit": 190.99,
+      "itemDescription": "Car Wash, Full Service"
+    }
+  ]
+},
+{
+  "customerId": "0003",
+  "customerName": "Paula Adam",
+  "salesOrderId": "A1003",
+  "lineItems": [
+    
+  ]
+}
+]

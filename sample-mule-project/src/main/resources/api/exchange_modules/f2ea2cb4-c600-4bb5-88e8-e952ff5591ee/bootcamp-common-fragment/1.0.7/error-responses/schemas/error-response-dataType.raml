@@ -1,0 +1,22 @@
+#%RAML 1.0 DataType
+type: object
+properties: 
+  apiInError:
+    type: string
+    required: true
+  flowInError:
+    type: string
+    required: true
+  correlationId:
+    type: string
+    required: true
+  error:
+    type: object
+    required: true
+    properties: 
+      type:
+        type: string
+        required: true
+      detail:
+        type: string
+        required: true

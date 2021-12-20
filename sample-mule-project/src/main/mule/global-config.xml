@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	  xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	  xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	  xmlns:avio-core="http://www.mulesoft.org/schema/mule/avio-core" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	  xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+      xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+	  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	  xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs" 
+	  xmlns:bootcamp-scheduler-system-api="http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api"
+	xmlns:bootcamp-shipping-system-api="http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api"		  
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+		http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
+		http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+		http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+		http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api/current/mule-bootcamp-shipping-system-api.xsd
+http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api/current/mule-bootcamp-scheduler-system-api.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd">
+	<bootcamp-shipping-system-api:config
+		name="Bootcamp_Shipping_System_API_Config"
+		doc:name="Bootcamp Shipping System API Config"
+		doc:id="e5525e0e-d4cc-4f2f-aa1a-f7f2828e815e"
+		property_protocol="${shipping.protocol}"
+		property_host="${shipping.host}" property_port="${shipping.port}"
+		property_basePath="${shipping.basepath}" />
+	<bootcamp-scheduler-system-api:config name="Bootcamp_Scheduler_System_API_Config" doc:name="Bootcamp Scheduler System API Config" doc:id="52382118-0c5f-4e36-b042-99c7ec3457c5" property_host="${scheduler.host}" property_port="${scheduler.port}" property_basePath="${scheduler.basepath}" property_responseTimeout="${scheduler.responseTimeout}" property_protocol="${scheduler.protocol}"/>
+	<sqs:config name="amazon-sqs-configuration" doc:name="Amazon SQS Configuration" doc:id="65ea2a97-e940-4f2f-bb3e-cc6d9cf5d944" defaultQueueUrl="${sqs.globalurl}" >
+		<sqs:basic-connection testQueueArn="${sqs.testqueue}" accessKey="${sqs.accesskey}" secretKey="${secure::sqs.secretkey}" region="${sqs.region}" />
+	</sqs:config>	
+
+	<import doc:name="Import" doc:id="13748ced-0740-494e-a895-2aeaac40a6c0" file="health-check-api.xml" />
+
+    <!-- AVIO Mule Logger configuration -->
+	<avio-core:config name="avio-core-config" doc:name="AVIO Core Config" doc:id="4e221d01-3161-46ac-8e95-791ff05ce148" app_name="${api.name}" app_version="${api.version}" env="${env}" />
+
+    <!-- This is the Configuration to make mule always refer to globalErrorHandler defined in error-handling.xml for handling exceptions -->
+    <configuration defaultErrorHandler-ref="globalErrorHandler"/>
+
+    <!-- This Property is to use in AVIO custom logger to log the current mule application version. Change this everytime when you decided to change this application version in POM. -->
+    <global-property doc:name="Global Property" doc:id="17770a11-4157-4172-973b-72174cc545ad" name="pomVersion" value="1.0.0" />
+
+    <!-- This Property is to use in various properties and Custom Logger to reference the environment (e.g. local, dev, etc) -->
+	<global-property doc:name="Global Property" doc:id="a1fa49c4-d27a-47ab-bd5e-20d5f55721f5" name="env" value="local" />
+
+    <!-- This is the configuration to refer and encrypt properties in properties file. -->
+    <secure-properties:config name="secure-properties-config" doc:name="Secure Properties Config" doc:id="d64f0a63-454a-486c-be29-1fcdc9534db5" file="properties/${env}.properties" key="${secureKey}" >
+    	<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+
+    <!-- This is the configuration to let this mule app talk to API Manager's corresponding API -->
+    <api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="64e53ea9-8f3d-4165-8451-fc9e075835f3" flowRef="vc-sales-orders-api-main" />
+
+    <!-- Added to expedite the Bootcamp project archetype -->
+	<global-property doc:name="Global Property" doc:id="0a76d4c0-842d-40b6-9fc5-2f5cf73b0360" name="secureKey" value="password" />
+
+  	<configuration-properties
+    	doc:name="Configuration properties"
+    	doc:id="8fc9b091-15c5-4485-9ce6-43c05083e8da"
+    	file="properties/common.properties" 
+    />
+	
+
+    <!-- reference artifactId specific properties directory -->
+	<configuration-properties doc:name="Configuration properties" doc:id="0da4297a-cc2b-4d83-8e5d-fde6621077ec" file="properties/${env}.properties" />
+
+    <!-- Listener references "env" specific properties -->
+	<http:listener-config name="http-listener-config" doc:name="HTTP Listener config" doc:id="110e7948-6f84-4387-937e-2728db55929e" basePath="${http.router.path}">
+		<http:listener-connection host="${http.host}" port="${https.port}" protocol="HTTPS">
+			<tls:context>
+				<tls:key-store path="${keystore.path}" type="pkcs12" password="${secure::keystore.password}" keyPassword="${secure::keystore.password}" alias="${keystore.alias}"/>
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+
+	<http:request-config name="htt_request_configuration" doc:name="HTTP Request configuration" doc:id="77b8e116-5e56-4825-ad2c-72ae00ede9c5" >
+		<http:request-connection host="${http.host}" port="${https.port}" protocol="HTTPS"/>
+	</http:request-config>
+
+	<apikit:config outboundHeadersMapName="outboundHeaders" httpStatusVarName="statusCode" doc:name="Router" doc:id="d898061d-7861-457f-accb-be2ef941b992" name="vc-sales-orders-api-config" raml="api/vc-sales-orders-api.raml" api="vc-sales-orders-api.raml"/>
+
+	<error-handler name="globalErrorHandler">
+        <on-error-propagate type="APIKIT:BAD_REQUEST" enableNotifications="true" logException="false">
+			<set-variable value="400" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_FOUND" enableNotifications="true" logException="false">
+			<set-variable value="404" doc:name="Set HTTP Status code" doc:id="5f6f2bd7-a208-4998-a35c-a18eef871ae1" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="8fc5a7ea-ba62-4053-bd85-c2a51cc6cd09" name="error-handling-subflow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED" enableNotifications="true" logException="false">
+			<set-variable value="405" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_ACCEPTABLE" enableNotifications="true" logException="false">
+			<set-variable value="406" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE" enableNotifications="true" logException="false">
+			<set-variable value="415" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_IMPLEMENTED" enableNotifications="true" logException="false">
+			<set-variable value="501" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+        </on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="false" doc:name="On Error Propagate" doc:id="5d14246f-b613-44f0-9c61-6028e61493a6" type="ANY">
+			<set-variable value="500" doc:name="Set HTTP Status code" doc:id="1d6586fd-fb35-42e5-8bdc-3c21840bba73" variableName="statusCode"/>
+			<flow-ref doc:name="error-handling-subflow" doc:id="b795ed54-98fd-4265-ba7a-a0a484971f96" name="error-handling-subflow"/>
+		</on-error-propagate>
+    </error-handler>
+	
+	<sub-flow name="error-handling-subflow" doc:id="3b4e3606-24c8-45a0-8b78-c2befbc6224e" >
+		<ee:transform doc:name="Set Error Payload" doc:id="fe4c4d73-1774-4686-bf07-bb8f735baf1c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	statusCode: vars.statusCode,
+	apiInError: p('api.name') ++ "/" ++ p('api.version'),
+	currentFlow: vars.currentFlow,
+	correlationId: vars.headerAttributes.correlationId,
+  	error: {
+  		"type": (error.errorType.namespace ++ ":" ++ error.errorType.identifier as String) default "Not found",
+  		detail: (error.description as String) default "Unhandled Exception"
+  	}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<avio-core:custom-logger doc:name="Custom logger" doc:id="bb3bbc7a-55b6-4b32-ad2d-e99da03dab4d" config-ref="avio-core-config" correlation_id="#[vars.requestId]" message="Exception Occured" level="ERROR" tracePoint="EXCEPTION" status_code="#[payload.statusCode]" type='#[payload.error."type"]' detail="#[payload.error.detail]"/>
+	</sub-flow>
+<sub-flow name="post-error-handling-subflow" doc:id="0ee9bde0-dd01-4b7d-baee-49a0b0e49f21" >
+		<set-variable value="500" doc:name="Set HTTP Status code" doc:id="9d1617c1-dde0-4b7f-9d82-cc345c343bd0" variableName="statusCode" />
+		<ee:transform doc:name="Set Error Payload" doc:id="7b5ed9a3-d837-4f71-a87e-df2c754e5598" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	statusCode: vars.statusCode,
+	apiInError: p('api.name') ++ "/" ++ p('api.version'),
+	currentFlow: vars.currentFlow,
+	correlationId: vars.salesOrder.salesOrderId,
+  	error: {
+  		"type": (error.errorType.namespace ++ ":" ++ error.errorType.identifier as String) default "Not found",
+  		detail: (error.description as String) default "Unhandled Exception"
+  	},
+	"errorAdjustments": vars.errorAdjustments default []  	
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="errorPayload" doc:id="6b1f6d28-e729-4f3b-be9c-4c31541f2f21" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="errorPayload" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<avio-core:custom-logger doc:name="Custom logger" doc:id="8790dd73-5799-4002-8737-97e7ed86090a" config-ref="avio-core-config" correlation_id="#[vars.requestId]" message="Exception Occured" level="ERROR" tracePoint="EXCEPTION" status_code="#[payload.statusCode]" type='#[payload.error."type"]' detail="#[payload.error.detail]"/>
+	</sub-flow>
+
+</mule>

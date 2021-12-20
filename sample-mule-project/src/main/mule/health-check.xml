@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule 
+	xmlns:avio-core="http://www.mulesoft.org/schema/mule/avio-core" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	  xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	  xmlns="http://www.mulesoft.org/schema/mule/core" 
+	  xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs" 
+	  xmlns:bootcamp-scheduler-system-api="http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api"
+	xmlns:bootcamp-shipping-system-api="http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api"	
+	  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
+http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api/current/mule-bootcamp-shipping-system-api.xsd
+http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api/current/mule-bootcamp-scheduler-system-api.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd">
+
+	<sub-flow name="hc-shipping-order-health-flow" doc:id="d16bd8f5-cac6-4c1f-8121-9243eaf84a79">
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "clientId": "ABC11",&#10;  "clientName": "Artic Cat",&#10;  "shippingOrderNumber" : "SO111",&#10;  "shippingItems" : [&#10;    {&#10;      "itemNumber" : 1212,&#10;      "quantityOrdered" : 1,&#10;      "pricePerUnit" : 2575.01,&#10;      "itemDescription": "120HP Snowmobile"&#10;      },&#10;      {&#10;      "itemNumber" : 1213,&#10;      "quantityOrdered" : 1,&#10;      "pricePerUnit" : 380.99,&#10;      "itemDescription": "Storage Compartment"&#10;      }&#10;    ]&#10;}]' doc:name="itemPayload" doc:id="6a235404-ae0e-4ecf-9476-56078665ceee" variableName="itemPayload"/>
+		<try doc:name="Try" doc:id="44177cf1-83da-405d-9e03-7ffe697da237">
+			<bootcamp-shipping-system-api:create-shipping-order doc:name="Create shipping order" doc:id="c0d72f1f-9289-4b0b-a2ec-503a4f22bf79" config-ref="Bootcamp_Shipping_System_API_Config" correlation-id="#[vars.itemPayload.shippingOrderNumber]" client-id="${shipping.client_id}" client-secret="${secure::shipping.client_secret}">
+				<bootcamp-shipping-system-api:create-shipping-order-request-data><![CDATA[#[vars.itemPayload]]]></bootcamp-shipping-system-api:create-shipping-order-request-data>
+			</bootcamp-shipping-system-api:create-shipping-order>			
+			<set-variable value="OK" doc:name="statusCode OK" doc:id="1c2fe3a6-a69e-4fa7-9741-e1ae9ca00ce3" variableName="statusCode" />
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7beba1ed-ccc9-4218-827f-f106f6710270">
+					<avio-core:custom-logger doc:name="ERROR shipping order" doc:id="8cde4966-a9c4-4841-a32a-66421a9b118b" config-ref="avio-core-config" message="Health check could not access shipping order" />
+					<ee:transform doc:name="VARS: statusCode, errorDescription" doc:id="611db6f8-d85a-4c02-bf68-28cc143aa7f2" >
+						<ee:message >
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="statusCode" ><![CDATA[%dw 2.0
+output application/json
+---
+"ERROR"]]></ee:set-variable>
+							<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output application/json
+---
+error.description]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="health response" doc:id="9f6cc075-ca08-454b-85f2-0fb4175a1b9f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+  systemName: 'Shipping-System',
+  connectionConfig: 'http:\/\/'++ '${shipping.host}' ++':' ++ '${shipping.port}' ++'/' ++ '${shipping.basepath}' ++'/' ++ 'shippingOrder',
+  user : '${shipping.client_id}',
+  status: vars.statusCode,
+  (exception: vars.errorDescription) if (vars.statusCode=="ERROR"),
+  timeStamp : now() as String {format: 'yyyy-MM-dd HH:mm:ss'}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="hc-scheduler-order-health-flow" doc:id="05fa4ccd-5792-41c5-810e-449a59c9d187">
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;[&#10;  {&#10;    "clientIdentifier": "ABC11",&#10;    "clientName": "Great Balls of Fire",&#10;    "orderNumber" : "SO111",&#10;    "serviceItems" : [&#10;      {&#10;        "itemNumber" : 1312,&#10;        "quantityOrdered" : 1,&#10;        "pricePerUnit" : 15,&#10;        "itemDescription": "Put the Beer on ice"&#10;      }&#10;    ]&#10;  }&#10;]]' doc:name="servicePayload" doc:id="b9d10899-49a4-4adf-912c-bf329ea101cc" variableName="servicePayload"/>
+		<try doc:name="Try" doc:id="cda1493b-1ba7-4cc2-ba62-a4426f7b03bd">			
+			<bootcamp-scheduler-system-api:create-service-scheduler doc:name="Create service scheduler" doc:id="b3c96c33-6d97-42db-8b7c-af1ef4a5ae2e" config-ref="Bootcamp_Scheduler_System_API_Config" client-id="${scheduler.client_id}" client-secret="${secure::scheduler.client_secret}" correlation-id="#[vars.servicePayload[0].orderNumber]">
+				<bootcamp-scheduler-system-api:create-service-scheduler-request-data ><![CDATA[#[vars.servicePayload]]]></bootcamp-scheduler-system-api:create-service-scheduler-request-data>
+			</bootcamp-scheduler-system-api:create-service-scheduler>			
+			<set-variable value="OK" doc:name="statusCode OK" doc:id="a79c9985-686e-491d-9125-2226e6ddc2b9" variableName="statusCode" />
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5659da99-53cd-4e45-af8a-f4512752cf5f">
+					<avio-core:custom-logger doc:name="ERROR scheduler order" doc:id="8c7af43b-34ca-43a0-987d-7a9b3c1eeffd" config-ref="avio-core-config" message="Health check could not access scheduler order" level="WARN">
+						<avio-core:properties />
+					</avio-core:custom-logger>
+					<ee:transform doc:name="VARS: statusCode, errorDescription" doc:id="19c577ae-4df5-48d5-a104-50a15dafa583" >
+						<ee:message >
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="statusCode" ><![CDATA[%dw 2.0
+output application/json
+---
+"ERROR"]]></ee:set-variable>
+							<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output application/json
+---
+error.description]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="health response" doc:id="0249d708-fce0-4361-a304-1b5b9d2b489f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+  systemName: 'Scheduler-System',
+  connectionConfig: 'http:\/\/'++ '${scheduler.host}' ++':' ++ '${scheduler.port}' ++'/' ++ '${scheduler.basepath}' ++'/' ++ 'serviceScheduler',
+  user : '${scheduler.client_id}',
+  status: vars.statusCode,
+  (exception: vars.errorDescription) if (vars.statusCode=="ERROR"),
+  timeStamp : now() as String {format: 'yyyy-MM-dd HH:mm:ss'}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="hc-reporting-sqs-order-health-flow" doc:id="884324f3-28c3-458a-b0a4-c8d873e6a622">
+		<ee:transform doc:name="VARS:salesOrderDetails" doc:id="e118ce59-176c-4aeb-9b6a-4df87fe3b074" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="salesOrderDetails" ><![CDATA[%dw 2.0
+output application/java
+var inputPayload = read('{
+    "customerId": "0002",
+    "customerName": "George Constanza",
+    "salesOrderId": "A1002",
+    "lineItems":[
+      {
+        "itemNumber": 1,
+        "quantity": 2,
+        "itemType": "Product",
+        "pricePerUnit": 190.99,
+        "itemDescription": "Microphone special for standup"
+      },
+      {
+        "itemNumber": 2,
+        "quantity": 1,
+        "itemType": "Service",
+        "pricePerUnit": 1000.88,
+        "itemDescription": "Car Wash, Full Service"
+      }
+    ]
+  }', "application/json")
+---
+{
+    salesOrder: inputPayload,
+    correlationId: inputPayload.salesOrderId
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="VARS:sqsPayload" doc:id="7c614d57-c1f6-4552-97b0-febf62828415" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sqsPayload" ><![CDATA[%dw 2.0
+output application/json
+var salesOrder = vars.salesOrderDetails.salesOrder
+var products = salesOrder.lineItems filter ($."itemType" == "Product")
+var services = salesOrder.lineItems filter($."itemType" == "Service")
+var lineSeparator = "\n"
+var totalCost = salesOrder.lineItems default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalItemCost = products default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalServiceCost = services default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+---
+{
+    "customerId": salesOrder.customerId as String,
+    "customerName": salesOrder.customerName,
+    "salesOrderNumber": salesOrder.salesOrderId,
+	"body": 
+       "Customer Name      :" ++ "Vanessa Cobis" as String ++ lineSeparator
+    ++ "Customer Id        : " ++ salesOrder.customerId as String  ++ lineSeparator
+    ++ "Sales Order Number        : " ++ salesOrder.salesOrderId as String  ++ lineSeparator
+    ++ "Total Cost        : " ++ totalCost as String  ++ lineSeparator
+    ++ "Total Item Cost        : " ++ totalItemCost as String  ++ lineSeparator
+    ++ "Total Service Cost        : " ++ totalServiceCost as String  ++ lineSeparator
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="payload SQS Type" doc:id="92fcd7bb-dac7-4f85-96b8-2e554877168d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java 
+var order = vars.sqsPayload
+var salesOrder = vars.salesOrderDetails.salesOrder
+var products = salesOrder.lineItems filter ($."itemType" == "Product")
+var services = salesOrder.lineItems filter($."itemType" == "Service")
+var lineSeparator = "\n"
+var totalCost = salesOrder.lineItems default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalItemCost = products default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+var totalServiceCost = services default [] reduce ((item, total=0) -> (item.quantity*item.pricePerUnit) + total)
+
+---
+{
+	delaySeconds: 0,
+	body: order.body,
+	messageAttributes: {
+		"CustomerName": {
+			"stringValue" : "Vanessa Cobis",
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"CustomerId": {
+			"stringValue" : order.customerId,
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"SalesOrderNumber": {
+			"stringValue" : order.salesOrderNumber,
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalCost": {
+			"stringValue" : totalCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalItemCost": {
+			"stringValue" : totalItemCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalServiceCost": {
+			"stringValue" : totalServiceCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},		
+	} as Object {
+		class: "java.util.HashMap"
+	}
+} as Object {
+	class: "org.mule.extension.sqs.api.model.Message"
+}
+]]></ee:set-payload>
+			</ee:message>
+			
+		</ee:transform>
+		<try doc:name="Try" doc:id="2dd1f74c-5a4b-46f0-a5be-f9fe1bad09e1">			
+			<sqs:send-message doc:name="Send report" doc:id="1612ad04-f34f-4791-9663-8791ba9058e2" config-ref="amazon-sqs-configuration"/>		
+			<set-variable value="OK" doc:name="statusCode OK" doc:id="12672572-409f-4daf-9352-97492fe3ce53" variableName="statusCode" />
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0f4baad1-1f9a-443e-8f77-e8cc06886487">
+					<avio-core:custom-logger doc:name="ERROR scheduler order" doc:id="c6c2b5d5-05a3-4399-a497-406b9301dd92" config-ref="avio-core-config" message="Health check could not access scheduler order" level="WARN">
+						<avio-core:properties />
+					</avio-core:custom-logger>
+					<ee:transform doc:name="VARS: statusCode, errorDescription" doc:id="018becd4-9f7b-4ad4-b67a-5d2eb827330b" >
+						<ee:message >
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="statusCode" ><![CDATA[%dw 2.0
+output application/json
+---
+"ERROR"]]></ee:set-variable>
+							<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output application/json
+---
+error.description]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="health response" doc:id="0aa400c5-964d-4200-839a-409a754f2385">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+  systemName: 'Amazon-SQS',
+  connectionConfig: '${sqs.globalurl}',
+  user : '${sqs.accesskey}',
+  status: vars.statusCode,
+  (exception: vars.errorDescription) if (vars.statusCode=="ERROR"),
+  timeStamp : now() as String {format: 'yyyy-MM-dd HH:mm:ss'}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

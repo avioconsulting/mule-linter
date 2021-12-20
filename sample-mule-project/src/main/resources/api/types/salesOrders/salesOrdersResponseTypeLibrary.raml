@@ -1,0 +1,50 @@
+#%RAML 1.0 Library
+usage: Used as the source of resources dataTypes related to the 
+
+types:
+  salesOrdersResponseForGet:
+    description: To get status from sales orders
+    properties:
+      message:
+        type: string
+        required: true
+        example: SUCCESS
+      salesOrders:
+        required: false
+        type: array
+        items: !include salesOrdersStatusInfoDataType.raml
+
+  salesOrderResponseForGet:
+    description: To get status from ONE sales order
+    properties:
+      message:
+        type: string
+        required: true
+        example: SUCCESS
+      salesOrder:
+        required: false
+        type: !include salesOrdersStatusInfoDataType.raml
+      
+
+  salesOrderResponseForPost:
+    properties:
+        message:
+          type: string
+          required: true
+          example: ACCEPTED
+        salesOrdersStartedTotal:
+          required: true
+          type: number
+          example: 1
+        salesOrdersStarted:
+          required: true
+          type: array
+          items: !include salesOrderDataType.raml
+        invalidSalesOrdersTotal:
+          required: true
+          type: number
+          example: 1
+        invalidSalesOrders:
+          required: true
+          type: array
+          items: !include salesOrderInvalidDataType.raml 
