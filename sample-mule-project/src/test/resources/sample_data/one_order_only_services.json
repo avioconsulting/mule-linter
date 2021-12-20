@@ -1,0 +1,28 @@
+{
+   "customerId":"0002",
+   "customerName":"George Costanza",
+   "salesOrderId":"A1002",
+   "lineItems":[
+      {
+         "itemNumber":"2",
+         "quantity":"1",
+         "itemType":"Service",
+         "pricePerUnit":"1000.88",
+         "itemDescription":"Car Wash, Full Service"
+      },
+      {
+         "itemNumber":"4",
+         "quantity":"1",
+         "itemType":"Service",
+         "pricePerUnit":"30.66",
+         "itemDescription":"Haircut"
+      },
+      {
+         "itemNumber":"5",
+         "quantity":"1",
+         "itemType":"Service",
+         "pricePerUnit":"20.55",
+         "itemDescription":"Shaving"
+      }
+   ]
+}

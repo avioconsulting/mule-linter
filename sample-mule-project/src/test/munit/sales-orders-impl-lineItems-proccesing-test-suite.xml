@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="sales-orders-impl-lineItems-proccesing-test-suite.xml" />
+	<munit:test doc:id="87b3c45f-e057-47bb-a088-a6ceec5b9ae5" description="Test" name="sales-orders-impl-lineItems-proccesing_products-and-services-test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create shipping order" doc:id="fa57bc4a-384d-490e-b905-7bc8f6859673" processor="bootcamp-shipping-system-api:create-shipping-order" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:attributes value='#[{"statusCode":201}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Create service scheduler" doc:id="7047bbd3-7300-43ae-bebc-ade43d9823c8" processor="bootcamp-scheduler-system-api:create-service-scheduler" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create service scheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Scheduler System",&#10;    "confirmationCode": "SCH123456"&#10;}&#10;]' />
+					<munit-tools:attributes value='#[{"statusCode":201}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="ff705367-0d87-4fdb-a941-d96b8e297f43" processor="sqs:send-message" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="itemPayload" doc:id="e954ebd1-9b4c-4bbe-9bea-e081640aeca3" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="itemPayload" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert-that doc:name="shippingItems Eq To 2" doc:id="4c3942d0-326d-460c-a9a3-98c11fb682ed" is="#[MunitTools::equalTo(2)]" expression="#[sizeOf(vars.itemPayload.shippingItems)]"/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:spy doc:name="servicePayload" doc:id="23979bab-9c69-46b8-afc8-d5079cb38ee9" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="servicePayload" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert-that doc:name="serviceItems Eq To 3" doc:id="e3ca5a9f-e3a8-433d-b9e1-ba1bc8798508" is="#[MunitTools::equalTo(3)]" expression="#[sizeOf(vars.servicePayload.serviceItems[0])]"/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="e9d12870-b8f7-44a3-9438-979f4d89e0d0" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_products_and_services.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="d022e9c8-1f63-476a-9be9-200c9f25ff92" name="sales-orders-impl-lineItems-proccesing"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="productItem-shipping  (1 Time)" doc:id="c69dd4fc-53d1-4029-9958-99cb1fd2e876" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="productItem-shipping" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="be9a07e4-3555-4d58-872b-5c53e1e02289" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="serviceItem-scheduling (1 Time)" doc:id="6e8fa2fe-06b0-4f8e-897a-eec953bf6d94" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="serviceItem-scheduling" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7750491-1374-49df-9b47-81721c996686" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (1 Time)" doc:id="efe897f2-c6e2-47ca-92c6-3cd8d8502f02" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing_products-fail-test" doc:id="bd8080af-685d-4843-b181-7e72aee74d93">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create shipping order (Fail)" doc:id="3578afad-48f6-4c9c-b7e4-71088585c068" processor="bootcamp-shipping-system-api:create-shipping-order">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SHIPPING-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Create service scheduler" doc:id="a4fbbbd2-338c-4317-a3d5-219539089197" processor="bootcamp-scheduler-system-api:create-service-scheduler" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create service scheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Scheduler System",&#10;    "confirmationCode": "SCH123456"&#10;}&#10;]' />
+					<munit-tools:attributes value='#[{"statusCode":201}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="99b216f3-429a-491f-9619-376ee2a9379d" processor="sqs:send-message">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="servicePayload Reversal" doc:id="c0480447-2c11-4c1e-93a0-1f6d788b6bbd" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="servicePayload Reversal" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call>
+					<munit-tools:assert-that doc:name="Item Number 2 Qty eq to -1" doc:id="628e9110-ebd9-4838-96a7-a33e2a88b1da" is="#[MunitTools::equalTo(-1)]" expression='#[(payload[0].serviceItems filter $.itemNumber == "2")[0].quantityOrdered]'/>
+					<munit-tools:assert-that doc:name="Item Number 4 Qty eq to -1" doc:id="c02b84b5-bbd1-4f90-a5b4-e17adfdee8e3" is="#[MunitTools::equalTo(-1)]" expression='#[(payload[0].serviceItems filter $.itemNumber == "4")[0].quantityOrdered]'/>
+					<munit-tools:assert-that doc:name="Item Number 5 Qty eq to -1" doc:id="d626cf28-072b-439e-81e8-a0dc46fc89e8" is="#[MunitTools::equalTo(-1)]" expression='#[(payload[0].serviceItems filter $.itemNumber == "5")[0].quantityOrdered]'/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="86f40ed8-274b-45d6-b7c0-27239e43c72c" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_products_and_services.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="ae32a96c-dc4e-403e-b884-e72d1fa8c4e1" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="sales-orders-impl-compensation (1 Time)" doc:id="7572f901-2cfd-4a5a-a445-4e031d0882af" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-orders-impl-compensation" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6f3f022e-2ddc-4e1b-a642-40f575eaa531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (0 Times)" doc:id="5fbdfe9c-1583-4267-91a9-b71f3545366f" processor="flow-ref" times="0" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Publish SalesOrdersErrorQueue (1 Time)" doc:id="050ac881-435d-47fb-a0fb-b41815fed4b8" processor="vm:publish" times="1" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Publish SalesOrdersErrorQueue" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7549311-b741-4675-b6a4-6eb613740a77" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing_service-fail-test" doc:id="609a95a8-e07c-42a4-9001-43001353abb7">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create shipping order" doc:id="e1de11f5-ae37-4406-a80c-1f5e84ea92c5" processor="bootcamp-shipping-system-api:create-shipping-order">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:attributes value='#[{"statusCode":201}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Create service scheduler (Fail)" doc:id="338dda09-148e-46d2-96f2-4034e29ad007" processor="bootcamp-scheduler-system-api:create-service-scheduler" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create service scheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Scheduler System",&#10;    "confirmationCode": "SCH123456"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SCHEDULER-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="0e651d74-275c-46b8-8d67-4b27a650b931" processor="sqs:send-message">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="itemPayload Reversal" doc:id="785fc826-4229-4d4f-8bd0-5790319977d2" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="servicePayload Reversal" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call>
+					<munit-tools:assert-that doc:name="Item Number 1 Qty eq to -2" doc:id="c21837fe-15dd-4318-827e-978c65a336cc" is="#[MunitTools::equalTo(-2)]" expression='#[(payload.shippingItems filter $.itemNumber == "1")[0].quantityOrdered]' />
+					<munit-tools:assert-that doc:name="Item Number 3 Qty eq to -4" doc:id="69c9ba1c-90fc-410b-90b7-2fe3c44e4f67" is="#[MunitTools::equalTo(-4)]" expression='#[(payload.shippingItems filter $.itemNumber == "3")[0].quantityOrdered]' />
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="e1190bf1-a7f0-4c80-8dfd-3e5381075019" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_products_and_services.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="5b733c9e-2c7d-4807-beaf-8a06b5f37599" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="sales-orders-impl-compensation (1 Time)" doc:id="38408ba4-7510-41bd-a9d5-a9c91707947a" processor="flow-ref" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="sales-orders-impl-compensation" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6f3f022e-2ddc-4e1b-a642-40f575eaa531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (0 Times)" doc:id="25683ce2-0490-4b7d-93a0-caf222b801de" processor="flow-ref" times="0" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Publish SalesOrdersErrorQueue (1 Time)" doc:id="4ffa64c8-1111-4f05-96c7-196911ee15ca" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Publish SalesOrdersErrorQueue" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7549311-b741-4675-b6a4-6eb613740a77" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing_product-and-service-fail-test" doc:id="8c5fda5d-52f3-42cc-881b-aa30c33771b5">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create shipping order (Fail)" doc:id="f78dd9f7-b463-4b40-b3fe-fe2ce2660cdb" processor="bootcamp-shipping-system-api:create-shipping-order">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SHIPPING-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Create service scheduler (Fail)" doc:id="a178b6d6-6b04-4fc5-86ba-c9f080196597" processor="bootcamp-scheduler-system-api:create-service-scheduler" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create service scheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Scheduler System",&#10;    "confirmationCode": "SCH123456"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SCHEDULER-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="589dc0bb-a563-4eda-b3cb-6a3a6b10a568" processor="sqs:send-message">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="a8d36233-e193-4167-b88a-372dae81ffff" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_products_and_services.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="a3f8ecba-42b2-4044-9440-b4a87e683bff" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="sales-orders-impl-compensation (1 Time)" doc:id="79d645f2-cc98-4d34-b632-318b9f677830" processor="flow-ref" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="sales-orders-impl-compensation" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6f3f022e-2ddc-4e1b-a642-40f575eaa531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (0 Times)" doc:id="c7d38824-2e83-4ec5-b6cf-6bd253f970c2" processor="flow-ref" times="0" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Publish SalesOrdersErrorQueue (1 Time)" doc:id="ccd7d6c3-78e0-4f68-b3c3-b437fe71fa93" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Publish SalesOrdersErrorQueue" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7549311-b741-4675-b6a4-6eb613740a77" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="INFO Shipping and Scheduler Failed" doc:id="1ed5ec9f-0e1c-4e13-9546-3cc59ef2d979" processor="avio-core:custom-logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="INFO Shipping and Scheduler Failed" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing_only-service-fail-test" doc:id="4ac7917e-e1b4-4d35-80e3-9b5fbac4ca24">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create service scheduler (Fail)" doc:id="73cfbf3a-fc3d-423d-854a-f6353f9e18b3" processor="bootcamp-scheduler-system-api:create-service-scheduler" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create service scheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Scheduler System",&#10;    "confirmationCode": "SCH123456"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SCHEDULER-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="698f712f-b1be-470b-a9d0-6eb0a399ce2d" processor="sqs:send-message">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="bc504d27-fefd-4e23-9e89-caa4273e5ba5" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_only_services.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="fb3cd153-d97f-4cb2-98b7-4cb37f26e1c3" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="sales-orders-impl-compensation (0 Time)" doc:id="f7a7fb84-8cf2-4478-ae28-f1ccb2b435fa" processor="flow-ref" times="0">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="sales-orders-impl-compensation" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6f3f022e-2ddc-4e1b-a642-40f575eaa531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (0 Times)" doc:id="abed8c54-79e5-49e1-b2c6-98c49c46b485" processor="flow-ref" times="0" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Publish SalesOrdersErrorQueue (1 Time)" doc:id="e27c109a-748a-4094-a0c8-3b8edcb02f89" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Publish SalesOrdersErrorQueue" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7549311-b741-4675-b6a4-6eb613740a77" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing_only-products-fail-test" doc:id="aa2a45a9-7a19-47ef-a6b7-9ebc55586cf4">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Create shipping order (Fail)" doc:id="05a91cb4-1f43-4ab3-8665-21343d79296e" processor="bootcamp-shipping-system-api:create-shipping-order">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:error typeId="BOOTCAMP-SHIPPING-SYSTEM-API:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Send report" doc:id="5ef72392-609f-4bf9-9143-e9ff5f2f14d0" processor="sqs:send-message">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Send report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="c497085b-d8e6-4e0c-8b99-b5e70a361f61" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_only_products.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="9d46d9b3-8b24-476b-bfec-0938cf1c3944" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="sales-orders-impl-compensation (0 Time)" doc:id="0b17f365-8e6a-4e79-8692-9b22ee59f568" processor="flow-ref" times="0">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="sales-orders-impl-compensation" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6f3f022e-2ddc-4e1b-a642-40f575eaa531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="sales-order-reporting-sqs (0 Times)" doc:id="4f39e658-8952-4e63-b751-40060796c6a1" processor="flow-ref" times="0" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="sales-order-reporting-sqs" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Publish SalesOrdersErrorQueue (1 Time)" doc:id="ecfcd5cb-2eb5-4b73-b40b-16a520bccce7" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Publish SalesOrdersErrorQueue" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c7549311-b741-4675-b6a4-6eb613740a77" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sales-orders-impl-lineItems-proccesing-test-error-handler" doc:id="9687336d-3359-4fe0-ac56-9ca936cff1f6">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Create shipping order (ERROR)" doc:id="e97ab619-ccd2-404b-9fe5-3215fd0d1e62" processor="bootcamp-shipping-system-api:create-shipping-order" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create shipping order" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[&#10;output application/json&#10; --- &#10;{&#10;    "message": "Order SO111 has been successfully submitted for processing in the Shipping System",&#10;    "numberOfItems": 2,&#10;    "confirmationCode": "SHP123456-ABC11"&#10;}&#10;]' />
+					<munit-tools:error typeId="HTTP:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="324b5e94-cdf4-438e-9e96-340329667d84">
+				<munit:payload value="#[output application/json --- readUrl('classpath://sample_data/one_order_only_products.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="sales-orders-impl-lineItems-proccesing" doc:id="67e21fb5-8a29-4340-9d69-3c8437d61e48" name="sales-orders-impl-lineItems-proccesing" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="post-error-handling-subflow (1 Time)" doc:id="20cfd9d0-0826-4a28-83d0-69ded43a668a" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="post-error-handling-subflow" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="b38d14bf-3dc5-4496-ac5a-b48e783d447a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+</mule>

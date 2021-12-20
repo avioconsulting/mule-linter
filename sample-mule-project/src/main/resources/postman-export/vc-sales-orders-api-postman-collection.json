@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "5b8e3479-96bc-494f-a86c-0e653aa61818",
+		"name": "SalesOrder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/salesOrders",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "3b3785a4",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "c5cbf27fbda6",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://127.0.0.1:8082/vc-sales-orders-api/v1/api/salesOrders",
+					"protocol": "https",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8082",
+					"path": [
+						"vc-sales-orders-api",
+						"v1",
+						"api",
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders/{salesOrderId}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "3b3785a4",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "c5cbf27fbda6",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://127.0.0.1:8082/vc-sales-orders-api/v1/api/salesOrders/A1003",
+					"protocol": "https",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8082",
+					"path": [
+						"vc-sales-orders-api",
+						"v1",
+						"api",
+						"salesOrders",
+						"A1003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Service",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A100\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.88,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n    ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1010\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 1,\n        \"quantity\": 2,\n        \"itemType\": \"Product\",\n        \"pricePerUnit\": 190.99,\n        \"itemDescription\": \"Microphone special for standup\"\n      }\n    ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Product/Service",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1002\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 1,\n        \"quantity\": 2,\n        \"itemType\": \"Product\",\n        \"pricePerUnit\": 190.99,\n        \"itemDescription\": \"Microphone special for standup\"\n      },\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.88,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n    ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Product/Service Multiple",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1002\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 1,\n        \"quantity\": 2,\n        \"itemType\": \"Product\",\n        \"pricePerUnit\": 190.99,\n        \"itemDescription\": \"Microphone special for standup\"\n      },\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.88,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n    ]\n  },\n  {\n    \"customerId\": \"0003\",\n    \"customerName\": \"Cosmo Kramer\",\n    \"salesOrderId\": \"A1003\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.33,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n   ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Product/Service Multiple and Invalid Orders",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1002\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 1,\n        \"quantity\": 2,\n        \"itemType\": \"Product\",\n        \"pricePerUnit\": 190.99,\n        \"itemDescription\": \"Microphone special for standup\"\n      },\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.88,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n    ]\n  },\n  {\n    \"customerId\": \"0003\",\n    \"customerName\": \"Cosmo Kramer\",\n    \"salesOrderId\": \"A1003\",\n    \"lineItems\":[\n      {\n        \"itemNumber\": 2,\n        \"quantity\": 1,\n        \"itemType\": \"Service\",\n        \"pricePerUnit\": 1000.33,\n        \"itemDescription\": \"Car Wash, Full Service\"\n      }\n   ]\n  },\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1010\",\n    \"lineItems\":[\n    ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/salesOrders 1 Invalid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "correlation_id",
+						"value": "3b3785a4-f226-4bad-bb9c-c5cbf27fbda6",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "7eb397a7bbe54d29a12346e4bda45fdb",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "08FA44d69e7B42c5aF8E5D4768B83599",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"customerId\": \"0002\",\n    \"customerName\": \"George Constanza\",\n    \"salesOrderId\": \"A1010\",\n    \"lineItems\":[\n     \n    ]\n  }\n]"
+				},
+				"url": {
+					"raw": "{{protocol}}{{host}}{{port}}{{base}}/salesOrders",
+					"host": [
+						"{{protocol}}{{host}}{{port}}{{base}}"
+					],
+					"path": [
+						"salesOrders"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

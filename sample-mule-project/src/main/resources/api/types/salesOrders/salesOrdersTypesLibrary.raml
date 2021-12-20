@@ -1,0 +1,9 @@
+#%RAML 1.0 Library
+usage: Used as the source of resources dataTypes related to the sales orders
+
+types:
+  salesOrderDataTypeForPost:    
+    type: array
+    items: !include salesOrderDataType.raml
+    example: !include /examples/POST_salesOrders_request.json
+      

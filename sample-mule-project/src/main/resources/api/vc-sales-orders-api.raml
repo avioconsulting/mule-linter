@@ -1,0 +1,45 @@
+#%RAML 1.0
+title: vc-sales-orders-api
+description: Sales Orders API for the Sales Order Real Use Case from Bootcamp Mule Training
+version: v1
+protocols:
+  - HTTPS
+
+################################################################################
+# WHO  WHEN      WHY
+# VC   01-10-21  Sales Orders API from scratch with the best practices design
+################################################################################
+
+uses:  
+  commonTraits: /exchange_modules/f2ea2cb4-c600-4bb5-88e8-e952ff5591ee/bootcamp-common-fragment/1.0.7/common-traits.raml
+  salesOrdersResponses: types/salesOrders/salesOrdersResponseTypeLibrary.raml
+  salesOrdersResources: types/salesOrders/salesOrdersTypesLibrary.raml
+
+resourceTypes:
+  collection: !include /exchange_modules/f2ea2cb4-c600-4bb5-88e8-e952ff5591ee/bootcamp-common-fragment/1.0.7/resourceTypes/collection.raml
+  item: !include /exchange_modules/f2ea2cb4-c600-4bb5-88e8-e952ff5591ee/bootcamp-common-fragment/1.0.7/resourceTypes/item.raml
+
+
+/salesOrders:
+  description: Sales Orders exposes methods to get info from sales orders and send it to processing
+  is: [commonTraits.clientIdRequired, commonTraits.correlationRequired, commonTraits.errorResponsesRequired]
+  type:
+    collection:
+      getResponseType: salesOrdersResponses.salesOrdersResponseForGet
+      postBodyType: salesOrdersResources.salesOrderDataTypeForPost
+      postResponseType: salesOrdersResponses.salesOrderResponseForPost
+
+  get:
+      description: This method retrieve info from sales orders
+      
+  post:
+      description: This method send sales orders to processing
+
+  /{salesOrderId}:
+    description: Expose method to get sales order info by salesOrderId
+    is: [commonTraits.clientIdRequired, commonTraits.correlationRequired, commonTraits.errorResponsesRequired]
+    type:
+      item:
+        getResponseType: salesOrdersResponses.salesOrderResponseForGet
+
+    get:

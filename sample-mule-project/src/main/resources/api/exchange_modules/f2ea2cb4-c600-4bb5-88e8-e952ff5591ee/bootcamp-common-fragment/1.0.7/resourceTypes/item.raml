@@ -1,0 +1,69 @@
+#%RAML 1.0 ResourceType
+  description: Entity representing a <<resourcePathName|!singularize>>
+  get?:
+    description: |
+      Get details for <<resourcePathName| !singularize>>
+      with <<resourcePathName |!singularize>>Id =
+      {<<resourcePathName|!singularize>>Id}
+    responses:
+      200:
+        body:
+          application/json: 
+            type: <<getResponseType>>
+      404:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "<<resourcePathName|!singularize>> not found" 
+              }
+  put?:
+    headers:
+      Content-Type: 
+        type: string
+        example: application/json
+    description: |
+      Update details for <<resourcePathName| !singularize>>
+      with <<resourcePathName |!singularize>>Id =
+      {<<resourcePathName|!singularize>>Id}
+    body:
+      application/json:
+        type: <<putBodyType>>         
+    responses:
+      200:
+        body:
+          application/json:
+            type: <<putResponseType>>
+            
+  delete?:
+    description: |
+      Delete <<resourcePathName| !singularize>>
+      with <<resourcePathName |!singularize>>Id =
+      {<<resourcePathName|!singularize>>Id}
+    responses:
+      200:
+        body:
+          application/json:
+            type: <<deleteResponseType>>
+            example: |
+              {
+                "message": "The <<resourcePathName|!singularize>> has been deleted."
+              }
+  patch?:
+    headers:
+      Content-Type: 
+        type: string
+        example: application/json
+    description: |
+      Patch details for <<resourcePathName| !singularize>>
+      with <<resourcePathName |!singularize>>Id =
+      {<<resourcePathName|!singularize>>Id}
+    body:
+      application/json:
+        type: <<patchBodyType>>         
+        examples:
+    responses:
+      200:
+        body:
+          application/json:
+            type: <<patchResponseType>>

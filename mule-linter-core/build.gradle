@@ -1,7 +1,6 @@
 plugins {
     id 'codenarc'
 }
-
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation project(':mule-linter-spi')
@@ -12,24 +11,19 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.29'
     implementation 'org.reflections:reflections:0.10.2'
 }
-
 // https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CodeNarcExtension.html
 codenarc {
     configFile = file("${rootProject.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
     ignoreFailures = true
 }
-
-
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked"
 }
-
 compileTestJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked"
 }
-
 task generateGDSL (type: JavaExec) {
     //Generates GDSL file using `GDSLGenerator.groovy`.
     // Generated file is added in src/main/resources.
@@ -38,13 +32,22 @@ task generateGDSL (type: JavaExec) {
     classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
     classpath += sourceSets.main.runtimeClasspath
 }
-
+groovydoc {
+}
+task groovydocJar(type: Jar, dependsOn: groovydoc ) {
+    classifier 'javadoc' // must use javadoc classifier to be able to deploy to Sonatype
+    from groovydoc.destinationDir
+}
+jar.dependsOn(groovydocJar)
 jar.dependsOn(generateGDSL)
 
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            artifact(groovydocJar) {
+                classifier = 'javadoc'
+            }
         }
     }
     repositories {

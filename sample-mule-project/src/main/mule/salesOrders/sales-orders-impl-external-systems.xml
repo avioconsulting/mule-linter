@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:bootcamp-scheduler-system-api="http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api"
+	xmlns:bootcamp-shipping-system-api="http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api"
+	xmlns:avio-core="http://www.mulesoft.org/schema/mule/avio-core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
+http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api http://www.mulesoft.org/schema/mule/bootcamp-shipping-system-api/current/mule-bootcamp-shipping-system-api.xsd
+http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api http://www.mulesoft.org/schema/mule/bootcamp-scheduler-system-api/current/mule-bootcamp-scheduler-system-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd">	
+	<sub-flow name="productItem-shipping" doc:id="e3a32c47-ff75-4f20-8239-017041cebc9d" >
+		<avio-core:custom-logger doc:name="INFO payload to shipping" doc:id="2cca0e80-8f1f-427c-8ac5-4224da4a63b3" config-ref="avio-core-config" message="#['START::productItem-shipping::payload: ' ++ write(payload,'application/json')]" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<try doc:name="Try" doc:id="faa1bdc0-e69f-4fe6-b6ae-89721e50be66" >
+			<set-variable value="productItem-shipping" doc:name="currentFlow" doc:id="ccb48786-364e-4257-ac59-6aafb5fe41a4" variableName="currentFlow" />
+			<bootcamp-shipping-system-api:create-shipping-order config-ref="Bootcamp_Shipping_System_API_Config" doc:name="Create shipping order" doc:id="1eb67d33-2b48-4723-9c90-aa49e7d54fea" correlation-id="#[vars.salesOrderDetails.salesOrder.salesOrderId]" client-id="${shipping.client_id}" client-secret="${secure::shipping.client_secret}">
+				<bootcamp-shipping-system-api:create-shipping-order-request-data><![CDATA[#[vars.itemPayload]]]></bootcamp-shipping-system-api:create-shipping-order-request-data>
+			</bootcamp-shipping-system-api:create-shipping-order>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bc5fa481-83df-4eab-83ae-466ca48b5b8c" type="BOOTCAMP-SHIPPING-SYSTEM-API:BAD_REQUEST, BOOTCAMP-SHIPPING-SYSTEM-API:CONNECTIVITY, BOOTCAMP-SHIPPING-SYSTEM-API:FORBIDDEN, BOOTCAMP-SHIPPING-SYSTEM-API:INTERNAL_SERVER_ERROR, BOOTCAMP-SHIPPING-SYSTEM-API:METHOD_NOT_ALLOWED, BOOTCAMP-SHIPPING-SYSTEM-API:NOT_ACCEPTABLE, BOOTCAMP-SHIPPING-SYSTEM-API:NOT_FOUND, BOOTCAMP-SHIPPING-SYSTEM-API:PARSING, BOOTCAMP-SHIPPING-SYSTEM-API:RETRY_EXHAUSTED, BOOTCAMP-SHIPPING-SYSTEM-API:SECURITY, BOOTCAMP-SHIPPING-SYSTEM-API:SERVICE_UNAVAILABLE, BOOTCAMP-SHIPPING-SYSTEM-API:TIMEOUT, BOOTCAMP-SHIPPING-SYSTEM-API:TOO_MANY_REQUESTS, BOOTCAMP-SHIPPING-SYSTEM-API:UNAUTHORIZED, BOOTCAMP-SHIPPING-SYSTEM-API:UNSUPPORTED_MEDIA_TYPE">
+					<ee:transform doc:name="vars salesOrder" doc:id="924693e6-61c5-4999-91bb-17187004b74b" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="salesOrder" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId":vars.salesOrderDetails.salesOrder.salesOrderId,
+      "status":"ERROR"
+}]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<flow-ref doc:name="set-status-object-store" doc:id="d45f194e-5080-44c5-93d3-7147a1dffd73" name="set-status-object-store" />
+					<flow-ref doc:name="post-error-handling-subflow" doc:id="9643edc2-ec2b-4038-80b7-59e154cfa616" name="post-error-handling-subflow"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<avio-core:custom-logger doc:name="INFO END" doc:id="da56e5bc-4e7a-4de6-9463-faf57881c461" config-ref="avio-core-config" message="#['END::productItem-shipping']" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+	</sub-flow>
+	<sub-flow name="serviceItem-scheduling" doc:id="d2ead76f-2eb6-48d8-b2aa-4f519c9109e8" >
+		<avio-core:custom-logger doc:name="INFO payload to scheduling" doc:id="91b5c00d-7b53-4945-9882-bd4f69c4c606" message="#['START::serviceItem-scheduling::payload: ' ++ write(payload,'application/json')]" category="${log.cat}" config-ref="avio-core-config" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<try doc:name="Try" doc:id="75f98207-6a01-4fc8-98ba-3d98c6cf8128" >
+			<set-variable value="serviceItem-scheduling" doc:name="currentFlow" doc:id="9d7b9e85-7b7e-43b7-9101-5cd47cd79b8d" variableName="currentFlow" />
+			<bootcamp-scheduler-system-api:create-service-scheduler doc:name="Create service scheduler" doc:id="79d6f448-2198-4e0f-b0c0-d0249d124c1a" config-ref="Bootcamp_Scheduler_System_API_Config" client-id="${scheduler.client_id}" client-secret="${secure::scheduler.client_secret}" correlation-id="#[vars.salesOrderDetails.salesOrder.salesOrderId]">
+				<bootcamp-scheduler-system-api:create-service-scheduler-request-data ><![CDATA[#[vars.servicePayload]]]></bootcamp-scheduler-system-api:create-service-scheduler-request-data>
+			</bootcamp-scheduler-system-api:create-service-scheduler>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d9d760df-1cd5-4c08-9b02-36d93c0cba73" type="BOOTCAMP-SCHEDULER-SYSTEM-API:BAD_REQUEST, BOOTCAMP-SCHEDULER-SYSTEM-API:CONNECTIVITY, BOOTCAMP-SCHEDULER-SYSTEM-API:FORBIDDEN, BOOTCAMP-SCHEDULER-SYSTEM-API:INTERNAL_SERVER_ERROR, BOOTCAMP-SCHEDULER-SYSTEM-API:METHOD_NOT_ALLOWED, BOOTCAMP-SCHEDULER-SYSTEM-API:NOT_ACCEPTABLE, BOOTCAMP-SCHEDULER-SYSTEM-API:NOT_FOUND, BOOTCAMP-SCHEDULER-SYSTEM-API:PARSING, BOOTCAMP-SCHEDULER-SYSTEM-API:RETRY_EXHAUSTED, BOOTCAMP-SCHEDULER-SYSTEM-API:SECURITY, BOOTCAMP-SCHEDULER-SYSTEM-API:SERVICE_UNAVAILABLE, BOOTCAMP-SCHEDULER-SYSTEM-API:TIMEOUT, BOOTCAMP-SCHEDULER-SYSTEM-API:TOO_MANY_REQUESTS, BOOTCAMP-SCHEDULER-SYSTEM-API:UNAUTHORIZED, BOOTCAMP-SCHEDULER-SYSTEM-API:UNSUPPORTED_MEDIA_TYPE">
+					<ee:transform doc:name="vars salesOrder" doc:id="9ed9e0a1-544e-4b4b-828e-04719e039740" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="salesOrder" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId":vars.salesOrderDetails.salesOrder.salesOrderId,
+      "status":"ERROR"
+}]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<flow-ref doc:name="set-status-object-store" doc:id="6ebc3605-6fa3-4d3f-b9b1-59ae33564fc4" name="set-status-object-store" />
+					<flow-ref doc:name="post-error-handling-subflow" doc:id="cd425e50-ba1f-409f-80aa-8cb6fd84a91f" name="post-error-handling-subflow"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<avio-core:custom-logger doc:name="INFO END" doc:id="7bdbe7b4-7dfd-4a53-a39b-0e38fcdb0f28" config-ref="avio-core-config" message="#['END::serviceItem-scheduling']" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+	</sub-flow>
+	<sub-flow name="sales-order-reporting-sqs" doc:id="ee71501e-770f-43a6-a9df-f4d4ba9d80c3" >
+		<avio-core:custom-logger doc:name="INFO START" doc:id="64b1e2e5-f6a3-49ed-844c-e78eba144bfa" config-ref="avio-core-config" message="#['START::salesOrder-reporting-sqs::sqsPayload: ' ++ write(vars.sqsPayload, 'application/json')]" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<ee:transform doc:name="payload SQS Type,currentFlow" doc:id="1abc60ce-2dd9-4fac-8186-a9a67d63a737">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java 
+var order = vars.sqsPayload
+var salesOrder = vars.salesOrderDetails.salesOrder
+var products = salesOrder.lineItems filter ($."itemType" == "Product")
+var services = salesOrder.lineItems filter($."itemType" == "Service")
+var lineSeparator = "\n"
+var totalCost = salesOrder.lineItems default [] reduce ((item, total=0) -> ((item.quantity default 0) * (item.pricePerUnit default 0)) + total)
+var totalItemCost = products default [] reduce ((item, total=0) -> ((item.quantity default 0) * (item.pricePerUnit default 0)) + total)
+var totalServiceCost = services default [] reduce ((item, total=0) -> ((item.quantity default 0) * (item.pricePerUnit default 0)) + total)
+
+---
+{
+	delaySeconds: 0,
+	body: order.body,
+	messageAttributes: {
+		"CustomerName": {
+			"stringValue" : "Vanessa Cobis",
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"CustomerId": {
+			"stringValue" : order.customerId,
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"SalesOrderNumber": {
+			"stringValue" : order.salesOrderNumber,
+			"dataType" : "String"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalCost": {
+			"stringValue" : totalCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalItemCost": {
+			"stringValue" : totalItemCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},
+		"TotalServiceCost": {
+			"stringValue" : totalServiceCost,
+			"dataType" : "Number"
+		} as Object {
+			class: "org.mule.extension.sqs.api.model.MessageAttributeValue"
+		},		
+	} as Object {
+		class: "java.util.HashMap"
+	}
+} as Object {
+	class: "org.mule.extension.sqs.api.model.Message"
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="currentFlow" ><![CDATA[%dw 2.0
+output application/json
+---
+'sales-order-reporting-sqs']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<avio-core:custom-logger doc:name="INFO payload" doc:id="63d6c994-b467-4f82-bcb9-db1a5e443815" config-ref="avio-core-config" category="${log.cat}" message="#['salesOrder-reporting-sqs::payloadSQS: ' ++ write(payload, &quot;application/json&quot;)]" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<sqs:send-message doc:name="Send report" doc:id="8876d908-f299-4759-b4af-903c327d14af" config-ref="amazon-sqs-configuration"/>
+		<avio-core:custom-logger doc:name="INFO response" doc:id="20190d67-654a-4c6a-a35a-57206073b497" config-ref="avio-core-config" message="#['INFO::salesOrder-reporting-sqs::response: ' ++ write(payload, &quot;application/json&quot;)]" category="${log.cat}" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+		<ee:transform doc:name="vars salesOrder" doc:id="941be495-2753-4506-beb1-8a49855bdf9e" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="salesOrder" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+      "salesOrderId": vars.salesOrderDetails.salesOrder.salesOrderId,
+      "status":"COMPLETED"
+}]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<flow-ref doc:name="set-status-object-store" doc:id="ade23543-71f1-47b8-aec4-db58d395704f" name="set-status-object-store" />
+		<avio-core:custom-logger doc:name="INFO END " doc:id="e460ee6e-b9a0-4085-ad06-957fb8e82f25" config-ref="avio-core-config" category="${log.cat}" message="#['END::salesOrder-reporting-sqs']" correlation_id="#[vars.salesOrderDetails.correlationId]"/>
+				
+	</sub-flow>
+</mule>

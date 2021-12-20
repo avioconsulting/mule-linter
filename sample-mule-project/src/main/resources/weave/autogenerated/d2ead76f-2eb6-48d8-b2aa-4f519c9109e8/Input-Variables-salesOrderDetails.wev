@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_d2ead76f_2eb6_48d8_b2aa_4f519c9109e8_Input_Variables_salesOrderDetails = {|
+  salesOrder: Any {"typeAlias": "Serializable",
+  "typeId": "java.io.Serializable"}, 
+  correlationId: Any
+|}
+

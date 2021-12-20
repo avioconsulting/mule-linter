@@ -1,0 +1,33 @@
+#%RAML 1.0 DataType  
+
+type: object
+
+properties: 
+  itemNumber:
+    required: true
+    type: number
+    example: 1
+  quantity:
+    required: true
+    type: number
+    example: 2
+    multipleOf: 1
+  itemType:
+    required: true
+    type: string
+    enum: [Product, Service]    
+    example: Service
+  pricePerUnit:
+    required: true
+    type: number
+    example: 190.99
+    multipleOf: 0.01
+  itemDescription:
+    required: true
+    type: string
+    example: Car Wash, Full Service
+
+
+
+
+  

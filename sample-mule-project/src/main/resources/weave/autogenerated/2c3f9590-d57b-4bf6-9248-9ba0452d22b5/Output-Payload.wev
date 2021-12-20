@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_2c3f9590_d57b_4bf6_9248_9ba0452d22b5_Output_Payload = {
+  salesOrders?: Array<{    salesOrderId: String,     status: "RECEIVED" | "COMPLETED" | "CONFIRMED" | "PROCESSED" | "ERROR" | "INVALID" | "SCHEDULED" | "SHIPPED",     _?: Any  }>, 
+  message: String, 
+  statusCode: Number, 
+  _?: Any
+} {"description": "To get status from sales orders"}
+
