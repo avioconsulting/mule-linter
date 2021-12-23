@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_b29b5204_aa83_41b9_8d94_c2ac26ccfabb_Output_Variables_validSalesOrders = Array<Any>
-

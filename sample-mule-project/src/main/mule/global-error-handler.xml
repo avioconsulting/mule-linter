@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+
+	<error-handler name="global-error-handler">
+		<on-error-propagate type="APIKIT:BAD_REQUEST"
+			enableNotifications="true" logException="false">
+			<set-variable value="400"
+				doc:name="Set HTTP Status code"
+				doc:id="c278cdc4-cefe-4996-92f4-7817a88c526c"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="22afb0fa-6363-40b3-a756-700c49442cdb"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_FOUND"
+			enableNotifications="true" logException="false">
+			<set-variable value="404"
+				doc:name="Set HTTP Status code"
+				doc:id="38e03244-6903-4dc2-9aaf-70e0fe7ec31e"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="4e816c98-4113-490a-bedf-3bddc0e98724"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate
+			type="APIKIT:METHOD_NOT_ALLOWED" enableNotifications="true"
+			logException="false">
+			<set-variable value="405"
+				doc:name="Set HTTP Status code"
+				doc:id="58cebf80-e9d0-4c65-988a-b0605ff3ab11"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="1a583982-4581-4829-82c2-704649514604"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE"
+			enableNotifications="true" logException="false">
+			<set-variable value="406"
+				doc:name="Set HTTP Status code"
+				doc:id="c8421b4d-2658-4061-9e8b-ef141a8aaca3"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="cb44bee2-6b70-4465-a005-fb42d834644f"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate
+			type="APIKIT:UNSUPPORTED_MEDIA_TYPE" enableNotifications="true"
+			logException="false">
+			<set-variable value="415"
+				doc:name="Set HTTP Status code"
+				doc:id="102b6339-76a5-4c0c-a646-54c7524cd366"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="0843e488-2d32-4ead-bd49-7f7f5c265a81"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED"
+			enableNotifications="true" logException="false">
+			<set-variable value="501"
+				doc:name="Set HTTP Status code"
+				doc:id="7c40d1c0-c330-4c38-8e64-3137755b7ef6"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="9ae120ff-aadf-4d66-9d6f-526a40da3cd7"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true"
+			logException="false" doc:name="On Error Propagate"
+			doc:id="c9e1a8b9-8079-40ea-bcc3-d00c09f2f6ec" type="ANY">
+			<set-variable value="500"
+				doc:name="Set HTTP Status code"
+				doc:id="9e93f47c-b307-41ec-964a-f05652642cb3"
+				variableName="statusCode" />
+			<flow-ref doc:name="error-handling-subflow"
+				doc:id="a2c3c139-7823-4dbf-a4b6-01abc29c85b1"
+				name="error-handling-subflow" />
+		</on-error-propagate>
+	</error-handler>
+
+	<sub-flow name="error-handling-subflow"
+		doc:id="2a1a4ccf-85b4-4350-b1d1-d2d7650098e1">
+		<ee:transform doc:name="Set Error Payload"
+			doc:id="08a328bc-e2a4-44a9-9fb8-a79a8f1a309c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	statusCode: vars.statusCode,
+	apiInError: p('api.name') ++ "/" ++ p('api.version'),
+	currentFlow: vars.currentFlow,
+	correlationId: vars.headerAttributes.correlationId,
+  	error: {
+  		"type": (error.errorType.namespace ++ ":" ++ error.errorType.identifier as String) default "Not found",
+  		detail: (error.description as String) default "Unhandled Exception"
+  	}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+
+
+</mule>
