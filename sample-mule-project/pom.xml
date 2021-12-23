@@ -98,12 +98,12 @@
 	</build>
 
 	<dependencies>
-		<!--dependency>
+		<dependency>
 			<groupId>com.avioconsulting.mule</groupId>
 			<artifactId>mule-linter-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
