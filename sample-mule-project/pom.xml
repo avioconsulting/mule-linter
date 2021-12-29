@@ -57,7 +57,7 @@
 							<appDir>${basedir}</appDir>
 							<ruleConfiguration>${basedir}/AVIOCustomRuleConfiguration.groovy</ruleConfiguration>
 							<outputDirectory>${project.build.directory}/reports</outputDirectory>
-							<format>JSON</format>
+							<format>CONSOLE</format>
 						</configuration>
 					</execution>
 				</executions>
