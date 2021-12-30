@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_0ee9bde0_dd01_4b7d_baee_49a0b0e49f21_Input_Variables_validSalesOrders = Array<Nothing>
-

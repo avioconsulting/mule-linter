@@ -1,1 +1,0 @@
-Leave this file here when building the archetype. `src/main/java` is required for all mule projects

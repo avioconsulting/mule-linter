@@ -1,7 +1,9 @@
 {
-	"minMuleVersion": "4.2.2",
-	"secureProperties": [
+  "minMuleVersion": "4.3.0",
+  "secureProperties": [
+  		"crypto.key",
 		"anypoint.platform.client_id",
-		"anypoint.platform.client_secret"
+		"anypoint.platform.client_secret",
+	  	"listener.keystore.password"
 	]
 }

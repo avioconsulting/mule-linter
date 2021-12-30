@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<error-handler xmlns="http://www.mulesoft.org/schema/mule/core" ref="global-error-handler"/>

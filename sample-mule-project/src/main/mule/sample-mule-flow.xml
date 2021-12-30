@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<vm:config name="SalesOrdersQueue_Config" doc:name="VM Config" doc:id="02e271c0-e3a6-4708-92fa-12cbb0cd5509">
+		<vm:queues >
+			<vm:queue queueName="SalesOrdersQueue" />
+			<vm:queue queueName="SalesOrdersErrorQueue" />
+		</vm:queues>
+	</vm:config>
+	<flow name="sample-mule-flow-scheduler" doc:id="accc54c0-f6c6-4b5f-99a8-f8ff2f85f776" >
+		<scheduler doc:name="Scheduler" doc:id="455a033e-8bfa-4865-8fda-341853e42e74" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="DAYS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value="#[output application/csv --- readUrl('classpath://sales_orders_multiple.csv','application/csv')]" doc:name="Csv Input" doc:id="0beb8b51-e91f-497c-8629-e75433050c00" />
+		<flow-ref doc:name="csv-file-processing" doc:id="fbccc05a-2369-461a-96f0-ba99b4aacfc8" name="csv-file-processing"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fac57bc3-cb4f-4083-bc95-ee2afeb6d2ce">
+				<logger level="INFO" doc:name="Incorrect Format CSV" doc:id="257b99d3-0ec4-420f-8c53-3ea9867528d5" message="#['csv-file-processing::Incorrect Format CSV']" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	
+	<sub-flow name="csv-file-processing" doc:id="0f51af4e-3892-4270-a116-dc1292255b4c" >
+		<ee:transform doc:name="CSV payload" doc:id="8d7962eb-da33-4660-bed0-e1c675f0c217" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+((payload groupBy $.salesOrderId) pluck $) map {
+	"customerId": $[0].customerId,
+    "customerName": $[0].customerName,
+    "salesOrderId": $[0].salesOrderId,
+    "lineItems": $ map (item, idx)-> {      
+        "itemNumber": item.itemNumber,
+        "quantity": item.quantity,
+        "itemType": item.itemType,
+        "pricePerUnit": item.pricePerUnit,
+        "itemDescription": item.itemDescription
+      }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each salesOrder" doc:id="d02fe4bb-5b90-4d82-b6df-93eebe825ddb" collection="#[payload]">
+			<flow-ref doc:name="sales-orders-impl-publish-queue" doc:id="0c3cf720-a674-4511-950d-cd8ddc37a8de" name="sales-orders-impl-publish-queue" />
+		</foreach>
+		<logger level="DEBUG" doc:name="DEBUG csv" doc:id="47139e64-f746-4c9d-bdac-4b8c8952dfb2" message="#['csv-file-processing::csv to json: ' ++ write(payload, 'application/json')]"/>
+	</sub-flow>
+	<flow name="sales-orders-impl-lineItems-proccesing" doc:id="e26cb0ec-049e-4379-b1fe-12e921bbb143" >
+		<vm:listener queueName="SalesOrdersQueue" doc:name="Listener SalesOrdersQueue" doc:id="a7884902-88ac-4d0b-9310-f85501558c52" config-ref="SalesOrdersQueue_Config" />
+		<logger level="INFO" doc:name="INFO SalesOrder" doc:id="47c8947f-4d48-4db8-a37a-a9af82e3f886" message="#['START::sales-orders-impl-lineItems-proccesing::salesOrder: ' ++ write(payload, &quot;application/json&quot;)]"/>
+	</flow>
+	<sub-flow name="sales-orders-impl-publish-queue" doc:id="250eba88-1841-412f-928e-6c8edb227bbc" >
+	<try doc:name="Try" doc:id="831a0521-6a69-4007-8c2a-d1e53602fc48" >
+			<vm:publish queueName="SalesOrdersQueue" doc:name="Publish SalesOrdersQueue" doc:id="7ee9cd1c-5643-4ed7-b09c-622b53aef49c" config-ref="SalesOrdersQueue_Config" />
+			<logger level="INFO" doc:name="Order Queued" doc:id="56732828-46b9-4642-8d43-5027b7b05d38" message="salesOrderId: #[payload.salesOrderId] was queued"/>
+					</try>
+	</sub-flow>
+</mule>
