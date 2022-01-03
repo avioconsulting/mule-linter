@@ -30,6 +30,6 @@ hs_err_pid*
 build/
 out/
 
-mavenPlugin/target/
+**/target/
 # OS Files
 .DS_Store
