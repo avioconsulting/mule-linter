@@ -2,9 +2,12 @@ package com.avioconsulting.mule.maven.formatter.impl;
 
 
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity;
+import com.avioconsulting.mule.linter.model.rule.RuleViolation;
 import org.apache.maven.plugin.logging.Log;
 
 import com.avioconsulting.mule.linter.model.rule.Rule;
+
+import java.util.List;
 
 /**
  * @author aivaldi
@@ -23,7 +26,8 @@ public class ConsoleFormatter extends AbstractFormatter {
         log.info( String.format("%s rules executed.", rulesCount));
         log.info("Rule validation results");
 
-        this.ruleExecutor.getResults().forEach( violation ->{
+        List<RuleViolation> violationList = this.ruleExecutor.getResults();
+        violationList.forEach(violation ->{
                     Rule rule = violation.getRule();
                     String ruleSeverity = rule.getSeverity().toString();
                     String ruleId = rule.getRuleId();
@@ -45,7 +49,7 @@ public class ConsoleFormatter extends AbstractFormatter {
                 }
         );
 
-        log.info( String.format("Found a total of %s violations of %s rules.", rulesCount,rulesCount));
+        log.info( String.format("Found a total of %s violations of %s rules.", violationList.size(),rulesCount));
 
         log.info( separator );
 
