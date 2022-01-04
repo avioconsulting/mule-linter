@@ -27,6 +27,15 @@ You may move expanded distribution folder to other persistent location and add i
 and then run cli from anywhere on the system.
 
 ## Build
+
+When cloning add the 'recurse-submodules' flag
+
+```git clone --recurse-submodules```
+
+After cloning, update the submodules
+
+```git submodule update --remote```
+
 To build the project run - 
 
 `./gradlew build`
@@ -38,31 +47,16 @@ Generated Distribution and install in local -
 
 ## Rule Configuration
 
-Create a Groovy class that implements a static method called `getRules` and returns a RuleSet object. 
+Rule Configuration uses a Groovy-DSL provided by Mule Linter. See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
 
-```groovy
-static RuleSet getRules() { }
-```
-
-Initialize the Rules you would like to use, and add them to the RuleSet with the `.addRule(Rule)` method. 
-Make sure to import the rules and helper classes you intend to use. 
-
-See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
-
-
-For a full breakdown on the available rules, [check here](docs/available_rules.md).
+Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in [./docs/groovydoc](./docs/groovydoc/index.html).
 
 ### Using IntelliJ Auto Completion
 Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
 
-## Code Checkout
-When cloning add the 'recurse-submodules' flag
+## Extending for Mule Linter
 
-```git clone --recurse-submodules```
-
-After cloning, update the submodules
-
-```git submodule update --remote```
+Mule Linter provides a service provider interface (SPI) based mechanism to add custom rules and components. See SPI [readme](./mule-linter-spi/readme.md) for details on how to use it. A Sample extension can be seen in [mule-linter-spi-test](./mule-linter-spi-test) module. 
 
 ## Mule Application Design
 ![Mermaid Design](config/mermaid/mule-application-diagram.png)

@@ -1,10 +1,10 @@
-#Mule Linter Service Provider Interface
+# Mule Linter Service Provider Interface
 
 Mule Linter contains two configurable components for core that other libraries can extend.
 
- * Mule Components: Core Library supports identifying Flow/Subflow and Logger components with attributes specific to those. All other components are just treated as generic MuleComponents.
+ * **Mule Components:** Core Library supports identifying Flow/Subflow and Logger components with attributes specific to those. All other components are just treated as generic MuleComponents.
 
- * Rule: Rules are the core of linter processing. Core library is shipped with many useful rules.
+ * **Rule:** Rules are the core of linter processing. Core library is shipped with many useful rules.
 
 Mule linter provides a service provider interface (SPI) library to allow extending these two components.
 
