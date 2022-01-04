@@ -32,7 +32,14 @@ task generateGDSL (type: JavaExec) {
     classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
     classpath += sourceSets.main.runtimeClasspath
 }
+
 groovydoc {
+    doLast {
+        copy {
+            from 'build/docs/groovydoc'
+            into '../docs/groovydoc'
+        }
+    }
 }
 task groovydocJar(type: Jar, dependsOn: groovydoc ) {
     classifier 'javadoc' // must use javadoc classifier to be able to deploy to Sonatype

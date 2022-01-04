@@ -22,6 +22,10 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
+        method name: 'MULE_CONFIG_FLOW_LIMIT',
+                params: [
+                        closure: Closure.name
+                ]
         method name: 'PROPERTY_FILE_COUNT_MISMATCH',
                 params: [
                         closure: Closure.name
@@ -31,6 +35,10 @@ contributor([closureScopeContext]) {
                         closure: Closure.name
                 ]
         method name: 'UNUSED_FLOW',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'GLOBAL_CONFIG_EXISTS',
                 params: [
                         closure: Closure.name
                 ]
@@ -46,7 +54,7 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
-        method name: 'DISPLAY_NAME',
+        method name: 'COMPONENT_DISPLAY_NAME',
                 params: [
                         closure: Closure.name
                 ]
@@ -58,7 +66,7 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
-        method name: 'LOGGER_ATTRIBUTES_RULE',
+        method name: 'LOGGER_REQUIRED_ATTRIBUTES',
                 params: [
                         closure: Closure.name
                 ]
@@ -74,15 +82,11 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
-        method name: 'POM_EXISTS',
+        method name: 'POM_FILE_EXISTS',
                 params: [
                         closure: Closure.name
                 ]
         method name: 'ENCRYPTED_VALUE',
-                params: [
-                        closure: Closure.name
-                ]
-        method name: 'MULE_CONFIG_SIZE',
                 params: [
                         closure: Closure.name
                 ]
@@ -98,7 +102,15 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
+        method name: 'CONSECUTIVE_LOGGERS_COUNT',
+                params: [
+                        closure: Closure.name
+                ]
         method name: 'README',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'COMPONENT_REQUIRED_ATTRIBUTES',
                 params: [
                         closure: Closure.name
                 ]
@@ -122,14 +134,6 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
-        method name: 'COMPONENT_ATTRIBUTE_VALUE',
-                params: [
-                        closure: Closure.name
-                ]
-        method name: 'EXCESSIVE_LOGGERS',
-                params: [
-                        closure: Closure.name
-                ]
         method name: 'MUNIT_MAVEN_PLUGIN_ATTRIBUTES',
                 params: [
                         closure: Closure.name
@@ -139,10 +143,6 @@ contributor([closureScopeContext]) {
                         closure: Closure.name
                 ]
         method name: 'PROPERTY_EXISTS',
-                params: [
-                        closure: Closure.name
-                ]
-        method name: 'GLOBAL_CONFIG',
                 params: [
                         closure: Closure.name
                 ]
@@ -181,6 +181,12 @@ contributor([closureScopeContext]) {
                     type: 'java.lang.String'
         }
 
+        call = enclosingCall("MULE_CONFIG_FLOW_LIMIT")
+        if(call) {
+            property name: 'flowLimit',
+                    type: 'java.lang.Integer'
+        }
+
         call = enclosingCall("PROPERTY_FILE_COUNT_MISMATCH")
         if(call) {
             property name: 'environments',
@@ -203,6 +209,14 @@ contributor([closureScopeContext]) {
         if(call) {
         }
 
+        call = enclosingCall("GLOBAL_CONFIG_EXISTS")
+        if(call) {
+            property name: 'noneGlobalElements',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+            property name: 'globalFileName',
+                    type: 'java.lang.String'
+        }
+
         call = enclosingCall("FLOW_SUBFLOW_NAMING")
         if(call) {
             property name: 'format',
@@ -223,7 +237,7 @@ contributor([closureScopeContext]) {
                     type: 'java.util.List<java.lang.String>'
         }
 
-        call = enclosingCall("DISPLAY_NAME")
+        call = enclosingCall("COMPONENT_DISPLAY_NAME")
         if(call) {
             property name: 'components',
                     type: 'java.util.List'
@@ -245,7 +259,7 @@ contributor([closureScopeContext]) {
                     type: 'java.lang.Integer'
         }
 
-        call = enclosingCall("LOGGER_ATTRIBUTES_RULE")
+        call = enclosingCall("LOGGER_REQUIRED_ATTRIBUTES")
         if(call) {
             property name: 'requiredAttributes',
                     type: 'java.util.List<java.lang.String>'
@@ -265,18 +279,12 @@ contributor([closureScopeContext]) {
                     type: 'java.lang.Object'
         }
 
-        call = enclosingCall("POM_EXISTS")
+        call = enclosingCall("POM_FILE_EXISTS")
         if(call) {
         }
 
         call = enclosingCall("ENCRYPTED_VALUE")
         if(call) {
-        }
-
-        call = enclosingCall("MULE_CONFIG_SIZE")
-        if(call) {
-            property name: 'flowLimit',
-                    type: 'java.lang.Integer'
         }
 
         call = enclosingCall("PROPERTY_FILE_NAMING")
@@ -301,8 +309,26 @@ contributor([closureScopeContext]) {
                     type: 'java.lang.Object'
         }
 
+        call = enclosingCall("CONSECUTIVE_LOGGERS_COUNT")
+        if(call) {
+            property name: 'excessiveLoggers',
+                    type: 'java.lang.Object'
+        }
+
         call = enclosingCall("README")
         if(call) {
+        }
+
+        call = enclosingCall("COMPONENT_REQUIRED_ATTRIBUTES")
+        if(call) {
+            property name: 'attributeMatchers',
+                    type: 'java.util.Map<java.lang.String, java.lang.String>'
+            property name: 'component',
+                    type: 'java.lang.String'
+            property name: 'namespace',
+                    type: 'java.lang.String'
+            property name: 'requiredAttributes',
+                    type: 'java.util.List<java.lang.String>'
         }
 
         call = enclosingCall("ON_ERROR_LOG_EXCEPTION")
@@ -327,26 +353,6 @@ contributor([closureScopeContext]) {
 
         call = enclosingCall("JENKINS_EXISTS")
         if(call) {
-        }
-
-        call = enclosingCall("COMPONENT_ATTRIBUTE_VALUE")
-        if(call) {
-            property name: 'namespace',
-                    type: 'java.lang.String'
-            property name: 'requiredAttributes',
-                    type: 'java.util.List<java.lang.String>'
-            property name: 'attributeMatchers',
-                    type: 'java.util.Map<java.lang.String, java.lang.String>'
-            property name: 'component',
-                    type: 'java.lang.String'
-        }
-
-        call = enclosingCall("EXCESSIVE_LOGGERS")
-        if(call) {
-            property name: 'excessiveLoggers',
-                    type: 'java.lang.Object'
-            property name: 'excessiveLoggers',
-                    type: 'java.lang.Integer'
         }
 
         call = enclosingCall("MUNIT_MAVEN_PLUGIN_ATTRIBUTES")
@@ -379,14 +385,6 @@ contributor([closureScopeContext]) {
                     type: 'java.util.List<java.lang.String>'
             property name: 'propertyName',
                     type: 'java.lang.String'
-        }
-
-        call = enclosingCall("GLOBAL_CONFIG")
-        if(call) {
-            property name: 'globalFileName',
-                    type: 'java.lang.String'
-            property name: 'noneGlobalElements',
-                    type: 'java.util.Map<java.lang.String, java.lang.String>'
         }
 
         call = enclosingCall("MUNIT_PLUGIN_VERSION")
