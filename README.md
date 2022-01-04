@@ -1,4 +1,4 @@
-#Mule Linter Tool
+# Mule Linter Tool
 A linter is a tool that analyzes source code looking for patterns that don’t follow convention.  Linting helps prevent errors and improve the overall quality of the code by following best practices.  Lint tools are a form of static code analyzers.  Some common code analyzers for Java are Checkstyle, FindBugs, and PMD.
 
 The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.  Some basic examples of rules that will be enforced, are the proper usage of property and pom files, useful logging messages, and standard project structure.
@@ -49,7 +49,7 @@ Generated Distribution and install in local -
 
 Rule Configuration uses a Groovy-DSL provided by Mule Linter. See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
 
-Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in [./docs/groovydoc](./docs/groovydoc/index.html).
+Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in https://avioconsulting.github.io/mule-linter/groovydoc/index.html.
 
 ### Using IntelliJ Auto Completion
 Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
