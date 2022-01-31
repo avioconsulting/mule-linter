@@ -13,6 +13,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+
+import static java.lang.String.format;
 
 @Mojo(name = "validate",
         defaultPhase = LifecyclePhase.VALIDATE)
@@ -24,19 +27,22 @@ public class MuleLinterValidateMojo extends AbstractMuleLinterMojo {
     @Parameter(property = "appDir", defaultValue = "${basedir}" ,readonly = true, required = false)
     private File appDir;
 
-    @Parameter(property = "format", defaultValue = "CONSOLE", readonly = true, required = false)
-    private FormatOptionsEnum format;
+    @Parameter(property = "format", defaultValue = "CONSOLE,JSON", readonly = true, required = false)
+    private List<FormatOptionsEnum> formats;
 
     @Parameter(property = "failBuild", readonly = true, required = false, defaultValue = "false")
     private Boolean failBuild;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        MuleLinter muleLinter = new MuleLinter(appDir, ruleConfiguration, ReportFormat.valueOf(format.name().toUpperCase()));
+        MuleLinter muleLinter = new MuleLinter(appDir, ruleConfiguration, ReportFormat.valueOf(FormatOptionsEnum.CONSOLE.name().toUpperCase()));
+        this.getLog().debug(format("Executing linter config %s against application %s", ruleConfiguration.getAbsolutePath(), appDir.getAbsolutePath()));
         RuleExecutor ruleExecutor = muleLinter.buildLinterExecutor();
-        this.getLog().debug(String.format("Formatter found for %s", format));
         try {
-            FormatterBuilder.build(format, this, ruleExecutor).buildReport();
+            for (FormatOptionsEnum format: formats) {
+                this.getLog().info(format("Report formatter found for %s", format));
+                FormatterBuilder.build(format, this, ruleExecutor).buildReport();
+            }
         } catch (IOException e) {
             getLog().error("Failed to write report", e);
         }

@@ -8,7 +8,7 @@ Plugin goal is by default attached to validate which is the first phase of maven
 - appDir: Defaults to `${basedir}`
 - ruleConfiguration: Defaults to `${basedir}/muleLinter.groovy`
 - outputDirectory: Defaults to `${project.build.directory}/mule-linter`
-- format: Defaults to CONSOLE. Options - CONSOLE, JSON
+- formats: Defaults to CONSOLE and JSON.
 - failBuild: Defaults to false. If `failBuild` is set to true, then rule violations with severity higher than MINOR will cause build to fail.
 
 ## Previous steps for use the plugin
@@ -56,9 +56,12 @@ To use plugin in your maven project, add following plugin configuratin in projec
             </goals>
             <configuration>
                 <appDir>${basedir}</appDir>
-                <ruleConfiguration>${basedir}/AVIOCustomRuleConfiguration.groovy</ruleConfiguration>
+                <ruleConfiguration>muleLinter.groovy</ruleConfiguration>
                 <outputDirectory>${project.build.directory}/reports</outputDirectory>
-                <format>JSON</format>
+                <formats>
+                    <format>CONSOLE</format>
+                    <format>JSON</format>
+                </formats>
             </configuration>
         </execution>
     </executions>
@@ -92,9 +95,12 @@ Adding this library to plugin to use new rule, we can configure it like below -
             </goals>
             <configuration>
                 <appDir>${basedir}</appDir>
-                <ruleConfiguration>${basedir}/AVIOCustomRuleConfiguration.groovy</ruleConfiguration>
+                <ruleConfiguration>muleLinter.groovy</ruleConfiguration>
                 <outputDirectory>${project.build.directory}/reports</outputDirectory>
-                <format>JSON</format>
+                <formats>
+                    <format>CONSOLE</format>
+                    <format>JSON</format>
+                </formats>
             </configuration>
         </execution>
     </executions>

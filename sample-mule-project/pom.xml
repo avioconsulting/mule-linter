@@ -55,9 +55,12 @@
 						</goals>
 						<configuration>
 							<appDir>${basedir}</appDir>
-							<ruleConfiguration>${basedir}/AVIOCustomRuleConfiguration.groovy</ruleConfiguration>
+							<ruleConfiguration>muleLinter.groovy</ruleConfiguration>
 							<outputDirectory>${project.build.directory}/reports</outputDirectory>
-							<format>CONSOLE</format>
+							<formats>
+								<format>CONSOLE</format>
+								<format>JSON</format>
+							</formats>
 						</configuration>
 					</execution>
 				</executions>
