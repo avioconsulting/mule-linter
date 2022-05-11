@@ -129,10 +129,18 @@ mule_linter {
             environments = ['dev', 'test', 'prod']
             propertyName = 'db.user'
         }
+
+        PROPERTY_EXISTS {
+            environments = ['dev', 'test']
+            propertyName = 'db.user'
+            pattern = '${env}.yaml'
+        }
+
         PROPERTY_FILE_NAMING {
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'
         }
+
         PROPERTY_FILE_COUNT_MISMATCH {
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'

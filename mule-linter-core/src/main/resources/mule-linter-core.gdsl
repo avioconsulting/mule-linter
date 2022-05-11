@@ -110,15 +110,15 @@ contributor([closureScopeContext]) {
                 params: [
                         closure: Closure.name
                 ]
-        method name: 'COMPONENT_REQUIRED_ATTRIBUTES',
-                params: [
-                        closure: Closure.name
-                ]
         method name: 'ON_ERROR_LOG_EXCEPTION',
                 params: [
                         closure: Closure.name
                 ]
         method name: 'API_CONSOLE_DISABLED',
+                params: [
+                        closure: Closure.name
+                ]
+        method name: 'COMPONENT_REQUIRED_ATTRIBUTES',
                 params: [
                         closure: Closure.name
                 ]
@@ -319,6 +319,14 @@ contributor([closureScopeContext]) {
         if(call) {
         }
 
+        call = enclosingCall("ON_ERROR_LOG_EXCEPTION")
+        if(call) {
+        }
+
+        call = enclosingCall("API_CONSOLE_DISABLED")
+        if(call) {
+        }
+
         call = enclosingCall("COMPONENT_REQUIRED_ATTRIBUTES")
         if(call) {
             property name: 'attributeMatchers',
@@ -329,14 +337,6 @@ contributor([closureScopeContext]) {
                     type: 'java.lang.String'
             property name: 'requiredAttributes',
                     type: 'java.util.List<java.lang.String>'
-        }
-
-        call = enclosingCall("ON_ERROR_LOG_EXCEPTION")
-        if(call) {
-        }
-
-        call = enclosingCall("API_CONSOLE_DISABLED")
-        if(call) {
         }
 
         call = enclosingCall("MAVEN_PROPERTY")

@@ -53,6 +53,9 @@ class MuleApplication implements Application {
             resourcePath.traverse(nameFilter: ~/.*.properties/) { file->
                 propertyFiles.add(new PropertyFile(file))
             }
+            resourcePath.traverse(nameFilter: ~/.*.yaml/) { file->
+                propertyFiles.add(new PropertyFile(file))
+            }
         }
     }
 

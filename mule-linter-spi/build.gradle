@@ -1,4 +1,5 @@
 dependencies {
+    implementation('org.yaml:snakeyaml:1.29')
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
 }

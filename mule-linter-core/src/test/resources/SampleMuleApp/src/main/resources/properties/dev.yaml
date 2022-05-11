@@ -1,0 +1,8 @@
+user: james
+password: ![abcdef==]
+
+db:
+  port: 1521
+  host: localhost
+  user: areed
+  secret: BillsRule!
