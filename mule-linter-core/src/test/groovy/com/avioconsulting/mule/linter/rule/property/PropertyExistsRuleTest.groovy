@@ -168,6 +168,10 @@ password: "![abcdef==]"
 
 sample:
   property: LofiRocks!
+  list: 
+    - 1
+    - 2
+    - 3
 
 db:
   port: 1521

@@ -26,16 +26,36 @@ class PropertyFile {
         if (o instanceof Map) {
             parseYaml(newKey, (Map<?, ?>) o)
         } else if (o instanceof List) {
-            parseYaml(newKey, (List<?>) o)
+            parseYamlSimpleList(newKey, (List<?>) o)
         } else {
             properties.put(newKey, o.toString());
         }
     }
 
+    //  For when complex list objects are implemented
     private void parseYaml(String val, List list) {
         for (def i = 0; i < list.size(); i++) {
-            yamlParseHelper(String.format("%s.%s", val, i), list.get(i))
+            yamlParseHelper(String.format("%s[%s]", val, i), list.get(i))
         }
+    }
+
+    //  MuleSoft as of 4.x does not allow complex list objects as properties and puts them as a CSV list
+    private void parseYamlSimpleList(String val, List list) {
+        StringBuilder sb = new StringBuilder()
+        for (int i = 0; i < list.size(); i++) {
+            Object item = list.get(i)
+            if (item instanceof Map || item instanceof List) {
+                //  This will throw an error in mule, but in an effort to avoid breaking the build
+                //  we will parse it in case that changes in the future
+                parseYaml(val, list)
+            } else {
+                sb.append(item)
+                if (i != list.size() - 1) {
+                    sb.append(",")
+                }
+            }
+        }
+        yamlParseHelper(val, sb.toString())
     }
 
     private void parseYaml(String val, Map<?, ?> map) {

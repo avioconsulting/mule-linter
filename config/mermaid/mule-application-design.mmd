@@ -43,7 +43,7 @@ classDiagram
     }
     ProjectFile <|-- PropertyFile
     class PropertyFile {
-        Properties properties
+        HashTable<Object, Object> properties
         loadProperties()
         getProperty(propName) String
         getPropertyCount() Integer
