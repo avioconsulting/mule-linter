@@ -20,7 +20,7 @@ public enum FormatOptionsEnum {
     }
 
     private static Map<String, FormatOptionsEnum> initializeMapping() {
-        Map map = new HashMap<>();
+        Map<String, FormatOptionsEnum> map = new HashMap<>();
         for (FormatOptionsEnum fo : FormatOptionsEnum.values()) {
             map.put(fo.value.toLowerCase(), fo);
         }

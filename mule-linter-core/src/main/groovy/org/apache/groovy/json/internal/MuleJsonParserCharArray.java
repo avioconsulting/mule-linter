@@ -72,7 +72,8 @@ public class MuleJsonParserCharArray extends BaseJsonParser {
         try {
             if (hasMore()) {
                 __index++;
-                return __currentChar = charArray[__index];
+                __currentChar = charArray[__index];
+                return __currentChar;
             } else {
                 return UnicodeConst.ZERO;
             }

@@ -13,8 +13,7 @@ public class JsonMap extends HashMap {
     @Override
     public Object get(Object o) {
         if(o instanceof JsonString) {
-            Object r = super.get(((JsonString) o).getValue());
-            return r;
+            return super.get(((JsonString) o).getValue());
         } else {
             return super.get(o);
         }
@@ -27,8 +26,7 @@ public class JsonMap extends HashMap {
     @Override
     public Object put(Object o, Object o2) {
         if(o instanceof JsonString) {
-            Object r = super.put(((JsonString) o).getValue(), o2);
-            return r;
+            return super.put(((JsonString) o).getValue(), o2);
         } else {
             return super.put(o, o2);
         }
