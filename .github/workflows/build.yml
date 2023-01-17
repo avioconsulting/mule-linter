@@ -42,11 +42,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: ./**/build/test-results/test/*.xml
 
-      - name: Publish Artifact
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        run: ./gradlew publish
-
       - name: Deploy to Maven Central
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
@@ -54,7 +51,7 @@ jobs:
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           JRELEASER_NEXUS2_MAVEN_CENTRAL_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           JRELEASER_NEXUS2_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        run: ./gradlew jreleaserDeploy
+        run: ./gradlew publish jreleaserDeploy
 
       - name: GitHub Release
         env:
