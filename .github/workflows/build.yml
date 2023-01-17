@@ -45,6 +45,7 @@ jobs:
           files: ./**/build/test-results/test/*.xml
 
       - name: Maven Deploy and Release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
