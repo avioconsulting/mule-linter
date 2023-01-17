@@ -33,37 +33,4 @@ task generateGDSL (type: JavaExec) {
     classpath += sourceSets.main.runtimeClasspath
 }
 
-groovydoc {
-    doLast {
-        copy {
-            from 'build/docs/groovydoc'
-            into '../docs/groovydoc'
-        }
-    }
-}
-task groovydocJar(type: Jar, dependsOn: groovydoc ) {
-    classifier 'javadoc' // must use javadoc classifier to be able to deploy to Sonatype
-    from groovydoc.destinationDir
-}
-jar.dependsOn(groovydocJar)
 jar.dependsOn(generateGDSL)
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-            artifact(groovydocJar) {
-                classifier = 'javadoc'
-            }
-        }
-    }
-    repositories {
-        maven {
-            credentials {
-                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
-                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
-            }
-            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
-        }
-    }
-}
