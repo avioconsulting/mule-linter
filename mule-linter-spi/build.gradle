@@ -2,20 +2,3 @@ dependencies {
     testImplementation platform('org.spockframework:spock-bom:2.0-M3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
 }
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            credentials {
-                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
-                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
-            }
-            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
-        }
-    }
-}

@@ -19,21 +19,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            credentials {
-                username = System.getenv("MVN_USER") != null ? System.getenv("MVN_USER") : ''
-                password = System.getenv("MVN_PASSWORD") != null ? System.getenv("MVN_PASSWORD") : ''
-            }
-            url = 'https://maven.pkg.github.com/avioconsulting/public-packages'
-        }
-    }
-}

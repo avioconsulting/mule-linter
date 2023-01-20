@@ -1,0 +1,93 @@
+project:
+  name: mule-linter
+  description: The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules.
+  longDescription: |
+    A linter is a tool that analyzes source code looking for patterns that don’t follow convention. 
+    Linting helps prevent errors and improve the overall quality of the code by following best practices. 
+    Lint tools are a form of static code analyzers. Some common code analyzers for Java are Checkstyle, FindBugs, and PMD.
+    The Mule Linter will enforce that all Mule projects are developed with a baseline set of rules. 
+    Some basic examples of rules that will be enforced, are the proper usage of property and pom files, 
+    useful logging messages, and standard project structure.
+
+  links:
+    homepage: https://github.com/avioconsulting/
+    documentation: https://github.com/avioconsulting/mule-linter
+    license: https://github.com/avioconsulting/mule-linter/blob/main/LICENSE
+    contribute: https://github.com/avioconsulting/mule-linter/blob/main/README.adoc
+  authors:
+    - Adam Desjardin
+    - Kevin King
+    - Manik Magar
+  license: MIT
+  inceptionYear: 2020
+  tags:
+    - maven
+    - linter
+    - mule
+  java:
+    groupId: com.avioconsulting.mule
+    version: 8
+
+release:
+  github:
+    overwrite: true
+    draft: false
+    sign: true
+    releaseName: '{{tagName}}'
+    skipTag: true
+    milestone:
+      close: false
+    changelog:
+      formatted: always
+      preset: conventional-commits
+      format: '- {{commitShortHash}} {{commitTitle}}'
+      skipMergeCommits: true
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+      labelers:
+        - label: 'dependencies'
+          title: 'chore(deps):'
+          order: 130
+      categories:
+        - title: '⚙️  Dependencies'
+          key: 'dependencies'
+          order: 80
+          labels:
+            - 'dependencies'
+      hide:
+        categories:
+          - 'merge'
+        contributors:
+          - 'GitHub'
+
+checksum:
+  individual: true
+
+signing:
+  active: always
+  armored: true
+
+deploy:
+  maven:
+    nexus2:
+      maven-central:
+        active: ALWAYS
+        url: https://oss.sonatype.org/service/local
+        snapshotUrl: https://oss.sonatype.org/content/repositories/snapshots/
+        applyMavenCentralRules: true
+        closeRepository: true
+        releaseRepository: true
+        stagingRepositories:
+          - mule-linter-core/build/staging-deploy
+          - mule-linter-spi/build/staging-deploy
+          - mule-linter-maven-plugin/build/staging-deploy
+          - mule-linter-cli/build/staging-deploy
+files:
+  artifacts:
+    - path: version.properties
+
+distributions:
+  mule-linter:
+    artifacts:
+      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.zip
+      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.tar
