@@ -25,6 +25,7 @@ class ConfigFileNamingRule extends Rule {
     @Param("format") String format
 
     ConfigFileNamingRule() {
+        super(RULE_ID, RULE_NAME)
         this.caseNaming = new CaseNaming(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
