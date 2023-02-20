@@ -2,17 +2,25 @@
 plugins {
     id 'base'
     id 'net.thauvin.erik.gradle.semver' version '1.0.4'
-    id 'org.jreleaser' version '1.4.0'
+//    id 'org.jreleaser' version '1.4.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
+//
+//jreleaser {
+//    configFile = 'jreleaser.yml'
+//}
 
-jreleaser {
-    configFile = 'jreleaser.yml'
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
 }
 
 subprojects {
     apply plugin: 'groovy'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
     apply plugin: 'net.thauvin.erik.gradle.semver'
 
     group 'com.avioconsulting.mule'
@@ -108,10 +116,17 @@ subprojects {
                 }
             }
         }
-        repositories {
-            maven {
-                url = layout.getBuildDirectory().dir("staging-deploy")
-            }
-        }
+//        repositories {
+//            maven {
+//                url = layout.getBuildDirectory().dir("staging-deploy")
+//            }
+//        }
+    }
+
+    signing {
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.maven
     }
 }
