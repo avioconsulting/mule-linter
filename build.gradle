@@ -10,6 +10,8 @@ plugins {
 //    configFile = 'jreleaser.yml'
 //}
 
+group 'com.avioconsulting.mule'
+
 nexusPublishing {
     repositories {
         sonatype()
