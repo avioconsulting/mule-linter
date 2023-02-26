@@ -45,10 +45,11 @@ jobs:
           files: ./**/build/test-results/test/*.xml
 
       - name: Stage Deployment
-        if: github.event_name != 'pull_request' #&& github.ref == 'refs/heads/master'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         run: ./gradlew publish
 
       - name: JReleaser full-Release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: jreleaser/release-action@v2
         env:
           JRELEASER_PROJECT_VERSION: ${{steps.set-version.outputs.version}}
@@ -71,22 +72,22 @@ jobs:
           path: |
             out/jreleaser/trace.log
             out/jreleaser/output.properties
-#
-#      - name: Increment Version
-#        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
-#        run: ./gradlew incrementPatch -Dversion.prerelease=SNAPSHOT
-#
-#      - name: Set New Version Variable
-#        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
-#        id: set-new-version
-#        run: "./gradlew properties -q | grep version: | awk '{print \"::set-output name=version::\" $2}'"
-#
-#      - name: Create Pull Request
-#        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
-#        uses: peter-evans/create-pull-request@v4
-#        with:
-#          branch: "feature/v${{ steps.set-new-version.outputs.version }}"
-#          commit-message: "[create-pull-request] Auto increment to v${{ steps.set-new-version.outputs.version }}"
-#          title: "Auto increment to v${{ steps.set-new-version.outputs.version }}"
-#          delete-branch: true
-#          assignees: ${{ github.actor }}
+
+      - name: Increment Version
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
+        run: ./gradlew incrementPatch -Dversion.prerelease=SNAPSHOT
+
+      - name: Set New Version Variable
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
+        id: set-new-version
+        run: "./gradlew properties -q | grep version: | awk '{print \"::set-output name=version::\" $2}'"
+
+      - name: Create Pull Request
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: "feature/v${{ steps.set-new-version.outputs.version }}"
+          commit-message: "[create-pull-request] Auto increment to v${{ steps.set-new-version.outputs.version }}"
+          title: "Auto increment to v${{ steps.set-new-version.outputs.version }}"
+          delete-branch: true
+          assignees: ${{ github.actor }}

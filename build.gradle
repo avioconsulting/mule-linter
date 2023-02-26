@@ -100,7 +100,7 @@ subprojects {
                     scm {
                         connection = 'scm:git:https://github.com/avioconsulting/mule-linter.git'
                         developerConnection = 'scm:git:ssh://github.com/avioconsulting/mule-linter.git'
-                        url = 'http://github.com/avioconsulting/mule-linter'
+                        url = 'https://github.com/avioconsulting/mule-linter'
                     }
                 }
             }
