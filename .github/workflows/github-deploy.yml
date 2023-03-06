@@ -38,10 +38,10 @@ jobs:
         with:
           distribution: adopt-hotspot
           java-version: 8
-          cache: maven
+          cache: gradle
       - name: Verify
         # build to generate docs folder
-        run: ./mvnw --batch-mode verify
+        run: ./gradlew check
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
