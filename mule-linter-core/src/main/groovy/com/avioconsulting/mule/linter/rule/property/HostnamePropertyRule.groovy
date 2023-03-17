@@ -35,7 +35,7 @@ class HostnamePropertyRule extends Rule{
         application.propertyFiles.each { PropertyFile file ->
             file.getProperties().each {
                 String propName = it.key.toLowerCase()
-                if ((exemptions.length == 0 || !exemptions.any {propName.contains(it.toLowerCase())}) &&
+                if ((exemptions.size() == 0 || !exemptions.any {propName.contains(it.toLowerCase())}) &&
                         (propName.contains("host") || propName.contains("hostname"))) {
                     if (it.value.toString().trim() ==~ IPV4_REGEX || it.value.toString().trim() ==~ IPV6_REGEX) {
                         violations.add(new RuleViolation(this, file.getFile().path, 0,
