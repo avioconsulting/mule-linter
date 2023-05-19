@@ -63,8 +63,10 @@ class RuleExecutor {
                 this.primaryLocation = new SonarQubeReportLocation();
                 this.primaryLocation.filePath = violation.fileName
                 this.primaryLocation.message = violation.message
-                this.primaryLocation.textRange = new SonarQubeReportLocation.TextRange();
-                this.primaryLocation.textRange.startLine=violation.lineNumber
+                if (violation.lineNumber > 0) {
+                    this.primaryLocation.textRange = new SonarQubeReportLocation.TextRange();
+                    this.primaryLocation.textRange.startLine=violation.lineNumber
+                }
             }
 
 

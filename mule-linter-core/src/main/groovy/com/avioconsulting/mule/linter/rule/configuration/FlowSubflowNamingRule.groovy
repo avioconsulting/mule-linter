@@ -27,7 +27,8 @@ class FlowSubflowNamingRule extends Rule {
      */
     @Param("format") String format
 
-    FlowSubflowNamingRule(){
+    FlowSubflowNamingRule() {
+        super(RULE_ID, RULE_NAME)
         caseNaming = new CaseNaming(CaseNaming.CaseFormat.KEBAB_CASE)
     }
 
