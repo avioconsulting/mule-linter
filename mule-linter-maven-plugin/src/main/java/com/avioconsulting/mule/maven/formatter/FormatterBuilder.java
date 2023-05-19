@@ -5,6 +5,9 @@ import com.avioconsulting.mule.maven.formatter.impl.JsonFormatter;
 import com.avioconsulting.mule.maven.mojo.AbstractMuleLinterMojo;
 
 public class FormatterBuilder {
+
+    private FormatterBuilder(){}
+
     public static IFormatter build(FormatOptionsEnum format, AbstractMuleLinterMojo mojo, com.avioconsulting.mule.linter.model.rule.RuleExecutor re) {
         IFormatter formatter;
 

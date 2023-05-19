@@ -9,7 +9,9 @@ public class JsonNull extends JsonValue {
     public boolean equals(Object obj) {
         if(obj == null) {
             return true;
-        } else if(obj instanceof JsonNull) {
+        }
+
+        if(obj instanceof JsonNull) {
             return true;
         }
 
