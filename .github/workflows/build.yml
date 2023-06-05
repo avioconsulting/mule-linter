@@ -29,7 +29,7 @@ jobs:
 
       - name: Set Version
         id: set-version
-        run: echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
+        run: echo "version=$(./gradlew mule-linter-core:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Print Version
         run: echo "Version ${{ steps.set-version.outputs.version }}"
@@ -52,7 +52,7 @@ jobs:
         run: ./gradlew publish
 
       - name: JReleaser full-Release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         uses: jreleaser/release-action@v2
         env:
           JRELEASER_PROJECT_VERSION: ${{steps.set-version.outputs.version}}
@@ -83,7 +83,7 @@ jobs:
       - name: Set New Version Variable
         if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         id: set-new-version
-        run: echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
+        run: echo "version=$(./gradlew mule-linter-core:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
