@@ -1,0 +1,9 @@
+plugins {
+    id 'mule-linter.groovy-common-conventions'
+    id 'de.benediktritter.maven-plugin-development'
+}
+
+dependencies {
+    implementation 'org.apache.maven.plugins:maven-plugin-plugin:3.6.4'
+    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.4'
+}

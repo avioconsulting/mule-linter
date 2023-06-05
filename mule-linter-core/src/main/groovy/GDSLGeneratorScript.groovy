@@ -1,4 +1,3 @@
-
 println 'Generating GDSL file'
 def outputPath = "./src/main/resources/mule-linter-core.gdsl"
 def templateFileName = "./mule-linter-core.gdsl.vm"

@@ -1,12 +1,12 @@
 plugins {
-    id 'application'
+    id 'mule-linter.app-conventions'
 }
 
 dependencies {
     implementation project(':mule-linter-core')
-    implementation 'info.picocli:picocli-groovy:4.6.2'
+    implementation 'info.picocli:picocli-groovy:4.7.4'
 }
 
 application {
-    mainClassName 'com.avioconsulting.mule.linter.MuleLinterCli'
+    mainClass = 'com.avioconsulting.mule.linter.MuleLinterCli'
 }

@@ -1,0 +1,116 @@
+plugins {
+    id 'groovy'
+    id 'codenarc'
+    id 'mule-linter.semver'
+    id 'maven-publish'
+}
+
+group 'com.avioconsulting.mule'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.17'
+    testImplementation platform('org.spockframework:spock-bom:2.3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+    withSourcesJar()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+//groovydoc {
+//    doLast {
+//        if(project.name == 'mule-linter-core') {
+//            copy {
+//                from 'build/docs/groovydoc'
+//                into '../docs/groovydoc'
+//            }
+//        }
+//    }
+//}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc ) {
+    archiveClassifier = 'javadoc' // must use javadoc classifier to be able to deploy to Sonatype
+    from groovydoc.destinationDir
+}
+
+jar.dependsOn(groovydocJar)
+
+codenarc {
+    configFile = file("${rootProject.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
+    ignoreFailures = true
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact groovydocJar
+            pom {
+                name = project.name
+                description = project.name
+                url = 'https://github.com/avioconsulting/mule-linter'
+                inceptionYear = '2020'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://spdx.org/licenses/MIT.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'adesjardin'
+                        name = 'Adam Desjardin'
+                    }
+                    developer {
+                        id = 'kkingavio'
+                        name = 'Kevin King'
+                    }
+                    developer {
+                        id = 'manikmagar'
+                        name = 'Manik Magar'
+                    }
+                    developer {
+                        id = 'MrMcCartney'
+                        name = 'Reed McCartney'
+                    }
+                    developer {
+                        id = 'vanessacobis'
+                        name = 'Vanessa Cobis'
+                    }
+                    scm {
+                        connection = 'scm:git:https://github.com/avioconsulting/mule-linter.git'
+                        developerConnection = 'scm:git:ssh://github.com/avioconsulting/mule-linter.git'
+                        url = 'https://github.com/avioconsulting/mule-linter'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'staging'
+            url = layout.buildDirectory.dir("staging-repo")
+        }
+    }
+}
