@@ -48,7 +48,7 @@ jobs:
             **/build/test-results/**/*.xml
 
       - name: Stage Deployment
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        if: github.event_name != 'pull_request'
         run: ./gradlew publish
 
       - name: JReleaser full-Release
@@ -57,12 +57,12 @@ jobs:
         env:
           JRELEASER_PROJECT_VERSION: ${{steps.set-version.outputs.version}}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-          JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
-          JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
           JRELEASER_NEXUS2_MAVEN_CENTRAL_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           JRELEASER_NEXUS2_MAVEN_CENTRAL_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          JRELEASER_VERSION: 1.4.0
+          JRELEASER_VERSION: 1.6.0
         with:
           version: ${{ env.JRELEASER_VERSION }}
           arguments: full-release
