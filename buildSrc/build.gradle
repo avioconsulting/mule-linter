@@ -1,0 +1,14 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation 'de.benediktritter.maven-plugin-development:de.benediktritter.maven-plugin-development.gradle.plugin:0.4.2'
+    implementation 'net.thauvin.erik.gradle.semver:net.thauvin.erik.gradle.semver.gradle.plugin:1.0.4'
+    testImplementation platform("org.spockframework:spock-bom:2.2-groovy-3.0")
+    testImplementation 'org.spockframework:spock-core'
+}

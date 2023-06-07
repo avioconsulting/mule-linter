@@ -1,0 +1,4 @@
+plugins {
+    id 'mule-linter.groovy-common-conventions'
+    id 'mule-linter.maven-publish-conventions'
+}

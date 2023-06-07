@@ -15,7 +15,7 @@ project:
     license: https://github.com/avioconsulting/mule-linter/blob/main/LICENSE
     contribute: https://github.com/avioconsulting/mule-linter/blob/main/README.adoc
   authors:
-    - Adam Desjardin
+    - Adam DesJardin
     - Kevin King
     - Manik Magar
   license: MIT
@@ -30,6 +30,7 @@ project:
 
 release:
   github:
+    owner: 'avioconsulting'
     overwrite: true
     draft: false
     sign: true
@@ -38,10 +39,10 @@ release:
     milestone:
       close: false
     changelog:
-      formatted: always
+      skipMergeCommits: true
+      formatted: ALWAYS
       preset: conventional-commits
       format: '- {{commitShortHash}} {{commitTitle}}'
-      skipMergeCommits: true
       contributors:
         format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
       labelers:
@@ -64,8 +65,9 @@ checksum:
   individual: true
 
 signing:
-  active: always
+  active: ALWAYS
   armored: true
+  mode: MEMORY
 
 deploy:
   maven:
@@ -82,9 +84,6 @@ deploy:
           - mule-linter-spi/build/staging-deploy
           - mule-linter-maven-plugin/build/staging-deploy
           - mule-linter-cli/build/staging-deploy
-files:
-  artifacts:
-    - path: version.properties
 
 distributions:
   mule-linter:
