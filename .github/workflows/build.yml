@@ -52,7 +52,7 @@ jobs:
         run: ./gradlew publish
 
       - name: JReleaser full-Release
-        if: ${{ !contains(steps.set-version.outputs.version, 'SNAPSHOT') && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         uses: jreleaser/release-action@v2
         env:
           JRELEASER_PROJECT_VERSION: ${{steps.set-version.outputs.version}}
