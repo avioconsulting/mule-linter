@@ -48,11 +48,11 @@ jobs:
             **/build/test-results/**/*.xml
 
       - name: Stage Deployment
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         run: ./gradlew publish
 
       - name: JReleaser full-Release
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         uses: jreleaser/release-action@v2
         env:
           JRELEASER_PROJECT_VERSION: ${{steps.set-version.outputs.version}}
@@ -68,7 +68,7 @@ jobs:
           arguments: full-release
 
       - name: JReleaser release output
-        if: always()
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master'}}
         uses: actions/upload-artifact@v3
         with:
           name: jreleaser-release
