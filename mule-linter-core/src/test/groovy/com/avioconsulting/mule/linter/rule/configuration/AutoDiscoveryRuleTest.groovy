@@ -46,11 +46,53 @@ class AutoDiscoveryRuleTest extends Specification {
 
     }
 
-    def 'API configurations with no Autodiscovery configuration'() {
+    def 'Rule to skip API Autodiscovery check'() {
         given:
         testApp.addFile('src/main/mule/global-config.xml', BAD_CONFIG_1)
         testApp.addFile('src/main/mule/main.xml', API)
         Rule rule = new AutoDiscoveryRule()
+        rule.enabled = false
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+
+    }
+
+    def 'API configuration with multiple HTTP Listener flows configured with excluded flows for Autodiscovery'() {
+        given:
+        testApp.addFile('src/main/mule/global-config.xml', GOOD_CONFIG_1)
+        testApp.addFile('src/main/mule/main.xml', API_WITH_2_HTTP_FLOWS)
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.properties', DEV_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.properties', TEST_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'prod.properties', PROD_PROPERTY)
+        Rule rule = new AutoDiscoveryRule()
+        rule.environments = ENVS
+        rule.pattern = NAMING_PATTERN
+        rule.exemptedFlows =['sv-sales-order-api-main-v2']
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+
+    }
+
+    def 'API configurations with no Autodiscovery configuration'() {
+        given:
+        testApp.addFile('src/main/mule/global-config.xml', GOOD_CONFIG_1)
+        testApp.addFile('src/main/mule/main.xml', API_WITH_2_HTTP_FLOWS)
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.properties', DEV_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.properties', TEST_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'prod.properties', PROD_PROPERTY)
+        Rule rule = new AutoDiscoveryRule()
+        rule.environments = ENVS
+        rule.pattern = NAMING_PATTERN
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -60,7 +102,7 @@ class AutoDiscoveryRuleTest extends Specification {
         violations.size() == 1
 
         violations[0].lineNumber==0
-        violations[0].message == AutoDiscoveryRule.MISSING_AUTODISCOVERY_MESSAGE+ "sv-sales-order-api-main"
+        violations[0].message == AutoDiscoveryRule.MISSING_AUTODISCOVERY_MESSAGE+ "sv-sales-order-api-main-v2"
     }
 
     def 'Autodiscovery configuration with apiId not externalized'() {
@@ -169,6 +211,62 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 \t\t<apikit:router config-ref="api-config" />
 \t</flow>
 
+\t<flow name="get:\\v1\\widgets:api-config">
+\t\t<flow-ref doc:name="get-widgets" doc:id="450de59d-d74f-4df2-aa99-a7a3a3199ead" name="get-widgets" />
+\t</flow>
+</mule>'''
+
+    private static final String API_WITH_2_HTTP_FLOWS = '''
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" 
+xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" 
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+\t<flow name="sv-sales-order-api-main">
+\t\t<http:listener config-ref="http-listener-config" path="/api/v1/*">
+\t\t\t<http:response statusCode="#[vars.httpStatus default 200]">
+\t\t\t\t<http:headers><![CDATA[#[output application/java
+---
+{
+\t"x-correlation-id" : vars.correlationId
+}]]]></http:headers>
+\t\t\t</http:response>
+\t\t\t<http:error-response statusCode="#[vars.httpStatus default 500]">
+\t\t\t\t<http:body><![CDATA[#[payload]]]></http:body>
+\t\t\t\t<http:headers><![CDATA[#[output application/java
+---
+{
+\t"x-correlation-id" : vars.correlationId
+}]]]></http:headers>
+\t\t\t</http:error-response>
+\t\t</http:listener>
+\t\t<apikit:router config-ref="api-config" />
+\t</flow>
+\t<flow name="sv-sales-order-api-main-v2">
+\t\t<http:listener config-ref="http-listener-config" path="/api/v2/*">
+\t\t\t<http:response statusCode="#[vars.httpStatus default 200]">
+\t\t\t\t<http:headers><![CDATA[#[output application/java
+---
+{
+\t"x-correlation-id" : vars.correlationId
+}]]]></http:headers>
+\t\t\t</http:response>
+\t\t\t<http:error-response statusCode="#[vars.httpStatus default 500]">
+\t\t\t\t<http:body><![CDATA[#[payload]]]></http:body>
+\t\t\t\t<http:headers><![CDATA[#[output application/java
+---
+{
+\t"x-correlation-id" : vars.correlationId
+}]]]></http:headers>
+\t\t\t</http:error-response>
+\t\t</http:listener>
+\t\t<apikit:router config-ref="api-config" />
+\t</flow>
 \t<flow name="get:\\v1\\widgets:api-config">
 \t\t<flow-ref doc:name="get-widgets" doc:id="450de59d-d74f-4df2-aa99-a7a3a3199ead" name="get-widgets" />
 \t</flow>

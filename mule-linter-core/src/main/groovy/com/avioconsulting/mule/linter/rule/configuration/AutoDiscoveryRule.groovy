@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.PropertyFile
+import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
@@ -37,6 +38,18 @@ class AutoDiscoveryRule extends Rule {
     private static List DEFAULT_API_IDS = ["-1", "0", "1"]
 
     /**
+     * enabled: is a boolean flag, when set to 'false' API Autodiscovery rule will be skipped.
+     * The default value is: true
+     */
+    @Param("enabled") boolean enabled
+
+    /**
+     * exemptedFlows: is a list of flows with HTTP Listener components that will be exempted for API Autodiscovery.
+     * The default list is: []
+     */
+    @Param("exemptedFlows") List<String> exemptedFlows
+
+    /**
      * environments: is a list of environments that the property must be found in.
      * This value is used when determining the name for property files to be searched.
      * The default list is: ['dev', 'test', 'prod']
@@ -53,43 +66,71 @@ class AutoDiscoveryRule extends Rule {
         super(RULE_ID, RULE_NAME, RuleSeverity.BLOCKER, RuleType.VULNERABILITY)
         this.environments = DEFAULT_ENVIRONMENTS
         this.pattern = DEFAULT_PATTERN
+        this.enabled = true
+        this.exemptedFlows= []
     }
     @Override
-    List<RuleViolation> execute(Application app) {
+    List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []
-        List<String> httpFlowsList = getHttpListenerFlows(app)
-        List<MuleComponent> autoDiscoveryComponents = app.findComponents(AUTO_DISCOVERY_COMPONENT, AUTO_DISCOVERY_NAMESPACE)
-        httpFlowsList.each { httpFlow ->
-            MuleComponent autoDiscoveryComponent = findMatchingAutoDiscoveryComponent(httpFlow, autoDiscoveryComponents)
-            if (autoDiscoveryComponent != null) {
-                // Check if apiId property exists for API Autodiscovery component
-                if (!autoDiscoveryComponent.hasAttributeValue("apiId") || autoDiscoveryComponent.getAttributeValue("apiId").empty) {
-                    violations.add(new RuleViolation(this, autoDiscoveryComponent.file.path,
-                            autoDiscoveryComponent.lineNumber, API_ID_MISSING_VIOLATION_MESSAGE))
+        // Execute API Autodiscovery rule, only when enabled is set to 'true'
+        if (this.enabled == true){
+            List<FlowComponent> httpFlowsList = getHttpListenerFlows(application)
+            List<MuleComponent> autoDiscoveryComponents = application.findComponents(AUTO_DISCOVERY_COMPONENT, AUTO_DISCOVERY_NAMESPACE)
+            httpFlowsList.each { httpFlow ->
+                String httpFlowName = httpFlow.getAttributeValue("name")
+                MuleComponent autoDiscoveryComponent = findMatchingAutoDiscoveryComponent(httpFlowName, autoDiscoveryComponents)
+                if (autoDiscoveryComponent != null) {
+                    violations.addAll validateAutodiscoveryComponent(application, autoDiscoveryComponent)
                 } else {
-                    String apiIdAttributeValue = autoDiscoveryComponent.getAttributeValue("apiId")
-                    // Check if apiId property is externalized for API Autodiscovery, and not hardcoded
-                    if (apiIdAttributeValue.startsWith('${')) {
-                        String apiIdProperty = apiIdAttributeValue.substring(2, apiIdAttributeValue.length() - 1)
-                        violations.addAll checkPropertyValueViolations(app, apiIdProperty)
-                    } else {
-                        violations.add(new RuleViolation(this, autoDiscoveryComponent.file.path,
-                                autoDiscoveryComponent.lineNumber, API_ID_HARDCODED_VIOLATION_MESSAGE+" The Hard coded value for API ID is : "+apiIdAttributeValue))
-                    }
+                    violations.add(new RuleViolation(this, httpFlow.file.path,0, MISSING_AUTODISCOVERY_MESSAGE + httpFlowName))
                 }
-            } else {
-                violations.add(new RuleViolation(this, httpFlow,0, MISSING_AUTODISCOVERY_MESSAGE + httpFlow))
             }
         }
         return violations
     }
     /**
+     * This method validates Autodiscovery component and returns list of RuleViolation.
+     * returns List<RuleViolation>
+     */
+    List<RuleViolation> validateAutodiscoveryComponent(Application application, MuleComponent autoDiscoveryComponent)
+    {
+        List<RuleViolation> autodiscoveryViolations = []
+        // Check if apiId property exists for API Autodiscovery component
+        if (!autoDiscoveryComponent.hasAttributeValue("apiId") || autoDiscoveryComponent.getAttributeValue("apiId").empty) {
+            autodiscoveryViolations.add(new RuleViolation(this, autoDiscoveryComponent.file.path,
+                    autoDiscoveryComponent.lineNumber, API_ID_MISSING_VIOLATION_MESSAGE))
+        } else {
+            autodiscoveryViolations.addAll validateAutodiscoveryApiId(application, autoDiscoveryComponent)
+        }
+        return autodiscoveryViolations
+    }
+
+    /**
+     * This method validates apiId property in Autodiscovery component and returns list of RuleViolation.
+     * returns List<RuleViolation>
+     */
+    List<RuleViolation> validateAutodiscoveryApiId(Application application, MuleComponent autoDiscoveryComponent)
+    {
+        List<RuleViolation> apiIdViolations = []
+        String apiIdAttributeValue = autoDiscoveryComponent.getAttributeValue("apiId")
+        // Check if apiId property is externalized for API Autodiscovery, and not hardcoded
+        if (apiIdAttributeValue.startsWith('${')) {
+            String apiIdProperty = apiIdAttributeValue.substring(2, apiIdAttributeValue.length() - 1)
+            apiIdViolations.addAll checkPropertyValueViolations(application, apiIdProperty)
+        } else {
+            apiIdViolations.add(new RuleViolation(this, autoDiscoveryComponent.file.path,
+                    autoDiscoveryComponent.lineNumber, API_ID_HARDCODED_VIOLATION_MESSAGE+" The Hard coded value for API ID is : "+apiIdAttributeValue))
+        }
+        return apiIdViolations
+    }
+
+    /**
      * This method returns the matching API Autodiscovery component for the flow with HTTP Listener component
      */
-    MuleComponent findMatchingAutoDiscoveryComponent(String httpFlow,List<MuleComponent> muleComponentsList){
+    MuleComponent findMatchingAutoDiscoveryComponent(String flowName,List<MuleComponent> muleComponentsList){
         MuleComponent autoDiscoveryComponent = null
         muleComponentsList.each {muleComp ->
-            if(httpFlow == muleComp.getAttributeValue("flowRef")){
+            if(flowName == muleComp.getAttributeValue("flowRef")){
                 autoDiscoveryComponent = muleComp
             }
         }
@@ -98,6 +139,7 @@ class AutoDiscoveryRule extends Rule {
     /**
      * This method checks the apiId property in each environment property file to make sure it exists
      * and is set to a dummy value (-1,0,1) to be overwritten at deployment time, or that each environment has a unique value.
+     * Ret
      */
     List<RuleViolation> checkPropertyValueViolations(Application application,String propertyName) {
         List<RuleViolation> propertyViolations = []
@@ -113,30 +155,31 @@ class AutoDiscoveryRule extends Rule {
                         propertyName+ PROPERTY_MISSING_VIOLATION_MESSAGE + fileName))
             }else{
                 String apiId = pf.getProperty(propertyName)
-                if(DEFAULT_API_IDS.contains(apiId)){
-                    // skip when apiId matches default list of values ["-1","0","1"], these values will be overridden at deployment
-                }
-                else if(apiIdsList.contains(apiId)) {
+                if(!(DEFAULT_API_IDS.contains(apiId)) && apiIdsList.contains(apiId)) {
                     apiIdsList.add(apiId)
                     propertyViolations.add(new RuleViolation(this, pf.getFile().path, 0, propertyName + DUPLICATE_API_ID_MESSAGE))
-                }else{
+                }else if(!DEFAULT_API_IDS.contains(apiId) ){
                     apiIdsList.add(apiId)
                 }
             }
         }
         return propertyViolations
     }
+
     /**
-     * This method returns the list of flow names for the flows with HTTP Listener component in the Mule application.
+     * This method returns the list of flows with HTTP Listener component in the Mule application, and exempts the flows that are available in exemptedFlows.
      */
-    List<String> getHttpListenerFlows(Application application){
-        List <String> httpFlows = []
+    List<FlowComponent> getHttpListenerFlows(Application application){
+        List <FlowComponent> httpFlows = []
         application.flows.each{ flow ->
-            List<MuleComponent> muleCompList = flow.children
-            if(muleCompList != null && muleCompList.size() > 0){
-                muleCompList.each {muleComp ->
-                    if (muleComp.componentName == HTTP_LISTENER_COMPONENT) {
-                        httpFlows.add(flow.getAttributeValue("name"))
+            String flowName = flow.getAttributeValue("name")
+            if(!exemptedFlows.contains(flowName)){
+                List<MuleComponent> muleCompList = flow.children
+                if(muleCompList != null && muleCompList.size() > 0){
+                    muleCompList.each {muleComp ->
+                        if (muleComp.componentName == HTTP_LISTENER_COMPONENT) {
+                            httpFlows.add(flow)
+                        }
                     }
                 }
             }
