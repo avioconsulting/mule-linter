@@ -41,12 +41,9 @@ class CronExpressionExternalizedRule extends Rule {
                         CRON_EXPRESSION_HARD_CODED + muleComp.file.name+". The hard coded cron expression is : "+ muleComp.getAttributeValue('expression')))
             }
         }else{
-            List <MuleComponent> muleCompList = muleComp.children
-            muleCompList.each {childComp ->
-                if (childComp.children.size()>0){
-                    childComp.children.each {
-                        cronExpressionViolations.addAll checkCronExpressionViolations(it)
-                    }
+            if (muleComp.children.size()>0){
+                muleComp.children.each {childComp ->
+                    cronExpressionViolations.addAll checkCronExpressionViolations(childComp)
                 }
             }
         }
