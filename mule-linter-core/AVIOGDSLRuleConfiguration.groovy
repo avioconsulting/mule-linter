@@ -21,6 +21,7 @@ mule_linter {
         CONFIG_PLACEHOLDER {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
+        CRON_EXPRESSION_EXTERNALIZED{}
         DISPLAY_NAME {
             components = [
                 [name: 'set-payload', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Payload'],
