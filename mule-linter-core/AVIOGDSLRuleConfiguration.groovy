@@ -121,6 +121,9 @@ mule_linter {
         }
 
     /* PROPERTY */
+        APIKIT_VERSION {
+            artifactVersion = '1.9.0'
+        }
         ENCRYPTED_VALUE {}
         HOSTNAME_PROPERTY {
             exemptions = []

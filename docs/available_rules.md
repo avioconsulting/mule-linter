@@ -407,6 +407,18 @@ This rule takes no arguments.
 
 ## POM
 
+### APIKIT_VERSION
+
+This rule checks for the presence of a mule-apikit-module dependency with a given version in the `pom.xml`.
+
+The constructor for this rule is:
+
+```groovy
+ApikitVersionRule(String artifactVersion)
+```
+*artifactVersion* is the artifact version for `mule-apikit-module dependency` that is expected within the `pom.xml`.
+By default the artifactVersion is set to `1.9.0`.
+
 ### MULE_MAVEN_PLUGIN
 
 This rule ensures that the `mule-maven-plugin` of a specified version exists in the `pom.xml`.
