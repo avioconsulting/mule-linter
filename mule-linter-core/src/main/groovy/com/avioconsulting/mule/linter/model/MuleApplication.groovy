@@ -6,6 +6,7 @@ import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import org.apache.groovy.json.internal.JsonMap
+import org.yaml.snakeyaml.Yaml
 
 class MuleApplication implements Application {
 
@@ -51,6 +52,9 @@ class MuleApplication implements Application {
         File resourcePath = new File(applicationPath, PROPERTY_PATH)
         if (resourcePath.exists()) {
             resourcePath.traverse(nameFilter: ~/.*.properties/) { file->
+                propertyFiles.add(new PropertyFile(file))
+            }
+            resourcePath.traverse(nameFilter: ~/.*.yaml/) { file->
                 propertyFiles.add(new PropertyFile(file))
             }
         }
