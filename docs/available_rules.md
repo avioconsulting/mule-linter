@@ -31,6 +31,29 @@ ApiConsoleDisabledRule()
 
 This rule takes no arguments. 
 
+### AUTO_DISCOVERY_EXISTS
+This rule checks that every flow in the Mule application with HTTP listener component, should have an API Autodiscovery configuration for it where `flowRef` attribute matches the name of the flow with HTTP listener component.
+`apiId` property for the Autodiscovery configuration should be externalized into property files, and `apiId` should be unique for each environment, unless it is a set of defined values (-1, 0, 1) to be overwritten at deployment time.
+API Autodiscovery is critical Rule from API Security perspective. Without API Auto discovery configuration no security policy can be applied via API Manager.
+The constructor for this rule is:
+
+```groovy
+AutoDiscoveryRule(boolean enabled, List<String> exemptedFlows, List<String> environments, String pattern)
+```
+*enabled* is a boolean flag to enable/disable API Autodiscovery rule, when set to `false` API Autodiscovery rule will be ignored. This is default to boolean value `true`.
+
+*exemptedFlows* is a list of flow names with HTTP listener component exempted for API AutoDiscovery. The default list is `[]`
+
+*environments* is a list of environments that the property must be found in.
+This value is used when determining the name for property files to be searched.
+The default list is:
+```groovy
+['dev', 'test', 'prod']
+```
+
+*pattern* is a custom naming scheme for property files loaded by environment.
+The default pattern is `"${appname}-${env}.properties"`.
+
 ### COMMENTED_CODE
 
 This rule checks that no code is found within comments inside mule configuration files. 

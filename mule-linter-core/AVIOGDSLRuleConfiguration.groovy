@@ -6,6 +6,12 @@ mule_linter {
 
     /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
+        AUTO_DISCOVERY_EXISTS {
+            enabled = true
+            exemptedFlows = []
+            environments = ['dev', 'test', 'prod']
+            pattern = '${appname}-${env}.properties'
+        }
         COMMENTED_CODE {}
         COMPONENT_ATTRIBUTE_VALUE {
             component = 'flow-ref'
