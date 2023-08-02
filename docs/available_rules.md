@@ -156,7 +156,7 @@ Current options are `CAMEL_CASE`, `PASCAL_CASE`, `SNAKE_CASE`, or `KEBAB_CASE`.
 
 ### CONFIG_PLACEHOLDER
 
-This rule checks that certain common config elements use String interpolation placeholcers (`${value}`) to point to provided properties rather than be specified statically in line. 
+This rule checks that certain common config elements use String interpolation placeholders (`${value}`) to point to provided properties rather than be specified statically in line. 
 Referring to properties with placeholders makes it easier to specify values by environment, encrypt secrets that should not be plain text values, or provide common values through templates or archetypes. 
 This rule only considers global configuration elements, and does not look at values provided within flows. 
 The default list covers the most common attributes to provide placeholders for, but is not exhaustive. You may provide your own list if necessary. 
@@ -177,6 +177,17 @@ This argument is optional. The default array is as follows:
 'localAuthorizationUrlResourceOwnerId', 'localAuthorizationUrl',
 'authorizationUrl', 'passphrase']
 ```
+### CRON_EXPRESSION_EXTERNALIZED
+
+Cron Expressions are used in most implementation using Schedulers/Batch/Polling based integrations.
+This rule checks for all the Mule event source components with cron scheduler reference 'expression` configuration using property (${cron.expression}) externalized in property files rather than be hardcoded in line.
+
+The constructors for this rule are:
+
+```groovy
+CronExpressionExternalizedRule()
+```
+This rule takes no arguments.
 
 ### DISPLAY_NAME
 
