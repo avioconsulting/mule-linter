@@ -52,6 +52,13 @@ class PomDependencyVersionRule extends Rule {
         this.versionOperator = Version.Operator.EQUAL
     }
 
+    PomDependencyVersionRule(String ruleId, String ruleName, String groupId, String artifactId, String versionOperator){
+        super(ruleId, ruleName)
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.versionOperator = versionOperator
+        version= new Version()
+    }
     @Override
     void init(){
         try{
