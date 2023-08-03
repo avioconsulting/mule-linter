@@ -6,6 +6,12 @@ mule_linter {
 
     /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
+        AUTO_DISCOVERY_EXISTS {
+            enabled = true
+            exemptedFlows = []
+            environments = ['dev', 'test', 'prod']
+            pattern = '${appname}-${env}.properties'
+        }
         COMMENTED_CODE {}
         COMPONENT_ATTRIBUTE_VALUE {
             component = 'flow-ref'
@@ -21,6 +27,7 @@ mule_linter {
         CONFIG_PLACEHOLDER {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
+        CRON_EXPRESSION_EXTERNALIZED{}
         DISPLAY_NAME {
             components = [
                 [name: 'set-payload', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Payload'],
@@ -121,6 +128,9 @@ mule_linter {
         }
 
     /* PROPERTY */
+        APIKIT_VERSION {
+            artifactVersion = '1.9.0'
+        }
         ENCRYPTED_VALUE {}
         HOSTNAME_PROPERTY {
             exemptions = []

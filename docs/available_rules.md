@@ -31,6 +31,29 @@ ApiConsoleDisabledRule()
 
 This rule takes no arguments. 
 
+### AUTO_DISCOVERY_EXISTS
+This rule checks that every flow in the Mule application with HTTP listener component, should have an API Autodiscovery configuration for it where `flowRef` attribute matches the name of the flow with HTTP listener component.
+`apiId` property for the Autodiscovery configuration should be externalized into property files, and `apiId` should be unique for each environment, unless it is a set of defined values (-1, 0, 1) to be overwritten at deployment time.
+API Autodiscovery is critical Rule from API Security perspective. Without API Auto discovery configuration no security policy can be applied via API Manager.
+The constructor for this rule is:
+
+```groovy
+AutoDiscoveryRule(boolean enabled, List<String> exemptedFlows, List<String> environments, String pattern)
+```
+*enabled* is a boolean flag to enable/disable API Autodiscovery rule, when set to `false` API Autodiscovery rule will be ignored. This is default to boolean value `true`.
+
+*exemptedFlows* is a list of flow names with HTTP listener component exempted for API AutoDiscovery. The default list is `[]`
+
+*environments* is a list of environments that the property must be found in.
+This value is used when determining the name for property files to be searched.
+The default list is:
+```groovy
+['dev', 'test', 'prod']
+```
+
+*pattern* is a custom naming scheme for property files loaded by environment.
+The default pattern is `"${appname}-${env}.properties"`.
+
 ### COMMENTED_CODE
 
 This rule checks that no code is found within comments inside mule configuration files. 
@@ -133,7 +156,7 @@ Current options are `CAMEL_CASE`, `PASCAL_CASE`, `SNAKE_CASE`, or `KEBAB_CASE`.
 
 ### CONFIG_PLACEHOLDER
 
-This rule checks that certain common config elements use String interpolation placeholcers (`${value}`) to point to provided properties rather than be specified statically in line. 
+This rule checks that certain common config elements use String interpolation placeholders (`${value}`) to point to provided properties rather than be specified statically in line. 
 Referring to properties with placeholders makes it easier to specify values by environment, encrypt secrets that should not be plain text values, or provide common values through templates or archetypes. 
 This rule only considers global configuration elements, and does not look at values provided within flows. 
 The default list covers the most common attributes to provide placeholders for, but is not exhaustive. You may provide your own list if necessary. 
@@ -154,6 +177,17 @@ This argument is optional. The default array is as follows:
 'localAuthorizationUrlResourceOwnerId', 'localAuthorizationUrl',
 'authorizationUrl', 'passphrase']
 ```
+### CRON_EXPRESSION_EXTERNALIZED
+
+Cron Expressions are used in most implementation using Schedulers/Batch/Polling based integrations.
+This rule checks for all the Mule event source components with cron scheduler reference 'expression` configuration using property (${cron.expression}) externalized in property files rather than be hardcoded in line.
+
+The constructors for this rule are:
+
+```groovy
+CronExpressionExternalizedRule()
+```
+This rule takes no arguments.
 
 ### DISPLAY_NAME
 
@@ -406,6 +440,18 @@ MuleArtifactMinMuleVersionRule()
 This rule takes no arguments. 
 
 ## POM
+
+### APIKIT_VERSION
+
+This rule checks for the presence of a mule-apikit-module dependency in the `pom.xml`, and `mule-apikit-module` dependency version in the `pom.xml` should be greater than *artifactVersion*..
+
+The constructor for this rule is:
+
+```groovy
+ApikitVersionRule(String artifactVersion)
+```
+*artifactVersion* is the artifact version for `mule-apikit-module` dependency.
+By default the artifactVersion is set to `1.9.0`.
 
 ### MULE_MAVEN_PLUGIN
 
