@@ -39,6 +39,8 @@ jobs:
           distribution: adopt-hotspot
           java-version: 8
           cache: gradle
+      - name: Compile
+        run: ./gradlew assemble
       - name: Verify
         # build to generate docs folder
         run: ./gradlew check
