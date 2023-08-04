@@ -1,0 +1,6 @@
+user: "jallen"
+password: "![abcdef==]"
+db:
+  port: 1521
+  host: "localhost"
+  user: "areed"

@@ -14,6 +14,7 @@ class AutoDiscoveryRuleTest extends Specification {
     private static final String PROPERTY_DIRECTORY = 'src/main/resources/properties/'
     private static final List<String> ENVS = ['dev', 'test', 'prod']
     private static final String NAMING_PATTERN = '${env}.properties'
+    private static final String YAML_NAMING_PATTERN = '${env}.yaml'
     private final TestApplication testApp = new TestApplication()
     private Application app
 
@@ -36,6 +37,25 @@ class AutoDiscoveryRuleTest extends Specification {
         Rule rule = new AutoDiscoveryRule()
         rule.environments = ENVS
         rule.pattern = NAMING_PATTERN
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+
+    }
+
+    def 'API configuration correctly configured with Autodiscovery in YAML Property file'() {
+        given:
+        testApp.addFile('src/main/mule/global-config.xml', GOOD_CONFIG_1)
+        testApp.addFile('src/main/mule/main.xml', API)
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.yaml', YAML_DEV_PROPERTY)
+        testApp.addFile(PROPERTY_DIRECTORY + 'test.yaml', YAML_TEST_PROPERTY)
+        Rule rule = new AutoDiscoveryRule()
+        rule.environments = ['dev', 'test']
+        rule.pattern = YAML_NAMING_PATTERN
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
@@ -412,6 +432,28 @@ db.port = 1521
 db.host = localhost
 db.user = areed
 db.secret = ![abcdef==]
+'''
+    private static final String YAML_DEV_PROPERTY = '''
+api:
+  id: 11111
+user: jallen
+password: "![abcdef==]"
+db:
+  port: 1521
+  host: localhost
+  user: areed
+  secret: BillsRule!
+'''
+    private static final String YAML_TEST_PROPERTY = '''
+api:
+  id: 22222
+user: jallen
+password: "![abcdef==]"
+db:
+  port: 1521
+  host: localhost
+  user: areed
+  secret: BillsRule!
 '''
 
 }

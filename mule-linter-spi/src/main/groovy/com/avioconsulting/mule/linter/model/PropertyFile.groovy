@@ -6,7 +6,6 @@ class PropertyFile {
 
     File file
     String name
-//    Properties properties
     Hashtable<Object, Object> properties
 
     PropertyFile(File file) {
@@ -78,14 +77,6 @@ class PropertyFile {
         }
     }
 
-//    void loadProperties() {
-//        Properties props = new Properties()
-//        file.withInputStream {
-//            props.load(it)
-//        }
-//        properties = props
-//    }
-
     File getFile() {
         return file
     }
@@ -94,16 +85,11 @@ class PropertyFile {
         return properties
     }
 
-//    Properties getProperties() {
-//        return properties
-//    }
-
     Integer getPropertyCount() {
         return properties.size()
     }
 
     String getProperty(String propertyName) {
-//        return properties.getProperty(propertyName)
         return properties.get(propertyName)
     }
 
@@ -118,7 +104,6 @@ class PropertyFile {
     void setName(String name) {
         this.name = name
     }
-
 
     @Override
     String toString() {
