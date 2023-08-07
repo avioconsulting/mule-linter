@@ -39,6 +39,41 @@ class PropertyExistsRuleTest extends Specification {
         then:
         violations.size() == 0
     }
+    def 'Property Exists in YAML'() {
+        given:
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.yaml', GOOD_PROPERTY_YAML_1)
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.pattern = '${env}.yaml'
+        rule.environments = ['dev']
+
+        when:
+        app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }
+
+    def 'Property Exists in YAML and matches property notation'() {
+        given:
+        testApp.addFile(PROPERTY_DIRECTORY + 'dev.yaml', GOOD_PROPERTY_YAML_1)
+        Rule rule = new PropertyExistsRule()
+        rule.propertyName = 'sample.property'
+        rule.pattern = '${env}.yaml'
+        rule.environments = ['dev']
+
+        when:
+        app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+        app.getPropertyFiles()
+                .find {it.getName() == 'dev.yaml' }
+                .getProperty('sample.property') == "BillsRule!"
+
+    }
 
     def 'Property Exists with env list'() {
         given:
@@ -124,6 +159,23 @@ db.port = 1521
 db.host = localhost
 db.user = areed
 db.secret = BillsRule!
+'''
+
+    private static final GOOD_PROPERTY_YAML_1 = '''
+user: james
+password: "![abcdef==]"
+sample:
+  property: BillsRule!
+  list: 
+    - 1
+    - 2
+    - 3
+  listAsArray: ["1","2","3"]
+db:
+  port: 1521
+  host: localhost
+  user: areed
+  secret: BillsRule!
 '''
 
 }

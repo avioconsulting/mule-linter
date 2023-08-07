@@ -41,6 +41,26 @@ class PropertyFileNamingRuleTest extends Specification {
         violations[0].message.contains(customNamingPattern)
     }
 
+    def 'YAML Property File Naming Rule check with pattern'() {
+        given:
+        testApp.addPropertyFiles(['dev.yaml',
+                                  'test.yaml'])
+        def customNamingPattern = '${env}.yaml'
+        Rule rule = new PropertyFileNamingRule()
+        rule.environments = ENVS
+        rule.pattern = customNamingPattern
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        app.propertyFiles.size() == 2
+        violations.size() == 1
+        violations[0].fileName == 'prod.yaml'
+        violations[0].message.contains(customNamingPattern)
+    }
+
     def 'Property File Naming Rule check default pattern'() {
         given:
         testApp.addPropertyFiles(['sample-mule-app-dev.properties',

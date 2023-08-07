@@ -51,8 +51,8 @@ The default list is:
 ['dev', 'test', 'prod']
 ```
 
-*pattern* is a custom naming scheme for property files loaded by environment.
-The default pattern is `"${appname}-${env}.properties"`.
+*pattern* is a custom naming scheme for property files loaded by environment. 
+The default pattern is `"${appname}-${env}.properties"`, and to check for yaml properties file the pattern is `"${appname}-${env}.yaml"`.
 
 ### COMMENTED_CODE
 
@@ -670,8 +670,8 @@ The default list is:
 ['dev', 'test', 'prod']
 ```
 
-*pattern* is a custom naming scheme for property files loaded by environment. 
-The default pattern is `"${appname}-${env}.properties"`. 
+*pattern* is a custom naming scheme for property files loaded by environment.
+The default pattern is `"${appname}-${env}.properties"`, and to check for yaml properties file the pattern is `"${appname}-${env}.yaml"`. 
 
 ### PROPERTY_FILE_NAMING
 
@@ -692,12 +692,12 @@ For example:
 ['dev', 'test', 'prod']
 ```
 
-*pattern* is the basis for how a property file for a given environment is named. 
-The default pattern is `"${appname}-${env}.properties"`. 
+*pattern* is the basis for how a property file for a given environment is named. For
+The default pattern is `"${appname}-${env}.properties"`, and to check for yaml properties file the pattern is `"${appname}-${env}.yaml"`. 
 
 ### PROPERTY_FILE_COUNT_MISMATCH
 
-This rule ensures that the propety files for each environment have a matching number of properties in them. 
+This rule ensures that the property files for each environment have a matching number of properties in them. 
 While not always the case, a different number of properties in one environment might mean that a property was left out of an environment by mistake. 
 
 The constructors for this rule are: 
@@ -714,7 +714,7 @@ For example:
 ```
 
 *pattern* is the basis for how a property file for a given environment is named. 
-The default pattern is `"${appname}-${env}.properties"`. 
+The default pattern is `"${appname}-${env}.properties"`, and to check for yaml properties file the pattern is `"${appname}-${env}.yaml"`. 
 
 ### README
 

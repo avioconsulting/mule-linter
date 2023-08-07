@@ -35,6 +35,21 @@ class EncryptedPasswordRuleTest extends Specification {
         violations.size() == 0
     }
 
+    def 'YAML Property File with encrypted password'() {
+        given:
+        testApp.addFile('src/main/resources/properties/sample-mule-app.test.yaml', YAML_GOOD_PROPERTY_1)
+        testApp.addFile('src/main/resources/properties/sample-mule-app.dev.yaml', YAML_GOOD_PROPERTY_1)
+        Rule rule = new EncryptedPasswordRule()
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        app.propertyFiles.size() == 2
+        violations.size() == 0
+    }
+
     def 'Property File not encrypted password'() {
         given:
         testApp.addFile('src/main/resources/properties/sample-mule-app.test.properties', BAD_PROPERTY_1)
@@ -54,6 +69,30 @@ class EncryptedPasswordRuleTest extends Specification {
         testPropertiesViolation.message.endsWith('db.secret')
         List<RuleViolation> devPropertiesViolation = violations.findAll {
             it.fileName.contains('sample-mule-app.dev.properties')
+        }
+        devPropertiesViolation.find {
+            it.message.contains('db.secret')
+        }
+        devPropertiesViolation.find {
+            it.message.contains('password')
+        }
+    }
+
+    def 'YAML Property File with plain text password'() {
+        given:
+        testApp.addFile('src/main/resources/properties/sample-mule-app.test.yaml', YAML_GOOD_PROPERTY_1)
+        testApp.addFile('src/main/resources/properties/sample-mule-app.dev.yaml', YAML_BAD_PROPERTY_1)
+        Rule rule = new EncryptedPasswordRule()
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        app.propertyFiles.size() == 2
+        violations.size() == 2
+        List<RuleViolation> devPropertiesViolation = violations.findAll {
+            it.fileName.contains('sample-mule-app.dev.yaml')
         }
         devPropertiesViolation.find {
             it.message.contains('db.secret')
@@ -93,5 +132,27 @@ db.host = localhost
 db.user = areed
 db.secret = BillsRule!
 '''
+    private static final String YAML_GOOD_PROPERTY_1 = '''
+user: "james"
+password: "![abcdef==]"
 
+db:
+  port: 1521
+  host: "localhost"
+  user: "areed"
+  secret: "![abcdef==]"
+
+other:
+  secret = ${secure::shared.secret}
+'''
+    private static final String YAML_BAD_PROPERTY_1 = '''
+user: "jallen"
+password: "mypassword"
+
+db:
+  port: 1521
+  host: "localhost"
+  user: "areed"
+  secret: "BillsRule!"
+'''
 }
