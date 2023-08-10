@@ -30,4 +30,3 @@ jobs:
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
-      version-project: 'mule-linter-core'
