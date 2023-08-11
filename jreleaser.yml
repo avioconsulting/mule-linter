@@ -88,5 +88,4 @@ deploy:
 distributions:
   mule-linter:
     artifacts:
-      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.zip
-      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.tar
+      - path: mule-linter-cli/build/libs/mule-linter-cli-{{projectVersion}}.jar
