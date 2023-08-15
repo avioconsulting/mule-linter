@@ -19,14 +19,14 @@ project:
     - Kevin King
     - Manik Magar
   license: BSD-2-Clause
-  inceptionYear: 2020
+  inceptionYear: '2020'
   tags:
     - maven
     - linter
     - mule
   java:
     groupId: com.avioconsulting.mule
-    version: 8
+    version: '8'
 
 release:
   github:
@@ -88,4 +88,5 @@ deploy:
 distributions:
   mule-linter:
     artifacts:
-      - path: mule-linter-cli/build/libs/mule-linter-cli-{{projectVersion}}.jar
+      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.tar
+      - path: mule-linter-cli/build/distributions/mule-linter-cli-{{projectVersion}}.zip
