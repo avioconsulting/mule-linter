@@ -10,3 +10,21 @@ dependencies {
 application {
     mainClass = 'com.avioconsulting.mule.linter.MuleLinterCli'
 }
+
+publish.dependsOn(shadowDistTar)
+publish.dependsOn(shadowDistZip)
+
+tasks.register('renameDists', Sync) {
+    from('build/distributions/')
+    into('build/distributions/')
+    include '*.tar'
+    include '*.zip'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    rename { String filename ->
+        filename.replace("-shadow", "")
+    }
+}
+
+renameDists.dependsOn(shadowDistTar)
+renameDists.dependsOn(shadowDistZip)
+publish.dependsOn(renameDists)
