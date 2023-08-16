@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.configuration
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.configuration.AVIOLoggerComponent
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
 import com.avioconsulting.mule.linter.model.rule.Param
@@ -84,16 +85,22 @@ class ConsecutiveLoggersCountRule extends Rule {
         Integer count = 0
         RuleViolation violation = null
         flow.children.each {
-            if (it.componentName == LoggerComponent.COMPONENT_NAME) {
-                if (it.getAttributeValue("level") == logLevel) {
+            if (it.componentName == LoggerComponent.COMPONENT_NAME || it.componentName == AVIOLoggerComponent.COMPONENT_NAME) {
+                String componentLevelAttribute = it.getAttributeValue("level")
+                // In AVIO Custom logger, since log level is not populated as attribute for default log level - 'INFO'
+                // When log level attribute is not available in the configuration, default it to 'INFO'.
+                if(componentLevelAttribute == null){
+                    componentLevelAttribute = 'INFO'
+                }
+                if (componentLevelAttribute == logLevel) {
                     count++
                     if (count >= privateExcessiveLoggers.get(LoggerComponent.LogLevel.valueOf(
-                            it.getAttributeValue("level")))) {
+                            componentLevelAttribute))) {
                         violation = new RuleViolation(this, flow.file.path, flow.lineNumber, RULE_VIOLATION_MESSAGE
                                 + flow.getAttributeValue("name"))
                     }
                 } else {
-                    logLevel = it.getAttributeValue("level")
+                    logLevel = componentLevelAttribute
                     count = 1
                 }
             }
