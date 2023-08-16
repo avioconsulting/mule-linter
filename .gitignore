@@ -1,3 +1,5 @@
+mule-linter-core/src/main/resources/mule-linter-core.gdsl
+
 # Compiled class file
 *.class
 

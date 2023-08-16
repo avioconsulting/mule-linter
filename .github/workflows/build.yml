@@ -16,6 +16,7 @@ jobs:
     secrets: inherit
     with:
       version-project: 'mule-linter-core'
+      include-test-results: false
 
   Release:
     needs: Build
