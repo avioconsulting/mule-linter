@@ -29,7 +29,6 @@ class ConsecutiveLoggersCountRuleTest extends Specification{
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        println violations
         violations.size() == 3
         violations[0].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE +
                 "get:\\user\\(id)\\roles:application\\json:my-api-config"
@@ -48,7 +47,6 @@ class ConsecutiveLoggersCountRuleTest extends Specification{
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        println violations
         violations.size() == 2
         violations[0].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE + "business-subflow-three"
         violations[1].message == ConsecutiveLoggersCountRule.RULE_VIOLATION_MESSAGE + "business-subflow-four"
@@ -70,7 +68,6 @@ class ConsecutiveLoggersCountRuleTest extends Specification{
         List<RuleViolation> violations = rule.execute(app)
 
         then:
-        println violations
         violations.size() == 0
     }
 
