@@ -52,6 +52,9 @@ release:
         - label: 'releases'
           title: 'release:'
           order: 900
+        - label: 'releases'
+          title: 'chore(ver):'
+          order: 910
       categories:
         - title: '⚙️  Dependencies'
           key: 'dependencies'
