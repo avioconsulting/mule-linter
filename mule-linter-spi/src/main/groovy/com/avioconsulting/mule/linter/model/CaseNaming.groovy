@@ -7,8 +7,7 @@ class CaseNaming {
         CAMEL_CASE,
         PASCAL_CASE,
         SNAKE_CASE,
-        KEBAB_CASE,
-        JAVA_PROPERTIES_CASE
+        KEBAB_CASE
 
     }
 
@@ -16,7 +15,7 @@ class CaseNaming {
                                                  (CaseFormat.PASCAL_CASE):'^[A-Z][a-zA-Z0-9]+$',
                                                  (CaseFormat.SNAKE_CASE):'^([a-z][a-z0-9]*)(_[a-z0-9]+)*$',
                                                  (CaseFormat.KEBAB_CASE):'^([a-z][a-z0-9]*)(-[a-z0-9]+)*$',
-                                                 (CaseFormat.JAVA_PROPERTIES_CASE):'^([a-z][a-z0-9]*)(\\.[a-z0-9]+)*$']
+                                                 ('JAVA_PROPERTIES_CASE'):'^([a-z][a-z0-9]*)(\\.[a-z0-9]+)*$']
     CaseFormat format
 
     CaseNaming(CaseFormat format) {

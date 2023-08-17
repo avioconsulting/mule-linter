@@ -675,7 +675,7 @@ The default pattern is `"${appname}-${env}.properties"`, and to check for yaml p
 
 ### PROPERTIES_NAMING
 
-This rule checks that properties name in the all the properties files for the Mule application follow a given case format. 
+This rule checks that properties name in the all the properties files for the Mule application follow java properties format. 
 It is recommended that the Properties name in the properties file follows predefined acceptable format such as java property naming conventions (db.username).
 AVIO highly recommends that properties are named in java properties format - db.username, db.password.
 
@@ -683,12 +683,7 @@ The constructors for this rule are:
 
 ```groovy
 PropertiesNamingRule()
-PropertiesNamingRule(String format)
 ```
-
-*format* is the case format for the properties name in the properties file.
-The default pattern is `"JAVA_PROPERTIES_CASE`.
-
 ### PROPERTY_FILE_NAMING
 
 This rule ensures that property files exist for each deployment environment, according to an optionally given pattern. 

@@ -37,7 +37,6 @@ class PropertiesNamingRuleTest extends Specification {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', BAD_PROPERTY)
         Rule rule = new PropertiesNamingRule()
-        rule.setProperty('format','JAVA_PROPERTIES_CASE')
         rule.init()
 
         when:
