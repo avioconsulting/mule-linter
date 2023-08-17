@@ -49,15 +49,24 @@ release:
         - label: 'dependencies'
           title: 'chore(deps):'
           order: 130
+        - label: 'releases'
+          title: 'release:'
+          order: 900
       categories:
         - title: '⚙️  Dependencies'
           key: 'dependencies'
           order: 80
           labels:
             - 'dependencies'
+        - title: 'Releases'
+          key: 'releases'
+          order: 900
+          labels:
+            - 'releases'
       hide:
         categories:
           - 'merge'
+          - 'releases'
         contributors:
           - 'GitHub'
 
