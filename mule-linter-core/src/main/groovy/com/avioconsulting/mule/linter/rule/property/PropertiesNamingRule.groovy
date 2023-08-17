@@ -7,6 +7,7 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity
+import com.avioconsulting.mule.linter.model.rule.RuleType
 /**
  * This rule checks that properties name in the properties file follow a given case format.
  * It is recommended that the Properties name in the properties file follows predefined acceptable format
