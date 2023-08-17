@@ -238,6 +238,22 @@ EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers =
 	(LoggerComponent.LogLevel.ERROR): 2]
 ```
 
+### FLOW_ERROR_HANDLER
+
+It is recommended that all the flows in the Mule application has an error handler implemented for it.
+There are two distinct approaches for error handling in a Mule application to catch exceptions:
+1. Global Error Handler (Application Error Handling)
+2. Error Handling within main flows
+
+This rules ensures that Global error handler configuration with `defaultErrorHandler-ref` attribute set to error handler flow exists in the Mule application, 
+and if there's no Global error handler configuration in the Mule application, all the `flow` components in the mule application should have an `error-handler` implemented for it. 
+
+The constructor for the rule is:
+
+```groovy
+FlowErrorHandlerRule()
+```
+
 ### FLOW_SUBFLOW_NAMING
 
 This rule ensures that `flow` and `sub-flow` names follow a given case format. 
