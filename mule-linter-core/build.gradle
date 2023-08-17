@@ -11,7 +11,7 @@ dependencies {
     compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
 }
 
-task generateGDSL (type: JavaExec) {
+tasks.register('generateGDSL', JavaExec) {
     //Generates GDSL file using `GDSLGenerator.groovy`.
     // Generated file is added in src/main/resources.
     // Run `./gradlew generateGDSL`
