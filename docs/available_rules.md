@@ -237,6 +237,21 @@ EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers =
 	(LoggerComponent.LogLevel.WARN): 2,
 	(LoggerComponent.LogLevel.ERROR): 2]
 ```
+### FLOW_SUBFLOW_COMPONENT_COUNT
+
+This rule ensures that number of components in a `flow` and `sub-flow` does not exceed maximum allowed component count.
+It is recommended that when creating flows and sub-flows in Mulesoft, Single Responsibility Principle is followed to observe good performance, reliability practices, and readability.
+Defining maximum allowed component in _flow_ and _sub-flow_ will make the flows more readable.  
+
+The constructor for the rule is:
+
+```groovy
+FlowSubflowComponentCountRule()
+FlowSubflowComponentCountRule(Integer maxCount)
+```
+
+*maxCount* is maximum allowed components in a flow or sub-flow.
+The default maxCount is set to `20`.
 
 ### FLOW_SUBFLOW_NAMING
 
