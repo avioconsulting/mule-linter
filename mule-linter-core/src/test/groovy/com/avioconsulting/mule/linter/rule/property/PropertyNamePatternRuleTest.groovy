@@ -6,7 +6,8 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import spock.lang.Specification
 
-class PropertiesNamingRuleTest extends Specification {
+class PropertyNamePatternRuleTest extends Specification {
+
     private static final String PROPERTY_DIRECTORY = 'src/main/resources/properties/'
     private final TestApplication testApp = new TestApplication()
     def setup() {
@@ -22,7 +23,37 @@ class PropertiesNamingRuleTest extends Specification {
     def 'Default properties naming convention check success'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY)
-        Rule rule = new PropertiesNamingRule()
+        Rule rule = new PropertyNamePatternRule()
+        rule.init()
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }
+
+    def 'JAVA_PROPERTIES_CASE Properties naming convention check success'() {
+        given:
+        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY)
+        Rule rule = new PropertyNamePatternRule()
+        rule.format ='JAVA_PROPERTIES_CASE'
+        rule.init()
+
+        when:
+        MuleApplication app = new MuleApplication(testApp.appDir)
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }
+
+    def 'CamelCase Properties naming convention check success'() {
+        given:
+        testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', GOOD_PROPERTY_1)
+        Rule rule = new PropertyNamePatternRule()
+        rule.format ='CAMEL_CASE'
         rule.init()
 
         when:
@@ -36,7 +67,7 @@ class PropertiesNamingRuleTest extends Specification {
     def 'Properties naming with kebab-case, snake_case convention check failure'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'sample-mule-app-test.properties', BAD_PROPERTY)
-        Rule rule = new PropertiesNamingRule()
+        Rule rule = new PropertyNamePatternRule()
         rule.init()
 
         when:
@@ -52,7 +83,7 @@ class PropertiesNamingRuleTest extends Specification {
     def 'Default properties naming convention for YAML properties file check success'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'dev.yaml', GOOD_PROPERTY_YAML)
-        Rule rule = new PropertiesNamingRule()
+        Rule rule = new PropertyNamePatternRule()
         rule.init()
 
         when:
@@ -66,7 +97,7 @@ class PropertiesNamingRuleTest extends Specification {
     def 'Properties naming convention with kebab-case, snake_case for YAML properties file check failure'() {
         given:
         testApp.addFile(PROPERTY_DIRECTORY + 'dev.yaml', BAD_PROPERTY_YAML)
-        Rule rule = new PropertiesNamingRule()
+        Rule rule = new PropertyNamePatternRule()
         rule.init()
 
         when:
@@ -86,6 +117,15 @@ db.host = localhost
 db.user = areed
 db.secret = ![abcdef==]
 '''
+    private static final String GOOD_PROPERTY_1 = '''
+userName=jallen
+userPassword=![abcdef==]
+dbPort = 1521
+dbHost = localhost
+dbUser = areed
+dbSecret = ![abcdef==]
+'''
+
 
     private static final String BAD_PROPERTY = '''
 user=jallen
