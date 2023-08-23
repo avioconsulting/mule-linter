@@ -40,7 +40,7 @@ class MunitMavenPluginAttributesRule extends Rule {
     /**
      * ignoreFiles: is a list of test files that the `munit-maven-plugin should` ignore.
      * By default, AVIO does not expect to ignore test suites.
-     * Ignored test suites is a code smell, and should be removed before commiting/merging code.
+     * Ignored test suites is a code smell, and should be removed before committing/merging code.
      */
     @Param("ignoreFiles") List<String> ignoreFiles
 

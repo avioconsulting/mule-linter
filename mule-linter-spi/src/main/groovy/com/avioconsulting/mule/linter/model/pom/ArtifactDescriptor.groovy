@@ -22,11 +22,20 @@ class ArtifactDescriptor {
     }
 
     PomElement getAttribute(String attributeName) {
-        PomElement pElement = null
         GPathResult element = pluginXml.depthFirst().find {
             it.name() == attributeName
         }
+        return getPomElement(element)
+    }
 
+    PomElement getConfigProperty(String propertyName) {
+        GPathResult element = pluginXml.configuration.depthFirst().find {
+            it.name() == propertyName
+        }
+        return getPomElement(element)
+    }
+    private PomElement getPomElement(GPathResult element) {
+        PomElement pElement = null
         if (element != null ) {
             if ( isExpression(element.text()) ) {
                 pElement = pomFile.getPomProperty(variableName(element.text()))
@@ -35,20 +44,6 @@ class ArtifactDescriptor {
                 pElement.name = element.name()
                 pElement.value = element.text()
                 pElement.lineNo = getNodeLineNumber(element)
-            }
-        }
-
-        return pElement
-    }
-
-    PomElement getConfigProperty(String propertyName) {
-        PomElement pElement = null
-        pluginXml.configuration.depthFirst().each {
-            if (it.name() == propertyName) {
-                pElement = new PomElement()
-                pElement.name = propertyName
-                pElement.value = it.text()
-                pElement.lineNo = getNodeLineNumber(it)
             }
         }
         return pElement

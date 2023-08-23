@@ -14,6 +14,8 @@
 		<app.runtime>4.2.2</app.runtime>
 		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
 		<munit.version>2.2.1</munit.version>
+		<munit.failBuild>true</munit.failBuild>
+		<munit.requiredApplicationCoverage>80</munit.requiredApplicationCoverage>
     </properties>
 
 	<build>
@@ -66,8 +68,8 @@
                 <configuration>
 					<coverage>
 						<runCoverage>true</runCoverage>
-						<failBuild>true</failBuild>
-						<requiredApplicationCoverage>80</requiredApplicationCoverage>
+						<failBuild>${munit.failBuild}</failBuild>
+						<requiredApplicationCoverage>${munit.requiredApplicationCoverage}</requiredApplicationCoverage>
 						<requiredResourceCoverage>80</requiredResourceCoverage>
 						<requiredFlowCoverage>80</requiredFlowCoverage>
 						<ignoreFiles>
