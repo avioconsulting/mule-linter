@@ -28,6 +28,7 @@ Mule linter is shipped with three components:
  * MuleComponent: The base of all components and used as a generic component
  * FlowComponent: Identifies the instances of Flow or Subflows
  * LoggerComponent: Identifies the mule logger component instances
+ * AVIOLoggerComponent: Identifies the AVIO Custom logger component instances
 
 
 ### Component Identifiers

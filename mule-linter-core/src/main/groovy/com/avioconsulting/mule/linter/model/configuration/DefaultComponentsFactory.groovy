@@ -10,7 +10,7 @@ class DefaultComponentsFactory implements ComponentsFactory{
 
     @Override
     boolean hasComponentFor(ComponentIdentifier identifier) {
-        return FlowComponent.accepts(identifier) || LoggerComponent.accepts(identifier)
+        return FlowComponent.accepts(identifier) || LoggerComponent.accepts(identifier) || AVIOLoggerComponent.accepts(identifier)
     }
 
     @Override
@@ -24,6 +24,8 @@ class DefaultComponentsFactory implements ComponentsFactory{
             return new FlowComponent(identifier.name, identifier.namespaceURI, attributes, file, children)
         } else if(LoggerComponent.accepts(identifier)) {
             return new LoggerComponent(attributes, file)
+        } else if(AVIOLoggerComponent.accepts(identifier)) {
+            return new AVIOLoggerComponent(attributes, file)
         } else {
             return null
         }

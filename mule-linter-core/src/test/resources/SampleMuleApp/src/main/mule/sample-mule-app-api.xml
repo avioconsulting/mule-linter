@@ -5,9 +5,10 @@
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:avio-logger="http://www.mulesoft.org/schema/mule/avio-logger"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+      http://www.mulesoft.org/schema/mule/avio-logger http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
       http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
       http://www.mulesoft.org/schema/mule/avio-core http://www.mulesoft.org/schema/mule/avio-core/current/mule-avio-core.xsd
       http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -18,6 +19,7 @@
         <http:body><![CDATA[#[payload]]]></http:body>
       </http:error-response>
     </http:listener>
+    <avio-logger:log doc:name="INFO HTTP Request Recieved" doc:id="3d47742d-9593-4f30-a5a9-f449bada1951" config-ref="avio-core-logging-config" correlationId="#[correlationId]" message='#["HTTPS Request Received: " ++  attributes.method ++ " " ++ attributes.requestUri]' includeLocationInfo="true" category="com.avioconsulting.mulelinter" />
     <apikit:router xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" config-ref="sample-mule-app-api-config" />
   </flow>
   <flow name="get:\details:sample-mule-app-api-config">

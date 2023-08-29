@@ -227,7 +227,7 @@ ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLogger
 ```
 
 *excessiveLoggers* is an optional variable representing the number of sequential loggers of the same level required to fail the rule. 
-The value can be an integer or an EnumMap, where the Enum is `LogLevel` found within the class `com.avioconsulting.mule.linter.model.configuration.LoggerComponent`. 
+The value can be an integer or an EnumMap, where the Enum is `LogLevel` found within the class `com.avioconsulting.mule.linter.model.configuration.LoggerComponent` or `com.avioconsulting.mule.linter.model.configuration.AVIOLoggerComponent`. 
 The default is the integer value `2`, or the equivalent EnumMap: 
 ```groovy
 EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers = 

@@ -6,6 +6,7 @@ import com.avioconsulting.mule.linter.model.configuration.ComponentIdentifier
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.LoggerComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
+import com.avioconsulting.mule.linter.model.configuration.AVIOLoggerComponent
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.Node
@@ -119,7 +120,10 @@ class ConfigurationFile extends ProjectFile {
     }
 
     List<LoggerComponent> findLoggerComponents() {
-        return findComponents(LoggerComponent.COMPONENT_NAME, FlowComponent.COMPONENT_NAMESPACE)
+        List<LoggerComponent> componentList = []
+        componentList.addAll(findComponents(LoggerComponent.COMPONENT_NAME, FlowComponent.COMPONENT_NAMESPACE))
+        componentList.addAll(findComponents(AVIOLoggerComponent.COMPONENT_NAME, AVIOLoggerComponent.COMPONENT_NAMESPACE))
+        return componentList
     }
 
     List<FlowComponent> getFlows() {

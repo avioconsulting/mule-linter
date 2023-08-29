@@ -110,6 +110,11 @@ classDiagram
         getName() String
         getLevel() String
     }
+    LoggerComponent <|-- AVIOLoggerComponent
+    class AVIOLoggerComponent{
+        getCorrelationId() String
+        getMessageAttributes() String
+    }
     PomPlugin <|-- MunitMavenPlugin
     class MunitMavenPlugin {
 		getIgnoreFiles() List<String>
