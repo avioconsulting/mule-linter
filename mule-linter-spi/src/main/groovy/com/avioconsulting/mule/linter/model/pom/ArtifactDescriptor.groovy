@@ -22,33 +22,32 @@ class ArtifactDescriptor {
     }
 
     PomElement getAttribute(String attributeName) {
-        PomElement pElement = null
         GPathResult element = pluginXml.depthFirst().find {
             it.name() == attributeName
         }
-
-        if (element != null ) {
-            if ( isExpression(element.text()) ) {
-                pElement = pomFile.getPomProperty(variableName(element.text()))
-            } else {
-                pElement = new PomElement()
-                pElement.name = element.name()
-                pElement.value = element.text()
-                pElement.lineNo = getNodeLineNumber(element)
-            }
-        }
-
-        return pElement
+        return getPomElement(element, attributeName)
     }
 
     PomElement getConfigProperty(String propertyName) {
+        GPathResult element = pluginXml.configuration.depthFirst().find {
+            it.name() == propertyName
+        }
+        return getPomElement(element,propertyName)
+    }
+
+    private PomElement getPomElement(GPathResult element, String elementName) {
         PomElement pElement = null
-        pluginXml.configuration.depthFirst().each {
-            if (it.name() == propertyName) {
+        if (element != null ) {
+            // If element text is property variable such as in XML - <version>${mule.maven.plugin.version}</version>,
+            // fetch the value of property variable in the pom.xml and update in the pom element
+            if ( isExpression(element.text()) ) {
+                pElement = pomFile.getPomProperty(variableName(element.text()))
+                pElement.name = elementName
+            } else {
                 pElement = new PomElement()
-                pElement.name = propertyName
-                pElement.value = it.text()
-                pElement.lineNo = getNodeLineNumber(it)
+                pElement.name = elementName
+                pElement.value = element.text()
+                pElement.lineNo = getNodeLineNumber(element)
             }
         }
         return pElement
