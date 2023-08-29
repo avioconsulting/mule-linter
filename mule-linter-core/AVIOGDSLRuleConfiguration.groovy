@@ -45,6 +45,9 @@ mule_linter {
         EXCESSIVE_LOGGERS {
             excessiveLoggers = 2
         }
+        FLOW_SUBFLOW_COMPONENT_COUNT{
+            maxCount = 20
+        }
         FLOW_SUBFLOW_NAMING {
             format = 'KEBAB_CASE'
         }
