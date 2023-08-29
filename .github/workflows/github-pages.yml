@@ -51,5 +51,6 @@ jobs:
           # Upload entire repository
           path: './mule-linter-core/build/docs/groovydoc'
       - name: Deploy to GitHub Pages
+        if: ${{ !env.ACT }}
         id: deployment
         uses: actions/deploy-pages@v2

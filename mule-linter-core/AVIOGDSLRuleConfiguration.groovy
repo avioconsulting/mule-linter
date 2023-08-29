@@ -46,6 +46,9 @@ mule_linter {
             excessiveLoggers = 2
         }
         FLOW_ERROR_HANDLER{}
+        FLOW_SUBFLOW_COMPONENT_COUNT{
+            maxCount = 20
+        }
         FLOW_SUBFLOW_NAMING {
             format = 'KEBAB_CASE'
         }
@@ -141,6 +144,7 @@ mule_linter {
             propertyName = 'db.user'
             pattern = '${appname}-${env}.yaml'
         }
+        PROPERTY_NAME_PATTERN{}
         PROPERTY_FILE_NAMING {
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'

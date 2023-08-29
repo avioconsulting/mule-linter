@@ -227,7 +227,7 @@ ExcessiveLoggersRule(EnumMap<LoggerComponent.LogLevel, Integer>  excessiveLogger
 ```
 
 *excessiveLoggers* is an optional variable representing the number of sequential loggers of the same level required to fail the rule. 
-The value can be an integer or an EnumMap, where the Enum is `LogLevel` found within the class `com.avioconsulting.mule.linter.model.configuration.LoggerComponent`. 
+The value can be an integer or an EnumMap, where the Enum is `LogLevel` found within the class `com.avioconsulting.mule.linter.model.configuration.LoggerComponent` or `com.avioconsulting.mule.linter.model.configuration.AVIOLoggerComponent`. 
 The default is the integer value `2`, or the equivalent EnumMap: 
 ```groovy
 EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers = 
@@ -237,6 +237,21 @@ EnumMap<LoggerComponent.LogLevel, Integer> excessiveLoggers =
 	(LoggerComponent.LogLevel.WARN): 2,
 	(LoggerComponent.LogLevel.ERROR): 2]
 ```
+### FLOW_SUBFLOW_COMPONENT_COUNT
+
+This rule ensures that number of components in a `flow` and `sub-flow` does not exceed maximum allowed component count.
+It is recommended that when creating flows and sub-flows in Mulesoft, Single Responsibility Principle is followed to observe good performance, reliability practices, and readability.
+Defining maximum allowed component in _flow_ and _sub-flow_ will make the flows more readable.  
+
+The constructor for the rule is:
+
+```groovy
+FlowSubflowComponentCountRule()
+FlowSubflowComponentCountRule(Integer maxCount)
+```
+
+*maxCount* is maximum allowed components in a flow or sub-flow.
+The default maxCount is set to `20`.
 
 ### FLOW_ERROR_HANDLER
 
@@ -688,6 +703,23 @@ The default list is:
 
 *pattern* is a custom naming scheme for property files loaded by environment.
 The default pattern is `"${appname}-${env}.properties"`, and to check for yaml properties file the pattern is `"${appname}-${env}.yaml"`. 
+
+### PROPERTY_NAME_PATTERN
+
+This rule checks that properties name in the all the properties files for the Mule application follow a given case format.
+Here, we require the user to specify a particular case convention.
+AVIO highly recommends that properties are named in java properties format - db.username, db.password. 
+
+The constructors for this rule are:
+
+```groovy
+PropertyNamePatternRule()
+PropertyNamePatternRule(String format)
+```
+
+*format* is a naming format for the property name in the properties file
+Current options are `CAMEL_CASE`, `PASCAL_CASE`, or `JAVA_PROPERTY_CASE`.
+The default pattern is `JAVA_PROPERTY_CASE`
 
 ### PROPERTY_FILE_NAMING
 

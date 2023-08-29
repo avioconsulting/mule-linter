@@ -32,6 +32,21 @@ class LoggerComponent extends MuleComponent {
         this.category = attributes.get('category')
     }
 
+    LoggerComponent(String componentName, String componentNamespace, Map<String, String> attributes, File file) {
+        super(componentName, componentNamespace, attributes,file)
+        this.docName = attributes.get('{http://www.mulesoft.org/schema/mule/documentation}name')
+        this.message = attributes.get('message')
+        // In AVIO Custom logger, since log level is not populated as attribute for default log level - 'INFO'
+        // Check for log level attribute, and if it doesn't exist map it to default 'INFO'.
+        if (attributes.get('level') != null){
+            this.level = LogLevel.valueOf attributes.get('level')
+        }else{
+            this.level = LogLevel.valueOf 'INFO'
+        }
+
+        this.category = attributes.get('category')
+    }
+
     String getName() {
         return docName
     }

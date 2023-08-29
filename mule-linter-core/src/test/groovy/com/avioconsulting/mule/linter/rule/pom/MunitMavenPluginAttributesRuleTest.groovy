@@ -65,7 +65,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 52
+        violations[0].lineNumber == 54
         violations[0].message.endsWith('sillyproperty|incorrect')
     }
 
@@ -82,7 +82,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 73
+        violations[0].lineNumber == 75
         violations[0].message.endsWith('ignoreFile|something-else.xml')
     }
     def 'Very wrong Munit Maven Plugin'() {

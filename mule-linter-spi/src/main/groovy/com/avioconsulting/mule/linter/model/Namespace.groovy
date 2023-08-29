@@ -32,6 +32,7 @@ class Namespace {
     static final String WEB_SERVICE_CONSUMER = "http://www.mulesoft.org/schema/mule/wsc"
     static final String WSC = WEB_SERVICE_CONSUMER
     static final String XML_MODULE = "http://www.mulesoft.org/schema/mule/xml-module"
+    static final String AVIO_LOGGER = "http://www.mulesoft.org/schema/mule/avio-logger"
 
     static final String START_LINE_NO_ATTRIBUTE = '_startLineNo'
     static final String START_LINE_NO_NAMESPACE = 'http://www.avioconsulting.com/mule/linter'

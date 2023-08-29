@@ -30,45 +30,63 @@ class LoggerAttributesRuleTest extends Specification {
         when:
         testApp.buildConfigContent('logging-flow-with-errors.xml', ERROR_SUB_FLOWS)
         app = new MuleApplication(testApp.appDir)
+
         List<RuleViolation> violations = rule.execute(app)
 
         then:
+        println violations
         app.configurationFiles.size() == 4
-        violations.size() == 2
+        violations.size() == 4
         violations[0].fileName.endsWith('logging-flow-with-errors.xml')
-        violations[0].lineNumber == 20
-        violations[1].lineNumber == 35
+        violations[0].lineNumber == 23
+        violations[0].message == 'Logger attribute is missing: category'
+        violations[1].lineNumber == 42
+        violations[1].message == 'Logger attribute is missing: message'
+        violations[2].lineNumber == 26
+        violations[2].message == 'Logger attribute is missing: category'
+        violations[3].lineNumber == 43
+        violations[3].message == 'Logger attribute is missing: message'
     }
 
-    private static final String ERROR_SUB_FLOWS = '''
-\t<sub-flow name="a-sub-flow">
-\t\t<logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
-\t\t<ee:transform doc:name="Simple Transform">
-\t\t\t<ee:message >
-\t\t\t\t<ee:set-payload ><![CDATA[%dw 2.0
+    private static final String ERROR_SUB_FLOWS = '''<mule xmlns:avio-logger="http://www.mulesoft.org/schema/mule/avio-logger"
+xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/avio-logger http://www.mulesoft.org/schema/mule/avio-logger/current/mule-avio-logger.xsd">
+<sub-flow name="a-sub-flow">
+<logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
+<avio-logger:log level="DEBUG" doc:name="Log Start" config-ref="avio-core-logging-config" correlationId="#[correlationId]" message="Starting" category="com.avioconsulting.mulelinter"/>
+<ee:transform doc:name="Simple Transform">
+<ee:message>
+<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
 }]]></ee:set-payload>
-\t\t\t</ee:message>
-\t\t</ee:transform>
-\t\t<logger level="DEBUG" 
-\t\t\tdoc:name="Log End" 
-\t\t\tmessage="Ending" />
-\t</sub-flow>
-\t<sub-flow name="b-sub-flow">
-\t\t<logger level="WARN" 
-\t\t\tmessage="Starting 2" 
-\t\t\tdoc:name="Log Start" category="com.avioconsulting.mulelinter" />
-\t\t<ee:transform doc:name="Another_Simple Transform">
-\t\t\t<ee:message >
-\t\t\t\t<ee:set-payload ><![CDATA[%dw 2.0
+</ee:message>
+</ee:transform>
+<logger level="DEBUG" doc:name="Log End" message="Ending" />
+<avio-logger:log level="DEBUG" config-ref="avio-core-logging-config" correlationId="#[correlationId]"
+doc:name="Log End" 
+message="Ending" />
+</sub-flow>
+<sub-flow name="b-sub-flow">
+<logger level="WARN" message="Starting 2" doc:name="Log Start" category="com.avioconsulting.mulelinter" />
+<avio-logger:log level="WARN" config-ref="avio-core-logging-config" correlationId="#[correlationId]"
+message="Starting 2" 
+doc:name="Log Start" category="com.avioconsulting.mulelinter" />
+<ee:transform doc:name="Another_Simple Transform">
+<ee:message >
+<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 {
 }]]></ee:set-payload>
-\t\t\t</ee:message>
-\t\t</ee:transform>
-\t\t<logger level="TRACE" doc:name="Log End" category="com.avioconsulting.mulelinter" />
-\t</sub-flow>'''
+</ee:message>
+</ee:transform>
+<logger level="TRACE" doc:name="Log End" category="com.avioconsulting.mulelinter" />
+<avio-logger:log level="TRACE" config-ref="avio-core-logging-config" correlationId="#[correlationId]" doc:name="Log End" category="com.avioconsulting.mulelinter" />
+</sub-flow>
+</mule>
+'''
 }

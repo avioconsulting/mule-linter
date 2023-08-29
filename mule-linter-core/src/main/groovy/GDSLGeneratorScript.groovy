@@ -1,5 +1,7 @@
+import com.avioconsulting.mule.linter.dsl.GDSLGenerator
+
 println 'Generating GDSL file'
-def outputPath = "./src/main/resources/mule-linter-core.gdsl"
+def outputPath = "./build/classes/groovy/main/mule-linter-core.gdsl"
 def templateFileName = "./mule-linter-core.gdsl.vm"
-com.avioconsulting.mule.linter.dsl.GDSLGenerator gdslGenerator = new com.avioconsulting.mule.linter.dsl.GDSLGenerator();
+GDSLGenerator gdslGenerator = new GDSLGenerator()
 gdslGenerator.generate(templateFileName, outputPath )

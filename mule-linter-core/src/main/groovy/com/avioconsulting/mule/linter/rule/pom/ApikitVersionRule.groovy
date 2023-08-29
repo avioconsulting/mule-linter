@@ -8,6 +8,10 @@ import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 
+/**
+ * This rule checks for the presence of a mule-apikit-module dependency in the `pom.xml`,
+ * and `mule-apikit-module` dependency version in the `pom.xml` should be greater than *artifactVersion*..
+ */
 class ApikitVersionRule extends PomDependencyVersionRule {
     static final String RULE_ID = 'APIKIT_VERSION'
     static final String RULE_NAME = 'The given Maven dependency exists in pom.xml and matches given version criteria. '

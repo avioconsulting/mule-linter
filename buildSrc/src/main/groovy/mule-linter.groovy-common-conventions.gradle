@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id 'codenarc'
+//    id 'codenarc'
     id 'mule-linter.semver'
 }
 
@@ -45,8 +45,8 @@ tasks.register('groovydocJar', Jar) {
 
 jar.dependsOn(groovydocJar)
 
-codenarc {
-    configFile = file("${rootProject.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
-    ignoreFailures = true
-}
+//codenarc {
+//    configFile = file("${rootProject.projectDir}/config/code-quality-config/codenarc/codenarc.xml")
+//    ignoreFailures = true
+//}
 
