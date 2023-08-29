@@ -45,6 +45,7 @@ mule_linter {
         EXCESSIVE_LOGGERS {
             excessiveLoggers = 2
         }
+        FLOW_ERROR_HANDLER{}
         FLOW_SUBFLOW_COMPONENT_COUNT{
             maxCount = 20
         }
