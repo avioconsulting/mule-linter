@@ -11,6 +11,13 @@ import com.avioconsulting.mule.linter.model.rule.RuleType
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import groovy.text.SimpleTemplateEngine
 
+/**
+ * This rule checks that every flow in the Mule application with HTTP listener component,
+ * should have an API Autodiscovery configuration for it where `flowRef` attribute matches the name of the flow with HTTP listener component.
+ * `apiId` property for the Autodiscovery configuration should be externalized into property files,
+ * and `apiId` should be unique for each environment, unless it is a set of defined values (-1, 0, 1) to be overwritten at deployment time.
+ * API Autodiscovery is critical Rule from API Security perspective. Without API Auto discovery configuration no security policy can be applied via API Manager.
+ */
 class AutoDiscoveryRule extends Rule {
     static final String RULE_ID = 'AUTO_DISCOVERY_EXISTS'
     static final String RULE_NAME = 'Mule API Autodiscovery configuration is present and configured in Global Configuration File'

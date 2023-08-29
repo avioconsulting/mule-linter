@@ -5,7 +5,11 @@ import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
-
+/**
+ * Cron Expressions are used in most implementation using Schedulers/Batch/Polling based integrations.
+ * This rule checks for all the Mule event source components with cron scheduler reference 'expression` configuration
+ * using property (${cron.expression}) externalized in property files rather than be hardcoded in line.
+ */
 class CronExpressionExternalizedRule extends Rule {
     static final String RULE_ID = 'CRON_EXPRESSION_EXTERNALIZED'
     static final String RULE_NAME = 'Cron Expression is configured in a property file'
