@@ -87,7 +87,7 @@ jobs:
       - name: Compile
         run: ./gradlew assemble ${{ inputs.gradle-args }}
         env:
-          MAVEN_HOME: ${{ steps.set-maven-home.outputs.maven-home }}
+          MAVEN_HOME: ${{steps.set-maven-home.outputs.maven-home}}
 
       - name: Check
         run: ./gradlew check
