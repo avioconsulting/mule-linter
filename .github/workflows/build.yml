@@ -60,8 +60,8 @@ jobs:
 
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.5
-        if: ${{ inputs.check-setup-maven }}
         with:
+          java-version: 8
           maven-version: 3.9.4
 
       - uses: actions/setup-java@v3
