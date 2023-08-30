@@ -64,6 +64,9 @@ jobs:
           java-version: 8
           cache: 'gradle'
 
+      - name: Print maven Version Before setup
+        run: mvn -version
+
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.5
         with:
@@ -71,21 +74,6 @@ jobs:
 
       - name: Print maven Version
         run: mvn -version
-
-#      - name: List /home/actions
-#        run: ls -als /home/actions
-
-#      - name: List /home/actions/temp/
-#        run: ls -als /home/actions/temp/
-
-#      - name: List /home/actions/temp/apache-maven-3.9.4
-#        run: ls -als /home/actions/temp/apache-maven-3.9.4
-
-      - name: List /opt/hostedtoolcache/maven
-        run: ls -als /opt/hostedtoolcache/maven
-        
-      - name: RUNNER_TEMPDIRECTORY
-        run: echo $RUNNER_TEMPDIRECTORY
 
       # This uses a conditional to build 2 different echo commands
       # The first is for just a regular -> ./gradlew properties call
