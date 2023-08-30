@@ -47,7 +47,7 @@ on:
       - 'main'
 
 jobs:
-  Build-With-Gradle:
+  Build:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set-version.outputs.version }}
