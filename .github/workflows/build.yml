@@ -1,42 +1,6 @@
 name: Build and Release
 
 on:
-  workflow_call:
-    inputs:
-      java-distribution:
-        description: The Java Distribution to use, default 'temurin'
-        required: false
-        type: string
-        default: temurin
-      java-version:
-        description: The Java Version to use, default '8'
-        required: false
-        type: string
-        default: 8
-      include-test-results:
-        description: A flag to run publish-unit-test-result
-        required: false
-        type: boolean
-        default: true
-      check-setup-maven:
-        description: A flag to check if maven needs to setup
-        required: false
-        type: boolean
-        default: true
-      gradle-args:
-        description: Gradle arguments appended to gradle calls
-        required: false
-        type: string
-        default: -Dmaven.home=/home/actions/temp/apache-maven-3.9.4
-      version-project:
-        description: For use with multi-module projects, this is used to determine application version
-        required: false
-        type: string
-    outputs:
-      app-version:
-        description: The application version
-        value: ${{ jobs.Build-With-Gradle.outputs.version }}
-
   push:
     branches:
       - 'main'
@@ -48,58 +12,11 @@ on:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.set-version.outputs.version }}
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
-          submodules: 'recursive'
-
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 8
-          cache: 'gradle'
-
-      - name: Set Maven Home
-        id: set-maven-home
-        run: echo "maven-home=$(mvn -v | grep "Maven home" | sed -e "s/^Maven home\:\ //")" >> $GITHUB_OUTPUT
-
-      - name: Print Maven Home
-        run: echo "Maven Home ${{ steps.set-maven-home.outputs.maven-home }}"
-
-      - name: List Maven home directory
-        run: ls -als ${{ steps.set-maven-home.outputs.maven-home }}
-
-      # This uses a conditional to build 2 different echo commands
-      # The first is for just a regular -> ./gradlew properties call
-      # The second adds in a project reference -> ./gradlew version-project:properties
-      - name: Set Version
-        id: set-version
-        run: echo "version=$(./gradlew mule-linter-core:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
-
-      - name: Print Version
-        run: echo "Version ${{ steps.set-version.outputs.version }}"
-
-      - name: Compile
-        run: ./gradlew assemble ${{ inputs.gradle-args }}
-        env:
-          MAVEN_HOME: ${{steps.set-maven-home.outputs.maven-home}}
-
-      - name: Check
-        run: ./gradlew check
-        env:
-          MAVEN_HOME: ${{ steps.set-maven-home.outputs.maven-home }}
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: ${{ inputs.include-test-results }}
-        with:
-          files: |
-            **/build/test-results/**/*.xml
+    uses: avioconsulting/shared-workflows/.github/workflows/gradle-build.yml@main
+    secrets: inherit
+    with:
+      version-project: 'mule-linter-core'
+      include-test-results: false
 
   Release:
     needs: Build
