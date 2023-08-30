@@ -72,14 +72,14 @@ jobs:
       - name: Print maven Version
         run: mvn -version
 
-      - name: List /home/actions
-        run: ls -als /home/actions
+#      - name: List /home/actions
+#        run: ls -als /home/actions
 
-      - name: List /home/actions/temp/
-        run: ls -als /home/actions/temp/
+#      - name: List /home/actions/temp/
+#        run: ls -als /home/actions/temp/
 
-      - name: List /home/actions/temp/apache-maven-3.9.4
-        run: ls -als /home/actions/temp/apache-maven-3.9.4
+#      - name: List /home/actions/temp/apache-maven-3.9.4
+#        run: ls -als /home/actions/temp/apache-maven-3.9.4
 
       - name: List /opt/hostedtoolcache/maven
         run: ls -als /opt/hostedtoolcache/maven
