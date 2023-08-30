@@ -1,6 +1,42 @@
 name: Build and Release
 
 on:
+  workflow_call:
+    inputs:
+      java-distribution:
+        description: The Java Distribution to use, default 'temurin'
+        required: false
+        type: string
+        default: temurin
+      java-version:
+        description: The Java Version to use, default '8'
+        required: false
+        type: string
+        default: 8
+      include-test-results:
+        description: A flag to run publish-unit-test-result
+        required: false
+        type: boolean
+        default: true
+      check-setup-maven:
+        description: A flag to check if maven needs to setup
+        required: false
+        type: boolean
+        default: true
+      gradle-args:
+        description: Gradle arguments appended to gradle calls
+        required: false
+        type: string
+        default: -Dmaven.home=/home/actions/temp/apache-maven-3.9.4
+      version-project:
+        description: For use with multi-module projects, this is used to determine application version
+        required: false
+        type: string
+    outputs:
+      app-version:
+        description: The application version
+        value: ${{ jobs.Build-With-Gradle.outputs.version }}
+
   push:
     branches:
       - 'main'
@@ -11,6 +47,51 @@ on:
       - 'main'
 
 jobs:
+  Build-With-Gradle:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+          submodules: 'recursive'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        if: ${{ inputs.check-setup-maven }}
+        with:
+          maven-version: 3.9.4
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: 'gradle'
+
+      # This uses a conditional to build 2 different echo commands
+      # The first is for just a regular -> ./gradlew properties call
+      # The second adds in a project reference -> ./gradlew version-project:properties
+      - name: Set Version
+        id: set-version
+        run: ${{ inputs.version-project == '' }}  && echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" || echo "version=$(./gradlew ${{ inputs.version-project }}:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Print Version
+        run: echo "Version ${{ steps.set-version.outputs.version }}"
+
+      - name: Compile
+        run: ./gradlew assemble ${{ inputs.gradle-args }}
+
+      - name: Check
+        run: ./gradlew check -Dmaven.home=/home/actions/temp/apache-maven-3.9.4
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{ inputs.include-test-results }}
+        with:
+          files: |
+            **/build/test-results/**/*.xml
   Build:
     uses: avioconsulting/shared-workflows/.github/workflows/gradle-build.yml@main
     secrets: inherit
