@@ -57,9 +57,6 @@ jobs:
         with:
           fetch-depth: '0'
           submodules: 'recursive'
-          
-      - name: Print maven Version Before Java setup
-        run: mvn -version
 
       - uses: actions/setup-java@v3
         with:
@@ -67,16 +64,12 @@ jobs:
           java-version: 8
           cache: 'gradle'
 
-      - name: Print maven Version Before Maven setup
-        run: mvn -version
+      - name: Set Maven Home
+        id: set-maven-home
+        run: echo "maven-home=$(mvn -v | grep "Maven home" | sed -e "s/^Maven home\://")" >> $GITHUB_OUTPUT
 
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.9.4
-
-      - name: Print maven Version
-        run: mvn -version
+      - name: Print Maven Home
+        run: echo "Maven Home ${{ steps.set-maven-home.outputs.maven-home }}
 
       # This uses a conditional to build 2 different echo commands
       # The first is for just a regular -> ./gradlew properties call
@@ -94,7 +87,7 @@ jobs:
       - name: Check
         run: ./gradlew check
         env:
-          MAVEN_HOME: /opt/hostedtoolcache/maven/3.9.4/x64
+          MAVEN_HOME: ${{ steps.set-version.outputs.version }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
