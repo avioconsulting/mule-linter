@@ -60,8 +60,8 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          distribution: ${{ inputs.java-distribution }}
-          java-version: ${{ inputs.java-version }}
+          distribution: temurin
+          java-version: 8
           cache: 'gradle'
 
       - name: Set up Maven
@@ -77,7 +77,7 @@ jobs:
       # The second adds in a project reference -> ./gradlew version-project:properties
       - name: Set Version
         id: set-version
-        run: ${{ inputs.version-project == '' }}  && echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" || echo "version=$(./gradlew ${{ inputs.version-project }}:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
+        run: echo "version=$(./gradlew mule-linter-core:properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Print Version
         run: echo "Version ${{ steps.set-version.outputs.version }}"
