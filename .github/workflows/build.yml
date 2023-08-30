@@ -86,7 +86,7 @@ jobs:
         run: ./gradlew assemble ${{ inputs.gradle-args }}
 
       - name: Check
-        run: ./gradlew check MAVEN_HOME=/opt/hostedtoolcache/maven/3.9.4/x64
+        run: ./gradlew check -DMAVEN_HOME=/opt/hostedtoolcache/maven/3.9.4/x64
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
