@@ -83,6 +83,9 @@ jobs:
 
       - name: List /opt/hostedtoolcache/maven
         run: ls -als /opt/hostedtoolcache/maven
+        
+      - name: RUNNER_TEMPDIRECTORY
+        run: echo $RUNNER_TEMPDIRECTORY
 
       # This uses a conditional to build 2 different echo commands
       # The first is for just a regular -> ./gradlew properties call
