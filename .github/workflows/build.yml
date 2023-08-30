@@ -57,6 +57,9 @@ jobs:
         with:
           fetch-depth: '0'
           submodules: 'recursive'
+          
+      - name: Print maven Version Before Java setup
+        run: mvn -version
 
       - uses: actions/setup-java@v3
         with:
@@ -64,7 +67,7 @@ jobs:
           java-version: 8
           cache: 'gradle'
 
-      - name: Print maven Version Before setup
+      - name: Print maven Version Before Maven setup
         run: mvn -version
 
       - name: Set up Maven
