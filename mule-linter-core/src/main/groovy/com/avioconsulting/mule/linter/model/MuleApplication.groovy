@@ -6,6 +6,9 @@ import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import org.apache.groovy.json.internal.JsonMap
+import org.apache.maven.shared.invoker.DefaultInvocationRequest
+import org.apache.maven.shared.invoker.DefaultInvoker
+import org.apache.maven.shared.invoker.MavenInvocationException
 import org.yaml.snakeyaml.Yaml
 
 class MuleApplication implements Application {
@@ -18,6 +21,7 @@ class MuleApplication implements Application {
     static final String AZURE_PIPELINES_FILE = AzurePipelinesFile.AZURE_PIPELINES
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
+    static final String MAVEN_HOME_DOES_NOT_EXIST = 'Maven home config does not exists.'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -35,7 +39,10 @@ class MuleApplication implements Application {
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
-        File pFile = new File(applicationPath, POM_FILE);
+        File pFile = new File(applicationPath, POM_FILE)
+        // if pom.xml exists in application, get the effective-pom.xml for the application.
+        if (pFile.exists())
+            pFile = getEffectivePomFile(pFile)
         pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
@@ -46,6 +53,40 @@ class MuleApplication implements Application {
         loadPropertyFiles()
         loadConfigurationFiles()
         loadMuleArtifact()
+    }
+
+     /**
+     * This method generates the effective pom.xml for the application using maven-invoker, and returns effective-pom.xml file.
+     * And, the generated effective-pom.xml file will be deleted upon the exit of the application.
+     * This method requires Maven home location, which can be passed using below options:
+     * 1. Pass maven.home system variable when executing mule-linter
+     * 2. Set MAVEN_HOME environment variable in the system executing mule-linter.
+     * returns File
+     */
+    File getEffectivePomFile(File pFile){
+        def mavenHome = null
+        // Update mavenHome from system property - maven.home
+        if (System.getProperty('maven.home') != null)
+            mavenHome = System.getProperty('maven.home')
+        else if (System.getenv().get('MAVEN_HOME') != null)
+            mavenHome = System.getenv().get('MAVEN_HOME')
+
+        if (mavenHome == null)
+            throw new MavenInvocationException( MAVEN_HOME_DOES_NOT_EXIST)
+
+        File effectivePomFile = File.createTempFile("effective-pom", ".xml");
+        def mavenInvokeRequest = new DefaultInvocationRequest().with {
+            String mvnGoals = 'help:effective-pom -Doutput='+effectivePomFile.getAbsolutePath()
+            setGoals([mvnGoals])
+            setPomFile(pFile)
+            setShowErrors(true)
+            it
+        }
+        def mavenInvoker = new DefaultInvoker()
+        mavenInvoker.setMavenHome(new File(mavenHome))
+        def result = mavenInvoker.execute(mavenInvokeRequest)
+        effectivePomFile.deleteOnExit();
+        return effectivePomFile
     }
 
     void loadPropertyFiles() {

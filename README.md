@@ -51,6 +51,11 @@ Rule Configuration uses a Groovy-DSL provided by Mule Linter. See [AVIOGDSLRuleC
 
 Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in https://avioconsulting.github.io/mule-linter/groovydoc/index.html.
 
+Mule linter generates effective-pom.xml for the application using [maven-invoker](https://maven.apache.org/shared/maven-invoker/), and linter uses effective-pom.xml for executing the linter rulesets.
+Also, this requires Maven home location which can be passed using below options:
+- Pass maven.home system variable when executing mule-linter 
+- Set MAVEN_HOME environment variable in the system executing mule-linter
+
 ### Using IntelliJ Auto Completion
 Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
 

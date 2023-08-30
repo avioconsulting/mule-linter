@@ -39,7 +39,7 @@ See [working-with-the-apache-maven-registry#authenticating-with-a-personal-acces
 **NOTE:** The Github Personal Token must have **read:packages** permission.
 
 ## Usage
-To use plugin in your maven project, add following plugin configuratin in project pom -
+To use plugin in your maven project, add following plugin configuration in project pom -
 
 ```xml
 
@@ -55,6 +55,10 @@ To use plugin in your maven project, add following plugin configuratin in projec
                 <goal>validate</goal>
             </goals>
             <configuration>
+                <systemPropertyVariables>
+                    <!-- Allows plugin to use the Maven version we are running with  -->
+                    <maven.home>${maven.home}</maven.home>
+                </systemPropertyVariables>
                 <appDir>${basedir}</appDir>
                 <ruleConfiguration>muleLinter.groovy</ruleConfiguration>
                 <outputDirectory>${project.build.directory}/reports</outputDirectory>
@@ -67,6 +71,8 @@ To use plugin in your maven project, add following plugin configuratin in projec
     </executions>
 </plugin>
 ```
+Mule linter plugin generates effective-pom file for the application using [maven-invoker](https://maven.apache.org/shared/maven-invoker/), and linter uses effective-pom.xml for executing the linter rulesets. 
+
 You can adjust configuration parameters as applicable to your project.
 
 The plugin will run during `validate` phase (very first in lifecycle) of Maven.

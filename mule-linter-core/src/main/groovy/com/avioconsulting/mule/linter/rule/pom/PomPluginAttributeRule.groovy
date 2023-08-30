@@ -58,7 +58,7 @@ class PomPluginAttributeRule extends Rule {
             attributes.each {
                 PomElement attribute = plugin.getAttribute(it.key)
                 if ( attribute.value != it.value) {
-                    violations.add(new RuleViolation(this, app.pomFile.path, attribute.lineNo,
+                    violations.add(new RuleViolation(this, app.pomFile.path, 0,
                             RULE_VIOLATION_MESSAGE + "$it.key : $it.value"))
                 }
             }

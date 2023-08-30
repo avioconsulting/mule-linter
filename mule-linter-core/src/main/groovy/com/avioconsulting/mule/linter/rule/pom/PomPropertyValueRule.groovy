@@ -44,12 +44,12 @@ class PomPropertyValueRule extends Rule {
             PomElement pomProperty = app.pomFile.getPomProperty(propertyName)
             if (!pomProperty.value.equalsIgnoreCase(propertyValue)) {
                 violations.add(new RuleViolation(this, app.pomFile.path,
-                        pomProperty.lineNo, pomProperty.name + RULE_VIOLATION_MESSAGE + 'Expected: ' + propertyValue
+                        0, pomProperty.name + RULE_VIOLATION_MESSAGE + 'Expected: ' + propertyValue
                         + ' found: ' + pomProperty.value))
             }
         } catch (IllegalArgumentException e) {
             violations.add(new RuleViolation(this, app.pomFile.path,
-                    app.pomFile.propertiesLineNo, propertyName + ATTRIBUTE_MISSING_MESSAGE))
+                    0, propertyName + ATTRIBUTE_MISSING_MESSAGE))
         }
 
         return violations

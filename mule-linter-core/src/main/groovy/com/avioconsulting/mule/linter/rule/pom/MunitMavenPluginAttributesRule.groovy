@@ -78,14 +78,14 @@ class MunitMavenPluginAttributesRule extends Rule {
                 PomElement pe = plugin.getConfigProperty(key)
                 if (pe?.value != val) {
                     violations.add(new RuleViolation(this, PomFile.POM_XML,
-                            pe == null ? plugin.lineNo : pe.lineNo, RULE_MESSAGE + key + '|' + val))
+                            0, RULE_MESSAGE + key + '|' + val))
                 }
             }
             if (ignoreFiles.size() > 0) {
                 List<String> diff = ignoreFiles - plugin.getIgnoreFiles()
                 diff.each {
                     violations.add(new RuleViolation(this, PomFile.POM_XML,
-                            plugin.getIgnoreFilesLineNo(), RULE_MESSAGE_MISSING + 'ignoreFile|' + it ))
+                            0, RULE_MESSAGE_MISSING + 'ignoreFile|' + it ))
                 }
             }
         } else {

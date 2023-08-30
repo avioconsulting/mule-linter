@@ -47,7 +47,6 @@ class MuleArtifactMinMuleVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].lineNumber == 2
-        violations[0].fileName.endsWith('pom.xml')
         violations[0].rule.ruleId == MuleArtifactMinMuleVersionRule.RULE_ID
     }
 

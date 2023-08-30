@@ -24,9 +24,9 @@ class PomArtifactAttributeRuleTest extends Specification {
         given:
         testApp.addFile(PomFile.POM_XML, MISSING_PLUGINS_POM)
         Rule rule = new PomPluginAttributeRule()
-        rule.groupId = 'org.mule.tools.maven'
-        rule.artifactId = 'mule-maven-plugin'
-        rule.attributes = ['version':'3.3.5']
+        rule.groupId = 'com.mulesoft.munit.tools'
+        rule.artifactId = 'munit-maven-plugin'
+        rule.attributes = ['version':'2.2.1']
         rule.init()
 
         when:
@@ -35,7 +35,7 @@ class PomArtifactAttributeRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName.contains('pom.xml')
+//        violations[0].fileName.contains('pom.xml')
         violations[0].message.startsWith(PomPluginAttributeRule.MISSING_PLUGIN)
     }
 
@@ -43,9 +43,9 @@ class PomArtifactAttributeRuleTest extends Specification {
         given:
         testApp.addFile(PomFile.POM_XML, PLUGINS_EXISTS_POM)
         Rule rule = new PomPluginAttributeRule()
-        rule.groupId = 'org.mule.tools.maven'
-        rule.artifactId = 'mule-maven-plugin'
-        rule.attributes = ['version':'3.3.5']
+        rule.groupId = 'com.mulesoft.munit.tools'
+        rule.artifactId = 'munit-maven-plugin'
+        rule.attributes = ['version':'2.2.1']
         rule.init()
 
         when:
@@ -71,8 +71,6 @@ class PomArtifactAttributeRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName.contains('pom.xml')
-        violations[0].lineNumber == 17
         violations[0].message.startsWith(PomPluginAttributeRule.RULE_VIOLATION_MESSAGE)
     }
 
@@ -108,77 +106,154 @@ class PomArtifactAttributeRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName.contains('pom.xml')
-        violations[0].lineNumber == 13
         violations[0].message.startsWith(PomPluginAttributeRule.RULE_VIOLATION_MESSAGE)
     }
 
     private static final String MISSING_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-\t\txsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-\t\t\thttp://maven.apache.org/maven-v4_0_0.xsd">
-\t<modelVersion>4.0.0</modelVersion>
-\t<groupId>com.avioconsulting.mulelinter</groupId>
-\t<artifactId>sample-mule-app</artifactId>
-\t<version>1.0.0</version>
-\t<packaging>mule-application</packaging>
-\t<name>sample-mule-app-sys-api</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.1</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 '''
 
     private static final String PLUGINS_EXISTS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-\t\txsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-\t\t\thttp://maven.apache.org/maven-v4_0_0.xsd">
-\t<modelVersion>4.0.0</modelVersion>
-\t<groupId>com.avioconsulting.mulelinter</groupId>
-\t<artifactId>sample-mule-app</artifactId>
-\t<version>1.0.0</version>
-\t<packaging>mule-application</packaging>
-\t<name>sample-mule-app-sys-api</name>
-\t<build>
-\t\t<plugins>
-\t\t\t<plugin>
-\t\t\t\t<groupId>org.mule.tools.maven</groupId>
-\t\t\t\t<artifactId>mule-maven-plugin</artifactId>
-\t\t\t\t<version>3.3.5</version>
-\t\t\t\t<extensions>true</extensions>
-\t\t\t\t<configuration>
-\t\t\t\t</configuration>
-\t\t\t</plugin>
-\t\t</plugins>
-\t</build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.1</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+        <munit.version>2.2.1</munit.version>
+        <munit.failBuild>true</munit.failBuild>
+        <munit.requiredApplicationCoverage>80</munit.requiredApplicationCoverage>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mulesoft.munit.tools</groupId>
+                <artifactId>munit-maven-plugin</artifactId>
+                <version>${munit.version}</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                            <goal>coverage-report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <coverage>
+                        <runCoverage>true</runCoverage>
+                        <failBuild>${munit.failBuild}</failBuild>
+                        <requiredApplicationCoverage>${munit.requiredApplicationCoverage}</requiredApplicationCoverage>
+                        <requiredResourceCoverage>80</requiredResourceCoverage>
+                        <requiredFlowCoverage>80</requiredFlowCoverage>
+                        <ignoreFiles>
+                            <ignoreFile>global-config.xml</ignoreFile>
+                            <ignoreFile>error-handler.xml</ignoreFile>
+                        </ignoreFiles>
+                    </coverage>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 '''
 
     private static final String PLUGINS_EXISTS_WITHPROPERTY_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-\t\txsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-\t\t\thttp://maven.apache.org/maven-v4_0_0.xsd">
-\t<modelVersion>4.0.0</modelVersion>
-\t<groupId>com.avioconsulting.mulelinter</groupId>
-\t<artifactId>sample-mule-app</artifactId>
-\t<version>1.0.0</version>
-\t<packaging>mule-application</packaging>
-\t<name>sample-mule-app-sys-api</name>
-\t<properties>
-\t\t<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
-\t</properties>
-\t<build>
-\t\t<plugins>
-\t\t\t<plugin>
-\t\t\t\t<groupId>org.mule.tools.maven</groupId>
-\t\t\t\t<artifactId>mule-maven-plugin</artifactId>
-\t\t\t\t<version>${mule.maven.plugin.version}</version>
-\t\t\t\t<extensions>true</extensions>
-\t\t\t\t<configuration>
-\t\t\t\t</configuration>
-\t\t\t</plugin>
-\t\t</plugins>
-\t</build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.1</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 '''
 

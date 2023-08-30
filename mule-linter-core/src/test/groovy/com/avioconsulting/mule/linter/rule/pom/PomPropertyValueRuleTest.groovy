@@ -43,7 +43,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 16
+        violations[0].message  == 'munit.version maven property value does not match expected value. Expected: 3.2.1 found: 2.2.1'
     }
 
     def 'Missing Property'() {
@@ -55,7 +55,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 12
+        violations[0].message == 'invalid.munit.version does not exist in <properties></properties>'
     }
 
 }

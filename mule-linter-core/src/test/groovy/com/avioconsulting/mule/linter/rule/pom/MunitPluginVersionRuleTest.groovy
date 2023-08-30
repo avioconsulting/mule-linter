@@ -49,7 +49,7 @@ class MunitPluginVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].rule.ruleId == MunitPluginVersionRule.RULE_ID
-        violations[0].lineNumber == 16
+
     }
 
     def 'Missing MUnit Plugin'() {
@@ -71,19 +71,41 @@ class MunitPluginVersionRuleTest extends Specification {
     }
 
     private static final String INVALID_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.avioconsulting.mulelinter</groupId>
-  <artifactId>sample-mule-app</artifactId>
-  <version>1.0.0</version>
-  <packaging>mule-application</packaging>
-  <name>sample-mule-app-sys-api</name>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <app.runtime>4.2.1</app.runtime>
-    <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
-  </properties>
-</project>'''
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.1</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
+'''
 }
