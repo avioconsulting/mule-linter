@@ -32,7 +32,7 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].fileName == PomFile.POM_XML
+        violations[0].message == 'Missing munit-maven-plugin'
         violations[0].lineNumber == 0
     }
 
@@ -65,8 +65,8 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 54
         violations[0].message.endsWith('sillyproperty|incorrect')
+        violations[0].message.startsWith(MunitMavenPluginAttributesRule.RULE_MESSAGE)
     }
 
     def 'Check ignoreFiles - Missing one'() {
@@ -82,8 +82,8 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
 
         then:
         violations.size() == 1
-        violations[0].lineNumber == 75
         violations[0].message.endsWith('ignoreFile|something-else.xml')
+        violations[0].message.startsWith(MunitMavenPluginAttributesRule.RULE_MESSAGE_MISSING)
     }
     def 'Very wrong Munit Maven Plugin'() {
         given:
@@ -100,66 +100,118 @@ class MunitMavenPluginAttributesRuleTest extends Specification {
         violations[0].fileName == PomFile.POM_XML
         violations[0].rule.ruleName == MunitMavenPluginAttributesRule.RULE_NAME
         violations[0].message.endsWith('runCoverage|true')
-        violations[0].lineNumber == 26
         violations[1].message.endsWith('failBuild|true')
-        violations[1].lineNumber == 27
         violations[2].message.endsWith('requiredApplicationCoverage|80')
         violations[3].message.endsWith('requiredResourceCoverage|80')
         violations[4].message.endsWith('requiredFlowCoverage|80')
     }
 
     private static final String MISSING_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-\t\txsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-\t\t\thttp://maven.apache.org/maven-v4_0_0.xsd">
-\t<modelVersion>4.0.0</modelVersion>
-\t<groupId>com.avioconsulting.mulelinter</groupId>
-\t<artifactId>sample-mule-app</artifactId>
-\t<version>1.0.0</version>
-\t<packaging>mule-application</packaging>
-\t<name>sample-mule-app-sys-api</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.2</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
+
+'''
+
+    private static final String WRONG_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.2</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+        <munit.version>2.2.1</munit.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mulesoft.munit.tools</groupId>
+                <artifactId>munit-maven-plugin</artifactId>
+                <version>${munit.version}</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                            <goal>coverage-report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <coverage>
+                        <runCoverage>false</runCoverage>
+                        <failBuild>false</failBuild>
+                        <requiredApplicationCoverage>87</requiredApplicationCoverage>
+                        <requiredResourceCoverage>85</requiredResourceCoverage>
+                        <requiredFlowCoverage>86</requiredFlowCoverage>
+                        <ignoreFiles>
+                            <ignoreFile>global-config.xml</ignoreFile>
+                            <ignoreFile>error-handler.xml</ignoreFile>
+                        </ignoreFiles>
+                    </coverage>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 '''
-    private static final String WRONG_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-\t\txsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-\t\t\thttp://maven.apache.org/maven-v4_0_0.xsd">
-\t<modelVersion>4.0.0</modelVersion>
-\t<groupId>com.avioconsulting.mulelinter</groupId>
-\t<artifactId>sample-mule-app</artifactId>
-\t<version>1.0.0</version>
-\t<packaging>mule-application</packaging>
-\t<name>sample-mule-app-sys-api</name>
-\t<properties>
-\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-\t\t<app.runtime>4.2.1</app.runtime>
-\t\t<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
-\t\t<munit.version>2.2.1</munit.version>
-\t</properties>
-\t<build>
-\t\t<plugins>
-\t\t\t<plugin>
-\t\t\t\t<groupId>com.mulesoft.munit.tools</groupId>
-\t\t\t\t<artifactId>munit-maven-plugin</artifactId>
-\t\t\t\t<version>${munit.version}</version>
-\t\t\t\t<configuration>
-\t\t\t\t\t<coverage>
-\t\t\t\t\t\t<runCoverage>false</runCoverage>
-\t\t\t\t\t\t<failBuild>false</failBuild>
-\t\t\t\t\t\t<requiredApplicationCoverage>87</requiredApplicationCoverage>
-\t\t\t\t\t\t<requiredResourceCoverage>85</requiredResourceCoverage>
-\t\t\t\t\t\t<requiredFlowCoverage>86</requiredFlowCoverage>
-\t\t\t\t\t\t<ignoreFiles>
-\t\t\t\t\t\t\t<ignoreFile>global-config.xml</ignoreFile>
-\t\t\t\t\t\t\t<ignoreFile>error-handler.xml</ignoreFile>
-\t\t\t\t\t\t</ignoreFiles>
-\t\t\t\t\t</coverage>
-\t\t\t\t</configuration>
-\t\t\t</plugin>
-\t\t</plugins>
-\t</build>
-</project>'''
 
 }

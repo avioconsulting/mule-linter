@@ -44,5 +44,6 @@ class PomExistsRuleTest extends Specification {
 
         then:
         violations.size() == 1
+        violations[0].message == PomExistsRule.FILE_NOT_EXISTS
     }
 }

@@ -89,7 +89,7 @@ class PomDependencyVersionRule extends Rule {
                     isViolated = (!version.isGreater(dependencyVersion)) ? true : false
             }
             if (isViolated) {
-                violations.add(new RuleViolation(this, app.pomFile.path, attribute.lineNo,
+                violations.add(new RuleViolation(this, app.pomFile.path, 0,
                         RULE_VIOLATION_MESSAGE + "$groupId , $artifactId, $attribute.value"))
             }
         }

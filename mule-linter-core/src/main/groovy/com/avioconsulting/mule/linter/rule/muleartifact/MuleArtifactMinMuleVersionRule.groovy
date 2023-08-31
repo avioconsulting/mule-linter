@@ -30,7 +30,7 @@ class MuleArtifactMinMuleVersionRule extends Rule {
         if (minMuleVersion == null) {
             violations.add(new RuleViolation(this, application.muleArtifact.path, 0, MISSING_PROPERTY_MESSAGE))
         } else if (appRuntime < minMuleVersion.toString()) {
-            violations.add(new RuleViolation(this, application.pomFile.path, minMuleVersion.lineNumber,
+            violations.add(new RuleViolation(this, application.muleArtifact.path, minMuleVersion.lineNumber,
                     PROPERTY_MISMATCH_MESSAGE + 'app.runtime: ' + appRuntime + ' minMuleVersion: ' + minMuleVersion))
         }
         return violations

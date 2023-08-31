@@ -8,6 +8,7 @@ dependencies {
     implementation 'org.json:json:20230227'
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.reflections:reflections:0.10.2'
+    implementation 'org.apache.maven.shared:maven-invoker:3.0.1'
     compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
 }
 
