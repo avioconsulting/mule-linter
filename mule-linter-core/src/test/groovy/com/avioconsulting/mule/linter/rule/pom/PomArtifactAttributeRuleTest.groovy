@@ -35,7 +35,6 @@ class PomArtifactAttributeRuleTest extends Specification {
 
         then:
         violations.size() == 1
-//        violations[0].fileName.contains('pom.xml')
         violations[0].message.startsWith(PomPluginAttributeRule.MISSING_PLUGIN)
     }
 
