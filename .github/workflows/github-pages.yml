@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: 'recursive'
       - name: Set up JDK 1.8
@@ -40,9 +40,18 @@ jobs:
           distribution: temurin
           java-version: 8
 
+      - name: Set Maven Home
+        id: set-maven-home
+        run: echo "maven-home=$(mvn -v | grep "Maven home" | sed -e "s/^Maven home\:\ //")" >> $GITHUB_OUTPUT
+
+      - name: Print Maven Home
+        run: echo "Maven Home ${{steps.set-maven-home.outputs.maven-home}}"
+
       - name: Verify
         # build to generate docs folder
         run: ./gradlew check
+        env:
+          MAVEN_HOME: ${{steps.set-maven-home.outputs.maven-home}}
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
