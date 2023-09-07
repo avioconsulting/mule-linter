@@ -11,7 +11,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.17'
+//    implementation 'org.codehaus.groovy:groovy-all:3.0.17:pom'
+    implementation (group: 'org.codehaus.groovy', name: 'groovy-all', version: '3.0.19', ext: 'pom'){
+        transitive= true
+    }
     testImplementation platform('org.spockframework:spock-bom:2.3-groovy-3.0')
     testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
 }

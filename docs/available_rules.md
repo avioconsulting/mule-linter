@@ -200,6 +200,28 @@ This argument is optional. The default list is as follows:
 [[name: 'request', namespace: Namespace.HTTP, 'config-ref': 'request-config']]
 ```
 
+### CONNECTION_TIMEOUT_CONFIG
+
+This rule checks that connection timeout is configured for all the connectors that supports timeout in the mule application.
+For all the connectors provided in the components list, it checks if connection timeout property 'responseTimeout' exits at the connector, or configured at the connector configuration in the mule application.
+
+The constructors for this rule are:
+
+```groovy
+ConnectionTimeoutRule()
+ConnectionTimeoutRule(List components)
+```
+
+*components* is a List of Maps containing `name`, `namespace`, `timeoutAttribute` and `config-ref`.
+`name` refers to the component name, `namespace` refers to the component namespace, 
+`timeoutAttribute` refers to the attribute in the connector for configuring connection timeout,
+and `config-ref` refers to the component name for the connector configuration in global-config.xml
+The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`.
+This argument is optional. The default list is as follows:
+```groovy
+[[name: 'request', namespace: Namespace.HTTP, timeoutAttribute: 'responseTimeout', 'config-ref': 'request-config']]
+```
+
 ### CRON_EXPRESSION_EXTERNALIZED
 
 Cron Expressions are used in most implementation using Schedulers/Batch/Polling based integrations.
