@@ -27,6 +27,13 @@ mule_linter {
         CONFIG_PLACEHOLDER {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
+        CONNECTION_RETRY_CONFIG{
+            components:[
+                    [name: 'request', namespace: 'http://www.mulesoft.org/schema/mule/http', 'config-ref': 'request-config'],
+                    [name: 'publish', namespace: 'http://www.mulesoft.org/schema/mule/vm', 'config-ref': 'config '],
+                    [name: 'publish-consume', namespace: 'http://www.mulesoft.org/schema/mule/vm', 'config-ref': 'config']
+            ]
+        }
         CRON_EXPRESSION_EXTERNALIZED{}
         DISPLAY_NAME {
             components = [
