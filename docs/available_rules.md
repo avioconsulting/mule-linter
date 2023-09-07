@@ -178,6 +178,28 @@ This argument is optional. The default array is as follows:
 'authorizationUrl', 'passphrase']
 ```
 
+### CONNECTION_RETRY_CONFIG
+
+This rule checks that connection retry strategy is configured for all the connectors that supports retry in the mule application.
+For all the connectors provided in the components list, check if reconnect configuration with property `frequency` and `count` exists at the connector,
+or configured at the connector configuration in the mule application.
+
+The constructors for this rule are:
+
+```groovy
+ConnectionRetryRule()
+ConnectionRetryRule(List components)
+```
+
+*components* is a List of Maps containing `name`, `namespace` and `config-ref`.
+`name` refers to the component name, `namespace` refers to the component namespace,
+and `config-ref` refers to the component name for the connector configuration in global-config.xml
+The most common namespaces can be referenced from the class `com.avioconsulting.mule.linter.model.Namespace`.
+This argument is optional. The default list is as follows:
+```groovy
+[[name: 'request', namespace: Namespace.HTTP, 'config-ref': 'request-config']]
+```
+
 ### CONNECTION_TIMEOUT_CONFIG
 
 This rule checks that connection timeout is configured for all the connectors that supports timeout in the mule application.
@@ -199,6 +221,7 @@ This argument is optional. The default list is as follows:
 ```groovy
 [[name: 'request', namespace: Namespace.HTTP, timeoutAttribute: 'responseTimeout', 'config-ref': 'request-config']]
 ```
+
 ### CRON_EXPRESSION_EXTERNALIZED
 
 Cron Expressions are used in most implementation using Schedulers/Batch/Polling based integrations.
