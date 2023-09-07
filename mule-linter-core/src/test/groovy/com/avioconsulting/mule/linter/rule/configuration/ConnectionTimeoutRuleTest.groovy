@@ -66,7 +66,7 @@ class ConnectionTimeoutRuleTest extends Specification{
         violations[0].message == 'Connector timeout is not configured for component: request'
     }
 
-    def 'Implementation with more components to check for retry configuration success '() {
+    def 'Implementation with more components to check for connection timeout configuration defined at global-config.xml success'() {
         given:
         testApp.addFile('src/main/mule/global-config.xml', GLOBAL_CONFIG)
         testApp.buildConfigContent('http-implementation.xml', IMPLEMENTATION_WITH_TIMEOUT)
@@ -85,7 +85,7 @@ class ConnectionTimeoutRuleTest extends Specification{
         violations.size() == 0
     }
 
-    def 'Implementation with more components to check for retry configuration failure'() {
+    def 'Implementation with more components to check for connection timeout configuration failure'() {
         given:
         testApp.addFile('src/main/mule/global-config.xml', GLOBAL_CONFIG_WITHOUT_TIMEOUT)
         testApp.buildConfigContent('http-implementation.xml', IMPLEMENTATION_WITHOUT_TIMEOUT)
