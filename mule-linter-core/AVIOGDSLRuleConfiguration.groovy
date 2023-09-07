@@ -27,6 +27,13 @@ mule_linter {
         CONFIG_PLACEHOLDER {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
+        CONNECTION_TIMEOUT_CONFIG{
+            components:[
+                    [name: 'request', namespace: 'http://www.mulesoft.org/schema/mule/http', timeoutAttribute: 'responseTimeout', 'config-ref': 'request-config'],
+                    [name: 'publish', namespace: 'http://www.mulesoft.org/schema/mule/vm', timeoutAttribute: 'responseTimeout', 'config-ref': 'config'],
+                    [name: 'publish-consume', namespace: 'http://www.mulesoft.org/schema/mule/vm', timeoutAttribute: 'responseTimeout', 'config-ref': 'config']
+            ]
+        }
         CRON_EXPRESSION_EXTERNALIZED{}
         DISPLAY_NAME {
             components = [

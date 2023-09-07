@@ -181,7 +181,7 @@ This argument is optional. The default array is as follows:
 ### CONNECTION_TIMEOUT_CONFIG
 
 This rule checks that connection timeout is configured for all the connectors that supports timeout in the mule application.
-For all the connectors provided in the components list, it checks if connection timeout property 'responseTimeout' is configured at the connector, or the connection timeout property is configured at the configuration of the connector in the mule application.
+For all the connectors provided in the components list, it checks if connection timeout property 'responseTimeout' exits at the connector, or configured at the connector configuration in the mule application.
 
 The constructors for this rule are:
 

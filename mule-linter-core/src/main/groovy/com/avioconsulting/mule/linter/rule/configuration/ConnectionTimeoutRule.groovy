@@ -9,8 +9,8 @@ import com.avioconsulting.mule.linter.model.Namespace
 
 /**
  * This rule checks that connection timeout is configured for all the connectors that supports timeout in the mule application.
- * For all the connectors provided in the components list, it checks if connection timeout property 'responseTimeout' is configured at the connector,
- * or the connection timeout property is configured at the configuration of the connector in the mule application.
+ * For all the connectors provided in the components list, it checks if connection timeout property 'responseTimeout' exits at the connector,
+ * or configured at the connector configuration in the mule application.
  */
 class ConnectionTimeoutRule extends Rule{
     static final String RULE_ID = 'CONNECTION_TIMEOUT_CONFIG'
@@ -47,6 +47,8 @@ class ConnectionTimeoutRule extends Rule{
             String timeoutAttribute = component.timeoutAttribute ?: DEFAULT_TIMEOUT_ATTRIBUTE
             String configRef = component.'config-ref' ?: DEFAULT_CONFIG_REF
             application.findComponents(component.name, component.namespace).each {muleComponent ->
+                // check if connection timeout attribute is configured at component,
+                // if connection timeout attribute is not configured at component, check for timeoutAttribute in the connector configuration.
                 if(!muleComponent.attributes.containsKey(timeoutAttribute)){
                     boolean isTimeoutConfigured = false
                     application.findComponents(configRef, component.namespace).each{configRefMuleComponent ->
