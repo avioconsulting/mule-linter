@@ -29,6 +29,8 @@ interface Application {
 
     AzurePipelinesFile getAzurePipelinesFile()
 
+    GitlabFile getGitlabFile()
+
     Boolean hasFile(String filename)
 
     String getName()

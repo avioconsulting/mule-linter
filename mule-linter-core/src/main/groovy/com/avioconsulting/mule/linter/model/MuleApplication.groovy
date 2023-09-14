@@ -19,6 +19,7 @@ class MuleApplication implements Application {
     static final String README = 'README.md'
     static final String JENKINS_FILE = JenkinsFile.JENKINSFILE
     static final String AZURE_PIPELINES_FILE = AzurePipelinesFile.AZURE_PIPELINES
+    static final String GITLAB_FILE = GitlabFile.GITLABFILE
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
     static final String MAVEN_HOME_DOES_NOT_EXIST = 'Maven home config does not exists.'
@@ -30,6 +31,7 @@ class MuleApplication implements Application {
     ReadmeFile readmeFile
     JenkinsFile jenkinsFile
     AzurePipelinesFile azurePipelinesFile
+    GitlabFile gitlabFile
     String name
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
@@ -48,6 +50,7 @@ class MuleApplication implements Application {
         readmeFile = new ReadmeFile(applicationPath, README)
         jenkinsFile =  new JenkinsFile(applicationPath, JENKINS_FILE)
         azurePipelinesFile = new AzurePipelinesFile(applicationPath, AZURE_PIPELINES_FILE)
+        gitlabFile =  new GitlabFile(applicationPath, GITLAB_FILE)
         this.name = pomFile.artifactId
 
         loadPropertyFiles()
@@ -172,6 +175,10 @@ class MuleApplication implements Application {
 
     AzurePipelinesFile getAzurePipelinesFile() {
         this.azurePipelinesFile
+    }
+
+    GitlabFile getGitlabfile() {
+        return gitlabFile
     }
 
     Boolean hasFile(String filename) {
