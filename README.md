@@ -44,6 +44,17 @@ Generated Distribution and install in local -
 
 `./gradlew installDist`
 
+## Release
+
+To release this module, follow these steps - 
+1. Create a new branch from `main` with naming convention - `release/x.y.z` eg. `release/1.1.0`
+2. Run one of the following command -
+* Release current snapshot - `./gradlew -Dversion.prerelease=`
+* Release next minor non-snapshot - `./gradlew -Dversion.prerelease= incrementMinor`
+3. Commit the modified `version.properties` modified by above command
+4. Create PR to main
+5. Once approved, JReleaser will release it to maven central
+
 
 ## Rule Configuration
 
