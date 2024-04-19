@@ -37,6 +37,7 @@ class PomDependencyVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].message.startsWith(PomDependencyVersionRule.MISSING_DEPENDENCY)
+        violations[0].fileName == PomFile.POM_XML
     }
 
     def 'Correct Equal Maven Dependency version'() {
@@ -74,6 +75,7 @@ class PomDependencyVersionRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].message.startsWith(PomDependencyVersionRule.RULE_VIOLATION_MESSAGE)
+        violations[0].fileName == PomFile.POM_XML
     }
 
     def 'Multiple Greater Than Maven Dependency version'() {
@@ -93,6 +95,10 @@ class PomDependencyVersionRuleTest extends Specification {
 
         then:
         violations.size() == size
+        if (violations.size() == 1) {
+            violations[0].fileName == PomFile.POM_XML
+        }
+
 
         where:
         version | size

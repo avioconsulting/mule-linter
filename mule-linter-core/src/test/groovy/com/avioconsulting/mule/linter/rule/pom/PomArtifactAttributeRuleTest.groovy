@@ -36,6 +36,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].message.startsWith(PomPluginAttributeRule.MISSING_PLUGIN)
+        violations[0].fileName == PomFile.POM_XML
     }
 
     def 'Correct Maven Plugin version'() {
@@ -71,6 +72,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].message.startsWith(PomPluginAttributeRule.RULE_VIOLATION_MESSAGE)
+        violations[0].fileName == PomFile.POM_XML
     }
 
     def 'Correct Maven Plugin version check as property'() {
@@ -106,6 +108,7 @@ class PomArtifactAttributeRuleTest extends Specification {
         then:
         violations.size() == 1
         violations[0].message.startsWith(PomPluginAttributeRule.RULE_VIOLATION_MESSAGE)
+        violations[0].fileName == PomFile.POM_XML
     }
 
     private static final String MISSING_PLUGINS_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>

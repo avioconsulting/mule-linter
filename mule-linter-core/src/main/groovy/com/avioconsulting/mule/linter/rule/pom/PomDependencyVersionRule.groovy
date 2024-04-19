@@ -5,6 +5,7 @@ import com.avioconsulting.mule.linter.model.CaseNaming
 import com.avioconsulting.mule.linter.model.Version
 import com.avioconsulting.mule.linter.model.pom.PomDependency
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -76,7 +77,7 @@ class PomDependencyVersionRule extends Rule {
         PomDependency dependency = app.pomFile.getDependency(groupId, artifactId)
 
         if ( dependency == null ) {
-            violations.add(new RuleViolation(this, app.pomFile.path, 0, MISSING_DEPENDENCY + "$groupId , $artifactId"))
+            violations.add(new RuleViolation(this, PomFile.POM_XML, 0, MISSING_DEPENDENCY + "$groupId , $artifactId"))
         } else {
             Boolean isViolated = false;
             PomElement attribute = dependency.getAttribute('version')
@@ -89,7 +90,7 @@ class PomDependencyVersionRule extends Rule {
                     isViolated = (!version.isGreater(dependencyVersion)) ? true : false
             }
             if (isViolated) {
-                violations.add(new RuleViolation(this, app.pomFile.path, 0,
+                violations.add(new RuleViolation(this, PomFile.POM_XML, 0,
                         RULE_VIOLATION_MESSAGE + "$groupId , $artifactId, $attribute.value"))
             }
         }

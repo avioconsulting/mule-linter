@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.MuleApplication
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
 import com.avioconsulting.mule.linter.TestApplication
@@ -44,6 +45,7 @@ class PomPropertyValueRuleTest extends  Specification {
         then:
         violations.size() == 1
         violations[0].message  == 'munit.version maven property value does not match expected value. Expected: 3.2.1 found: 2.2.1'
+        violations[0].fileName == PomFile.POM_XML
     }
 
     def 'Missing Property'() {
@@ -56,6 +58,7 @@ class PomPropertyValueRuleTest extends  Specification {
         then:
         violations.size() == 1
         violations[0].message == 'invalid.munit.version does not exist in <properties></properties>'
+        violations[0].fileName == PomFile.POM_XML
     }
 
 }

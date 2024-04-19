@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -43,12 +44,12 @@ class PomPropertyValueRule extends Rule {
         try {
             PomElement pomProperty = app.pomFile.getPomProperty(propertyName)
             if (!pomProperty.value.equalsIgnoreCase(propertyValue)) {
-                violations.add(new RuleViolation(this, app.pomFile.path,
+                violations.add(new RuleViolation(this, PomFile.POM_XML,
                         0, pomProperty.name + RULE_VIOLATION_MESSAGE + 'Expected: ' + propertyValue
                         + ' found: ' + pomProperty.value))
             }
         } catch (IllegalArgumentException e) {
-            violations.add(new RuleViolation(this, app.pomFile.path,
+            violations.add(new RuleViolation(this, PomFile.POM_XML,
                     0, propertyName + ATTRIBUTE_MISSING_MESSAGE))
         }
 
