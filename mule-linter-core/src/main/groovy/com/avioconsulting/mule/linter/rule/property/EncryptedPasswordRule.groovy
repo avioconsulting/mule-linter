@@ -13,8 +13,8 @@ import com.avioconsulting.mule.linter.model.rule.RuleViolation
 class EncryptedPasswordRule extends Rule {
 
     static final String RULE_ID = 'ENCRYPTED_VALUE'
-    static final String RULE_NAME = 'The Property File contains ‘secret’ or ‘password’ values that are encrypted. '
-    static final String RULE_VIOLATION_MESSAGE = 'The Property file contains a ‘secret’ or ‘password’ that is not encrypted: '
+    static final String RULE_NAME = 'The Property File contains `secret` or `password` values that are encrypted. '
+    static final String RULE_VIOLATION_MESSAGE = 'The Property file contains a `secret` or `password` that is not encrypted: '
     static final String ENC_REGEX = '(\\!\\[.*?\\])'
 
     EncryptedPasswordRule() {
