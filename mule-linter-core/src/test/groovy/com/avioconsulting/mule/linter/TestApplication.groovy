@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter
 
 import com.avioconsulting.mule.linter.model.AzurePipelinesFile
 import com.avioconsulting.mule.linter.model.JenkinsFile
+import com.avioconsulting.mule.linter.model.GitlabFile
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.GitIgnoreFile
@@ -47,6 +48,11 @@ class TestApplication {
     void addJenkinsfile() {
         File jenkinsFile = new File(appDir, JenkinsFile.JENKINSFILE)
         writeFile(jenkinsFile, '')
+    }
+
+    void addGitlabFile() {
+        File gitlabFile = new File(appDir, GitlabFile.GITLABFILE)
+        writeFile(gitlabFile, '')
     }
 
     void addMuleArtifact() {

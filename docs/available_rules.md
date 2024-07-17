@@ -14,6 +14,17 @@ JenkinsFileExistsRule()
 
 This rule takes no arguments. 
 
+### GITLAB_EXISTS
+
+This rule checks that a Gitlab file: .gitlab-ci.yml exists at the root of the project. 
+
+The constructor for this rule is:
+
+```groovy
+GitlabFileExistsRule()
+```
+
+This rule takes no arguments. 
 
 ## Configuration
 

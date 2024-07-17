@@ -49,6 +49,11 @@ class TestApplication {
         writeFile(jenkinsFile, '')
     }
 
+    void addGitlabFile() {
+        File gitlabFile = new File(appDir, GitlabFile.GITLABFILE)
+        writeFile(gitlabFile, '')
+    }
+
     void addMuleArtifact() {
         copyFileFromBaseApp(MuleArtifact.MULE_ARTIFACT_JSON)
     }

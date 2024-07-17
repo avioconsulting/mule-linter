@@ -3,6 +3,7 @@ mule_linter {
         /* CICD */
         AZURE_PIPELINES_EXISTS {}
         JENKINS_EXISTS {}
+        GITLAB_EXISTS {}
 
         /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
