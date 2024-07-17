@@ -27,7 +27,7 @@ jobs:
 
   Post-Release:
     needs: [Build, Release]
-    uses: avioconsulting/shared-workflows/.github/workflows/maven-post-release.yml@main
+    uses: avioconsulting/shared-workflows/.github/workflows/gradle-post-release.yml@main
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
