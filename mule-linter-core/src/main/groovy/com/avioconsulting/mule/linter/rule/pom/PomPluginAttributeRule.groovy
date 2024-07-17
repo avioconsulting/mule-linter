@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter.rule.pom
 
 import com.avioconsulting.mule.linter.model.Application
 import com.avioconsulting.mule.linter.model.pom.PomElement
+import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.pom.PomPlugin
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
@@ -53,12 +54,12 @@ class PomPluginAttributeRule extends Rule {
         PomPlugin plugin = app.pomFile.getPlugin(groupId, artifactId)
 
         if ( plugin == null ) {
-            violations.add(new RuleViolation(this, app.pomFile.path, 0, MISSING_PLUGIN + "$groupId , $artifactId"))
+            violations.add(new RuleViolation(this, PomFile.POM_XML, 0, MISSING_PLUGIN + "$groupId , $artifactId"))
         } else {
             attributes.each {
                 PomElement attribute = plugin.getAttribute(it.key)
                 if ( attribute.value != it.value) {
-                    violations.add(new RuleViolation(this, app.pomFile.path, 0,
+                    violations.add(new RuleViolation(this, PomFile.POM_XML, 0,
                             RULE_VIOLATION_MESSAGE + "$it.key : $it.value"))
                 }
             }
