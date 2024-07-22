@@ -3,7 +3,9 @@ mule_linter {
     /* CICD */
         AZURE_PIPELINES_EXISTS {}
         JENKINS_EXISTS {}
-
+        FILE_EXISTS {
+            path = '.github/workflows/build.yml'
+        }
     /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
         COMMENTED_CODE {}

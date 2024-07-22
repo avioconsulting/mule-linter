@@ -5,11 +5,12 @@ import com.avioconsulting.mule.linter.model.GitIgnoreFile
 import com.avioconsulting.mule.linter.model.rule.Param
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
+import com.avioconsulting.mule.linter.rule.FileExistsRule
 
 /**
  * This rule checks that a `.gitignore` file is present at root and contains the expected files and folders.
  */
-class GitIgnoreRule extends Rule {
+class GitIgnoreRule extends FileExistsRule {
 
     static final String RULE_ID = 'GIT_IGNORE'
     static final String RULE_NAME = 'A .gitignore exists and contains required expressions. '
@@ -27,25 +28,22 @@ class GitIgnoreRule extends Rule {
     @Param("ignoredFiles") static List<String> ignoredFiles
 
     GitIgnoreRule() {
-        super(RULE_ID, RULE_NAME)
+        super(RULE_ID, RULE_NAME, GitIgnoreFile.GITIGNORE, FILE_MISSING_VIOLATION_MESSAGE)
         this.ignoredFiles = DEFAULT_EXPRESSIONS
     }
 
     @Override
     List<RuleViolation> execute(Application app) {
-        List<RuleViolation> violations = []
+        List<RuleViolation> violations = super.execute(app)
 
         GitIgnoreFile gitIgnoreFile = app.gitignoreFile
-        if (gitIgnoreFile.doesExist()) {
+        if (violations.empty) {
             ignoredFiles.each { expression ->
                 if (!gitIgnoreFile.contains(expression)) {
                     violations.add(new RuleViolation(this, gitIgnoreFile.path,
                             1, RULE_VIOLATION_MESSAGE + expression))
                 }
             }
-        } else {
-            violations.add(new RuleViolation(this, gitIgnoreFile.path,
-                    0, FILE_MISSING_VIOLATION_MESSAGE))
         }
 
         return violations
