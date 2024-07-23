@@ -25,6 +25,12 @@ interface Application {
 
     ReadmeFile getReadmeFile()
 
+    JenkinsFile getJenkinsfile()
+
+    AzurePipelinesFile getAzurePipelinesFile()
+
+    GitlabFile getGitlabFile()
+
     Boolean hasFile(String filename)
 
     String getName()

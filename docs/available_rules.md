@@ -1,20 +1,5 @@
 # Available Rules
 
-## General
-
-### File Exists
-
-This rule checks that the file at give path exists in the application.
-
-
-The constructor for this rule is:
-
-```groovy
-FileExistsRule(path)
-```
-
-where `path` is the relative file path to check for existence.
-
 ## CI/CD
 
 ### JENKINS_EXISTS

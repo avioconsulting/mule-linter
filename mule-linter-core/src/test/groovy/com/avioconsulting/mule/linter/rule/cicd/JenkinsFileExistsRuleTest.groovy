@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.TestApplication
-
+import com.avioconsulting.mule.linter.model.JenkinsFile
 import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -39,12 +39,12 @@ class JenkinsFileExistsRuleTest extends Specification {
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
-        testApp.removeFile(JenkinsFileExistsRule.JENKINSFILE)
+        testApp.removeFile(JenkinsFile.JENKINSFILE)
         List<RuleViolation> violations = rule.execute(app)
 
         then:
         violations.size() == 1
         violations[0].lineNumber == 0
-        violations[0].message == "A Jenkinsfile file does not exist"
+        violations[0].message == JenkinsFileExistsRule.RULE_VIOLATION_MESSAGE
     }
 }

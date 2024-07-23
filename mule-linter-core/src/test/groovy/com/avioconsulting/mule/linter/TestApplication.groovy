@@ -1,12 +1,11 @@
 package com.avioconsulting.mule.linter
 
-
+import com.avioconsulting.mule.linter.model.AzurePipelinesFile
+import com.avioconsulting.mule.linter.model.JenkinsFile
+import com.avioconsulting.mule.linter.model.GitlabFile
 import com.avioconsulting.mule.linter.model.MuleArtifact
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.GitIgnoreFile
-import com.avioconsulting.mule.linter.rule.cicd.AzurePipelinesExistsRule
-import com.avioconsulting.mule.linter.rule.cicd.GitlabFileExistsRule
-import com.avioconsulting.mule.linter.rule.cicd.JenkinsFileExistsRule
 
 @SuppressWarnings(['StaticFieldsBeforeInstanceFields', 'BuilderMethodWithSideEffects', 'FactoryMethodName'])
 class TestApplication {
@@ -40,19 +39,19 @@ class TestApplication {
     }
 
     void addAzurePipelinesFile(String yamlContents = null) {
-        File azurePipelinesFile = new File(appDir, AzurePipelinesExistsRule.AZURE_PIPELINES)
+        File azurePipelinesFile = new File(appDir, AzurePipelinesFile.AZURE_PIPELINES)
         yamlContents = yamlContents ?: "pool:\n" +
                 "  vmImage: 'ubuntu-latest'"
         writeFile(azurePipelinesFile, yamlContents)
     }
 
     void addJenkinsfile() {
-        File jenkinsFile = new File(appDir, JenkinsFileExistsRule.JENKINSFILE)
+        File jenkinsFile = new File(appDir, JenkinsFile.JENKINSFILE)
         writeFile(jenkinsFile, '')
     }
 
     void addGitlabFile() {
-        File gitlabFile = new File(appDir, GitlabFileExistsRule.GITLABFILE)
+        File gitlabFile = new File(appDir, GitlabFile.GITLABFILE)
         writeFile(gitlabFile, '')
     }
 
