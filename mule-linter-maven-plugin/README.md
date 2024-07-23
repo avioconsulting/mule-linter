@@ -11,34 +11,10 @@ Plugin goal is by default attached to validate which is the first phase of maven
 - formats: Defaults to CONSOLE and JSON.
 - failBuild: Defaults to false. If `failBuild` is set to true, then rule violations with severity higher than MINOR will cause build to fail.
 
-## Previous steps for use the plugin
-
-**Step0:** Configure AVIO Github Package Registry
-
-In your POM, add following plugin repository in `pluginRepositories` tag (add if doesn't exist) -
-
-```xml
-    <pluginRepository>
-        <id>github-avio-pkg</id>
-        <name>AVIO Github Package Repository</name>
-        <url>https://maven.pkg.github.com/avioconsulting/public-packages/</url>
-        <layout>default</layout>
-    </pluginRepository>
-```
-
-In your `~/.m2/settings.xml`, add credentials for server id `github-avio-pkg`, like below -
-```xml
-    <server>
-        <id>github-avio-pkg</id>
-        <username>YOUR_GIT_USER</username>
-        <password>YOUR_GIT_PERSONAL_TOKEN</password>
-    </server>
-```
-See [working-with-the-apache-maven-registry#authenticating-with-a-personal-access-token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#authenticating-with-a-personal-access-token) for more details on Github Package Authentication.
-
-**NOTE:** The Github Personal Token must have **read:packages** permission.
-
 ## Usage
+
+The plugin is published to Maven Central and Latest version can be seen [on Maven Central](https://central.sonatype.com/artifact/com.avioconsulting.mule/mule-linter-maven-plugin/versions). 
+
 To use plugin in your maven project, add following plugin configuration in project pom -
 
 ```xml
@@ -46,7 +22,7 @@ To use plugin in your maven project, add following plugin configuration in proje
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>mule-linter-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>LATEST_VERSION</version>
     <executions>
         <execution>
             <id>validate</id>
@@ -91,7 +67,7 @@ Adding this library to plugin to use new rule, we can configure it like below -
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>mule-linter-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>LATEST_VERSION</version>
     <executions>
         <execution>
             <id>validate</id>
