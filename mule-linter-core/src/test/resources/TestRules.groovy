@@ -4,7 +4,9 @@ mule_linter {
         AZURE_PIPELINES_EXISTS {}
         JENKINS_EXISTS {}
         GITLAB_EXISTS {}
-
+        FILE_EXISTS {
+            path = "sample.json"
+        }
         /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
         COMMENTED_CODE {}

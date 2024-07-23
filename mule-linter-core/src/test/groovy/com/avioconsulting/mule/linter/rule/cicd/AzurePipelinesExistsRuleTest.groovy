@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.linter.rule.cicd
 
 import com.avioconsulting.mule.linter.TestApplication
-import com.avioconsulting.mule.linter.model.AzurePipelinesFile
+
 import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.rule.Rule
 import com.avioconsulting.mule.linter.model.rule.RuleViolation
@@ -35,7 +35,7 @@ class AzurePipelinesExistsRuleTest extends Specification {
         given:
         Rule rule = new AzurePipelinesExistsRule()
         MuleApplication app = new MuleApplication(testApp.appDir)
-        testApp.removeFile(AzurePipelinesFile.AZURE_PIPELINES)
+        testApp.removeFile(AzurePipelinesExistsRule.AZURE_PIPELINES)
 
         when:
         List<RuleViolation> violations = rule.execute(app)
@@ -50,7 +50,7 @@ class AzurePipelinesExistsRuleTest extends Specification {
         given:
         Rule rule = new AzurePipelinesExistsRule()
         MuleApplication app = new MuleApplication(testApp.appDir)
-        testApp.removeFile(AzurePipelinesFile.AZURE_PIPELINES)
+        testApp.removeFile(AzurePipelinesExistsRule.AZURE_PIPELINES)
         testApp.addAzurePipelinesFile("-some\n   - invalid: yaml")
 
         when:
