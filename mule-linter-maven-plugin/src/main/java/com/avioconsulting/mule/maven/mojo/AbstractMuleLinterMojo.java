@@ -8,6 +8,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractMuleLinterMojo extends AbstractMojo {
 
@@ -29,6 +30,13 @@ public abstract class AbstractMuleLinterMojo extends AbstractMojo {
     public String getProjectVersion (){
         return this.project.getVersion();
     }
+
+    public List<String> getProjectInjectedProfileIds (){
+        return this.project.getInjectedProfileIds().values().stream()
+            .flatMap(List::stream)
+            .distinct()
+            .collect(Collectors.toList());
+    }    
 
     public void failIfNeeded(boolean shouldFail, List<RuleViolation> violations){
         if(shouldFail && !violations.isEmpty()

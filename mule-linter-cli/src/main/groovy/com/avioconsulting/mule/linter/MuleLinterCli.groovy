@@ -19,13 +19,17 @@ class MuleLinterCli implements Runnable {
     @CommandLine.Option(names = ['-f', '--format'], defaultValue = 'CONSOLE',
             description = 'Report Output Format. Valid values: ${COMPLETION-CANDIDATES}')
     ReportFormat outputFormat
+
+    @CommandLine.Option(names = ['-p', '--profiles'], arity = '0..*', description = 'List of Maven profiles to apply', split = ',')
+    List<String> profiles
+
     static void main(String... args) {
         new CommandLine(new MuleLinterCli()).execute(args)
     }
 
     @Override
     void run() {
-        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat)
+        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat, profiles)
         ml.runLinter()
     }
 
