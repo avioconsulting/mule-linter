@@ -46,32 +46,32 @@ release:
       contributors:
         format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
       labelers:
+        - label: 'bot-commits'
+          contributor: 'regex:^.*(\[bot\])$'
         - label: 'dependencies'
-          title: 'chore(deps):'
+          title: 'deps:'
           order: 130
-        - label: 'releases'
-          title: 'release:'
-          order: 900
-        - label: 'releases'
-          title: 'chore(ver):'
-          order: 910
+      excludeLabels:
+        - 'bot-commits'
       categories:
         - title: '⚙️  Dependencies'
           key: 'dependencies'
           order: 80
           labels:
             - 'dependencies'
-        - title: 'Releases'
-          key: 'releases'
-          order: 900
-          labels:
-            - 'releases'
       hide:
         categories:
           - 'merge'
-          - 'releases'
         contributors:
           - 'GitHub'
+          - '^.*(\[bot\])$'
+      replacers:
+        - search: 'feat: '
+        - search: 'fix: '
+        - search: 'chore: '
+        - search: 'deps: '
+        - search: 'test: '
+        - search: 'docs: '
 
 checksum:
   individual: true
