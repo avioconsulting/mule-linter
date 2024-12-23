@@ -30,7 +30,7 @@ class MuleApplication implements Application {
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
 
-    MuleApplication(File applicationPath) {
+    MuleApplication(File applicationPath, List<String> profiles = null) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
@@ -38,7 +38,7 @@ class MuleApplication implements Application {
         File pFile = new File(applicationPath, POM_FILE)
         // if pom.xml exists in application, get the effective-pom.xml for the application.
         if (pFile.exists())
-            pFile = getEffectivePomFile(pFile)
+            pFile = getEffectivePomFile(pFile, profiles)
         pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
@@ -57,7 +57,7 @@ class MuleApplication implements Application {
      * 2. Set MAVEN_HOME environment variable in the system executing mule-linter.
      * returns File
      */
-    File getEffectivePomFile(File pFile){
+    File getEffectivePomFile(File pFile, List<String> profiles = null){
         def mavenHome = null
         // Update mavenHome from system property - maven.home
         if (System.getProperty('maven.home') != null)
@@ -74,6 +74,7 @@ class MuleApplication implements Application {
             setGoals([mvnGoals])
             setPomFile(pFile)
             setShowErrors(true)
+            setProfiles(profiles)
             it
         }
         def mavenInvoker = new DefaultInvoker()
