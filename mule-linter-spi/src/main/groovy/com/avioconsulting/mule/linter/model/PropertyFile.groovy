@@ -58,6 +58,9 @@ class PropertyFile {
     }
 
     private void parseYaml(String val, Map<?, ?> map) {
+        if (map == null) {
+            return
+        }
         map.forEach((key, value) ->
                 yamlParseHelper((val.isEmpty() ? key.toString() : String.format("%s.%s", val, key.toString())), value)
         )
