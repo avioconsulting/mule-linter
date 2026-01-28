@@ -32,7 +32,7 @@ class PropertyFileEmptyYamlTest extends Specification {
 
     def "whitespace-only yaml file does not throw"() {
         given:
-        // Tabs are not valid YAML indentation and will throw a SnakeYAML ScannerException.
+        // Whitespace-only YAML should be treated as empty and not throw.
         yamlFile.text = '\n  \n  \n'
 
         when:
