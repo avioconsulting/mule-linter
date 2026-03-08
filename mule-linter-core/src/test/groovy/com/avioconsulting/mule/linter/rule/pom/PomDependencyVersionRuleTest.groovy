@@ -127,6 +127,24 @@ class PomDependencyVersionRuleTest extends Specification {
         violations.size() == 0
     }
 
+    def 'Correct Version With Maven Profile'() {
+        given:
+        testApp.addFile(PomFile.POM_XML, DEPENDENCY_PROFILE_PROPERTY_VERSION_POM);
+        Rule rule = new PomDependencyVersionRule()
+        rule.groupId = 'org.mule.connectors'
+        rule.artifactId = 'mule-http-connector'
+        rule.artifactVersion = '2.9.5'
+        rule.versionOperator = 'EQUAL'
+        rule.init()
+
+        when:
+        app = new MuleApplication(testApp.appDir, ['testProfile'])
+        List<RuleViolation> violations = rule.execute(app)
+
+        then:
+        violations.size() == 0
+    }    
+
     private static final String MISSING_DEPENDENCY_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -220,6 +238,62 @@ class PomDependencyVersionRuleTest extends Specification {
     <version>1.0.0</version>
     <packaging>mule-application</packaging>
     <name>sample-mule-app-sys-api</name>
+    <properties>
+        <app.runtime>4.2.1</app.runtime>
+        <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+        <http.connector.version>1.3.2</http.connector.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <version>${http.connector.version}</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    </dependencies>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>mulesoft release repository</name>
+            <layout>default</layout>
+            <url>https://repository.mulesoft.org/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
+'''
+
+    private static final String DEPENDENCY_PROFILE_PROPERTY_VERSION_POM = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.avioconsulting.mulelinter</groupId>
+    <artifactId>sample-mule-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>sample-mule-app-sys-api</name>
+    <profiles>
+        <profile>
+            <id>testProfile</id>
+            <properties>
+                <http.connector.version>2.9.5</http.connector.version>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <app.runtime>4.2.1</app.runtime>
         <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>

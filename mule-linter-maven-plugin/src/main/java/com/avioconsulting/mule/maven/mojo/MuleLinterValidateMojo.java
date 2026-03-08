@@ -35,7 +35,8 @@ public class MuleLinterValidateMojo extends AbstractMuleLinterMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        MuleLinter muleLinter = new MuleLinter(appDir, ruleConfiguration, ReportFormat.valueOf(FormatOptionsEnum.CONSOLE.name().toUpperCase()));
+        MuleLinter muleLinter = new MuleLinter(appDir, ruleConfiguration, ReportFormat.valueOf(FormatOptionsEnum.CONSOLE.name().toUpperCase()), 
+        this.getProjectInjectedProfileIds());
         this.getLog().debug(format("Executing linter config %s against application %s", ruleConfiguration.getAbsolutePath(), appDir.getAbsolutePath()));
         RuleExecutor ruleExecutor = muleLinter.buildLinterExecutor();
         try {

@@ -18,8 +18,8 @@ class MuleLinter {
     List<RuleSet> ruleSetList = []
     ReportFormat  outputFormat
 
-    MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat) {
-        this.app = new MuleApplication(applicationDirectory)
+    MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat, List<String> profiles = null) {
+        this.app = new MuleApplication(applicationDirectory, profiles)
         //ruleSetList = parseConfigurationFile(ruleConfigFile)
         ruleSetList = processDSL(ruleConfigFile)
         this.outputFormat= outputFormat
