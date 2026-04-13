@@ -29,6 +29,12 @@ hs_err_pid*
 .idea/
 .gradle/
 
+# Eclipse/IDE files
+.classpath
+.project
+.settings/
+bin/
+
 build/
 out/
 
