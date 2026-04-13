@@ -11,9 +11,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<app.runtime>4.2.2</app.runtime>
-		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
-		<munit.version>2.2.1</munit.version>
+		<app.runtime>4.9.16</app.runtime>
+		<mule.maven.plugin.version>4.1.0</mule.maven.plugin.version>
+		<munit.version>3.6.3</munit.version>
 		<munit.failBuild>true</munit.failBuild>
 		<munit.requiredApplicationCoverage>80</munit.requiredApplicationCoverage>
     </properties>
@@ -23,7 +23,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.3.1</version>
 				<configuration>
 					<nonFilteredFileExtensions>
 						<nonFilteredFileExtension>jks</nonFilteredFileExtension>
@@ -86,25 +86,25 @@
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
-			<version>1.3.2</version>
+			<version>1.10.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-sockets-connector</artifactId>
-			<version>1.1.2</version>
+			<version>1.2.5</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.modules</groupId>
 			<artifactId>mule-secure-configuration-property-module</artifactId>
-			<version>1.0.2</version>
+			<version>1.2.7</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
-			<version>1.1.9</version>
+			<version>1.11.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
@@ -116,49 +116,49 @@
 		<dependency>
             <groupId>com.mulesoft.connectors</groupId>
             <artifactId>mule-mongodb-connector</artifactId>
-            <version>5.3.3</version>
+            <version>7.2.1</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     	<dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-db-connector</artifactId>
-            <version>1.5.5</version>
+            <version>1.14.13</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     	<dependency>
             <groupId>com.mulesoft.munit</groupId>
             <artifactId>munit-runner</artifactId>
-            <version>2.2.1</version>
+            <version>${munit.version}</version>
             <classifier>mule-plugin</classifier>
             <scope>test</scope>
         </dependency>	<dependency>
             <groupId>com.mulesoft.munit</groupId>
             <artifactId>munit-tools</artifactId>
-            <version>2.2.1</version>
+            <version>${munit.version}</version>
             <classifier>mule-plugin</classifier>
             <scope>test</scope>
         </dependency>
     	<dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-objectstore-connector</artifactId>
-            <version>1.1.3</version>
+            <version>1.2.2</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     	<dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.16</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
         </dependency>
     	<dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-jms-connector</artifactId>
-            <version>1.6.2</version>
+            <version>1.9.3</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     	<dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
-            <version>5.15.16</version>
+            <version>5.18.3</version>
         </dependency>
     </dependencies>
 
