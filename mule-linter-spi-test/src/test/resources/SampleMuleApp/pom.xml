@@ -162,9 +162,9 @@
 
 	<repositories>
 		<repository>
-			<id>anypoint-exchange</id>
-			<name>Anypoint Exchange</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v1/maven</url>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange v3</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
 			<layout>default</layout>
 		</repository>
 		<repository>
@@ -174,9 +174,9 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
-			<id>avio-maven</id>
-			<name>avio-maven</name>
-			<url>https://devops.avioconsulting.com/avio-group</url>
+			<id>avio-releases</id>
+			<name>AVIO Releases</name>
+			<url>https://avio.jfrog.io/artifactory/mulesoft-virtual/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
