@@ -160,12 +160,33 @@ Examples:
 - `mule-linter-maven-plugin`: Maven-facing wrapper; keep it thin and compatible with Maven conventions.
 - `mule-linter-cli`: command-line packaging and distribution.
 
+## Consolidated POM Test Structure
+
+The `mule-linter-core` module has consolidated POM-related tests into 4 comprehensive test classes:
+
+- `PomVersionRuleTest` (24 tests): Version-related tests for Mule Maven Plugin, MUnit, Mule Runtime, APIKit, and generic dependency versions
+- `PomPropertyRuleTest` (16 tests): Property validation, plugin attributes, MUnit Maven Plugin attributes, and POM existence checks
+- `PomManagementRuleTest` (9 tests): Tests for dependencyManagement, pluginManagement, and parent POM structure validation
+- `EffectivePomIntegrationTest` (11 tests): Integration tests for effective POM generation and PomFile API access
+
+Key features:
+- All POM tests use the new `ComprehensiveParentSample` structure for parent-child POM testing
+- `TestApplication.addComprehensiveParentSample()` creates parent/child POM fixtures
+- `TestApplication.useEffectivePomGeneration()` enables effective POM generation (requires Maven network access for parent resolution)
+- Tests that don't require network access use embedded POM strings for fast, isolated execution
+
+Old test files replaced by this consolidation (15 files):
+- `MuleMavenPluginVersionRuleTest`, `MunitVersionRuleTest`, `MunitPluginVersionRuleTest`, `MuleRuntimeVersionRuleTest`, `ApikitVersionRuleTest`
+- `PomDependencyVersionRuleTest`, `PomPropertyValueRuleTest`, `PomArtifactAttributeRuleTest`, `PomExistsRuleTest`
+- `MunitMavenPluginAttributesRuleTest`
+
 ## Testing Expectations For Changes
 
 - Run the narrowest relevant module test task during iteration.
 - Before finishing, prefer the smallest command that proves the change, then escalate to a broader build if the change crosses modules.
 - For changes in shared SPI or build logic, run at least all affected module tests.
 - For changes in Gradle conventions or publication logic, note clearly if you did not run a full build.
+- For POM-related changes, run: `./gradlew :mule-linter-core:test --tests 'com.avioconsulting.mule.linter.rule.pom.*'`
 
 ## Safe Working Practices
 

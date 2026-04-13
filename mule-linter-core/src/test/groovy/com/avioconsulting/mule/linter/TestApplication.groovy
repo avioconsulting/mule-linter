@@ -36,6 +36,45 @@ class TestApplication {
         // The real MuleApplication constructor will use effective-pom which tries to download
         // dependencies from MuleSoft repositories, causing tests to hang
     }
+    
+    /**
+     * Create comprehensive parent-child POM structure for testing
+     * effective POM resolution with parent inheritance
+     */
+    void addComprehensiveParentSample() {
+        // Copy parent POM to parent/ subdirectory
+        File parentDir = new File(appDir, 'parent')
+        parentDir.mkdirs()
+        copyFileFromResource('ComprehensiveParentSample/parent/pom.xml', parentDir)
+        
+        // Copy child POM to app root
+        copyFileFromResource('ComprehensiveParentSample/child/pom.xml', appDir)
+    }
+    
+    /**
+     * Enable effective POM generation for tests.
+     * Clears the skip flag so MuleApplication uses effective POM
+     */
+    void useEffectivePomGeneration() {
+        System.clearProperty('mule.linter.skipEffectivePom')
+    }
+    
+    /**
+     * Create a minimal POM for testing specific scenarios
+     */
+    void addMinimalPom(String pomContent) {
+        File pomFile = new File(appDir, PomFile.POM_XML)
+        pomFile.text = pomContent
+    }
+    
+    private void copyFileFromResource(String resourcePath, File targetDir) {
+        def resource = this.class.classLoader.getResource(resourcePath)
+        if (resource == null) {
+            throw new FileNotFoundException("Resource not found: $resourcePath")
+        }
+        File resourceFile = new File(resource.file)
+        new File(targetDir, resourceFile.name) << resourceFile.text
+    }
 
     void addGitIgnore() {
         File gitIgnore = new File(appDir, GitIgnoreFile.GITIGNORE)
