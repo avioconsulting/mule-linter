@@ -12,13 +12,34 @@ dependencies {
     compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
 }
 
+// GDSL generation task with incremental build support
+def templateFile = file('mule-linter-core.gdsl.vm')
+def outputGdslFile = file("${buildDir}/classes/groovy/main/mule-linter-core.gdsl")
+
 tasks.register('generateGDSL', JavaExec) {
-    //Generates GDSL file using `GDSLGenerator.groovy`.
-    // Generated file is added in src/main/resources.
-    // Run `./gradlew generateGDSL`
+    description = 'Generates GDSL file for IntelliJ IDEA autocompletion'
+    group = 'documentation'
+    
     mainClass = 'GDSLGeneratorScript'
-    classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
+    classpath += sourceSets.main.compileClasspath
     classpath += sourceSets.main.runtimeClasspath
+    
+    // Incremental build - only run if template changes
+    inputs.file(templateFile)
+    inputs.dir(sourceSets.main.groovy.srcDirs)
+    outputs.file(outputGdslFile)
+    
+    // Only run when explicitly requested, during build, or when inputs change
+    onlyIf {
+        !outputGdslFile.exists() || 
+        templateFile.lastModified() > outputGdslFile.lastModified() ||
+        gradle.taskGraph.hasTask(":${project.name}:jar")
+    }
 }
 
-jar.dependsOn(generateGDSL)
+// Only run GDSL generation when building jar, not during test
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(":${project.name}:jar") && !graph.hasTask(":${project.name}:test")) {
+        tasks.jar.dependsOn(generateGDSL)
+    }
+}

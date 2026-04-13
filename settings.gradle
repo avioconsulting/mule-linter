@@ -1,6 +1,19 @@
+plugins {
+    id 'com.gradle.develocity' version '3.18.1'
+}
+
 rootProject.name = 'mule-linter'
 include 'mule-linter-spi'
 include 'mule-linter-core'
 include 'mule-linter-spi-test'
 include 'mule-linter-maven-plugin'
 include 'mule-linter-cli'
+
+// Develocity Build Scan configuration
+develocity {
+    buildScan {
+        termsOfUseUrl = 'https://gradle.com/terms-of-service'
+        termsOfUseAgree = 'yes'
+        publishing.onlyIf { true }
+    }
+}

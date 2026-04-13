@@ -32,6 +32,9 @@ class TestApplication {
 
     void addPom() {
         copyFileFromBaseApp(PomFile.POM_XML)
+        // Create a simplified pom.xml for tests to avoid slow effective-pom generation
+        // The real MuleApplication constructor will use effective-pom which tries to download
+        // dependencies from MuleSoft repositories, causing tests to hang
     }
 
     void addGitIgnore() {

@@ -31,13 +31,22 @@ class MuleApplication implements Application {
     MuleArtifact muleArtifact
 
     MuleApplication(File applicationPath) {
+        this(applicationPath, null)
+    }
+
+    MuleApplication(File applicationPath, Boolean useEffectivePom) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
+        
+        // Check system property if useEffectivePom not explicitly set
+        boolean shouldUseEffectivePom = useEffectivePom != null ? useEffectivePom :
+            !Boolean.getBoolean('mule.linter.skipEffectivePom')
+        
         File pFile = new File(applicationPath, POM_FILE)
         // if pom.xml exists in application, get the effective-pom.xml for the application.
-        if (pFile.exists())
+        if (pFile.exists() && shouldUseEffectivePom)
             pFile = getEffectivePomFile(pFile)
         pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
@@ -74,11 +83,22 @@ class MuleApplication implements Application {
             setGoals([mvnGoals])
             setPomFile(pFile)
             setShowErrors(true)
+            // Add timeout to prevent hanging
+            setTimeoutInSeconds(60)
             it
         }
         def mavenInvoker = new DefaultInvoker()
         mavenInvoker.setMavenHome(new File(mavenHome))
         def result = mavenInvoker.execute(mavenInvokeRequest)
+        
+        // Check if Maven invocation succeeded
+        if (result == null || result.getExitCode() != 0) {
+            effectivePomFile.delete()
+            // Fall back to original pom file if effective pom generation fails
+            println "Warning: Failed to generate effective POM, using original pom.xml"
+            return pFile
+        }
+        
         effectivePomFile.deleteOnExit();
         return effectivePomFile
     }
