@@ -17,6 +17,7 @@ jobs:
     with:
       version-project: 'mule-linter-core'
       include-test-results: false
+      java-version: '17'
 
   Release:
     needs: Build
