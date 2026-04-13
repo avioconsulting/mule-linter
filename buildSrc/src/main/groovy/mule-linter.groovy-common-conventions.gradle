@@ -26,6 +26,8 @@ java {
     withSourcesJar()
 }
 
+// Groovy compilation optimizations - applied via tasks.withType below
+
 test {
     useJUnitPlatform()
     
@@ -56,6 +58,24 @@ test {
     
     // Timeout for individual tests (prevent hanging tests)
     timeout = Duration.ofMinutes(5)
+    
+    // Optimize test startup - only scan for tests once
+    scanForTestClasses = true
+    
+    // Disable redundant outputs for faster test execution
+    outputs.upToDateWhen { true }
+}
+
+// Enable forked compilation for better memory management
+tasks.withType(GroovyCompile) {
+    options.fork = true
+    options.forkOptions.jvmArgs = ['-Xmx512m', '-XX:+UseParallelGC']
+}
+
+// Cache all compilation tasks
+tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.memoryMaximumSize = '512m'
 }
 
 compileJava {

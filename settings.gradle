@@ -9,11 +9,31 @@ include 'mule-linter-spi-test'
 include 'mule-linter-maven-plugin'
 include 'mule-linter-cli'
 
+// Dependency resolution optimizations
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral {
+            // Enable dependency caching metadata
+            metadataSources {
+                mavenPom()
+                ignoreGradleMetadataRedirection()
+            }
+        }
+    }
+}
+
 // Develocity Build Scan configuration
 develocity {
     buildScan {
         termsOfUseUrl = 'https://gradle.com/terms-of-service'
         termsOfUseAgree = 'yes'
         publishing.onlyIf { true }
+        
+        // Capture build performance data
+        capture {
+            buildLogging = true
+            testLogging = true
+            fileFingerprints = true
+        }
     }
 }
