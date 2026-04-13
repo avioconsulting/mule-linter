@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<app.runtime>4.9.16</app.runtime>
-		<mule.maven.plugin.version>4.1.0</mule.maven.plugin.version>
+		<mule.maven.plugin.version>4.6.0</mule.maven.plugin.version>
 		<munit.version>3.6.3</munit.version>
 		<munit.failBuild>true</munit.failBuild>
 		<munit.requiredApplicationCoverage>80</munit.requiredApplicationCoverage>
@@ -50,6 +50,18 @@
                         </sharedLibrary>
                     </sharedLibraries>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-api</artifactId>
+                        <version>2.24.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-core</artifactId>
+                        <version>2.24.3</version>
+                    </dependency>
+                </dependencies>
 			</plugin>
 			<plugin>
                 <groupId>com.mulesoft.munit.tools</groupId>
@@ -108,9 +120,9 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>26d53683-6746-4040-ad07-f671f8e2b27e</groupId>
+			<groupId>com.avioconsulting.mule</groupId>
 			<artifactId>mule-custom-logger</artifactId>
-			<version>1.0.0</version>
+			<version>3.1.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
@@ -160,6 +172,16 @@
             <artifactId>activemq-client</artifactId>
             <version>5.18.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.24.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.24.3</version>
+        </dependency>
     </dependencies>
 
 	<repositories>
@@ -196,10 +218,24 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
+			<id>sonatype</id>
+			<name>Sonatype Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+		<pluginRepository>
 			<id>mulesoft-releases</id>
 			<name>mulesoft release repository</name>
 			<layout>default</layout>
 			<url>https://repository.mulesoft.org/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mulesoft-ee-releases</id>
+			<name>MuleSoft EE Releases</name>
+			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
