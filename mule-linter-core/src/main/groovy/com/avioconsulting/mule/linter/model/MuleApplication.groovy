@@ -5,7 +5,6 @@ import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
-import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import org.apache.groovy.json.internal.JsonMap
 import org.yaml.snakeyaml.Yaml
 
@@ -26,17 +25,8 @@ class MuleApplication implements Application {
     String name
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
-    
-    /**
-     * Resolver for parent POM resolution. May be null if resolution is disabled.
-     */
-    private ParentPomResolver parentPomResolver
 
     MuleApplication(File applicationPath) {
-        this(applicationPath, true)
-    }
-
-    MuleApplication(File applicationPath, Boolean resolveParents) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
             throw new FileNotFoundException(APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
@@ -45,13 +35,8 @@ class MuleApplication implements Application {
         File pFile = new File(applicationPath, POM_FILE)
         def pomXml = pFile.exists() ? new MuleXmlParser().parse(pFile) : null
         
-        // Create PomFile (even if POM doesn't exist)
+        // Create PomFile (parent resolution is now lazy in PomFile when resolve methods are called)
         this.pomFile = new PomFile(pFile, pomXml)
-        
-        // Resolve parent chain if enabled and POM exists
-        if (resolveParents && pFile.exists() && pomXml) {
-            resolveParentChain()
-        }
         
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
@@ -62,91 +47,9 @@ class MuleApplication implements Application {
         loadMuleArtifact()
     }
 
-    /**
-     * Resolves the parent POM chain for this application.
-     * Creates a ParentPomResolver and uses it to find and link all parent POMs.
-     * 
-     * If parent resolution fails, logs a warning and continues without parent inheritance.
-     * This ensures the application can still be analyzed even if parent POMs can't be resolved.
-     */
-    private void resolveParentChain() {
-        try {
-            parentPomResolver = new ParentPomResolver()
-            
-            def parentCoords = pomFile.getParentCoordinates()
-            if (!parentCoords) {
-                return // No parent to resolve
-            }
-            
-            // Resolve the parent POM
-            File parentPomFile = parentPomResolver.resolve(
-                parentCoords.groupId,
-                parentCoords.artifactId,
-                parentCoords.version,
-                parentCoords.relativePath,
-                applicationPath
-            )
-            
-            // Create parent PomFile (recursively resolves its own parent)
-            def parentXml = new MuleXmlParser().parse(parentPomFile)
-            PomFile parentPom = new PomFile(parentPomFile, parentXml)
-            
-            // Recursively resolve parent's parent chain
-            resolveParentParents(parentPom, parentPomResolver)
-            
-            // Link parent to this POM
-            pomFile.parent = parentPom
-            
-        } catch (Exception e) {
-            // Log warning and continue without parent resolution
-            System.err.println("Warning: Failed to resolve parent POM chain: ${e.message}")
-            System.err.println("Continuing without parent inheritance. Some rules may not work correctly.")
-            
-            // Close resolver on error
-            parentPomResolver?.close()
-            parentPomResolver = null
-            // Don't re-throw - allow application to continue without parent
-        }
-    }
-    
-    /**
-     * Recursively resolves parents for a given PomFile.
-     * Used to build the complete parent chain.
-     */
-    private void resolveParentParents(PomFile pom, ParentPomResolver resolver) {
-        def parentCoords = pom.getParentCoordinates()
-        if (!parentCoords) {
-            return // No more parents
-        }
-        
-        // Resolve the grandparent
-        File grandparentFile = resolver.resolve(
-            parentCoords.groupId,
-            parentCoords.artifactId,
-            parentCoords.version,
-            parentCoords.relativePath,
-            pom.file.parentFile
-        )
-        
-        // Create grandparent PomFile
-        def grandparentXml = new MuleXmlParser().parse(grandparentFile)
-        PomFile grandparentPom = new PomFile(grandparentFile, grandparentXml)
-        
-        // Link to parent
-        pom.parent = grandparentPom
-        
-        // Continue recursively
-        resolveParentParents(grandparentPom, resolver)
-    }
-
-    /**
-     * Cleans up resources used by this application.
-     * Should be called when done to close the parent POM resolver.
-     */
-    void cleanup() {
-        parentPomResolver?.close()
-        parentPomResolver = null
-    }
+    // Parent POM resolution is now handled lazily by PomFile when resolve methods are called.
+    // This avoids expensive Maven Resolver initialization during MuleApplication construction.
+    // The shared ParentPomResolver singleton is used to minimize initialization overhead.
 
     void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, PROPERTY_PATH)

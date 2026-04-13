@@ -192,7 +192,7 @@ class PomManagementRuleTest extends Specification {
         parentDir.exists()
         parentPom.exists()
         childPom.text.contains('<parent>')
-        childPom.text.contains('<relativePath>../parent/pom.xml</relativePath>')
+        childPom.text.contains('<relativePath>parent/pom.xml</relativePath>')
     }
 
     def 'Parent POM contains dependency management'() {

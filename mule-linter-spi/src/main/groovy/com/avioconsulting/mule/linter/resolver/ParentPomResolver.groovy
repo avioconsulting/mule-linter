@@ -18,8 +18,24 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier
  * Resolves parent POMs using Maven Resolver (Eclipse Aether).
  * Supports full parent chain resolution with .m2/repository caching
  * and settings.xml authentication.
+ * 
+ * Uses a shared instance pattern to avoid expensive Maven Resolver
+ * initialization for every PomFile.
  */
 class ParentPomResolver {
+    
+    // Shared instance holder for lazy initialization
+    private static class Holder {
+        static final ParentPomResolver INSTANCE = new ParentPomResolver()
+    }
+    
+    /**
+     * Returns the shared ParentPomResolver instance.
+     * This avoids expensive Maven Resolver initialization per test.
+     */
+    static ParentPomResolver getInstance() {
+        return Holder.INSTANCE
+    }
     
     private final RepositorySystem repositorySystem
     private final RepositorySystemSession session
@@ -38,7 +54,7 @@ class ParentPomResolver {
         this.settingsParser = new SettingsXmlParser()
         this.settings = settingsParser.loadSettings()
         
-        // Initialize Maven Resolver
+        // Initialize Maven Resolver - expensive operation
         this.repositorySystem = new RepositorySystemSupplier().get()
         this.session = createSession(repositorySystem)
     }

@@ -1,11 +1,16 @@
 package com.avioconsulting.mule.linter.model.pom
 
 import com.avioconsulting.mule.linter.model.ProjectFile
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import groovy.xml.slurpersupport.GPathResult
 
 /**
  * Represents a Maven POM file with support for parent POM inheritance.
  * Provides access to properties, dependencies, and plugins with full inheritance chain support.
+ * 
+ * Parent resolution is lazy - only performed when resolve methods are called,
+ * not during construction. This avoids expensive Maven Resolver initialization
+ * for tests and applications that don't need parent inheritance.
  */
 class PomFile extends ProjectFile {
 
@@ -15,9 +20,14 @@ class PomFile extends ProjectFile {
     private final Boolean exists
     
     /**
-     * Reference to parent POM (null if no parent)
+     * Reference to parent POM (null if no parent or not yet resolved)
      */
     PomFile parent
+    
+    /**
+     * Flag to track if parent chain has been resolved
+     */
+    private boolean parentChainResolved = false
 
     /**
      * Existing constructor - maintains backward compatibility
@@ -101,6 +111,9 @@ class PomFile extends ProjectFile {
      * Get all parents in chain from immediate parent to oldest ancestor
      */
     List<PomFile> getParentChain() {
+        // Ensure parent chain is resolved first
+        lazyResolveParents()
+        
         List<PomFile> chain = []
         PomFile current = this.parent
         while (current) {
@@ -108,6 +121,73 @@ class PomFile extends ProjectFile {
             current = current.parent
         }
         return chain
+    }
+    
+    /**
+     * Lazily resolves parent chain when needed.
+     * Uses shared ParentPomResolver instance to avoid expensive initialization.
+     * This method is called automatically by resolve methods.
+     */
+    private synchronized void lazyResolveParents() {
+        if (parentChainResolved) {
+            return
+        }
+        
+        if (!hasParent()) {
+            parentChainResolved = true
+            return
+        }
+        
+        try {
+            // Use shared resolver instance
+            ParentPomResolver resolver = ParentPomResolver.getInstance()
+            resolveParentChainRecursive(this, resolver)
+        } catch (Exception e) {
+            // Log warning and continue without parent resolution
+            System.err.println("Warning: Failed to resolve parent POM chain for ${file?.name}: ${e.message}")
+        }
+        
+        parentChainResolved = true
+    }
+    
+    /**
+     * Recursively resolves parent chain for a given PomFile.
+     */
+    private static void resolveParentChainRecursive(PomFile pom, ParentPomResolver resolver) {
+        if (!pom?.hasParent()) {
+            return
+        }
+        
+        def parentCoords = pom.getParentCoordinates()
+        if (!parentCoords) {
+            return
+        }
+        
+        try {
+            // Resolve the parent POM
+            File parentPomFile = resolver.resolve(
+                parentCoords.groupId,
+                parentCoords.artifactId,
+                parentCoords.version,
+                parentCoords.relativePath,
+                pom.file.parentFile
+            )
+            
+            // Create parent PomFile
+            def parentXml = new groovy.xml.XmlSlurper().parse(parentPomFile)
+            PomFile parentPom = new PomFile(parentPomFile, parentXml)
+            parentPom.parentChainResolved = true // Mark as resolved to avoid re-resolution
+            
+            // Link to child
+            pom.parent = parentPom
+            
+            // Recursively resolve parent's parent
+            resolveParentChainRecursive(parentPom, resolver)
+            
+        } catch (Exception e) {
+            // Log but don't fail - continue without parent
+            System.err.println("Warning: Could not resolve parent ${parentCoords}: ${e.message}")
+        }
     }
 
     /**
@@ -135,6 +215,9 @@ class PomFile extends ProjectFile {
      * @throws IllegalArgumentException if property not found in this POM or any parent
      */
     ResolvedProperty resolveProperty(String propertyName) {
+        // Ensure parent chain is resolved before searching
+        lazyResolveParents()
+        
         // Try this POM first
         try {
             PomElement localProp = getPomProperty(propertyName)
@@ -205,6 +288,9 @@ class PomFile extends ProjectFile {
      * Checks pluginManagement in parents
      */
     ResolvedPlugin resolvePlugin(String groupId, String artifactId) {
+        // Ensure parent chain is resolved before searching
+        lazyResolveParents()
+        
         // Try this POM first
         PomPlugin localPlugin = getPlugin(groupId, artifactId)
         if (localPlugin) {
@@ -282,6 +368,9 @@ class PomFile extends ProjectFile {
      * Checks dependencyManagement in parents
      */
     ResolvedDependency resolveDependency(String groupId, String artifactId) {
+        // Ensure parent chain is resolved before searching
+        lazyResolveParents()
+        
         // Try this POM first
         PomDependency localDep = getDependency(groupId, artifactId)
         if (localDep) {

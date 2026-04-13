@@ -9,7 +9,7 @@
         <groupId>com.avioconsulting.test</groupId>
         <artifactId>comprehensive-parent</artifactId>
         <version>1.0.0</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <relativePath>parent/pom.xml</relativePath>
     </parent>
     
     <artifactId>comprehensive-child</artifactId>

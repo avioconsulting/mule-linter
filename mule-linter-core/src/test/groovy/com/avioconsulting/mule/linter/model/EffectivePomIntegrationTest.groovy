@@ -153,7 +153,7 @@ class EffectivePomIntegrationTest extends Specification {
         childContent.contains('<groupId>com.avioconsulting.test</groupId>')
         childContent.contains('<artifactId>comprehensive-parent</artifactId>')
         childContent.contains('<version>1.0.0</version>')
-        childContent.contains('<relativePath>../parent/pom.xml</relativePath>')
+        childContent.contains('<relativePath>parent/pom.xml</relativePath>')
     }
 
     def 'Parent POM contains management sections'() {
