@@ -93,20 +93,20 @@ tasks.register('groovydocJar', Jar) {
     dependsOn groovydoc
     archiveClassifier = 'javadoc'
     from groovydoc.destinationDir
-    // Only build when explicitly requested or during publish
-    onlyIf { 
-        gradle.taskGraph.hasTask(":${project.name}:publish") ||
-        gradle.taskGraph.hasTask(":${project.name}:publishToMavenLocal") ||
-        project.hasProperty('generateDocs')
-    }
 }
 // Note: 'from' and 'dependsOn' above are method calls, not property assignments - this syntax is correct
 
-// Only include groovydocJar in jar task for publishing builds
+// Ensure groovydocJar is built when publishing
 gradle.taskGraph.whenReady { graph ->
-    if (graph.hasTask(":${project.name}:publish") ||
-        graph.hasTask(":${project.name}:publishToMavenLocal") ||
-        project.hasProperty('generateDocs')) {
+    def publishTasks = [
+        "${project.name}:publish",
+        "${project.name}:publishToMavenLocal",
+        'publishAllPublicationsToStagingRepository'
+    ].collect { taskName ->
+        graph.allTasks.find { it.path.endsWith(taskName) || it.name == taskName }
+    }.findAll { it != null }
+    
+    if (!publishTasks.isEmpty() || project.hasProperty('generateDocs')) {
         jar.dependsOn(groovydocJar)
     }
 }
