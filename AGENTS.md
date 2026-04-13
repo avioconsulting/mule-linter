@@ -160,6 +160,29 @@ Examples:
 - `mule-linter-maven-plugin`: Maven-facing wrapper; keep it thin and compatible with Maven conventions.
 - `mule-linter-cli`: command-line packaging and distribution.
 
+## Parent POM Resolution
+
+Parent POMs are resolved using embedded Maven Resolver (Eclipse Aether):
+- Resolves full parent chain (child → parent → grandparent → ...)
+- Uses ~/.m2/settings.xml for repository configuration and authentication
+- Caches resolved parents in ~/.m2/repository (standard Maven cache)
+- Only resolves parent POMs (not dependencies or plugins)
+
+**New Resolution Methods:**
+- `PomFile.resolveProperty(String)` - Returns ResolvedProperty with source tracking
+- `PomFile.resolveDependency(String, String)` - Returns ResolvedDependency with inheritance info
+- `PomFile.resolvePlugin(String, String)` - Returns ResolvedPlugin with management info
+
+**Backward Compatibility:**
+- Existing methods (`getPomProperty()`, `getDependency()`, `getPlugin()`) still work
+- Parent resolution is automatic but failures are logged as warnings (not fatal)
+
+**System Properties:**
+- `mule.linter.localRepo`: Custom local repository path (default: ~/.m2/repository)
+
+**Environment:**
+- `M2_HOME`: Used to find global settings.xml
+
 ## Consolidated POM Test Structure
 
 The `mule-linter-core` module has consolidated POM-related tests into 4 comprehensive test classes:

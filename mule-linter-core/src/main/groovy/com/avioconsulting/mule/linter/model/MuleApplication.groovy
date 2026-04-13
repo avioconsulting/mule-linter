@@ -5,10 +5,8 @@ import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import org.apache.groovy.json.internal.JsonMap
-import org.apache.maven.shared.invoker.DefaultInvocationRequest
-import org.apache.maven.shared.invoker.DefaultInvoker
-import org.apache.maven.shared.invoker.MavenInvocationException
 import org.yaml.snakeyaml.Yaml
 
 class MuleApplication implements Application {
@@ -19,7 +17,6 @@ class MuleApplication implements Application {
     static final String README = 'README.md'
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
-    static final String MAVEN_HOME_DOES_NOT_EXIST = 'Maven home config does not exists.'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -29,78 +26,126 @@ class MuleApplication implements Application {
     String name
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
+    
+    /**
+     * Resolver for parent POM resolution. May be null if resolution is disabled.
+     */
+    private ParentPomResolver parentPomResolver
 
     MuleApplication(File applicationPath) {
-        this(applicationPath, null)
+        this(applicationPath, true)
     }
 
-    MuleApplication(File applicationPath, Boolean useEffectivePom) {
+    MuleApplication(File applicationPath, Boolean resolveParents) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
+            throw new FileNotFoundException(APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         
-        // Check system property if useEffectivePom not explicitly set
-        boolean shouldUseEffectivePom = useEffectivePom != null ? useEffectivePom :
-            !Boolean.getBoolean('mule.linter.skipEffectivePom')
-        
         File pFile = new File(applicationPath, POM_FILE)
-        // if pom.xml exists in application, get the effective-pom.xml for the application.
-        if (pFile.exists() && shouldUseEffectivePom)
-            pFile = getEffectivePomFile(pFile)
-        pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
+        def pomXml = pFile.exists() ? new MuleXmlParser().parse(pFile) : null
+        
+        // Create PomFile (even if POM doesn't exist)
+        this.pomFile = new PomFile(pFile, pomXml)
+        
+        // Resolve parent chain if enabled and POM exists
+        if (resolveParents && pFile.exists() && pomXml) {
+            resolveParentChain()
+        }
+        
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
-        this.name = pomFile.artifactId
+        this.name = pomFile.artifactId ?: applicationPath.name
 
         loadPropertyFiles()
         loadConfigurationFiles()
         loadMuleArtifact()
     }
 
-     /**
-     * This method generates the effective pom.xml for the application using maven-invoker, and returns effective-pom.xml file.
-     * And, the generated effective-pom.xml file will be deleted upon the exit of the application.
-     * This method requires Maven home location, which can be passed using below options:
-     * 1. Pass maven.home system variable when executing mule-linter
-     * 2. Set MAVEN_HOME environment variable in the system executing mule-linter.
-     * returns File
+    /**
+     * Resolves the parent POM chain for this application.
+     * Creates a ParentPomResolver and uses it to find and link all parent POMs.
+     * 
+     * If parent resolution fails, logs a warning and continues without parent inheritance.
+     * This ensures the application can still be analyzed even if parent POMs can't be resolved.
      */
-    File getEffectivePomFile(File pFile){
-        def mavenHome = null
-        // Update mavenHome from system property - maven.home
-        if (System.getProperty('maven.home') != null)
-            mavenHome = System.getProperty('maven.home')
-        else if (System.getenv().get('MAVEN_HOME') != null)
-            mavenHome = System.getenv().get('MAVEN_HOME')
-
-        if (mavenHome == null)
-            throw new MavenInvocationException( MAVEN_HOME_DOES_NOT_EXIST)
-
-        File effectivePomFile = File.createTempFile("effective-pom", ".xml");
-        def mavenInvokeRequest = new DefaultInvocationRequest().with {
-            String mvnGoals = 'help:effective-pom -Doutput='+effectivePomFile.getAbsolutePath()
-            setGoals([mvnGoals])
-            setPomFile(pFile)
-            setShowErrors(true)
-            // Add timeout to prevent hanging
-            setTimeoutInSeconds(60)
-            it
+    private void resolveParentChain() {
+        try {
+            parentPomResolver = new ParentPomResolver()
+            
+            def parentCoords = pomFile.getParentCoordinates()
+            if (!parentCoords) {
+                return // No parent to resolve
+            }
+            
+            // Resolve the parent POM
+            File parentPomFile = parentPomResolver.resolve(
+                parentCoords.groupId,
+                parentCoords.artifactId,
+                parentCoords.version,
+                parentCoords.relativePath,
+                applicationPath
+            )
+            
+            // Create parent PomFile (recursively resolves its own parent)
+            def parentXml = new MuleXmlParser().parse(parentPomFile)
+            PomFile parentPom = new PomFile(parentPomFile, parentXml)
+            
+            // Recursively resolve parent's parent chain
+            resolveParentParents(parentPom, parentPomResolver)
+            
+            // Link parent to this POM
+            pomFile.parent = parentPom
+            
+        } catch (Exception e) {
+            // Log warning and continue without parent resolution
+            System.err.println("Warning: Failed to resolve parent POM chain: ${e.message}")
+            System.err.println("Continuing without parent inheritance. Some rules may not work correctly.")
+            
+            // Close resolver on error
+            parentPomResolver?.close()
+            parentPomResolver = null
+            // Don't re-throw - allow application to continue without parent
         }
-        def mavenInvoker = new DefaultInvoker()
-        mavenInvoker.setMavenHome(new File(mavenHome))
-        def result = mavenInvoker.execute(mavenInvokeRequest)
-        
-        // Check if Maven invocation succeeded
-        if (result == null || result.getExitCode() != 0) {
-            effectivePomFile.delete()
-            // Fall back to original pom file if effective pom generation fails
-            println "Warning: Failed to generate effective POM, using original pom.xml"
-            return pFile
+    }
+    
+    /**
+     * Recursively resolves parents for a given PomFile.
+     * Used to build the complete parent chain.
+     */
+    private void resolveParentParents(PomFile pom, ParentPomResolver resolver) {
+        def parentCoords = pom.getParentCoordinates()
+        if (!parentCoords) {
+            return // No more parents
         }
         
-        effectivePomFile.deleteOnExit();
-        return effectivePomFile
+        // Resolve the grandparent
+        File grandparentFile = resolver.resolve(
+            parentCoords.groupId,
+            parentCoords.artifactId,
+            parentCoords.version,
+            parentCoords.relativePath,
+            pom.file.parentFile
+        )
+        
+        // Create grandparent PomFile
+        def grandparentXml = new MuleXmlParser().parse(grandparentFile)
+        PomFile grandparentPom = new PomFile(grandparentFile, grandparentXml)
+        
+        // Link to parent
+        pom.parent = grandparentPom
+        
+        // Continue recursively
+        resolveParentParents(grandparentPom, resolver)
+    }
+
+    /**
+     * Cleans up resources used by this application.
+     * Should be called when done to close the parent POM resolver.
+     */
+    void cleanup() {
+        parentPomResolver?.close()
+        parentPomResolver = null
     }
 
     void loadPropertyFiles() {
