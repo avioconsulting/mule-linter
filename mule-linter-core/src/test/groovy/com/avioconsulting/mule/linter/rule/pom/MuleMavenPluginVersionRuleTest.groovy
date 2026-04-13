@@ -36,8 +36,8 @@ class MuleMavenPluginVersionRuleTest extends Specification {
 
         where:
         version | size
-        '3.3.5' | 0
-        '3.3.6' | 1
+        '4.6.0' | 0
+        '4.6.1' | 1
     }
 
 }

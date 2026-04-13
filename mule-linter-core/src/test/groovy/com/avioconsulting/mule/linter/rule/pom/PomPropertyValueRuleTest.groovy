@@ -28,7 +28,7 @@ class PomPropertyValueRuleTest extends  Specification {
         when:
         Rule rule = new PomPropertyValueRule()
         rule.propertyName = 'munit.version'
-        rule.propertyValue = '2.2.1'
+        rule.propertyValue = '3.6.3'
         List<RuleViolation> violations = rule.execute(app)
 
         then:
@@ -44,7 +44,7 @@ class PomPropertyValueRuleTest extends  Specification {
 
         then:
         violations.size() == 1
-        violations[0].message  == 'munit.version maven property value does not match expected value. Expected: 3.2.1 found: 2.2.1'
+        violations[0].message  == 'munit.version maven property value does not match expected value. Expected: 3.2.1 found: 3.6.3'
         violations[0].fileName == PomFile.POM_XML
     }
 

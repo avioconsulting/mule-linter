@@ -27,7 +27,7 @@ class MunitVersionRuleTest extends Specification {
 
         when:
         Rule rule = new MunitVersionRule()
-        rule.version = '2.2.1'
+        rule.version = '3.6.3'
         rule.init()
         List<RuleViolation> violations = rule.execute(app)
 

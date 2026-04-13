@@ -35,8 +35,8 @@ class MuleRuntimeVersionRuleTest extends Specification {
 
         where:
         version | size
-        '4.2.1' | 1
-        '4.2.2' | 0
+        '4.9.15' | 1
+        '4.9.16' | 0
     }
 
 }
