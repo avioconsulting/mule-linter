@@ -4,11 +4,13 @@ import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 import org.apache.maven.settings.Settings
 import org.eclipse.aether.util.repository.AuthenticationBuilder
+import org.eclipse.aether.DefaultRepositorySystemSession
 import org.eclipse.aether.RepositorySystem
 import org.eclipse.aether.RepositorySystemSession
 import org.eclipse.aether.artifact.Artifact
 import org.eclipse.aether.artifact.DefaultArtifact
 import org.eclipse.aether.repository.LocalRepository
+import org.eclipse.aether.repository.LocalRepositoryManager
 import org.eclipse.aether.repository.RemoteRepository
 import org.eclipse.aether.resolution.ArtifactRequest
 import org.eclipse.aether.resolution.ArtifactResult
@@ -16,8 +18,16 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier
 
 /**
  * Resolves parent POMs using Maven Resolver (Eclipse Aether).
- * Supports full parent chain resolution with .m2/repository caching
- * and settings.xml authentication.
+ * Supports full parent chain resolution with .m2/repository caching.
+ * 
+ * Settings.xml support:
+ * - Local repository path (settings.localRepository)
+ * - Server authentication (settings.servers) for Maven Central
+ * 
+ * Not currently supported:
+ * - Profile repositories (settings.profiles)
+ * - Mirrors (settings.mirrors)
+ * - Proxies (settings.proxies)
  * 
  * Uses a shared instance pattern to avoid expensive Maven Resolver
  * initialization for every PomFile.
@@ -168,10 +178,15 @@ class ParentPomResolver {
     }
     
     private RepositorySystemSession createSession(RepositorySystem system) {
-        LocalRepository localRepo = new LocalRepository(localRepositoryDir)
+        // Create a proper session with LocalRepositoryManager configured
+        DefaultRepositorySystemSession session = org.apache.maven.repository.internal.MavenRepositorySystemUtils.newSession()
         
-        // Create a simple session using Maven's default session setup
-        org.apache.maven.repository.internal.MavenRepositorySystemUtils.newSession()
+        // Configure the local repository
+        LocalRepository localRepo = new LocalRepository(localRepositoryDir)
+        LocalRepositoryManager localRepoManager = system.newLocalRepositoryManager(session, localRepo)
+        session.setLocalRepositoryManager(localRepoManager)
+        
+        return session
     }
     
     private File resolveRelativePath(String relativePath, File childDir) {
@@ -227,27 +242,11 @@ class ParentPomResolver {
         List<RemoteRepository> repos = []
         
         // Add Maven Central as default
+        // Note: settings.xml profile repositories, mirrors, and proxies are not currently supported.
+        // Only local repository path and server authentication are supported from settings.xml.
         repos.add(new RemoteRepository.Builder('central', 'default', 
             'https://repo.maven.apache.org/maven2/').build())
         attemptedRepos << 'https://repo.maven.apache.org/maven2/'
-        
-        // Add repositories from settings.xml
-        settings?.repositories?.each { repo ->
-            RemoteRepository.Builder builder = new RemoteRepository.Builder(
-                repo.id, 'default', repo.url)
-            
-            // Add authentication if configured
-            def server = settings.servers?.find { it.id == repo.id }
-            if (server?.username && server?.password) {
-                builder.setAuthentication(new AuthenticationBuilder()
-                    .addUsername(server.username)
-                    .addPassword(server.password)
-                    .build())
-            }
-            
-            repos.add(builder.build())
-            attemptedRepos << repo.url
-        }
         
         return repos
     }

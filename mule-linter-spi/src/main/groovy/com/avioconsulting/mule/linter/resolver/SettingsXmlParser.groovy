@@ -9,6 +9,13 @@ import org.apache.maven.settings.building.SettingsBuildingResult
 /**
  * Parses Maven settings.xml files from standard locations.
  * Supports both user settings (~/.m2/settings.xml) and global settings (M2_HOME/conf/settings.xml).
+ * 
+ * Currently supported settings:
+ * - Local repository path (settings.localRepository)
+ * - Server authentication (settings.servers)
+ * 
+ * Note: Profile repositories, mirrors, and proxies are parsed but not currently
+ * used by ParentPomResolver (planned for future profile support).
  */
 class SettingsXmlParser {
     
@@ -80,12 +87,13 @@ class SettingsXmlParser {
     /**
      * Checks if settings.xml was loaded successfully.
      * @param settings The settings object
-     * @return true if at least one settings file was parsed
+     * @return true if at least one settings file was parsed with usable configuration
      */
     boolean hasSettings(Settings settings) {
         return settings != null && 
-               (settings.servers?.size() > 0 || 
-                settings.repositories?.size() > 0 ||
-                settings.proxies?.size() > 0)
+               (settings.localRepository ||
+                settings.servers?.size() > 0 ||
+                settings.proxies?.size() > 0 ||
+                settings.mirrors?.size() > 0)
     }
 }
