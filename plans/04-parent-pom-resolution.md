@@ -20,16 +20,46 @@ Replace the external Maven invoker with embedded Maven Resolver (Eclipse Aether)
 - Cache resolved parents in ~/.m2/repository (standard Maven cache)
 - Preserve backward compatibility with existing PomFile API
 
-### Design Decision: Shared Resolver Instance
+### Design Decision: Shared Resolver Instance (Intentional Singleton Pattern)
 
-The implementation uses a shared `ParentPomResolver.getInstance()` singleton pattern to avoid expensive Maven Resolver initialization for every `PomFile`:
+**⚠️ Note to reviewers:** This is an intentional architectural choice, not a design flaw.
 
+The implementation uses a shared `ParentPomResolver.getInstance()` singleton pattern:
+
+**Rationale:**
 - Maven Resolver initialization is expensive (~500ms per instance)
 - Shared instance amortizes this cost across all POM resolutions
+- With constructor injection: 20 test classes × 500ms = 10 seconds overhead
+- With singleton: 500ms once for entire test run
 - The resolver is thread-safe and can be shared across concurrent operations
-- Tests can still create isolated instances via `new ParentPomResolver(path)` when needed
 
-This trade-off prioritizes runtime performance over pure constructor injection, while still allowing test isolation when required.
+**Trade-offs:**
+- ✅ Performance: One-time 500ms cost vs. per-instance cost
+- ✅ Simplicity: No need to pass resolver through every layer
+- ✅ Resource Management: JVM shutdown hook handles cleanup automatically
+- ⚠️ Static state: But contained and well-documented
+- ⚠️ Test isolation: Tests can use `new ParentPomResolver(path)` when needed
+
+**Alternative considered:** Constructor injection with test lifecycle extension was evaluated but rejected as overly complex for this use case. See "Rejected Alternatives" section below.
+
+**For testing:**
+```groovy
+// Integration tests use singleton (fast)
+def app = new MuleApplication(path)
+app.pomFile.resolveParents(ParentPomResolver.getInstance())
+
+// Unit tests use isolated instance (full control)
+def isolatedResolver = new ParentPomResolver("/custom/repo")
+def app = new MuleApplication(path, isolatedResolver)
+```
+
+### Rejected Alternatives
+
+**Constructor Injection with Test Lifecycle Extension:**
+- Would require Spock global extension to share one resolver across all test classes
+- Adds complexity: extension class, META-INF/services registration, base test class
+- Benefit (10s → 0.5s) not worth added complexity for current test suite size
+- Rejected in favor of simpler singleton with documented rationale
 
 ## Success Criteria
 

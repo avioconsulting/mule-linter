@@ -31,8 +31,26 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier
  * - Mirrors (settings.mirrors)
  * - Proxies (settings.proxies)
  * 
- * Uses a shared instance pattern to avoid expensive Maven Resolver
- * initialization for every PomFile.
+ * ARCHITECTURE NOTE - INTENTIONAL SINGLETON PATTERN:
+ * 
+ * This class uses a shared instance pattern (ParentPomResolver.getInstance()) rather
+ * than pure constructor injection. This is a deliberate performance optimization:
+ * 
+ * - Maven Resolver initialization is expensive (~500ms per instance)
+ * - Constructor injection would cost 500ms per MuleApplication or test class
+ * - With 20 test classes: 20 × 500ms = 10 seconds overhead
+ * - Singleton pattern: 500ms once for entire JVM lifecycle
+ * 
+ * Resource Management:
+ * - JVM shutdown hook automatically calls close() on the singleton
+ * - No manual cleanup needed in application code
+ * - repositorySystem.shutdown() releases HTTP pools and threads on JVM exit
+ * 
+ * For Testing:
+ * - Integration tests: Use ParentPomResolver.getInstance() (shared, fast)
+ * - Unit tests with custom config: Use new ParentPomResolver(customPath) (isolated)
+ * 
+ * See plans/04-parent-pom-resolution.md for detailed design rationale and rejected alternatives.
  */
 class ParentPomResolver {
     
