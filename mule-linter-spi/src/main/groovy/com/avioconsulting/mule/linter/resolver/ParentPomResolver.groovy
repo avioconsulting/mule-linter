@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.linter.resolver
 
+import com.avioconsulting.mule.linter.model.pom.PomFile
+import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 import org.apache.maven.settings.Settings
@@ -56,10 +58,14 @@ class ParentPomResolver {
     /**
      * Creates a new ParentPomResolver with the specified local repository.
      * @param localRepoPath Optional custom local repository path. Defaults to ~/.m2/repository
+     *                      or value from 'mule.linter.localRepo' system property
      */
     ParentPomResolver(String localRepoPath = null) {
-        this.localRepositoryDir = new File(localRepoPath ?: 
-            "${System.getProperty('user.home')}/.m2/repository")
+        // Priority: 1) explicit parameter, 2) system property, 3) default ~/.m2/repository
+        String effectivePath = localRepoPath ?: 
+            System.getProperty('mule.linter.localRepo') ?:
+            "${System.getProperty('user.home')}/.m2/repository"
+        this.localRepositoryDir = new File(effectivePath)
         
         this.settingsParser = new SettingsXmlParser()
         this.settings = settingsParser.loadSettings()
@@ -123,20 +129,22 @@ class ParentPomResolver {
     
     /**
      * Resolves the full parent chain for a given POM file.
-     * Returns list from immediate parent to oldest ancestor.
+     * Returns List<PomFile> with parents already parsed using MuleXmlParser
+     * and linked together (immediate parent first, with its parent link set, etc.).
      * 
      * @param childPomFile The child POM file to resolve parents for
-     * @return List of resolved parent POM files (may be empty if no parent)
+     * @return List of resolved parent PomFiles (immediate parent first), empty if no parent
      * @throws ParentPomResolutionException if any parent cannot be resolved
      */
-    List<File> resolveParentChain(File childPomFile) {
-        List<File> chain = []
-        File currentPom = childPomFile
+    List<PomFile> resolveParentChain(File childPomFile) {
+        List<PomFile> chain = []
+        File currentPomFile = childPomFile
         Set<String> visited = [] // Prevent circular dependencies
         int maxDepth = 50 // Safety limit
+        MuleXmlParser xmlParser = new MuleXmlParser()
         
         for (int depth = 0; depth < maxDepth; depth++) {
-            ParentReference parentRef = extractParentReference(currentPom)
+            ParentReference parentRef = extractParentReference(currentPomFile)
             if (!parentRef) break
             
             // Check for circular dependency
@@ -154,16 +162,25 @@ class ParentPomResolver {
             
             visited.add(parentRef.coordinates)
             
-            File parentPom = resolve(
+            File parentPomFile = resolve(
                 parentRef.groupId,
                 parentRef.artifactId,
                 parentRef.version,
                 parentRef.relativePath,
-                currentPom.parentFile
+                currentPomFile.parentFile
             )
             
+            // Parse with MuleXmlParser for consistent line number support
+            def parentXml = xmlParser.parse(parentPomFile)
+            PomFile parentPom = new PomFile(parentPomFile, parentXml)
             chain.add(parentPom)
-            currentPom = parentPom
+            
+            currentPomFile = parentPomFile
+        }
+        
+        // Link parents: first parent's parent is second, etc.
+        for (int i = 0; i < chain.size() - 1; i++) {
+            chain[i].parent = chain[i + 1]
         }
         
         return chain

@@ -4,6 +4,7 @@ import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.model.pom.ResolvedPlugin
 import com.avioconsulting.mule.linter.model.pom.ResolvedDependency
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import spock.lang.Specification
 
 /**
@@ -19,6 +20,14 @@ class PomManagementResolutionTest extends Specification {
         File file = new File(path)
         def pomXml = xmlParser.parse(file)
         return new PomFile(file, pomXml)
+    }
+
+    private PomFile createPomFileWithParent(String path) {
+        File file = new File(path)
+        def pomXml = xmlParser.parse(file)
+        PomFile pomFile = new PomFile(file, pomXml)
+        pomFile.resolveParents(ParentPomResolver.getInstance())
+        return pomFile
     }
 
     def "Plugin version is resolved from local pluginManagement when plugin declared without version"() {
@@ -54,7 +63,7 @@ class PomManagementResolutionTest extends Specification {
 
     def "Dependency from parent management preserves child-specific scope"() {
         given: "A child POM with dependency from parent's dependencyManagement"
-        def childPom = createPomFile("src/test/resources/PomManagementTest/child-with-parent-mgmt/pom.xml")
+        def childPom = createPomFileWithParent("src/test/resources/PomManagementTest/child-with-parent-mgmt/pom.xml")
 
         when: "Resolving the dependency"
         ResolvedDependency result = childPom.resolveDependency("com.example", "my-lib")

@@ -50,12 +50,10 @@ class ResolvedProperty extends PomElement {
     
     /**
      * Returns true if all ${...} expressions have been resolved
+     * Checks the resolved value (not rawValue) for unresolved markers
      */
     boolean isFullyResolved() {
-        if (!rawValue || rawValue == value) {
-            return true
-        }
-        return !rawValue.contains('${')
+        return value && !value.contains('${')
     }
     
     /**

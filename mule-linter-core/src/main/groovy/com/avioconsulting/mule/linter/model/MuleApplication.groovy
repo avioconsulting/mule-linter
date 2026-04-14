@@ -3,6 +3,7 @@ package com.avioconsulting.mule.linter.model
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import org.apache.groovy.json.internal.JsonMap
@@ -35,8 +36,9 @@ class MuleApplication implements Application {
         File pFile = new File(applicationPath, POM_FILE)
         def pomXml = pFile.exists() ? new MuleXmlParser().parse(pFile) : null
         
-        // Create PomFile (parent resolution is now lazy in PomFile when resolve methods are called)
+        // Create PomFile and resolve parent chain
         this.pomFile = new PomFile(pFile, pomXml)
+        pomFile.resolveParents(ParentPomResolver.getInstance())
         
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
@@ -47,8 +49,7 @@ class MuleApplication implements Application {
         loadMuleArtifact()
     }
 
-    // Parent POM resolution is now handled lazily by PomFile when resolve methods are called.
-    // This avoids expensive Maven Resolver initialization during MuleApplication construction.
+    // Parent POM resolution is performed during construction for consistent behavior.
     // The shared ParentPomResolver singleton is used to minimize initialization overhead.
 
     void loadPropertyFiles() {
