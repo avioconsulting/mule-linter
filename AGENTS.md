@@ -175,7 +175,8 @@ Parent POMs are resolved using embedded Maven Resolver (Eclipse Aether):
 
 **Backward Compatibility:**
 - Existing methods (`getPomProperty()`, `getDependency()`, `getPlugin()`) still work
-- Parent resolution is automatic but failures are logged as warnings (not fatal)
+- Parent resolution is explicit - call `pomFile.resolveParents(ParentPomResolver.getInstance())` to enable inheritance
+- Parent resolution failures are logged as warnings (not fatal)
 
 **System Properties:**
 - `mule.linter.localRepo`: Custom local repository path (default: ~/.m2/repository)

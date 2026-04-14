@@ -8,10 +8,20 @@ import spock.lang.Stepwise
  * Stepwise execution to avoid system property pollution between tests.
  */
 @Stepwise
-class ParentPomResolverTest extends Specification {
+class ParentPomResolverTest {
 
-    private static final String CUSTOM_REPO_PATH = '/tmp/custom-m2-repo'
+    private static File tempRepoDir
     private static final String DEFAULT_REPO_PATH = "${System.getProperty('user.home')}/.m2/repository"
+    
+    def setupSpec() {
+        // Create portable temp directory for tests (works on all platforms)
+        tempRepoDir = File.createTempDir("mule-linter-test-repo", "")
+    }
+    
+    def cleanupSpec() {
+        // Clean up temp directory after all tests
+        tempRepoDir?.deleteDir()
+    }
 
     def setup() {
         // Clean up any system property from previous tests
@@ -37,15 +47,15 @@ class ParentPomResolverTest extends Specification {
         resolver?.close()
     }
 
-    def "System property mule.linter.localRepo is used when set"() {
+    def "System property mule linter localRepo is used when set"() {
         given: "System property is set to custom path"
-        System.setProperty('mule.linter.localRepo', CUSTOM_REPO_PATH)
+        System.setProperty('mule.linter.localRepo', tempRepoDir.absolutePath)
 
         when: "Creating a ParentPomResolver"
         ParentPomResolver resolver = new ParentPomResolver()
 
         then: "System property path is used"
-        resolver.localRepositoryDir.absolutePath == new File(CUSTOM_REPO_PATH).absolutePath
+        resolver.localRepositoryDir.absolutePath == tempRepoDir.absolutePath
 
         cleanup:
         resolver?.close()
@@ -54,29 +64,30 @@ class ParentPomResolverTest extends Specification {
 
     def "Explicit constructor parameter overrides system property"() {
         given: "System property is set but explicit parameter provided"
-        System.setProperty('mule.linter.localRepo', CUSTOM_REPO_PATH)
-        String explicitPath = '/tmp/explicit-repo'
+        System.setProperty('mule.linter.localRepo', tempRepoDir.absolutePath)
+        File explicitDir = File.createTempDir("mule-linter-explicit-repo", "")
 
         when: "Creating a ParentPomResolver with explicit path"
-        ParentPomResolver resolver = new ParentPomResolver(explicitPath)
+        ParentPomResolver resolver = new ParentPomResolver(explicitDir.absolutePath)
 
         then: "Explicit parameter wins over system property"
-        resolver.localRepositoryDir.absolutePath == new File(explicitPath).absolutePath
+        resolver.localRepositoryDir.absolutePath == explicitDir.absolutePath
 
         cleanup:
         resolver?.close()
+        explicitDir.deleteDir()
         System.clearProperty('mule.linter.localRepo')
     }
 
     def "System property overrides default when no explicit parameter"() {
         given: "Only system property is set"
-        System.setProperty('mule.linter.localRepo', CUSTOM_REPO_PATH)
+        System.setProperty('mule.linter.localRepo', tempRepoDir.absolutePath)
 
         when: "Creating a ParentPomResolver with no parameter"
         ParentPomResolver resolver = new ParentPomResolver()
 
         then: "System property is used instead of default"
-        resolver.localRepositoryDir.absolutePath == new File(CUSTOM_REPO_PATH).absolutePath
+        resolver.localRepositoryDir.absolutePath == tempRepoDir.absolutePath
         resolver.localRepositoryDir.absolutePath != new File(DEFAULT_REPO_PATH).absolutePath
 
         cleanup:
@@ -86,13 +97,13 @@ class ParentPomResolverTest extends Specification {
 
     def "Null explicit parameter falls back to system property then default"() {
         given: "System property is set"
-        System.setProperty('mule.linter.localRepo', CUSTOM_REPO_PATH)
+        System.setProperty('mule.linter.localRepo', tempRepoDir.absolutePath)
 
         when: "Creating a ParentPomResolver with explicit null"
         ParentPomResolver resolver = new ParentPomResolver(null)
 
         then: "System property is used"
-        resolver.localRepositoryDir.absolutePath == new File(CUSTOM_REPO_PATH).absolutePath
+        resolver.localRepositoryDir.absolutePath == tempRepoDir.absolutePath
 
         cleanup:
         resolver?.close()

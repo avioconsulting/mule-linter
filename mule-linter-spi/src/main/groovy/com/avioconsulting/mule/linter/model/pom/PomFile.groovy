@@ -9,9 +9,15 @@ import groovy.xml.slurpersupport.GPathResult
  * Represents a Maven POM file with support for parent POM inheritance.
  * Provides access to properties, dependencies, and plugins with full inheritance chain support.
  * 
- * Parent resolution is lazy - only performed when resolve methods are called,
- * not during construction. This avoids expensive Maven Resolver initialization
- * for tests and applications that don't need parent inheritance.
+ * Parent resolution is explicit - callers must invoke resolveParents(ParentPomResolver)
+ * before calling resolveProperty/resolveDependency/resolvePlugin if they want parent
+ * inheritance. This avoids expensive Maven Resolver initialization for tests and 
+ * applications that don't need parent inheritance.
+ * 
+ * Usage:
+ *   PomFile pomFile = new PomFile(file, xml)
+ *   pomFile.resolveParents(ParentPomResolver.getInstance())  // Optional: for parent inheritance
+ *   ResolvedProperty prop = pomFile.resolveProperty("some.prop")  // Searches local + parents if resolved
  */
 class PomFile extends ProjectFile {
 
