@@ -36,8 +36,45 @@ Replace the external Maven invoker with embedded Maven Resolver (Eclipse Aether)
 
 - Resolving actual dependencies (jars, not POMs)
 - Resolving plugins (jars, not POMs)
-- Maven profile activation (not supported in initial version)
 - BOM/Import scope dependency management (future enhancement)
+
+## Future Enhancements
+
+### Maven Profile Support
+
+Support for Maven profile activation would enable:
+- Conditional parent POM properties based on active profiles
+- Profile-specific dependencyManagement sections
+- Profile-specific pluginManagement sections
+- Environment-specific property resolution (e.g., `${env.DEV_PROPERTY}`)
+
+**Implementation Approach:**
+1. Parse `<profiles>` section from settings.xml and POM files
+2. Support profile activation conditions:
+   - `<activeByDefault>` profiles
+   - `<property>` activation (e.g., `env` property matching system property)
+   - `<jdk>` version activation
+   - `<file>` existence activation
+3. Merge profile properties/repositories before parent resolution
+4. Allow users to specify active profiles via:
+   - System property: `mule.linter.activeProfiles=dev,test`
+   - Environment variable: `MULE_LINTER_ACTIVE_PROFILES`
+   - DSL configuration in rule files
+
+**Example Usage:**
+```groovy
+// In rule configuration
+rules {
+    profile 'dev'  // Activate 'dev' profile for resolution
+    
+    PomPropertyValueRule {
+        propertyName = 'app.runtime'
+        propertyValue = '4.9.16'  // Resolved with dev profile active
+    }
+}
+```
+
+**Priority:** Medium - Current implementation handles 90% of use cases without profiles
 
 ## Architecture
 
