@@ -77,30 +77,37 @@ class MuleApplication implements Application {
         if (mavenHome == null)
             throw new MavenInvocationException( MAVEN_HOME_DOES_NOT_EXIST)
 
-        File effectivePomFile = File.createTempFile("effective-pom", ".xml");
-        def mavenInvokeRequest = new DefaultInvocationRequest().with {
-            String mvnGoals = 'help:effective-pom -Doutput='+effectivePomFile.getAbsolutePath()
-            setGoals([mvnGoals])
-            setPomFile(pFile)
-            setShowErrors(true)
-            // Add timeout to prevent hanging
-            setTimeoutInSeconds(60)
-            it
-        }
-        def mavenInvoker = new DefaultInvoker()
-        mavenInvoker.setMavenHome(new File(mavenHome))
-        def result = mavenInvoker.execute(mavenInvokeRequest)
+        File effectivePomFile = File.createTempFile("effective-pom", ".xml")
+        // Register for deletion immediately to prevent temp file leak on exception
+        effectivePomFile.deleteOnExit()
         
-        // Check if Maven invocation succeeded
-        if (result == null || result.getExitCode() != 0) {
+        try {
+            def mavenInvokeRequest = new DefaultInvocationRequest().with {
+                String mvnGoals = 'help:effective-pom -Doutput='+effectivePomFile.getAbsolutePath()
+                setGoals([mvnGoals])
+                setPomFile(pFile)
+                setShowErrors(true)
+                // Add timeout to prevent hanging
+                setTimeoutInSeconds(60)
+                it
+            }
+            def mavenInvoker = new DefaultInvoker()
+            mavenInvoker.setMavenHome(new File(mavenHome))
+            def result = mavenInvoker.execute(mavenInvokeRequest)
+            
+            // Check if Maven invocation succeeded
+            if (result == null || result.getExitCode() != 0) {
+                effectivePomFile.delete()
+                throw new RuntimeException("Failed to generate effective POM for ${pFile.absolutePath}. " +
+                    "Maven exit code: ${result?.exitCode ?: 'null'}. " +
+                    "Check that Maven can resolve all parent POMs and dependencies.")
+            }
+            
+            return effectivePomFile
+        } catch (MavenInvocationException e) {
             effectivePomFile.delete()
-            // Fall back to original pom file if effective pom generation fails
-            println "Warning: Failed to generate effective POM, using original pom.xml"
-            return pFile
+            throw new RuntimeException("Failed to invoke Maven for effective POM generation: ${e.message}", e)
         }
-        
-        effectivePomFile.deleteOnExit();
-        return effectivePomFile
     }
 
     void loadPropertyFiles() {
