@@ -115,6 +115,7 @@ class ParentPomResolver {
                 relativePath,
                 attemptedPaths,
                 attemptedRepositories,
+                localRepositoryDir,
                 e
             )
         }
@@ -146,6 +147,7 @@ class ParentPomResolver {
                     parentRef.relativePath,
                     [],
                     [],
+                    localRepositoryDir,
                     null
                 )
             }

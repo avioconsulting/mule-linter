@@ -12,33 +12,35 @@ class ParentPomResolutionException extends RuntimeException {
     final List<String> attemptedRepositories
     final File localRepositoryDir
     
-    ParentPomResolutionException(String message, 
-                                 String failedCoordinates,
-                                 String attemptedRelativePath,
-                                 List<String> attemptedPaths,
-                                 List<String> attemptedRepositories,
-                                 Throwable cause) {
-        super(buildMessage(message, failedCoordinates, attemptedRelativePath, 
-                          attemptedPaths, attemptedRepositories), cause)
+    ParentPomResolutionException(String message,
+                                  String failedCoordinates,
+                                  String attemptedRelativePath,
+                                  List<String> attemptedPaths,
+                                  List<String> attemptedRepositories,
+                                  File localRepositoryDir,
+                                  Throwable cause) {
+        super(buildMessage(message, failedCoordinates, attemptedRelativePath,
+                          attemptedPaths, attemptedRepositories, localRepositoryDir), cause)
         this.failedCoordinates = failedCoordinates
         this.attemptedRelativePath = attemptedRelativePath
         this.attemptedPaths = attemptedPaths ?: []
         this.attemptedRepositories = attemptedRepositories ?: []
-        this.localRepositoryDir = new File("${System.getProperty('user.home')}/.m2/repository")
+        this.localRepositoryDir = localRepositoryDir
     }
     
-    private static String buildMessage(String message, 
-                                      String failedCoordinates,
-                                      String attemptedRelativePath,
-                                      List<String> attemptedPaths,
-                                      List<String> attemptedRepositories) {
+    private static String buildMessage(String message,
+                                       String failedCoordinates,
+                                       String attemptedRelativePath,
+                                       List<String> attemptedPaths,
+                                       List<String> attemptedRepositories,
+                                       File localRepositoryDir) {
         StringBuilder sb = new StringBuilder()
         sb.append(message)
-        
+
         if (failedCoordinates) {
             sb.append("\n  Failed coordinates: ").append(failedCoordinates)
         }
-        
+
         if (attemptedRelativePath) {
             sb.append("\n  Attempted relativePath: ").append(attemptedRelativePath)
             if (attemptedPaths && !attemptedPaths.isEmpty()) {
@@ -46,17 +48,17 @@ class ParentPomResolutionException extends RuntimeException {
                 sb.append(" (file ").append(attemptedFile.exists() ? "exists" : "not found").append(")")
             }
         }
-        
+
         if (attemptedRepositories && !attemptedRepositories.isEmpty()) {
             sb.append("\n  Attempted repositories:")
             attemptedRepositories.each { repo ->
                 sb.append("\n    - ").append(repo)
             }
         }
-        
+
         sb.append("\n  Local repository: ").append(
-            "${System.getProperty('user.home')}/.m2/repository")
-        
+            localRepositoryDir?.absolutePath ?: "${System.getProperty('user.home')}/.m2/repository")
+
         return sb.toString()
     }
     
