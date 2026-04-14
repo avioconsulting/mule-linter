@@ -61,14 +61,16 @@ class ParentPomResolver {
      *                      or value from 'mule.linter.localRepo' system property
      */
     ParentPomResolver(String localRepoPath = null) {
-        // Priority: 1) explicit parameter, 2) system property, 3) default ~/.m2/repository
-        String effectivePath = localRepoPath ?: 
-            System.getProperty('mule.linter.localRepo') ?:
-            "${System.getProperty('user.home')}/.m2/repository"
-        this.localRepositoryDir = new File(effectivePath)
-        
+        // Load settings first to check settings.xml localRepository
         this.settingsParser = new SettingsXmlParser()
         this.settings = settingsParser.loadSettings()
+        
+        // Priority: 1) explicit parameter, 2) system property, 3) settings.xml, 4) default ~/.m2/repository
+        String effectivePath = localRepoPath ?: 
+            System.getProperty('mule.linter.localRepo') ?:
+            settingsParser.getLocalRepositoryPath(settings) ?:
+            "${System.getProperty('user.home')}/.m2/repository"
+        this.localRepositoryDir = new File(effectivePath)
         
         // Initialize Maven Resolver - expensive operation
         this.repositorySystem = new RepositorySystemSupplier().get()
@@ -187,12 +189,15 @@ class ParentPomResolver {
     }
     
     /**
-     * Closes the resolver and cleans up resources.
+     * Shuts down the resolver and cleans up resources.
+     * Call this when the application is exiting to release HTTP connections,
+     * thread pools, and other resources held by Maven Resolver.
      */
     void close() {
-        // RepositorySystemSession is auto-closeable
-        if (session instanceof Closeable) {
-            ((Closeable) session).close()
+        // RepositorySystem manages HTTP clients, thread pools, etc.
+        // Shutdown must be called to release these resources properly
+        if (repositorySystem != null) {
+            repositorySystem.shutdown()
         }
     }
     
@@ -260,23 +265,59 @@ class ParentPomResolver {
     private List<RemoteRepository> buildRemoteRepositories(List<String> attemptedRepos) {
         List<RemoteRepository> repos = []
         
-        // Add Maven Central as default
-        // Note: settings.xml profile repositories, mirrors, and proxies are not currently supported.
-        // Only local repository path and server authentication are supported from settings.xml.
-        repos.add(new RemoteRepository.Builder('central', 'default', 
-            'https://repo.maven.apache.org/maven2/').build())
+        // Add Maven Central as default with authentication if configured in settings.xml
+        RemoteRepository.Builder centralBuilder = new RemoteRepository.Builder('central', 'default', 
+            'https://repo.maven.apache.org/maven2/')
+        
+        // Look for Maven Central authentication in settings.xml (server id 'central')
+        def centralAuth = settings?.servers?.find { it.id == 'central' }
+        if (centralAuth && centralAuth.username && centralAuth.password) {
+            centralBuilder.setAuthentication(new AuthenticationBuilder()
+                .addUsername(centralAuth.username)
+                .addPassword(centralAuth.password)
+                .build())
+        }
+        
+        repos.add(centralBuilder.build())
         attemptedRepos << 'https://repo.maven.apache.org/maven2/'
+        
+        // Add other repositories from settings.xml servers (for private repos)
+        settings?.servers?.each { server ->
+            if (server.id != 'central' && server.configuration) {
+                // Check if server has URL configuration (custom repository)
+                def url = server.configuration?.getChild('url')?.value
+                if (url) {
+                    RemoteRepository.Builder customBuilder = new RemoteRepository.Builder(
+                        server.id, 'default', url)
+                    if (server.username && server.password) {
+                        customBuilder.setAuthentication(new AuthenticationBuilder()
+                            .addUsername(server.username)
+                            .addPassword(server.password)
+                            .build())
+                    }
+                    repos.add(customBuilder.build())
+                    attemptedRepos << url
+                }
+            }
+        }
         
         return repos
     }
     
     private ParentReference extractParentReference(File pomFile) {
+        // Check if file exists first
+        if (!pomFile.exists()) {
+            throw new ParentPomResolutionException(
+                "POM file does not exist: ${pomFile.absolutePath}",
+                null, null, [pomFile.absolutePath], [], localRepositoryDir, null)
+        }
+        
         try {
             def xml = new XmlSlurper().parse(pomFile)
             def parentNode = xml.parent
             
             if (parentNode.isEmpty()) {
-                return null
+                return null  // No parent defined - this is valid
             }
             
             return new ParentReference(
@@ -287,7 +328,10 @@ class ParentPomResolver {
                 coordinates: "${parentNode.groupId}:${parentNode.artifactId}:${parentNode.version}"
             )
         } catch (Exception e) {
-            return null
+            // Fail-fast: cannot parse POM file - throw exception with context
+            throw new ParentPomResolutionException(
+                "Failed to parse POM file to extract parent reference: ${pomFile.absolutePath}",
+                null, null, [pomFile.absolutePath], [], localRepositoryDir, e)
         }
     }
     

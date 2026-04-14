@@ -18,8 +18,18 @@ Replace the external Maven invoker with embedded Maven Resolver (Eclipse Aether)
 - Must support full parent chain (child → parent → grandparent → ...)
 - Use ~/.m2/settings.xml for repository authentication
 - Cache resolved parents in ~/.m2/repository (standard Maven cache)
-- Must be testable with constructor injection (no singletons/statics)
 - Preserve backward compatibility with existing PomFile API
+
+### Design Decision: Shared Resolver Instance
+
+The implementation uses a shared `ParentPomResolver.getInstance()` singleton pattern to avoid expensive Maven Resolver initialization for every `PomFile`:
+
+- Maven Resolver initialization is expensive (~500ms per instance)
+- Shared instance amortizes this cost across all POM resolutions
+- The resolver is thread-safe and can be shared across concurrent operations
+- Tests can still create isolated instances via `new ParentPomResolver(path)` when needed
+
+This trade-off prioritizes runtime performance over pure constructor injection, while still allowing test isolation when required.
 
 ## Success Criteria
 

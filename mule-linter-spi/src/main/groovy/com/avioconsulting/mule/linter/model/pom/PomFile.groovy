@@ -116,6 +116,7 @@ class PomFile extends ProjectFile {
      * Populates the `parent` field with the immediate parent.
      * 
      * @param resolver ParentPomResolver to use for resolution
+     * @throws ParentPomResolutionException if parent chain cannot be resolved
      */
     void resolveParents(ParentPomResolver resolver) {
         if (parent != null) {
@@ -128,9 +129,14 @@ class PomFile extends ProjectFile {
                 // Link to immediate parent (already parsed and linked by resolver)
                 this.parent = parentChain[0]
             }
+        } catch (com.avioconsulting.mule.linter.resolver.ParentPomResolutionException e) {
+            // Re-throw resolution exceptions as-is
+            throw e
         } catch (Exception e) {
-            // Log warning and continue without parent resolution
-            System.err.println("Warning: Failed to resolve parent POM chain for ${file?.name}: ${e.message}")
+            // Wrap other exceptions with context
+            throw new com.avioconsulting.mule.linter.resolver.ParentPomResolutionException(
+                "Failed to resolve parent POM chain for ${file?.name}: ${e.message}",
+                null, null, [], [], resolver.localRepositoryDir, e)
         }
     }
 

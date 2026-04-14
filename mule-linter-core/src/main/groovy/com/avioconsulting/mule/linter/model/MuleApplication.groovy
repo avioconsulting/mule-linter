@@ -36,9 +36,16 @@ class MuleApplication implements Application {
         File pFile = new File(applicationPath, POM_FILE)
         def pomXml = pFile.exists() ? new MuleXmlParser().parse(pFile) : null
         
-        // Create PomFile and resolve parent chain
+        // Create PomFile and resolve parent chain (only if POM exists)
         this.pomFile = new PomFile(pFile, pomXml)
-        pomFile.resolveParents(ParentPomResolver.getInstance())
+        if (pFile.exists()) {
+            try {
+                pomFile.resolveParents(ParentPomResolver.getInstance())
+            } catch (Exception e) {
+                // Log warning but continue - rules will operate on raw POM data
+                System.err.println("Warning: Could not resolve parent POM chain: ${e.message}")
+            }
+        }
         
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
