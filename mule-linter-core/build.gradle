@@ -24,16 +24,10 @@ tasks.register('generateGDSL', JavaExec) {
     classpath += sourceSets.main.compileClasspath
     classpath += sourceSets.main.runtimeClasspath
     
-    // Incremental build - only run if template changes
+    // Incremental build - rely on Gradle inputs/outputs up-to-date checking
     inputs.file(templateFile)
     inputs.dir(sourceSets.main.groovy.srcDirs)
     outputs.file(outputGdslFile)
-    
-    // Only run when explicitly requested or when inputs change
-    onlyIf {
-        !outputGdslFile.exists() || 
-        templateFile.lastModified() > outputGdslFile.lastModified()
-    }
 }
 
 // Wire GDSL generation to jar task (only runs if onlyIf condition is met)
