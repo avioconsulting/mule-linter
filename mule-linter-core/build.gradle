@@ -29,17 +29,12 @@ tasks.register('generateGDSL', JavaExec) {
     inputs.dir(sourceSets.main.groovy.srcDirs)
     outputs.file(outputGdslFile)
     
-    // Only run when explicitly requested, during build, or when inputs change
+    // Only run when explicitly requested or when inputs change
     onlyIf {
         !outputGdslFile.exists() || 
-        templateFile.lastModified() > outputGdslFile.lastModified() ||
-        gradle.taskGraph.hasTask(":${project.name}:jar")
+        templateFile.lastModified() > outputGdslFile.lastModified()
     }
 }
 
-// Only run GDSL generation when building jar, not during test
-gradle.taskGraph.whenReady { graph ->
-    if (graph.hasTask(":${project.name}:jar") && !graph.hasTask(":${project.name}:test")) {
-        tasks.jar.dependsOn(generateGDSL)
-    }
-}
+// Wire GDSL generation to jar task (only runs if onlyIf condition is met)
+jar.dependsOn(generateGDSL)

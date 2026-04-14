@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
     id 'groovy'
 //    id 'codenarc'
@@ -21,7 +23,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(17)
     }
     withSourcesJar()
 }
@@ -61,9 +63,6 @@ test {
     
     // Optimize test startup - only scan for tests once
     scanForTestClasses = true
-    
-    // Disable redundant outputs for faster test execution
-    outputs.upToDateWhen { true }
 }
 
 // Enable forked compilation for better memory management
@@ -97,18 +96,11 @@ tasks.register('groovydocJar', Jar) {
 // Note: 'from' and 'dependsOn' above are method calls, not property assignments - this syntax is correct
 
 // Ensure groovydocJar is built when publishing
-gradle.taskGraph.whenReady { graph ->
-    def publishTasks = [
-        "${project.name}:publish",
-        "${project.name}:publishToMavenLocal",
-        'publishAllPublicationsToStagingRepository'
-    ].collect { taskName ->
-        graph.allTasks.find { it.path.endsWith(taskName) || it.name == taskName }
-    }.findAll { it != null }
-    
-    if (!publishTasks.isEmpty() || project.hasProperty('generateDocs')) {
-        jar.dependsOn(groovydocJar)
-    }
+// Note: Only adds dependency when explicitly requested via -PgenerateDocs or during publish tasks
+// Uses startParameter to avoid configuration cache issues with taskGraph access
+if (project.hasProperty('generateDocs') || 
+    gradle.startParameter.taskNames.any { it.contains('publish') }) {
+    jar.dependsOn(groovydocJar)
 }
 
 //codenarc {

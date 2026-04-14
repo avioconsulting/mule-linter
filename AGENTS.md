@@ -7,7 +7,7 @@ This file is for coding agents working in `mule-linter`.
 - Build system: Gradle.
 - Language mix: mostly Groovy, plus a small Java-based Maven plugin module.
 - Test framework: Spock on JUnit Platform.
-- Java toolchain: Java 8.
+- Java toolchain: Java 17.
 - Modules declared in `settings.gradle`:
 - `mule-linter-spi`
 - `mule-linter-core`

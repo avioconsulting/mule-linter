@@ -23,11 +23,12 @@ dependencyResolutionManagement {
 }
 
 // Develocity Build Scan configuration
+// Only publish scans on CI to avoid leaking local development data
 develocity {
     buildScan {
         termsOfUseUrl = 'https://gradle.com/terms-of-service'
         termsOfUseAgree = 'yes'
-        publishing.onlyIf { true }
+        publishing.onlyIf { System.getenv('CI') || System.getenv('GITHUB_ACTIONS') }
         
         // Capture build performance data
         capture {
