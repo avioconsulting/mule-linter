@@ -8,6 +8,10 @@ class ArtifactDescriptor {
     String groupId
     String artifactId
     PomElement version
+    PomElement scope
+    PomElement type
+    PomElement classifier
+    PomElement optional
     Integer lineNo
     PomFile pomFile
     GPathResult pluginXml
@@ -19,6 +23,10 @@ class ArtifactDescriptor {
         this.lineNo = getNodeLineNumber(pluginXml)
         this.pomFile = pomFile
         this.version = getAttribute('version')
+        this.scope = getAttribute('scope')
+        this.type = getAttribute('type')
+        this.classifier = getAttribute('classifier')
+        this.optional = getAttribute('optional')
     }
 
     PomElement getAttribute(String attributeName) {

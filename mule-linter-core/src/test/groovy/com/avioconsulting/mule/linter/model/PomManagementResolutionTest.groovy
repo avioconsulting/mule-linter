@@ -67,7 +67,7 @@ class PomManagementResolutionTest extends Specification {
         
         and: "Child-specific details (scope) are preserved"
         result.dependency != null
-        result.dependency.getAttribute('scope')?.value == "runtime"
+        result.dependency.scope?.value == "runtime"
         result.dependency.artifactId == "my-lib"
     }
 
@@ -83,6 +83,6 @@ class PomManagementResolutionTest extends Specification {
         result.version == "3.0.0"
         result.isVersionFromManagement == false
         result.versionSource == pomFile
-        result.dependency.getAttribute('scope')?.value == "compile"
+        result.dependency.scope?.value == "compile"
     }
 }
