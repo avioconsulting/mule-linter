@@ -91,7 +91,7 @@ class ParentPomResolver {
         // 1. Try relative path first if provided
         if (relativePath) {
             File relativePom = resolveRelativePath(relativePath, childDir)
-            attemptedPaths << relativePath
+            attemptedPaths << relativePom.absolutePath  // Store absolute path for accurate error reporting
             
             if (relativePom?.exists()) {
                 // Install to local repo for caching
