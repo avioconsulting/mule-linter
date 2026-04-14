@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation project(':mule-linter-core')
+    implementation project(':mule-linter-spi')
     implementation 'info.picocli:picocli:4.7.6'
 }
 

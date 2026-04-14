@@ -2,6 +2,7 @@ package com.avioconsulting.mule.linter;
 
 import com.avioconsulting.mule.MuleLinter;
 import com.avioconsulting.mule.linter.model.ReportFormat;
+import com.avioconsulting.mule.linter.model.rule.RuleSeverity;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -38,6 +39,26 @@ public class MuleLinterCli implements Callable<Integer> {
     )
     private ReportFormat outputFormat;
 
+    @CommandLine.Option(
+            names = {"--fail-threshold"},
+            defaultValue = "MAJOR",
+            description = "Minimum severity that causes a non-zero exit code. " +
+                    "Violations below this threshold will be reported but won't fail the build."
+    )
+    private RuleSeverity failThreshold;
+
+    @CommandLine.Option(
+            names = {"--color"},
+            description = "Force ANSI color output even in non-interactive environments"
+    )
+    private boolean forceColor = false;
+
+    @CommandLine.Option(
+            names = {"--no-color"},
+            description = "Disable ANSI color output"
+    )
+    private boolean noColor = false;
+
     public static void main(String... args) {
         int exitCode = new CommandLine(new MuleLinterCli()).execute(args);
         System.exit(exitCode);
@@ -45,8 +66,21 @@ public class MuleLinterCli implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat);
-        ml.runLinter();
-        return 0;
+        boolean useColor = determineColorUsage();
+        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat, failThreshold, useColor);
+        int exitCode = ml.runLinter();
+        return exitCode;
+    }
+
+    private boolean determineColorUsage() {
+        if (noColor) {
+            return false;
+        }
+        if (forceColor) {
+            return true;
+        }
+        // Auto-detect: picocli handles this via Ansi.AUTO
+        // We'll pass null/undefined and let the Groovy code use picocli's Ansi class
+        return true; // Default, actual detection happens in RuleExecutor
     }
 }
