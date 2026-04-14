@@ -39,7 +39,10 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 	<!-- reference artifactId specific properties directory -->
 	<configuration-properties doc:name="Configuration properties" doc:id="0da4297a-cc2b-4d83-8e5d-fde6621077ec" file="properties/${env}.properties" />
 
-	<!-- Listener references "env" specific properties -->
+	<!-- Listener references "env" specific properties
+	     Note: ${http.host} and ${http.port} are intentionally externalized and expected to be 
+	     provided via properties files at runtime. The linter parses XML structure only and 
+	     does not require these values to be resolved during static analysis. -->
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="110e7948-6f84-4387-937e-2728db55929e">
 		<http:listener-connection host="${http.host}" port="${http.port}" />
 	</http:listener-config>

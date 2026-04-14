@@ -196,7 +196,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 \t\t<avio-logger:log doc:id="d5eb2fc2-e566-43fe-9a3f-e91426f3fda2" config-ref="topgolf-core-config" message="END: Get records from ACME system" category="${log.category}.examples" doc:name="END" correlation_id="#[correlationId]" logLocationInfo="true" />
 \t\t<error-handler >
 \t\t\t<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="51bc12f9-1ec3-42b9-8bc4-90bdac19fa42" >
-\t\t\t\t<avio-logger:log doc:name="Log ERROR" doc:id="7362ee98-b097-4bb5-8ab8-c4329ec10a2a" config-ref="avio-core-logging-config" message="'Error occured in the flow"/>
+\t\t\t\t<avio-logger:log doc:name="Log ERROR" doc:id="7362ee98-b097-4bb5-8ab8-c4329ec10a2a" config-ref="AVIO_Logger_Config" message="'Error occured in the flow"/>
 \t\t\t</on-error-continue>
 \t\t</error-handler>
 \t</flow>
