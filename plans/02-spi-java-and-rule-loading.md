@@ -26,7 +26,87 @@ Move the stable SPI surface from Groovy to Java, remove fragile reflection-based
 - Existing DSL configuration files continue to work with the same rule IDs.
 - SPI-test or an equivalent extension test proves external component and rule loading.
 
-## Current Problems
+## Current Status (Updated April 14, 2026)
+
+### ✅ Completed
+
+**Phase 1: SPI Core Classes Migrated to Java**
+
+1. **RuleSeverity** - Converted from Groovy enum to Java enum
+   - File: `mule-linter-spi/src/main/java/.../RuleSeverity.java`
+   - Removed: `RuleSeverity.groovy`
+
+2. **RuleType** - Converted from Groovy enum to Java enum
+   - File: `mule-linter-spi/src/main/java/.../RuleType.java`
+   - Removed: `RuleType.groovy`
+
+3. **Rule** - Converted from Groovy abstract class to Java abstract class
+   - File: `mule-linter-spi/src/main/java/.../Rule.java`
+   - Preserved: All constructors, getters/setters, `init()` method, `execute()` abstract method
+   - Removed: `Rule.groovy`
+
+4. **RuleViolation** - Converted from Groovy class to Java class
+   - File: `mule-linter-spi/src/main/java/.../RuleViolation.java`
+   - Preserved: All fields, constructors, getters/setters, `toString()`
+   - Removed: `RuleViolation.groovy`
+
+5. **RuleProvider** - Created new Java interface
+   - File: `mule-linter-spi/src/main/java/.../RuleProvider.java`
+   - Methods: `getProviderName()`, `getRules()`
+
+6. **RuleDescriptor** - Created new Java class
+   - File: `mule-linter-spi/src/main/java/.../RuleDescriptor.java`
+   - Fields: ruleId, displayName, description, defaultSeverity, ruleType, factory
+   - Methods: getters, `createRule()`
+
+7. **RuleRegistry** - Created new Groovy class to replace RulesLoader
+   - File: `mule-linter-core/src/main/groovy/.../RuleRegistry.groovy`
+   - Features: ServiceLoader support, explicit registration, singleton pattern
+   - Note: Still uses Groovy for DSL compatibility
+
+### 🚧 In Progress / Remaining Work
+
+**Phase 2: BuiltInRuleProvider Implementation**
+
+- Need to create `BuiltInRuleProvider` class in core
+- Must explicitly register all 49 built-in rules with their descriptors
+- Challenge: Each rule needs a factory lambda and metadata
+
+**Phase 3: Update DSL and Remove RulesLoader**
+
+- Update `RulesDsl.methodMissing()` to use `RuleRegistry` instead of `RulesLoader`
+- Remove `RulesLoader.groovy` entirely
+- Update `MuleLinter` to use new registry
+
+**Phase 4: Test and Verify**
+
+- All existing tests must pass
+- DSL configurations must work unchanged
+- External rule loading via ServiceLoader must work
+
+## Open Questions
+
+1. **BuiltInRuleProvider Implementation Strategy**
+   - Should we manually create descriptors for all 49 rules, or generate them?
+   - How do we handle rules that have different default severities/types?
+
+2. **Rule Class Compatibility**
+   - Do existing Groovy rule classes need changes to extend the Java Rule class?
+   - The Java Rule has protected constructors - will Groovy rules work with `newInstance()`?
+
+3. **DSL Compatibility**
+   - The DSL uses `methodMissing` to instantiate rules - will this work with RuleDescriptor factories?
+   - How do we handle rule configuration closures with the new factory pattern?
+
+4. **ServiceLoader Registration**
+   - Where should `META-INF/services/com.avioconsulting.mule.linter.model.rule.RuleProvider` files be created?
+   - Should external providers override built-in rules with the same ID?
+
+5. **Testing Strategy**
+   - How do we test the registry without initializing all 49 rules?
+   - Should we add a test-only rule provider?
+
+## Current Problems (Original)
 
 1. Public SPI is implemented in Groovy and uses dynamic behavior in several places.
 2. `RulesLoader` scans the world using `Reflections` and package heuristics.
@@ -40,141 +120,148 @@ Move the stable SPI surface from Groovy to Java, remove fragile reflection-based
 
 Keep SPI as the home for:
 
-- `Application`
-- `Rule`
-- `RuleViolation`
-- `RuleSeverity`
-- `RuleType`
-- `Param`
-- `MuleComponent` and typed component contracts
-- `PomFile`-related public abstractions as appropriate
-- Component extension interfaces
-- New rule extension interfaces
+- `Application` (still Groovy - complex model)
+- ✅ `Rule` (now Java)
+- ✅ `RuleViolation` (now Java)
+- ✅ `RuleSeverity` (now Java)
+- ✅ `RuleType` (now Java)
+- `Param` (still Groovy)
+- `MuleComponent` and typed component contracts (still Groovy)
+- `PomFile`-related public abstractions (still Groovy)
+- Component extension interfaces (still Groovy)
+- ✅ New `RuleProvider` interface (Java)
+- ✅ New `RuleDescriptor` class (Java)
 
 ### New Rule Loading Model
 
-Replace reflection scanning with explicit registration.
+Replace reflection scanning with explicit registration via `RuleRegistry`:
 
-Recommended additions:
+```java
+// Built-in provider loads on startup
+RuleRegistry.initialize() // loads BuiltInRuleProvider + ServiceLoader providers
 
-- `RuleProvider` interface in SPI
-- `RuleDescriptor` or equivalent metadata object
-- Built-in provider in core for all built-in rules
-- External providers loaded via `ServiceLoader`
+// DSL resolves rules via registry
+RuleDescriptor desc = RuleRegistry.getRuleDescriptor("AZURE_PIPELINES_EXISTS")
+Rule rule = desc.createRule()
+```
 
-This keeps the Groovy DSL while changing only how `RULE_ID -> rule class/factory` is resolved.
+## Proposed Architecture (Implemented)
 
-## Proposed Architecture
+### ✅ Option B: Provider Returns Descriptors (Implemented)
 
-### Option A: Provider Returns Rule Instances
+**SPI Classes:**
+- `RuleProvider` interface with `getProviderName()` and `getRules()`
+- `RuleDescriptor` with id, display name, description, severity, type, and factory
 
-Define in SPI:
+**Core Classes:**
+- `RuleRegistry` singleton that aggregates all providers
+- `BuiltInRuleProvider` (needs implementation) for all built-in rules
+- ServiceLoader support for external providers
 
-- `interface RuleProvider { Map<String, Supplier<? extends Rule>> rules(); }`
+### Remaining Work Details
 
-Pros:
-- simple
-- explicit
-- no reflection scanning
+**Create BuiltInRuleProvider:**
 
-Cons:
-- metadata may still live on rule classes unless duplicated
+```groovy
+class BuiltInRuleProvider implements RuleProvider {
+    List<RuleDescriptor> getRules() {
+        return [
+            new RuleDescriptor(
+                "AZURE_PIPELINES_EXISTS",
+                "Azure Pipelines Exists",
+                "Checks for azure-pipelines.yml file",
+                RuleSeverity.CRITICAL,
+                RuleType.CODE_SMELL,
+                { -> new AzurePipelinesExistsRule() }
+            ),
+            // ... 48 more rules
+        ]
+    }
+}
+```
 
-### Option B: Provider Returns Descriptors
+**Update RulesDsl:**
 
-Define in SPI:
+```groovy
+def methodMissing(String name, args) {
+    def descriptor = RuleRegistry.getRuleDescriptor(name)
+    if (descriptor) {
+        def rule = descriptor.createRule()
+        // ... configure rule
+        ruleSet.addRule(rule)
+    }
+}
+```
 
-- `RuleDescriptor` with id, display name, description, and factory
-
-Pros:
-- better future tooling
-- easier code completion/doc generation
-
-Cons:
-- a little more code
-
-Recommendation: use Option B if doing the migration anyway.
-
-## Phase 1: Migrate SPI Surface to Java
-
-Convert first:
-
-- `Application`
-- rule classes and enums in `model/rule`
-- `ComponentIdentifier`
-- `MuleComponent`, `FlowComponent`, `LoggerComponent`, `AVIOLoggerComponent`
-- `ComponentsFactory`
-- basic file model classes that are truly public API
-
-Guidelines:
-
-- preserve package names where possible
-- preserve public method names where practical
-- reduce Groovy metaprogramming in public types
-- prefer explicit getters over dynamic property fallbacks in public API
-
-## Phase 2: Add Proper Rule SPI
-
-1. Introduce `RuleProvider` in SPI.
-2. Add a built-in provider in core that explicitly registers all built-in rules.
-3. Replace `RulesLoader` package scanning with provider aggregation.
-4. Load providers via:
-   - built-in explicit registration
-   - `ServiceLoader<RuleProvider>` for external libraries
-5. Keep `RulesDsl.methodMissing(...)` but have it consult the registry instead of `Reflections`.
-
-## Phase 3: Revisit Component Extension SPI
-
-1. Keep `ComponentsFactory`, but simplify or tighten it.
-2. Either remove `registeredComponents()` if unnecessary or make it the primary lookup source.
-3. Make component resolution explicit and deterministic.
-4. Decide whether nested components should also be factory-resolved rather than always generic.
-
-## Phase 4: Compatibility Layer
-
-To reduce disruption:
-
-- Keep existing `RULE_ID` constants on rules.
-- Keep DSL names mapped exactly to those IDs.
-- Keep current built-in rule classes usable while infrastructure changes underneath.
-- Do not require all rules to move to Java in this phase.
+**Remove RulesLoader:**
+- Delete `RulesLoader.groovy`
+- Remove `org.reflections` dependency from core
 
 ## Verification Strategy
 
 Must verify:
 
-- built-in DSL config loads successfully
-- representative built-in rules execute
-- external component extension from `mule-linter-spi-test` still works
-- add or adapt an external rule-provider test to prove external rule loading
+- ✅ Java SPI classes compile
+- 🔄 built-in DSL config loads successfully (pending)
+- 🔄 representative built-in rules execute (pending)
+- 🔄 external component extension from `mule-linter-spi-test` still works (pending)
+- 🔄 add or adapt an external rule-provider test (pending)
 
 Commands:
 
-- `./gradlew :mule-linter-spi:test`
-- `./gradlew :mule-linter-core:test`
-- `./gradlew :mule-linter-spi-test:test`
-- `./gradlew test`
+```bash
+./gradlew :mule-linter-spi:compileJava  # ✅ Passes
+./gradlew :mule-linter-core:test       # 🔄 Needs BuiltInRuleProvider
+./gradlew test                          # 🔄 Pending
+```
 
-## Risks
+## Risks (Updated)
 
-- Groovy rules may depend on dynamic property semantics from SPI classes.
-- Java migration may expose weakly-defined parts of the current public API.
-- Extension examples may need changes to service registration.
-- Mixed Java/Groovy compilation order can cause temporary friction during migration.
+| Risk | Status | Mitigation |
+|------|--------|------------|
+| Groovy rules may depend on dynamic property semantics from SPI classes | ⚠️ Watch | Java Rule has getters/setters; Groovy should still work |
+| Java migration may expose weakly-defined parts of the current public API | ✅ Addressed | Explicit Java types now defined |
+| Extension examples may need changes to service registration | 🔄 Pending | Document ServiceLoader usage |
+| Mixed Java/Groovy compilation order can cause temporary friction | ✅ Addressed | SPI compiles first, core depends on it |
+| BuiltInRuleProvider may be large and hard to maintain | 🔄 Open | Consider code generation or convention-based approach |
 
-## Recommended Sequence
+## Recommended Sequence (Updated)
 
-1. Freeze current public SPI shape.
-2. Move SPI public contracts to Java.
-3. Add `RuleProvider` SPI.
-4. Replace `RulesLoader` implementation.
-5. Update tests and extension example.
-6. Only then consider migrating selected built-in rules to Java if beneficial.
+1. ✅ Freeze current public SPI shape.
+2. ✅ Move core SPI contracts to Java (Rule, RuleViolation, RuleSeverity, RuleType).
+3. ✅ Add `RuleProvider` SPI and `RuleDescriptor`.
+4. ✅ Create `RuleRegistry` to replace RulesLoader.
+5. 🔄 **Current:** Create `BuiltInRuleProvider` with all 49 rules.
+6. 🔄 Update `RulesDsl` to use registry.
+7. 🔄 Remove `RulesLoader` and `Reflections` dependency.
+8. 🔄 Update tests and extension example.
+9. 🔄 Verify all existing DSL configs still work.
 
-## Deliverables
+## Deliverables (Partial)
 
-- Java-based SPI public API
-- explicit built-in rule registry/provider
-- external rule provider SPI and test coverage
-- preserved Groovy DSL experience
-- removal of `Reflections` from runtime rule loading
+- ✅ Java-based SPI core classes (Rule, RuleViolation, enums)
+- ✅ `RuleProvider` interface
+- ✅ `RuleDescriptor` class
+- ✅ `RuleRegistry` implementation
+- 🔄 explicit built-in rule registry/provider (in progress)
+- external rule provider SPI and test coverage (pending)
+- preserved Groovy DSL experience (pending verification)
+- removal of `Reflections` from runtime rule loading (pending)
+
+## Next Steps
+
+1. **Decision needed:** How to implement BuiltInRuleProvider efficiently?
+   - Option A: Manual registration of all 49 rules (explicit, verbose)
+   - Option B: Convention-based (e.g., scan classpath once at build time, generate provider)
+   - Option C: Keep reflection but only for BuiltInRuleProvider initialization
+
+2. Once BuiltInRuleProvider is created:
+   - Update RulesDsl to use RuleRegistry
+   - Remove RulesLoader
+   - Run tests
+   - Commit and push
+
+## Branch
+
+Current work is on branch: `feat/spi-java`
+Base branch: `feat/unify-formatters` (contains unified formatter infrastructure)
