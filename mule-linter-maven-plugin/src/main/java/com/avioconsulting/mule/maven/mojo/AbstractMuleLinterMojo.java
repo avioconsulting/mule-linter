@@ -11,31 +11,30 @@ import java.util.List;
 
 public abstract class AbstractMuleLinterMojo extends AbstractMojo {
 
-    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/mule-linter", readonly = true, required = true )
+    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/mule-linter", readonly = true, required = true)
     protected File outputDirectory;
 
-
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
-    public File getOutputDirectory(){
-        return  outputDirectory;
+    public File getOutputDirectory() {
+        return outputDirectory;
     }
 
-    public String getProjectName (){
+    public String getProjectName() {
         return this.project.getName();
     }
 
-    public String getProjectVersion (){
+    public String getProjectVersion() {
         return this.project.getVersion();
     }
 
-    public void failIfNeeded(boolean shouldFail, List<RuleViolation> violations){
-        if(shouldFail && !violations.isEmpty()
-            && violations.stream()
-                .anyMatch(ruleViolation ->
-                        !ruleViolation.getRule().getSeverity().equals(RuleSeverity.MINOR))){
-            throw new RuntimeException("Linter validation has non-minor errors.");
+    public void failIfNeeded(RuleSeverity threshold, List<RuleViolation> violations) {
+        boolean hasFailing = violations.stream()
+                .anyMatch(v -> v.getRule().getSeverity().ordinal() <= threshold.ordinal());
+        
+        if (hasFailing) {
+            throw new RuntimeException("Linter validation has errors at or above threshold: " + threshold);
         }
     }
 }

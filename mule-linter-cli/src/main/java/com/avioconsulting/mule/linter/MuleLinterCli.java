@@ -1,12 +1,18 @@
 package com.avioconsulting.mule.linter;
 
 import com.avioconsulting.mule.MuleLinter;
+import com.avioconsulting.mule.linter.formatter.CompositeFormatter;
+import com.avioconsulting.mule.linter.formatter.FormatterContext;
 import com.avioconsulting.mule.linter.model.ReportFormat;
+import com.avioconsulting.mule.linter.model.rule.RuleExecutor;
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @CommandLine.Command(
         name = "mule-linter",
@@ -35,9 +41,17 @@ public class MuleLinterCli implements Callable<Integer> {
     @CommandLine.Option(
             names = {"-f", "--format"},
             defaultValue = "CONSOLE",
-            description = "Report Output Format. Valid values: ${COMPLETION-CANDIDATES}"
+            description = "Report Output Format(s). Multiple formats can be specified as comma-separated list. " +
+                    "Valid values: ${COMPLETION-CANDIDATES}"
     )
-    private ReportFormat outputFormat;
+    private String format;
+
+    @CommandLine.Option(
+            names = {"--output-dir"},
+            defaultValue = "./target/mule-linter",
+            description = "Output directory for file-based reports (JSON, XML)"
+    )
+    private File outputDirectory;
 
     @CommandLine.Option(
             names = {"--fail-threshold"},
@@ -66,12 +80,40 @@ public class MuleLinterCli implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        // Parse comma-separated formats
+        List<ReportFormat> formats = parseFormats(format);
+        
+        // Determine color usage
         boolean useColor = determineColorUsage();
-        MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat, failThreshold, useColor);
-        int exitCode = ml.runLinter();
-        return exitCode;
+        
+        // Execute linter
+        MuleLinter linter = new MuleLinter(appDir, ruleConfiguration);
+        RuleExecutor executor = linter.execute();
+        
+        // Create formatter context
+        FormatterContext context = new FormatterContext(
+                outputDirectory,
+                useColor,
+                failThreshold,
+                appDir
+        );
+        
+        // Format results
+        CompositeFormatter formatter = new CompositeFormatter(formats);
+        formatter.format(executor, context);
+        
+        // Calculate and return exit code
+        return CompositeFormatter.calculateExitCode(executor, failThreshold);
     }
-
+    
+    private List<ReportFormat> parseFormats(String formatString) {
+        return Arrays.stream(formatString.split(","))
+                .map(String::trim)
+                .map(String::toUpperCase)
+                .map(ReportFormat::valueOf)
+                .collect(Collectors.toList());
+    }
+    
     private boolean determineColorUsage() {
         if (noColor) {
             return false;
@@ -79,8 +121,12 @@ public class MuleLinterCli implements Callable<Integer> {
         if (forceColor) {
             return true;
         }
-        // Auto-detect: picocli handles this via Ansi.AUTO
-        // We'll pass null/undefined and let the Groovy code use picocli's Ansi class
-        return true; // Default, actual detection happens in RuleExecutor
+        // Check NO_COLOR environment variable
+        String noColorEnv = System.getenv("NO_COLOR");
+        if (noColorEnv != null && !noColorEnv.isEmpty()) {
+            return false;
+        }
+        // Auto-detect: use color by default
+        return true;
     }
 }
