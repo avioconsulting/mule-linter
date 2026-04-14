@@ -39,6 +39,14 @@ class ParentPomResolver {
     // Shared instance holder for lazy initialization
     private static class Holder {
         static final ParentPomResolver INSTANCE = new ParentPomResolver()
+        
+        static {
+            // Register shutdown hook to clean up resources when JVM exits
+            // This ensures repositorySystem.shutdown() is called exactly once
+            Runtime.addShutdownHook {
+                INSTANCE.close()
+            }
+        }
     }
     
     /**
@@ -190,8 +198,14 @@ class ParentPomResolver {
     
     /**
      * Shuts down the resolver and cleans up resources.
-     * Call this when the application is exiting to release HTTP connections,
-     * thread pools, and other resources held by Maven Resolver.
+     * 
+     * IMPORTANT: For the singleton instance (getInstance()), this is called
+     * automatically via JVM shutdown hook. Do NOT call close() on the singleton
+     * from individual MuleApplication instances.
+     * 
+     * For manually created instances (new ParentPomResolver()), call this
+     * when the instance is no longer needed to release HTTP connections,
+     * thread pools, and other resources.
      */
     void close() {
         // RepositorySystem manages HTTP clients, thread pools, etc.

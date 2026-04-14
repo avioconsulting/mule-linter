@@ -176,9 +176,17 @@ Parent POMs are resolved using embedded Maven Resolver (Eclipse Aether):
 **Backward Compatibility:**
 - Existing methods (`getPomProperty()`, `getDependency()`, `getPlugin()`) still work
 - Parent resolution is explicit - call `pomFile.resolveParents(ParentPomResolver.getInstance())` to enable inheritance
-- Parent resolution failures are logged as warnings (not fatal)
+- `PomFile.resolveParents()` throws `ParentPomResolutionException` on failure (fail-fast)
+- `MuleApplication` catches resolution exceptions and logs warnings, allowing rules to operate on raw POM data
 
-**System Properties:**
+**Resolver Architecture:**
+- `ParentPomResolver.getInstance()` returns a shared singleton instance
+- The singleton is initialized lazily on first use (~500ms startup cost)
+- A JVM shutdown hook automatically calls `close()` on the singleton to release resources
+- Do NOT call `close()` on the singleton instance from application code
+- For tests or custom scenarios, use `new ParentPomResolver(path)` and manage lifecycle yourself
+
+**System Properties:
 - `mule.linter.localRepo`: Custom local repository path (default: ~/.m2/repository)
 
 **Environment:**
