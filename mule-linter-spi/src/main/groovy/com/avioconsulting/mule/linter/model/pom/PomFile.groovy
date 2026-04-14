@@ -285,63 +285,50 @@ class PomFile extends ProjectFile {
 
     /**
      * Resolve plugin with full parent chain support and source tracking
-     * Checks pluginManagement in parents
+     * Checks pluginManagement in parents. Follows Maven's inheritance rules:
+     * 1. If plugin declared in <build><plugins> with version, use that version
+     * 2. If plugin declared without version, check local pluginManagement
+     * 3. If still no version, check parent chain's pluginManagement
+     * 4. Plugin identity (declaration) always comes from <build><plugins>, never from management only
      */
     ResolvedPlugin resolvePlugin(String groupId, String artifactId) {
         // Ensure parent chain is resolved before searching
         lazyResolveParents()
         
-        // Try this POM first
+        // Find local plugin declaration (if any)
         PomPlugin localPlugin = getPlugin(groupId, artifactId)
-        if (localPlugin) {
-            ResolvedPlugin result = new ResolvedPlugin()
-            result.plugin = localPlugin
-            result.version = localPlugin.version?.value
-            result.isVersionFromManagement = false
-            result.versionSource = this
-            result.sourceCoordinates = "${getGroupId()}:${getArtifactId()}:${getVersion()}"
-            result.parentDepth = 0
-            return result
-        }
         
-        // Check this POM's pluginManagement
-        GPathResult managedPlugin = pomXml.build.pluginManagement?.plugins?.plugin?.find {
-            it.groupId == groupId && it.artifactId == artifactId
-        }
-        if (managedPlugin) {
-            ResolvedPlugin result = new ResolvedPlugin()
-            result.plugin = new PomPlugin(managedPlugin, this)
-            result.version = getManagedVersion(managedPlugin)
-            result.isVersionFromManagement = true
-            result.versionSource = this
-            result.sourceCoordinates = "${getGroupId()}:${getArtifactId()}:${getVersion()}"
-            result.parentDepth = 0
-            return result
-        }
+        // Resolve version using inheritance chain
+        String version = null
+        boolean fromManagement = false
+        PomFile versionSource = null
+        int depth = 0
         
-        // Search parent chain
-        PomFile current = this.parent
-        int depth = 1
-        
-        while (current) {
-            // Check parent's pluginManagement
-            GPathResult parentManaged = current.pomXml.build.pluginManagement?.plugins?.plugin?.find {
-                it.groupId == groupId && it.artifactId == artifactId
-            }
+        if (localPlugin?.version?.value) {
+            // Case 1: Plugin declared with explicit version - Maven uses local version
+            version = localPlugin.version.value
+            fromManagement = false
+            versionSource = this
+            depth = 0
+        } else {
+            // Case 2 & 3: No explicit version, check management (local then parent chain)
+            def managementResult = resolveVersionFromManagement(
+                groupId, artifactId,
+                { p -> p.pomXml.build?.pluginManagement?.plugins?.plugin },
+                { p, node -> p.getManagedVersion(node) }
+            )
             
-            if (parentManaged) {
-                ResolvedPlugin result = new ResolvedPlugin()
-                result.plugin = new PomPlugin(parentManaged, current)
-                result.version = current.getManagedVersion(parentManaged)
-                result.isVersionFromManagement = true
-                result.versionSource = current
-                result.sourceCoordinates = "${current.getGroupId()}:${current.getArtifactId()}:${current.getVersion()}"
-                result.parentDepth = depth
-                return result
+            if (managementResult) {
+                version = managementResult.version
+                fromManagement = true
+                versionSource = managementResult.source
+                depth = managementResult.depth
             }
-            
-            current = current.parent
-            depth++
+        }
+        
+        // Build result if we found a version and have a local plugin declaration
+        if (version && localPlugin) {
+            return buildResolvedPlugin(localPlugin, version, fromManagement, versionSource, depth)
         }
         
         return null
@@ -365,61 +352,50 @@ class PomFile extends ProjectFile {
 
     /**
      * Resolve dependency with full parent chain support and source tracking
-     * Checks dependencyManagement in parents
+     * Checks dependencyManagement in parents. Follows Maven's inheritance rules:
+     * 1. If dependency declared with version, use that version (local wins)
+     * 2. If no version, check local dependencyManagement
+     * 3. If still no version, check parent chain's dependencyManagement
+     * 4. Dependency identity (scope, exclusions, etc.) always comes from child's declaration
      */
     ResolvedDependency resolveDependency(String groupId, String artifactId) {
         // Ensure parent chain is resolved before searching
         lazyResolveParents()
         
-        // Try this POM first
+        // Find local dependency declaration (if any)
         PomDependency localDep = getDependency(groupId, artifactId)
-        if (localDep) {
-            String version = localDep.version?.value
+        
+        // Resolve version using inheritance chain
+        String version = null
+        boolean fromManagement = false
+        PomFile versionSource = null
+        int depth = 0
+        
+        if (localDep?.version?.value) {
+            // Case 1: Dependency declared with explicit version - Maven uses local version
+            version = localDep.version.value
+            fromManagement = false
+            versionSource = this
+            depth = 0
+        } else {
+            // Case 2 & 3: No explicit version, check management (local then parent chain)
+            def managementResult = resolveVersionFromManagement(
+                groupId, artifactId,
+                { p -> p.pomXml.dependencyManagement?.dependencies?.dependency },
+                { p, node -> p.getManagedVersion(node) }
+            )
             
-            // If version not specified directly, check dependencyManagement
-            if (!version) {
-                GPathResult managed = pomXml.dependencyManagement?.dependencies?.dependency?.find {
-                    it.groupId == groupId && it.artifactId == artifactId
-                }
-                if (managed) {
-                    version = getManagedVersion(managed)
-                }
-            }
-            
-            if (version) {
-                ResolvedDependency result = new ResolvedDependency()
-                result.dependency = localDep
-                result.version = version
-                result.isVersionFromManagement = !localDep.version?.value
-                result.versionSource = this
-                result.sourceCoordinates = "${getGroupId()}:${getArtifactId()}:${getVersion()}"
-                result.parentDepth = 0
-                return result
+            if (managementResult) {
+                version = managementResult.version
+                fromManagement = true
+                versionSource = managementResult.source
+                depth = managementResult.depth
             }
         }
         
-        // Search parent chain's dependencyManagement
-        PomFile current = this.parent
-        int depth = 1
-        
-        while (current) {
-            GPathResult parentManaged = current.pomXml.dependencyManagement?.dependencies?.dependency?.find {
-                it.groupId == groupId && it.artifactId == artifactId
-            }
-            
-            if (parentManaged) {
-                ResolvedDependency result = new ResolvedDependency()
-                result.dependency = new PomDependency(parentManaged, current)
-                result.version = current.getManagedVersion(parentManaged)
-                result.isVersionFromManagement = true
-                result.versionSource = current
-                result.sourceCoordinates = "${current.getGroupId()}:${current.getArtifactId()}:${current.getVersion()}"
-                result.parentDepth = depth
-                return result
-            }
-            
-            current = current.parent
-            depth++
+        // Build result if we found a version and have a local dependency declaration
+        if (version && localDep) {
+            return buildResolvedDependency(localDep, version, fromManagement, versionSource, depth)
         }
         
         return null
@@ -457,6 +433,85 @@ class PomFile extends ProjectFile {
         }
         
         return version
+    }
+    
+    /**
+     * Resolves version from management sections (pluginManagement or dependencyManagement).
+     * Checks local POM first, then parent chain.
+     * 
+     * @param groupId The groupId to search for
+     * @param artifactId The artifactId to search for
+     * @param managementProvider Closure that extracts management section from a PomFile
+     * @param versionExtractor Closure that extracts version from a management node
+     * @return Map with [version, source, depth] or null if not found
+     */
+    private def resolveVersionFromManagement(String groupId, String artifactId, 
+                                             Closure managementProvider,
+                                             Closure versionExtractor) {
+        // Check local management first
+        GPathResult localManaged = managementProvider(this)?.find {
+            it.groupId == groupId && it.artifactId == artifactId
+        }
+        if (localManaged) {
+            String version = versionExtractor(this, localManaged)
+            if (version) {
+                return [version: version, source: this, depth: 0]
+            }
+        }
+        
+        // Search parent chain
+        PomFile current = this.parent
+        int depth = 1
+        
+        while (current) {
+            GPathResult parentManaged = managementProvider(current)?.find {
+                it.groupId == groupId && it.artifactId == artifactId
+            }
+            
+            if (parentManaged) {
+                String version = versionExtractor(current, parentManaged)
+                if (version) {
+                    return [version: version, source: current, depth: depth]
+                }
+            }
+            
+            current = current.parent
+            depth++
+        }
+        
+        return null
+    }
+    
+    /**
+     * Builds a ResolvedPlugin result with consistent field population.
+     */
+    private ResolvedPlugin buildResolvedPlugin(PomPlugin plugin, String version,
+                                               boolean fromManagement, PomFile source,
+                                               int depth) {
+        ResolvedPlugin result = new ResolvedPlugin()
+        result.plugin = plugin
+        result.version = version
+        result.isVersionFromManagement = fromManagement
+        result.versionSource = source
+        result.sourceCoordinates = "${source.getGroupId()}:${source.getArtifactId()}:${source.getVersion()}"
+        result.parentDepth = depth
+        return result
+    }
+    
+    /**
+     * Builds a ResolvedDependency result with consistent field population.
+     */
+    private ResolvedDependency buildResolvedDependency(PomDependency dependency, String version,
+                                                       boolean fromManagement, PomFile source,
+                                                       int depth) {
+        ResolvedDependency result = new ResolvedDependency()
+        result.dependency = dependency
+        result.version = version
+        result.isVersionFromManagement = fromManagement
+        result.versionSource = source
+        result.sourceCoordinates = "${source.getGroupId()}:${source.getArtifactId()}:${source.getVersion()}"
+        result.parentDepth = depth
+        return result
     }
 }
 
