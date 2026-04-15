@@ -8,7 +8,7 @@ import spock.lang.Stepwise
  * Stepwise execution to avoid system property pollution between tests.
  */
 @Stepwise
-class ParentPomResolverTest {
+class ParentPomResolverTest extends Specification {
 
     private static File tempRepoDir
     private static final String DEFAULT_REPO_PATH = "${System.getProperty('user.home')}/.m2/repository"

@@ -32,6 +32,12 @@ class PomFile extends ProjectFile {
     PomFile parent
     
     /**
+     * Tracks whether parent resolution has been attempted.
+     * Prevents re-running resolution logic when there is no parent.
+     */
+    private boolean parentsResolved = false
+    
+    /**
      * Existing constructor - maintains backward compatibility
      * No parent resolution performed
      */
@@ -70,17 +76,47 @@ class PomFile extends ProjectFile {
     }
 
     /**
-     * Returns the groupId from the POM
+     * Returns the groupId from the POM, falling back to parent if not declared locally.
+     * In Maven, child POMs often omit groupId and inherit it from parent.
      */
     String getGroupId() {
-        return exists ? pomXml.getProperty('groupId') : ''
+        return getPomValueOrParentFallback('groupId')
     }
 
     /**
-     * Returns the version from the POM
+     * Returns the version from the POM, falling back to parent if not declared locally.
+     * In Maven, child POMs often omit version and inherit it from parent.
      */
     String getVersion() {
-        return exists ? pomXml.getProperty('version') : ''
+        return getPomValueOrParentFallback('version')
+    }
+    
+    /**
+     * Gets a value from the POM, with fallback to parent if not present locally.
+     * This follows Maven's inheritance model where child POMs can omit groupId/version.
+     * 
+     * @param propertyName The property to get (e.g., 'groupId', 'version')
+     * @return The value from local POM or parent, or empty string if neither has it
+     */
+    private String getPomValueOrParentFallback(String propertyName) {
+        if (!exists) {
+            return ''
+        }
+
+        // Try local value first
+        String value = pomXml.getProperty(propertyName)
+        if (value?.trim()) {
+            return value
+        }
+
+        // Fall back to parent if available
+        GPathResult parentNode = pomXml.parent
+        if (parentNode?.isEmpty()) {
+            return ''
+        }
+
+        String parentValue = parentNode.getProperty(propertyName)
+        return parentValue?.trim() ?: ''
     }
 
     /**
@@ -125,9 +161,11 @@ class PomFile extends ProjectFile {
      * @throws ParentPomResolutionException if parent chain cannot be resolved
      */
     void resolveParents(ParentPomResolver resolver) {
-        if (parent != null) {
-            return  // Already resolved
+        if (parentsResolved) {
+            return  // Already resolved (or attempted), no need to re-run
         }
+        
+        parentsResolved = true  // Mark as attempted to prevent re-runs
         
         try {
             List<PomFile> parentChain = resolver.resolveParentChain(this.file)
@@ -142,7 +180,7 @@ class PomFile extends ProjectFile {
             // Wrap other exceptions with context
             throw new com.avioconsulting.mule.linter.resolver.ParentPomResolutionException(
                 "Failed to resolve parent POM chain for ${file?.name}: ${e.message}",
-                null, null, [], [], resolver.localRepositoryDir, e)
+                null, null, [], [], resolver.getLocalRepositoryDir(), e)
         }
     }
 

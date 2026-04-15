@@ -82,6 +82,14 @@ class ParentPomResolver {
     private final SettingsXmlParser settingsParser
     
     /**
+     * Returns the local repository directory used by this resolver.
+     * @return The File representing the local Maven repository path
+     */
+    File getLocalRepositoryDir() {
+        return localRepositoryDir
+    }
+    
+    /**
      * Creates a new ParentPomResolver with the specified local repository.
      * @param localRepoPath Optional custom local repository path. Defaults to ~/.m2/repository
      *                      or value from 'mule.linter.localRepo' system property

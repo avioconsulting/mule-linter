@@ -14,33 +14,37 @@ class ParentPomResolverComprehensiveTest extends Specification {
     
     def "Issue #4 & #10: System property mule.linter.localRepo overrides default path"() {
         given: "System property set to custom path"
-        String customPath = '/tmp/test-m2-repo'
-        System.setProperty('mule.linter.localRepo', customPath)
+        File customRepoDir = File.createTempDir("test-m2-repo", "")
+        System.setProperty('mule.linter.localRepo', customRepoDir.absolutePath)
         
         when: "Creating resolver"
         ParentPomResolver resolver = new ParentPomResolver()
         
         then: "Custom path is used"
-        resolver.localRepositoryDir.absolutePath == new File(customPath).absolutePath
+        resolver.localRepositoryDir.absolutePath == customRepoDir.absolutePath
         
         cleanup:
         resolver?.close()
+        customRepoDir.deleteDir()
         System.clearProperty('mule.linter.localRepo')
     }
     
     def "Issue #4 & #10: Explicit parameter overrides system property"() {
         given: "Both system property and explicit parameter set"
-        System.setProperty('mule.linter.localRepo', '/tmp/sys-prop-repo')
-        String explicitPath = '/tmp/explicit-repo'
+        File sysPropDir = File.createTempDir("sys-prop-repo", "")
+        File explicitDir = File.createTempDir("explicit-repo", "")
+        System.setProperty('mule.linter.localRepo', sysPropDir.absolutePath)
         
         when: "Creating resolver with explicit path"
-        ParentPomResolver resolver = new ParentPomResolver(explicitPath)
+        ParentPomResolver resolver = new ParentPomResolver(explicitDir.absolutePath)
         
         then: "Explicit path wins"
-        resolver.localRepositoryDir.absolutePath == new File(explicitPath).absolutePath
+        resolver.localRepositoryDir.absolutePath == explicitDir.absolutePath
         
         cleanup:
         resolver?.close()
+        sysPropDir.deleteDir()
+        explicitDir.deleteDir()
         System.clearProperty('mule.linter.localRepo')
     }
 
@@ -48,14 +52,15 @@ class ParentPomResolverComprehensiveTest extends Specification {
     
     def "Issue #3: Exception message uses absolute paths from attemptedPaths"() {
         given: "Exception with absolute path in attemptedPaths"
-        String absolutePath = '/home/user/project/parent/pom.xml'
-        File localRepo = new File('/tmp/local-repo')
+        File tempProjectDir = File.createTempDir("test-project", "")
+        File absolutePath = new File(tempProjectDir, "parent/pom.xml")
+        File localRepo = File.createTempDir("local-repo", "")
         
         ParentPomResolutionException exception = new ParentPomResolutionException(
             "Failed to resolve parent",
             "com.test:parent:1.0.0",
             "../parent/pom.xml",
-            [absolutePath],  // Absolute path
+            [absolutePath.absolutePath],  // Absolute path
             ['https://repo.maven.apache.org/maven2/'],
             localRepo,
             null
@@ -66,9 +71,13 @@ class ParentPomResolverComprehensiveTest extends Specification {
         
         then: "Message contains absolute path info"
         message.contains("Attempted relativePath: ../parent/pom.xml")
-        message.contains("Local repository: /tmp/local-repo")
+        message.contains("Local repository: ${localRepo.absolutePath}")
         // The message should indicate whether the file was found or not
         message.contains("file not found") || message.contains("file exists")
+        
+        cleanup:
+        tempProjectDir.deleteDir()
+        localRepo.deleteDir()
     }
     
     def "Issue #8: buildRemoteRepositories creates valid remote repository list"() {
@@ -94,18 +103,19 @@ class ParentPomResolverComprehensiveTest extends Specification {
     
     def "Issue #7: Resolver session has LocalRepositoryManager configured"() {
         given: "Custom local repository path"
-        String customRepo = '/tmp/lrm-test-repo'
-        ParentPomResolver resolver = new ParentPomResolver(customRepo)
+        File customRepo = File.createTempDir("lrm-test-repo", "")
+        ParentPomResolver resolver = new ParentPomResolver(customRepo.absolutePath)
         
         when: "Accessing session"
         def session = resolver.@session
         
         then: "LocalRepositoryManager is configured"
         session.localRepositoryManager != null
-        session.localRepository.basedir.absolutePath == new File(customRepo).absolutePath
+        session.localRepository.basedir.absolutePath == customRepo.absolutePath
         
         cleanup:
         resolver?.close()
+        customRepo.deleteDir()
     }
 
     // ========== ISSUE #5: Integration Tests ==========
