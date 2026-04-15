@@ -19,16 +19,23 @@ def outputGdslFile = file("${buildDir}/classes/groovy/main/mule-linter-core.gdsl
 tasks.register('generateGDSL', JavaExec) {
     description = 'Generates GDSL file for IntelliJ IDEA autocompletion'
     group = 'documentation'
-    
+
     mainClass = 'GDSLGeneratorScript'
     classpath += sourceSets.main.compileClasspath
     classpath += sourceSets.main.runtimeClasspath
-    
+
     // Incremental build - rely on Gradle inputs/outputs up-to-date checking
     inputs.file(templateFile)
-    inputs.dir(sourceSets.main.groovy.srcDirs)
+    // Handle multiple source directories
+    sourceSets.main.groovy.srcDirs.each { dir ->
+        inputs.dir(dir)
+    }
     outputs.file(outputGdslFile)
 }
+
+// Fix: Declare explicit dependency to resolve implicit dependency warning
+// compileTestGroovy uses the output directory that generateGDSL writes to
+compileTestGroovy.dependsOn(generateGDSL)
 
 // Wire GDSL generation to jar task (only runs if onlyIf condition is met)
 jar.dependsOn(generateGDSL)
