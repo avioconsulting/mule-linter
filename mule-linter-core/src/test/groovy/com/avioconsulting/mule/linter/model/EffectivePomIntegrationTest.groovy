@@ -14,12 +14,18 @@ import com.avioconsulting.mule.linter.rule.pom.PomDependencyVersionRule
 import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
 import com.avioconsulting.mule.linter.rule.pom.PomPluginAttributeRule
 import com.avioconsulting.mule.linter.rule.pom.PomPropertyValueRule
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 
 /**
  * Integration tests for effective POM resolution with parent POM inheritance.
  * Tests comprehensive parent-child sample for end-to-end validation of POM rules.
+ * 
+ * NOTE: These tests require Maven to be available (maven.home system property or 
+ * MAVEN_HOME environment variable) and network access to resolve parent POMs.
+ * Tests are skipped if Maven is not configured.
  */
+@IgnoreIf({ !System.getProperty('maven.home') && !System.getenv('MAVEN_HOME') })
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class EffectivePomIntegrationTest extends Specification {
 
@@ -30,6 +36,8 @@ class EffectivePomIntegrationTest extends Specification {
     }
 
     def cleanup() {
+        // Restore system properties before removing test app to avoid state leakage
+        testApp.cleanup()
         testApp.remove()
     }
 
