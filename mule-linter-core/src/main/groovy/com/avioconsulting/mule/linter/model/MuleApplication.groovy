@@ -3,12 +3,10 @@ package com.avioconsulting.mule.linter.model
 import com.avioconsulting.mule.linter.model.configuration.FlowComponent
 import com.avioconsulting.mule.linter.model.configuration.MuleComponent
 import com.avioconsulting.mule.linter.model.pom.PomFile
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver
 import com.avioconsulting.mule.linter.parser.JsonSlurper
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import org.apache.groovy.json.internal.JsonMap
-import org.apache.maven.shared.invoker.DefaultInvocationRequest
-import org.apache.maven.shared.invoker.DefaultInvoker
-import org.apache.maven.shared.invoker.MavenInvocationException
 import org.yaml.snakeyaml.Yaml
 
 class MuleApplication implements Application {
@@ -19,7 +17,6 @@ class MuleApplication implements Application {
     static final String README = 'README.md'
     static final String PROPERTY_PATH = 'src/main/resources'
     static final String CONFIGURATION_PATH = 'src/main/mule'
-    static final String MAVEN_HOME_DOES_NOT_EXIST = 'Maven home config does not exists.'
 
     File applicationPath
     List<PropertyFile> propertyFiles = []
@@ -33,55 +30,34 @@ class MuleApplication implements Application {
     MuleApplication(File applicationPath) {
         this.applicationPath = applicationPath
         if (!this.applicationPath.exists()) {
-            throw new FileNotFoundException( APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
+            throw new FileNotFoundException(APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
+        
         File pFile = new File(applicationPath, POM_FILE)
-        // if pom.xml exists in application, get the effective-pom.xml for the application.
-        if (pFile.exists())
-            pFile = getEffectivePomFile(pFile)
-        pomFile = new PomFile(pFile, pFile.exists() ? new MuleXmlParser().parse(pFile) : null)
+        def pomXml = pFile.exists() ? new MuleXmlParser().parse(pFile) : null
+        
+        // Create PomFile and resolve parent chain (only if POM exists)
+        this.pomFile = new PomFile(pFile, pomXml)
+        if (pFile.exists()) {
+            try {
+                pomFile.resolveParents(ParentPomResolver.getInstance())
+            } catch (Exception e) {
+                // Log warning but continue - rules will operate on raw POM data
+                System.err.println("Warning: Could not resolve parent POM chain: ${e.message}")
+            }
+        }
+        
         gitignoreFile = new GitIgnoreFile(applicationPath, GITIGNORE_FILE)
         readmeFile = new ReadmeFile(applicationPath, README)
-        this.name = pomFile.artifactId
+        this.name = pomFile.artifactId ?: applicationPath.name
 
         loadPropertyFiles()
         loadConfigurationFiles()
         loadMuleArtifact()
     }
 
-     /**
-     * This method generates the effective pom.xml for the application using maven-invoker, and returns effective-pom.xml file.
-     * And, the generated effective-pom.xml file will be deleted upon the exit of the application.
-     * This method requires Maven home location, which can be passed using below options:
-     * 1. Pass maven.home system variable when executing mule-linter
-     * 2. Set MAVEN_HOME environment variable in the system executing mule-linter.
-     * returns File
-     */
-    File getEffectivePomFile(File pFile){
-        def mavenHome = null
-        // Update mavenHome from system property - maven.home
-        if (System.getProperty('maven.home') != null)
-            mavenHome = System.getProperty('maven.home')
-        else if (System.getenv().get('MAVEN_HOME') != null)
-            mavenHome = System.getenv().get('MAVEN_HOME')
-
-        if (mavenHome == null)
-            throw new MavenInvocationException( MAVEN_HOME_DOES_NOT_EXIST)
-
-        File effectivePomFile = File.createTempFile("effective-pom", ".xml");
-        def mavenInvokeRequest = new DefaultInvocationRequest().with {
-            String mvnGoals = 'help:effective-pom -Doutput='+effectivePomFile.getAbsolutePath()
-            setGoals([mvnGoals])
-            setPomFile(pFile)
-            setShowErrors(true)
-            it
-        }
-        def mavenInvoker = new DefaultInvoker()
-        mavenInvoker.setMavenHome(new File(mavenHome))
-        def result = mavenInvoker.execute(mavenInvokeRequest)
-        effectivePomFile.deleteOnExit();
-        return effectivePomFile
-    }
+    // Parent POM resolution is performed during construction for consistent behavior.
+    // The shared ParentPomResolver singleton is used to minimize initialization overhead.
 
     void loadPropertyFiles() {
         File resourcePath = new File(applicationPath, PROPERTY_PATH)

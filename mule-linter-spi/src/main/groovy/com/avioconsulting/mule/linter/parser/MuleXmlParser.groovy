@@ -9,6 +9,10 @@ import org.xml.sax.ext.Attributes2Impl
 
 import javax.xml.parsers.ParserConfigurationException
 
+/**
+ * XML parser that adds line number attributes to XML nodes.
+ * Used for tracking source locations in POM files and Mule configuration files.
+ */
 class MuleXmlParser extends XmlSlurper {
 
     public static final String START_LINE_NO_ATTRIBUTE = '_startLineNo'

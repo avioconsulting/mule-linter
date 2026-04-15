@@ -4,21 +4,38 @@ plugins {
 
 dependencies {
     implementation project(':mule-linter-spi')
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'org.json:json:20230227'
-    implementation 'org.yaml:snakeyaml:2.0'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'org.json:json:20231013'
+    implementation 'org.yaml:snakeyaml:2.3'
     implementation 'org.reflections:reflections:0.10.2'
-    implementation 'org.apache.maven.shared:maven-invoker:3.0.1'
-    compileOnly 'org.apache.velocity:velocity-engine-core:2.3'
+    
+    compileOnly 'org.apache.velocity:velocity-engine-core:2.4.1'
 }
+
+// GDSL generation task with incremental build support
+def templateFile = file('mule-linter-core.gdsl.vm')
+def outputGdslFile = file("${buildDir}/classes/groovy/main/mule-linter-core.gdsl")
 
 tasks.register('generateGDSL', JavaExec) {
-    //Generates GDSL file using `GDSLGenerator.groovy`.
-    // Generated file is added in src/main/resources.
-    // Run `./gradlew generateGDSL`
+    description = 'Generates GDSL file for IntelliJ IDEA autocompletion'
+    group = 'documentation'
+
     mainClass = 'GDSLGeneratorScript'
-    classpath += sourceSets.main.compileClasspath // Needed for Velocity compiletime
+    classpath += sourceSets.main.compileClasspath
     classpath += sourceSets.main.runtimeClasspath
+
+    // Incremental build - rely on Gradle inputs/outputs up-to-date checking
+    inputs.file(templateFile)
+    // Handle multiple source directories
+    sourceSets.main.groovy.srcDirs.each { dir ->
+        inputs.dir(dir)
+    }
+    outputs.file(outputGdslFile)
 }
 
+// Fix: Declare explicit dependency to resolve implicit dependency warning
+// compileTestGroovy uses the output directory that generateGDSL writes to
+compileTestGroovy.dependsOn(generateGDSL)
+
+// Wire GDSL generation to jar task (only runs if onlyIf condition is met)
 jar.dependsOn(generateGDSL)

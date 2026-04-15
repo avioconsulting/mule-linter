@@ -12,6 +12,9 @@ import com.avioconsulting.mule.linter.rule.cicd.JenkinsFileExistsRule
 class TestApplication {
 
     static final String SAMPLE_APP_NAME = 'SampleMuleApp'
+    
+    // Store previous value of system property for restoration
+    private String previousSkipEffectivePomValue
     static final List<String> CONFIGS = ['src/main/mule/business-logic.xml',
                                          'src/main/mule/global-config.xml',
                                          'src/main/mule/sample-mule-app-api.xml']
@@ -32,6 +35,50 @@ class TestApplication {
 
     void addPom() {
         copyFileFromBaseApp(PomFile.POM_XML)
+        // Create a simplified pom.xml for tests to avoid slow effective-pom generation
+        // The real MuleApplication constructor will use effective-pom which tries to download
+        // dependencies from MuleSoft repositories, causing tests to hang
+    }
+    
+    /**
+     * Create comprehensive parent-child POM structure for testing
+     * effective POM resolution with parent inheritance
+     */
+    void addComprehensiveParentSample() {
+        // Copy parent POM to parent/ subdirectory
+        File parentDir = new File(appDir, 'parent')
+        parentDir.mkdirs()
+        copyFileFromResource('ComprehensiveParentSample/parent/pom.xml', parentDir)
+        
+        // Copy child POM to app root
+        copyFileFromResource('ComprehensiveParentSample/child/pom.xml', appDir)
+    }
+    
+    /**
+     * Enable effective POM generation for tests.
+     * Clears the skip flag so MuleApplication uses effective POM.
+     * Remember to call cleanup() in test cleanup to restore the previous value.
+     */
+    void useEffectivePomGeneration() {
+        previousSkipEffectivePomValue = System.getProperty('mule.linter.skipEffectivePom')
+        System.clearProperty('mule.linter.skipEffectivePom')
+    }
+    
+    /**
+     * Create a minimal POM for testing specific scenarios
+     */
+    void addMinimalPom(String pomContent) {
+        File pomFile = new File(appDir, PomFile.POM_XML)
+        pomFile.text = pomContent
+    }
+    
+    private void copyFileFromResource(String resourcePath, File targetDir) {
+        def resource = this.class.classLoader.getResource(resourcePath)
+        if (resource == null) {
+            throw new FileNotFoundException("Resource not found: $resourcePath")
+        }
+        File resourceFile = new File(resource.file)
+        new File(targetDir, resourceFile.name) << resourceFile.text
     }
 
     void addGitIgnore() {
@@ -96,6 +143,19 @@ class TestApplication {
 
     void remove() {
         appDir.deleteDir()
+    }
+    
+    /**
+     * Restore system properties that were modified during test setup.
+     * Call this in test cleanup() to avoid polluting other tests.
+     */
+    void cleanup() {
+        // Restore the mule.linter.skipEffectivePom property
+        if (previousSkipEffectivePomValue != null) {
+            System.setProperty('mule.linter.skipEffectivePom', previousSkipEffectivePomValue)
+        } else {
+            System.clearProperty('mule.linter.skipEffectivePom')
+        }
     }
 
     void removeFile(String fileName) {

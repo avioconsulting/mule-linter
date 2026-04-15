@@ -1,6 +1,40 @@
+plugins {
+    id 'com.gradle.develocity' version '3.18.1'
+}
+
 rootProject.name = 'mule-linter'
 include 'mule-linter-spi'
 include 'mule-linter-core'
 include 'mule-linter-spi-test'
 include 'mule-linter-maven-plugin'
 include 'mule-linter-cli'
+
+// Dependency resolution optimizations
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral {
+            // Enable dependency caching metadata
+            metadataSources {
+                mavenPom()
+                ignoreGradleMetadataRedirection()
+            }
+        }
+    }
+}
+
+// Develocity Build Scan configuration
+// Only publish scans on CI to avoid leaking local development data
+develocity {
+    buildScan {
+        termsOfUseUrl = 'https://gradle.com/terms-of-service'
+        termsOfUseAgree = 'yes'
+        publishing.onlyIf { System.getenv('CI') || System.getenv('GITHUB_ACTIONS') }
+        
+        // Capture build performance data
+        capture {
+            buildLogging = true
+            testLogging = true
+            fileFingerprints = true
+        }
+    }
+}

@@ -10,6 +10,10 @@ on:
     branches:
       - 'main'
 
+# Opt into Node.js 24 for actions (required for actions using Node 20 after deprecation)
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   Build:
     uses: avioconsulting/shared-workflows/.github/workflows/gradle-build.yml@main
@@ -17,6 +21,7 @@ jobs:
     with:
       version-project: 'mule-linter-core'
       include-test-results: false
+      java-version: '17'
 
   Release:
     needs: Build

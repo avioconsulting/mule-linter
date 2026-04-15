@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.avioconsulting.test</groupId>
+        <artifactId>comprehensive-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>parent/pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>comprehensive-child</artifactId>
+    <version>1.0.0</version>
+    <packaging>mule-application</packaging>
+    <name>Comprehensive Test Child</name>
+    
+    <properties>
+        <!-- Override parent property -->
+        <http.connector.version>1.11.0</http.connector.version>
+        
+        <!-- Additional test properties -->
+        <test.property>test-value</test.property>
+    </properties>
+    
+    <dependencies>
+        <!-- Version from parent dependencyManagement -->
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        
+        <!-- Explicit override of parent managed version -->
+        <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-apikit-module</artifactId>
+            <version>1.12.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        
+        <!-- Another dependency from parent management -->
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-sockets-connector</artifactId>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        
+        <!-- Secure properties from parent management -->
+        <dependency>
+            <groupId>com.mulesoft.modules</groupId>
+            <artifactId>mule-secure-configuration-property-module</artifactId>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- Plugin version from parent pluginManagement -->
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+            
+            <!-- Plugin with configuration, inherited version -->
+            <plugin>
+                <groupId>com.mulesoft.munit.tools</groupId>
+                <artifactId>munit-maven-plugin</artifactId>
+                <configuration>
+                    <coverage>
+                        <runCoverage>true</runCoverage>
+                        <failBuild>true</failBuild>
+                        <requiredApplicationCoverage>80</requiredApplicationCoverage>
+                    </coverage>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

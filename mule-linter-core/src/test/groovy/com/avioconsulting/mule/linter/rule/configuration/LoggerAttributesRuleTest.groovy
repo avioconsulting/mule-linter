@@ -55,7 +55,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/avio-logger http://www.mulesoft.org/schema/mule/avio-logger/current/mule-avio-logger.xsd">
 <sub-flow name="a-sub-flow">
 <logger level="DEBUG" doc:name="Log Start" message="Starting" category="com.avioconsulting.mulelinter"/>
-<avio-logger:log level="DEBUG" doc:name="Log Start" config-ref="avio-core-logging-config" correlationId="#[correlationId]" message="Starting" category="com.avioconsulting.mulelinter"/>
+<avio-logger:log level="DEBUG" doc:name="Log Start" config-ref="AVIO_Logger_Config" correlationId="#[correlationId]" message="Starting" category="com.avioconsulting.mulelinter"/>
 <ee:transform doc:name="Simple Transform">
 <ee:message>
 <ee:set-payload ><![CDATA[%dw 2.0
@@ -66,13 +66,13 @@ output application/java
 </ee:message>
 </ee:transform>
 <logger level="DEBUG" doc:name="Log End" message="Ending" />
-<avio-logger:log level="DEBUG" config-ref="avio-core-logging-config" correlationId="#[correlationId]"
+<avio-logger:log level="DEBUG" config-ref="AVIO_Logger_Config" correlationId="#[correlationId]"
 doc:name="Log End" 
 message="Ending" />
 </sub-flow>
 <sub-flow name="b-sub-flow">
 <logger level="WARN" message="Starting 2" doc:name="Log Start" category="com.avioconsulting.mulelinter" />
-<avio-logger:log level="WARN" config-ref="avio-core-logging-config" correlationId="#[correlationId]"
+<avio-logger:log level="WARN" config-ref="AVIO_Logger_Config" correlationId="#[correlationId]"
 message="Starting 2" 
 doc:name="Log Start" category="com.avioconsulting.mulelinter" />
 <ee:transform doc:name="Another_Simple Transform">
@@ -85,7 +85,7 @@ output application/java
 </ee:message>
 </ee:transform>
 <logger level="TRACE" doc:name="Log End" category="com.avioconsulting.mulelinter" />
-<avio-logger:log level="TRACE" config-ref="avio-core-logging-config" correlationId="#[correlationId]" doc:name="Log End" category="com.avioconsulting.mulelinter" />
+<avio-logger:log level="TRACE" config-ref="AVIO_Logger_Config" correlationId="#[correlationId]" doc:name="Log End" category="com.avioconsulting.mulelinter" />
 </sub-flow>
 </mule>
 '''

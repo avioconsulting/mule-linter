@@ -2,5 +2,17 @@ plugins {
     id 'mule-linter.groovy-common-conventions'
     id 'mule-linter.maven-publish-conventions'
     id 'application'
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
+}
+
+// Optimize shadow jar creation
+shadowJar {
+    // Enable caching for shadow jar
+    outputs.cacheIf { true }
+    
+    // Minimize jar to reduce size (optional - remove if it causes issues)
+    // minimize()
+    
+    // Improve compression
+    archiveExtension = 'jar'
 }

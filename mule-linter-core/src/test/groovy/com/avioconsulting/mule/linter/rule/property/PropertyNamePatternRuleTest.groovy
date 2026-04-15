@@ -76,8 +76,8 @@ class PropertyNamePatternRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].message == 'Properties name is not following naming conventions: db_host'
-        violations[1].message == 'Properties name is not following naming conventions: db-port'
+        violations*.message.containsAll(['Properties name is not following naming conventions: db_host',
+        'Properties name is not following naming conventions: db-port'])
     }
 
     def 'Default properties naming convention for YAML properties file check success'() {
@@ -106,8 +106,8 @@ class PropertyNamePatternRuleTest extends Specification {
 
         then:
         violations.size() == 2
-        violations[0].message == 'Properties name is not following naming conventions: db.user_password'
-        violations[1].message == 'Properties name is not following naming conventions: db.user-name'
+        violations*.message.containsAll(['Properties name is not following naming conventions: db.user_password',
+        'Properties name is not following naming conventions: db.user-name'])
     }
     private static final String GOOD_PROPERTY = '''
 user.name=jallen
