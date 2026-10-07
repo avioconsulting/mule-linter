@@ -1,0 +1,18 @@
+# Generate beside this file: mule-linter config schema -o mule-linter.schema.json
+# yaml-language-server: $schema=./mule-linter.schema.json
+schemaVersion: 1
+rules:
+  - rule: logger-required-attributes
+    options:
+      requiredAttributes: [category, message]
+  - rule: flow-subflow-component-count
+    options:
+      maxCount: 20
+  - rule: global-config-separation
+  - rule: global-files-no-flows
+  - rule: pom-dependency-version
+    options:
+      groupId: com.mulesoft.connectors
+      artifactId: mule-amazon-sqs-connector
+      artifactVersion: "5.11.0"
+      versionOperator: GREATER_THAN

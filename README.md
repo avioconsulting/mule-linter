@@ -33,7 +33,9 @@ and then run cli from anywhere on the system.
 ./bin/mule-linter-cli -d ./my-app -r ./muleLinter.groovy --fail --threshold MAJOR
 ```
 
-`-d` / `--dir` and `-r` / `--rules` are required. `-f` / `--format` accepts
+For analysis, `-d` / `--dir` and `-r` / `--rules` are required; discovery, schema,
+and configuration-validation commands need neither. Configuration can be `.yaml`,
+`.yml`, or trusted `.groovy`. `-f` / `--format` accepts
 `CONSOLE` (default), `JSON` (existing SonarQube external-issues format), or `XML`.
 `--fail` enables findings enforcement; `--threshold` defaults to `MAJOR` and uses
 the explicit order `BLOCKER > CRITICAL > MAJOR > MINOR`. The threshold has no
@@ -87,7 +89,59 @@ To release this module, follow these steps -
 
 ## Rule Configuration
 
-Rule Configuration uses a Groovy-DSL provided by Mule Linter. See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
+Rule configuration supports declarative YAML and the existing Groovy DSL. Both use
+the same typed catalog, defaults, validation, and report identities. See the
+[YAML example](mule-linter-core/mule-linter-example.yaml) or
+[Groovy example](mule-linter-core/AVIOGDSLRuleConfiguration.groovy).
+
+### YAML configuration and IDE completion
+
+```yaml
+# yaml-language-server: $schema=./mule-linter.schema.json
+schemaVersion: 1
+rules:
+  - rule: logger-required-attributes
+    options:
+      requiredAttributes: [category, message]
+  - rule: flow-subflow-component-count
+    options:
+      maxCount: 20
+  - rule: readme
+```
+
+Save this as `mule-linter.yaml`. Generate a schema beside it, validate, then analyze:
+
+```shell
+mule-linter config schema --output mule-linter.schema.json
+mule-linter config validate mule-linter.yaml --json
+mule-linter -d ./my-app -r mule-linter.yaml --fail --threshold MAJOR
+```
+
+`config schema` writes JSON Schema draft 2020-12 to stdout by default, or to the
+specified `-o` / `--output` file, overwriting that file. Its output is the raw schema,
+not the discovery-command response envelope. It needs no application or configuration.
+The schema includes all installed providers, rule IDs and aliases, descriptions,
+defaults, enums, required options, and nested option structures. Regenerate it when
+the installed rule catalog changes.
+
+Schema-aware YAML editors use the comment above for completion, hover descriptions,
+and structural validation. Relative schema paths are resolved from the YAML file's
+directory. IntelliJ can also use `# $schema: ./mule-linter.schema.json` or a local
+JSON Schema association. The CLI remains authoritative: schema validation does not
+apply defaults or execute rule-specific checks such as regex compilation.
+
+The root requires `schemaVersion: 1` and a `rules` list. Each entry has a `rule` ID
+or alias and an optional `options` mapping. Put severity overrides inside `options`.
+Repeated rule entries are supported, and an empty list is valid. Unknown keys at any
+level and missing required options are rejected. Quote version strings, property
+values, and YAML-ambiguous text such as `"on"` or `"2026-10-06"`; use `true`/`false`
+for booleans and integer literals for counts. The parser follows YAML 1.1 scalar rules.
+
+YAML is data-only and does not evaluate Groovy or expand `${...}` expressions.
+For example, `'${appname}-${env}.properties'` stays a literal template for rules that
+support that naming pattern. Java object tags, duplicate keys, collection aliases,
+and multiple documents are rejected. Documents are limited to 1,048,576 Unicode code points
+and 50 nesting levels.
 
 ### Rule catalog and agent commands
 
@@ -129,9 +183,9 @@ Existing `LOGGER_REQUIRED_ATTRIBUTES { ... }` configurations still work. Unknown
 missing required options, invalid collection contents, and malformed nested objects fail
 before application loading. Rule-specific `init()` validation also runs at this point.
 
-**Security:** configuration remains executable Groovy. Validate only trusted files;
-this command is not a sandbox. Ordinary script `println` diagnostics go to stderr,
-but arbitrary script code can still perform I/O. YAML loading is not implemented.
+**Security:** Groovy configuration is executable code. Validate only trusted Groovy
+files; that path is not a sandbox. Ordinary script `println` diagnostics go to stderr,
+but arbitrary script code can still perform I/O. Use YAML for data-only configuration.
 
 Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in https://avioconsulting.github.io/mule-linter/groovydoc/index.html.
 

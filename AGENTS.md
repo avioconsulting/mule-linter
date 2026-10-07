@@ -18,6 +18,7 @@
 - Rule contracts live in `BuiltinRuleProvider`; all installed providers register through `META-INF/services/com.avioconsulting.mule.linter.spi.RuleProvider`. Canonical IDs and aliases share a unique namespace; historical report IDs remain unchanged. `@Param` is deprecated and no longer drives validation or IDE metadata.
 - Add/change options in the typed definition, not just the rule field. `RuleSpecification` validates structures/defaults; factories bind fresh rule instances and `init()` performs domain validation before application loading. Keep direct-constructor compatibility where needed.
 - Agent discovery: `mule-linter rules list --json`, `rules describe ID --json`, and `config validate FILE --json`; these need no application directory. Groovy validation executes trusted code, not a sandbox.
+- `ConfigurationLoader` routes `.yaml`/`.yml` through safe data-only parsing and `.groovy` through the legacy DSL. YAML requires `schemaVersion: 1` and a list of `{rule, options}` entries. Generate IDE JSON Schema from the same catalog with `mule-linter config schema -o FILE`; do not hand-maintain schemas or duplicate option contracts.
 - Components use a different mechanism: Java `ServiceLoader` with `META-INF/services/com.avioconsulting.mule.linter.spi.ComponentsFactory`. See `mule-linter-spi-test` for an extension example.
 - Extension tests use the misspelled package `com.aviconsulting.mule.linter.extension`; use it in `--tests` filters rather than the usual `com.avioconsulting`.
 

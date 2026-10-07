@@ -13,6 +13,7 @@ dependencies {
 
 test {
     inputs.file('AVIOGDSLRuleConfiguration.groovy')
+    inputs.file('mule-linter-example.yaml')
 }
 
 // GDSL generation task with incremental build support

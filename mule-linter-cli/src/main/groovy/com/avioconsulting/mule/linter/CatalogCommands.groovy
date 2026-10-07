@@ -1,10 +1,13 @@
 package com.avioconsulting.mule.linter
 
 import com.avioconsulting.mule.linter.catalog.RuleCatalog
+import com.avioconsulting.mule.linter.catalog.ConfigurationSchema
 import com.avioconsulting.mule.linter.dsl.ConfigurationLoader
 import groovy.json.JsonOutput
 import picocli.CommandLine
 import java.util.concurrent.Callable
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 /** Discovery/validation commands operate without an application directory or Maven access. */
 final class CatalogCommands {
@@ -13,7 +16,7 @@ final class CatalogCommands {
     static class RulesCommand { }
 
     @CommandLine.Command(name = 'config', description = 'Inspect configuration without analyzing an application.', mixinStandardHelpOptions = true,
-        subcommands = [ValidateConfig])
+        subcommands = [ValidateConfig, ExportSchema])
     static class ConfigCommand { }
 
     static abstract class Action implements Callable<Integer> {
@@ -66,9 +69,9 @@ final class CatalogCommands {
         }
     }
 
-    @CommandLine.Command(name = 'validate', description = 'Validate a trusted Groovy configuration without loading an application.', mixinStandardHelpOptions = true, exitCodeOnExecutionException = 2)
+    @CommandLine.Command(name = 'validate', description = 'Validate YAML or trusted Groovy configuration without loading an application.', mixinStandardHelpOptions = true, exitCodeOnExecutionException = 2)
     static class ValidateConfig extends Action {
-        @CommandLine.Parameters(index = '0', paramLabel = 'FILE', description = 'Groovy rule configuration file.')
+        @CommandLine.Parameters(index = '0', paramLabel = 'FILE', description = 'YAML or Groovy rule configuration file.')
         File file
 
         Integer call() {
@@ -77,6 +80,30 @@ final class CatalogCommands {
                 [valid: true, configuration: file.path, ruleCount: configuration.rulesDsl.specifications.size(),
                  rules: configuration.rulesDsl.specifications.collect { [id: it.definition.id, reportId: it.definition.reportId] }]
             }, { Map data -> "Valid configuration: ${data.configuration}\n${data.ruleCount} rule instances configured." })
+        }
+    }
+
+    @CommandLine.Command(name = 'schema', description = 'Export JSON Schema for the installed rule catalog.', mixinStandardHelpOptions = true, exitCodeOnExecutionException = 2)
+    static class ExportSchema implements Callable<Integer> {
+        @CommandLine.Spec CommandLine.Model.CommandSpec spec
+        @CommandLine.Option(names = ['-o', '--output'], paramLabel = 'FILE', description = 'Write the schema to a file instead of stdout (overwrites an existing file).')
+        File file
+
+        Integer call() {
+            try {
+                String text = JsonOutput.prettyPrint(JsonOutput.toJson(ConfigurationSchema.generate())) + '\n'
+                if (file != null) Files.writeString(file.toPath(), text, StandardCharsets.UTF_8)
+                else {
+                    PrintWriter writer = spec.commandLine().out
+                    writer.print(text)
+                    writer.flush()
+                    if (writer.checkError()) throw new IOException('Failed to write schema output')
+                }
+                0
+            } catch (Exception e) {
+                spec.commandLine().err.println("Linter error: ${e.message}")
+                2
+            }
         }
     }
 }

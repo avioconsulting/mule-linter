@@ -34,6 +34,10 @@ class RulesDsl{
             configuration.call()
         }
         RuleSpecification specification = definition.specification(options.suppliedOptions())
+        addSpecification(specification)
+    }
+
+    void addSpecification(RuleSpecification specification) {
         // Domain validation also completes before any application is loaded.
         def instance = specification.instantiate()
         specifications.add(specification)

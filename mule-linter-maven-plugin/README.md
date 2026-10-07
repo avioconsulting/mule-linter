@@ -6,7 +6,7 @@ Plugin goal is by default attached to validate which is the first phase of maven
 
 ## Parameters
 - appDir: Defaults to `${basedir}`
-- ruleConfiguration: Defaults to `${basedir}/muleLinter.groovy`
+- ruleConfiguration: Defaults to `${basedir}/muleLinter.groovy` for compatibility. Accepts `.yaml`, `.yml`, or trusted `.groovy` configuration.
 - outputDirectory: Defaults to `${project.build.directory}/mule-linter`
 - formats: Defaults to CONSOLE and JSON.
 - failBuild: Defaults to false (report only). Set to true to enforce findings at or above `failureThreshold`.
@@ -44,10 +44,6 @@ To use plugin in your maven project, add following plugin configuration in proje
                 <goal>validate</goal>
             </goals>
             <configuration>
-                <systemPropertyVariables>
-                    <!-- Allows plugin to use the Maven version we are running with  -->
-                    <maven.home>${maven.home}</maven.home>
-                </systemPropertyVariables>
                 <appDir>${basedir}</appDir>
                 <ruleConfiguration>muleLinter.groovy</ruleConfiguration>
                 <outputDirectory>${project.build.directory}/reports</outputDirectory>
@@ -63,7 +59,25 @@ To use plugin in your maven project, add following plugin configuration in proje
     </executions>
 </plugin>
 ```
-Mule linter plugin generates effective-pom file for the application using [maven-invoker](https://maven.apache.org/shared/maven-invoker/), and linter uses effective-pom.xml for executing the linter rulesets. 
+The plugin parses the POM and resolves parent inheritance using embedded Maven
+Resolver and Maven settings; it does not invoke Maven to generate an effective POM.
+
+To use YAML, set the configuration path explicitly:
+
+```xml
+<ruleConfiguration>${basedir}/mule-linter.yaml</ruleConfiguration>
+```
+
+YAML and Groovy share catalog validation, defaults, report IDs, and failure policy.
+Generate an editor schema and validate YAML using the CLI before running Maven:
+
+```shell
+mule-linter config schema -o mule-linter.schema.json
+mule-linter config validate mule-linter.yaml --json
+```
+
+See the root [README](../README.md#yaml-configuration-and-ide-completion) for the YAML
+format, editor association, and parser safety limits.
 
 You can adjust configuration parameters as applicable to your project.
 

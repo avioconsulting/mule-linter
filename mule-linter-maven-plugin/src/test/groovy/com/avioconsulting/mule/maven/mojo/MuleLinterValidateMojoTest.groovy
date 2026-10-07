@@ -47,6 +47,19 @@ class MuleLinterValidateMojoTest extends Specification {
         new File(mojo.outputDirectory, 'mule-linter-report.json').isFile()
     }
 
+    def 'YAML configurations use the same report and failure policy'() {
+        given:
+        def yaml = new File(directory, 'rules.yaml')
+        yaml.text = 'schemaVersion: 1\nrules: [{rule: file-exists, options: {path: missing, severity: MAJOR}}]'
+        set('ruleConfiguration', yaml)
+        set('failBuild', true)
+        when:
+        mojo.execute()
+        then:
+        thrown(MojoFailureException)
+        new File(mojo.outputDirectory, 'mule-linter-report.json').text.contains('FILE_EXISTS')
+    }
+
     def 'threshold configuration supports minor and blocker without changing report only'() {
         given:
         config.text = "mule_linter { rules { FILE_EXISTS { path = 'missing'; severity = 'MINOR' } } }"
