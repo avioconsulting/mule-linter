@@ -4,19 +4,19 @@ import com.avioconsulting.mule.linter.model.pom.PomFile
 import com.avioconsulting.mule.linter.parser.MuleXmlParser
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
+import groovy.transform.CompileStatic
 import org.apache.maven.settings.Settings
 import org.eclipse.aether.util.repository.AuthenticationBuilder
-import org.eclipse.aether.DefaultRepositorySystemSession
 import org.eclipse.aether.RepositorySystem
 import org.eclipse.aether.RepositorySystemSession
 import org.eclipse.aether.artifact.Artifact
 import org.eclipse.aether.artifact.DefaultArtifact
 import org.eclipse.aether.repository.LocalRepository
-import org.eclipse.aether.repository.LocalRepositoryManager
 import org.eclipse.aether.repository.RemoteRepository
 import org.eclipse.aether.resolution.ArtifactRequest
 import org.eclipse.aether.resolution.ArtifactResult
 import org.eclipse.aether.supplier.RepositorySystemSupplier
+import org.eclipse.aether.supplier.SessionBuilderSupplier
 
 /**
  * Resolves parent POMs using Maven Resolver (Eclipse Aether).
@@ -41,8 +41,9 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier
  * - With 20 test classes: 20 × 500ms = 10 seconds overhead
  * - Singleton pattern: 500ms once for entire JVM lifecycle
  * 
- * Resource Management:
- * - JVM shutdown hook automatically calls close() on the singleton
+     * Resource Management:
+     * - JVM shutdown hook automatically calls close() on the singleton
+     * - Maven goals use openScope() to close their isolated resolver before realm disposal
  * - No manual cleanup needed in application code
  * - repositorySystem.shutdown() releases HTTP pools and threads on JVM exit
  * 
@@ -53,6 +54,40 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier
  * See plans/04-parent-pom-resolution.md for detailed design rationale and rejected alternatives.
  */
 class ParentPomResolver {
+    private static final ThreadLocal<ResolverScope> scopes = new ThreadLocal<>()
+
+    /** Maven plugin realms can close before JVM shutdown; release their resolver at goal completion. */
+    static ResolverScope openScope() {
+        def scope = new ResolverScope(scopes.get())
+        scopes.set(scope)
+        scope
+    }
+
+    static final class ResolverScope implements AutoCloseable {
+        private final ResolverScope previous
+        private ParentPomResolver resolver
+        private boolean closed
+
+        private ResolverScope(ResolverScope previous) { this.previous = previous }
+
+        private ParentPomResolver getResolver() {
+            if (closed) throw new IllegalStateException('Resolver scope is closed')
+            if (resolver == null) resolver = new ParentPomResolver()
+            resolver
+        }
+
+        void close() {
+            if (closed) return
+            if (scopes.get() != this) throw new IllegalStateException('Resolver scopes must close in reverse order on their owning thread')
+            closed = true
+            try {
+                resolver?.close()
+            } finally {
+                if (previous == null) scopes.remove()
+                else scopes.set(previous)
+            }
+        }
+    }
     
     // Shared instance holder for lazy initialization
     private static class Holder {
@@ -61,22 +96,32 @@ class ParentPomResolver {
         static {
             // Register shutdown hook to clean up resources when JVM exits
             // This ensures repositorySystem.shutdown() is called exactly once
-            Runtime.addShutdownHook {
-                INSTANCE.close()
-            }
+            Runtime.runtime.addShutdownHook(new Thread(new ResolverShutdown(INSTANCE), 'mule-linter-resolver-shutdown'))
         }
+    }
+
+    @CompileStatic
+    private static class ResolverShutdown implements Runnable {
+        private final ParentPomResolver resolver
+
+        ResolverShutdown(ParentPomResolver resolver) { this.resolver = resolver }
+
+        void run() { resolver.close() }
     }
     
     /**
      * Returns the shared ParentPomResolver instance.
      * This avoids expensive Maven Resolver initialization per test.
+     * Inside an open scope, returns that scope's lazy, isolated instance instead.
      */
     static ParentPomResolver getInstance() {
+        ResolverScope scope = scopes.get()
+        if (scope != null) return scope.getResolver()
         return Holder.INSTANCE
     }
     
     private final RepositorySystem repositorySystem
-    private final RepositorySystemSession session
+    private final RepositorySystemSession.CloseableSession session
     private final File localRepositoryDir
     private final Settings settings
     private final SettingsXmlParser settingsParser
@@ -233,24 +278,22 @@ class ParentPomResolver {
      * when the instance is no longer needed to release HTTP connections,
      * thread pools, and other resources.
      */
+    @CompileStatic
     void close() {
         // RepositorySystem manages HTTP clients, thread pools, etc.
         // Shutdown must be called to release these resources properly
-        if (repositorySystem != null) {
-            repositorySystem.shutdown()
+        try {
+            session?.close()
+        } finally {
+            repositorySystem?.shutdown()
         }
     }
     
-    private RepositorySystemSession createSession(RepositorySystem system) {
-        // Create a proper session with LocalRepositoryManager configured
-        DefaultRepositorySystemSession session = org.apache.maven.repository.internal.MavenRepositorySystemUtils.newSession()
-        
-        // Configure the local repository
-        LocalRepository localRepo = new LocalRepository(localRepositoryDir)
-        LocalRepositoryManager localRepoManager = system.newLocalRepositoryManager(session, localRepo)
-        session.setLocalRepositoryManager(localRepoManager)
-        
-        return session
+    private RepositorySystemSession.CloseableSession createSession(RepositorySystem system) {
+        // Resolver 2 sessions have their own lifecycle and must close before the system.
+        return new SessionBuilderSupplier(system).get()
+            .withLocalRepositories(new LocalRepository(localRepositoryDir))
+            .build()
     }
     
     private File resolveRelativePath(String relativePath, File childDir) {

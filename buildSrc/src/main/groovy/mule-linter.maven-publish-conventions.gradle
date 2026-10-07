@@ -8,6 +8,13 @@ publishing {
             from components.java
             artifact tasks.named('groovydocJar')
             pom {
+                // Groovy's aggregator has no JAR. Gradle resolves its metadata, but
+                // Maven consumers need the POM dependency type explicitly declared.
+                withXml {
+                    asNode().dependencies.dependency.findAll {
+                        it.groupId.text() == 'org.apache.groovy' && it.artifactId.text() == 'groovy-all'
+                    }.each { it.appendNode('type', 'pom') }
+                }
                 name = project.name
                 description = project.name
                 url = 'https://github.com/avioconsulting/mule-linter'

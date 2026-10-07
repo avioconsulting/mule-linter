@@ -28,4 +28,6 @@ tasks.register('renameDists', Sync) {
 
 renameDists.dependsOn(shadowDistTar)
 renameDists.dependsOn(shadowDistZip)
+// A combined build/publish also produces ordinary distributions in this directory.
+renameDists.mustRunAfter(distTar, distZip)
 publish.dependsOn(renameDists)

@@ -1,5 +1,47 @@
 plugins {
+    id 'com.gradleup.shadow'
     id 'mule-linter.maven-plugin-conventions'
+}
+
+// Maven exports its own Resolver API to plugins. Relocate our embedded stack so
+// Resolver 2 remains usable inside Maven 3 runtimes with Resolver 1.x.
+shadowJar {
+    dependsOn tasks.named('generateMavenPluginDescriptor')
+    from(layout.buildDirectory.dir('mavenPlugin/descriptor'))
+    configurations = [project.configurations.runtimeClasspath]
+    relocate 'org.eclipse.aether', 'com.avioconsulting.mule.internal.aether'
+    relocate 'org.apache.maven.model', 'com.avioconsulting.mule.internal.maven.model'
+    relocate 'org.apache.maven.repository', 'com.avioconsulting.mule.internal.maven.repository'
+    relocate 'org.apache.maven.settings', 'com.avioconsulting.mule.internal.maven.settings'
+    relocate 'org.apache.maven.building', 'com.avioconsulting.mule.internal.maven.building'
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA'
+    mergeServiceFiles()
+    filesMatching('META-INF/services/**') {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+}
+
+afterEvaluate {
+    publishing.publications.maven {
+        // Publish the isolated implementation as the main plugin artifact.
+        artifacts.removeAll { it.classifier == null && it.extension == 'jar' }
+        artifact(tasks.named('shadowJar')) { classifier = null }
+    }
+}
+
+// This Maven-only artifact replaces the Java component JAR with an isolated JAR;
+// its Maven POM remains the publication contract, not Gradle's Java variant metadata.
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+test {
+    def pluginJar = tasks.named('shadowJar').flatMap { it.archiveFile }
+    dependsOn tasks.named('shadowJar')
+    inputs.file(pluginJar)
+    doFirst { task ->
+        task.systemProperty 'mule.linter.pluginJar', pluginJar.get().asFile.absolutePath
+    }
 }
 
 dependencies {

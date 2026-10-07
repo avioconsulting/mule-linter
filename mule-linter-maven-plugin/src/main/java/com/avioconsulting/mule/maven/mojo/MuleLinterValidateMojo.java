@@ -5,6 +5,7 @@ import com.avioconsulting.mule.linter.model.ReportFormat;
 import com.avioconsulting.mule.linter.model.rule.RuleExecutor;
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity;
 import com.avioconsulting.mule.linter.model.rule.FailurePolicy;
+import com.avioconsulting.mule.linter.resolver.ParentPomResolver;
 import com.avioconsulting.mule.maven.formatter.FormatOptionsEnum;
 import com.avioconsulting.mule.maven.formatter.FormatterBuilder;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -43,7 +44,7 @@ public class MuleLinterValidateMojo extends AbstractMuleLinterMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         RuleExecutor ruleExecutor;
-        try {
+        try (ParentPomResolver.ResolverScope ignored = ParentPomResolver.openScope()) {
             if (failureThreshold == null || formats == null || formats.contains(null)) {
                 throw new IllegalArgumentException("Valid formats and failureThreshold are required");
             }

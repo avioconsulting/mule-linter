@@ -61,6 +61,9 @@ To use plugin in your maven project, add following plugin configuration in proje
 ```
 The plugin parses the POM and resolves parent inheritance using embedded Maven
 Resolver and Maven settings; it does not invoke Maven to generate an effective POM.
+The published plugin isolates its embedded Resolver 2 and Maven model/settings
+classes from the Maven host's classes. Resolver sessions are scoped to each goal
+execution and closed before Maven disposes the plugin classloader.
 
 To use YAML, set the configuration path explicitly:
 

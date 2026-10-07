@@ -6,14 +6,14 @@ dependencies {
     implementation 'org.yaml:snakeyaml:2.7'
     
     // Maven Resolver (Eclipse Aether) for parent POM resolution
-    implementation 'org.apache.maven.resolver:maven-resolver-api:1.9.27'
-    implementation 'org.apache.maven.resolver:maven-resolver-impl:1.9.27'
-    implementation 'org.apache.maven.resolver:maven-resolver-connector-basic:1.9.27'
-    implementation 'org.apache.maven.resolver:maven-resolver-transport-http:1.9.27'
-    implementation 'org.apache.maven.resolver:maven-resolver-transport-file:1.9.27'
-    implementation 'org.apache.maven.resolver:maven-resolver-supplier:1.9.27'
+    implementation 'org.apache.maven.resolver:maven-resolver-api:2.0.24'
+    implementation 'org.apache.maven.resolver:maven-resolver-impl:2.0.24'
+    implementation 'org.apache.maven.resolver:maven-resolver-connector-basic:2.0.24'
+    implementation 'org.apache.maven.resolver:maven-resolver-transport-apache:2.0.24'
+    implementation 'org.apache.maven.resolver:maven-resolver-transport-file:2.0.24'
+    implementation 'org.apache.maven.resolver:maven-resolver-supplier-mvn3:2.0.24'
     
     // Maven Settings for settings.xml parsing
-    implementation 'org.apache.maven:maven-settings:3.9.16'
-    implementation 'org.apache.maven:maven-settings-builder:3.9.16'
+    implementation 'org.apache.maven:maven-settings:3.10.0'
+    implementation 'org.apache.maven:maven-settings-builder:3.10.0'
 }
