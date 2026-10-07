@@ -5,6 +5,11 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.apache.maven.plugins:maven-plugin-plugin:3.13.1'
-    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.13.1'
+    implementation 'org.apache.maven.plugins:maven-plugin-plugin:3.16.0'
+    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.16.0'
+    // Maven supplies these APIs at runtime; do not rely on plugin-tools transitives.
+    compileOnly 'org.apache.maven:maven-plugin-api:3.9.16'
+    compileOnly 'org.apache.maven:maven-core:3.9.16'
+    testImplementation 'org.apache.maven:maven-plugin-api:3.9.16'
+    testImplementation 'org.apache.maven:maven-core:3.9.16'
 }

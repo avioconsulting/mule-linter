@@ -2,7 +2,7 @@
 
 ## Build and focused verification
 
-- Use `./gradlew` (wrapper: Gradle 9.4.1); module toolchains target Java 17. Shared build/test/publication behavior lives in `buildSrc/src/main/groovy/*conventions.gradle`, not a root build file.
+- Use `./gradlew` (wrapper: Gradle 9.8.0); module toolchains target Java 17. Shared build/test/publication behavior lives in `buildSrc/src/main/groovy/*conventions.gradle`, not a root build file.
 - Full verification: `./gradlew build`. Compile main and test sources without running tests: `./gradlew classes testClasses`.
 - Core tests: `./gradlew :mule-linter-core:test`.
 - One Spock class: `./gradlew :mule-linter-core:test --tests 'com.avioconsulting.mule.linter.rule.configuration.LoggerAttributesRuleTest'`.

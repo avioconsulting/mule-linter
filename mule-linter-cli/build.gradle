@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation project(':mule-linter-core')
     implementation project(':mule-linter-spi')
-    implementation 'info.picocli:picocli-groovy:4.7.6'
+    implementation 'info.picocli:picocli-groovy:4.7.7'
 }
 
 application {
