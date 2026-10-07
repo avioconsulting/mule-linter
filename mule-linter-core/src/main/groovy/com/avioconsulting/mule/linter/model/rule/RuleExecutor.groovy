@@ -1,15 +1,8 @@
 package com.avioconsulting.mule.linter.model.rule
 
 import com.avioconsulting.mule.linter.model.Application
+import com.avioconsulting.mule.linter.model.MuleApplication
 import com.avioconsulting.mule.linter.model.ReportFormat
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-
-import com.google.gson.*
-import org.json.*;
-import javax.xml.transform.*
-import javax.xml.transform.stream.*
 
 class RuleExecutor {
 
@@ -17,6 +10,7 @@ class RuleExecutor {
     Application application
     List<RuleViolation> results = []
     Integer ruleCount = 0
+    AnalysisResult analysisResult
 
     RuleExecutor(Application application, List<RuleSet> rules) {
         this.rules = rules
@@ -24,13 +18,21 @@ class RuleExecutor {
     }
 
     void executeRules() {
+        results = []
+        ruleCount = 0
+        analysisResult = null
         rules.each { ruleSet ->
             ruleSet.getRules().each { // assigns current rule to 'it'
                 results.addAll(it.execute(application))
                 ruleCount++
             }
         }
+        analysisResult = new AnalysisResult(results.collect { AnalysisFinding.snapshot(it) },
+                application instanceof MuleApplication ? application.analysisWarnings : [],
+                ruleCount, application.applicationPath.absolutePath)
     }
+    /** Legacy report DTO retained for binary/source compatibility. */
+    @Deprecated
     static class SonarQubeReport{
 
         static class SonarQubeReportIssues {
@@ -80,63 +82,18 @@ class RuleExecutor {
     }
 
 
+    /** Compatibility adapter; new integrations can use ReportWriters directly. */
     void displayResults(ReportFormat outputFormat,OutputStream outputStream) {
-        def format = outputFormat
-        if(format == ReportFormat.JSON){
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        ReportWriters.write(getAnalysisResult(), outputFormat, outputStream)
+    }
 
-          SonarQubeReport sq = new SonarQubeReport();
-
-            results.each { violation ->
-                violation.setFileName(violation.getFileName() - (application.getApplicationPath().absolutePath + "/"))
-                sq.getIssues().add( new SonarQubeReport.SonarQubeReportIssues(violation) )
-            }
-            String prettyJsonString = gson.toJson(sq)
-            outputStream.write(prettyJsonString.bytes)
-
-        }
-        else if(format == ReportFormat.XML)
-        {
-            final StringBuilder builder = new StringBuilder();
-            results.each { violation ->
-                String json = new Gson().toJson(violation);
-                JSONTokener jt = new JSONTokener(json);
-                String xml =  XML.toString(jt.nextValue(), "violation")
-                builder.append(xml + "")
-            }
-            String concatenatedString = builder.toString();
-            String xmlString = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n<"+'violations'+">" + concatenatedString + "</"+'violations'+">";
-            String xmlOutput = convertToXML(xmlString);
-            outputStream.write(xmlOutput.bytes)
-        }
-        else{
-            outputStream.write("$ruleCount rules executed.\n".bytes)
-            outputStream.write('Rule Results\n'.bytes)
-
-            results.each { violation ->
-                outputStream.write("    [$violation.rule.severity] $violation.rule.ruleId - $violation.fileName ".bytes)
-                outputStream.write((violation.lineNumber > 0 ? "( $violation.lineNumber ) " : '').bytes)
-                outputStream.write("$violation.message \n".bytes)
-            }
-
-            outputStream.write("\nFound a total of $results.size violations.\n".bytes)
-        }
-        outputStream.flush()
+    AnalysisResult getAnalysisResult() {
+        if (analysisResult == null) throw new IllegalStateException('Rules have not completed execution')
+        analysisResult
     }
 
     String convertToXML(String xml){
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute("indent-number", 2);
-
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-        StringWriter stringWriter = new StringWriter();
-        StreamResult xmlOutput = new StreamResult(stringWriter);
-
-        Source xmlInput = new StreamSource(new StringReader(xml));
-        transformer.transform(xmlInput, xmlOutput);
-        return xmlOutput.getWriter().toString();
+        ReportWriters.convertToXML(xml)
     }
 
     boolean hasErrors(){

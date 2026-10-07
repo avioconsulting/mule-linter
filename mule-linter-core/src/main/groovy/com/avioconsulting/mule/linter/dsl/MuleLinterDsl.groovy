@@ -28,17 +28,24 @@ class RulesDsl{
 
     def methodMissing(String name, args) {
         def ruleClass = RulesLoader.getRuleClassById(name)
-        if(ruleClass){
-            def ruleObj = ruleClass.newInstance()
-            if(args != null && args.length > 0 ) {
-                Closure cl = args[0]
-                cl.resolveStrategy = DELEGATE_ONLY
-                cl.delegate = ruleObj
-                cl.call()
-            }
-            ruleObj.init()
-            ruleSet.addRule(ruleObj)
+        if (!ruleClass) {
+            throw new IllegalArgumentException("Unknown rule identifier '${name}'. Available rules: ${RulesLoader.rulesMap.keySet().sort().join(', ')}")
         }
+        if (args != null && (args.length > 1 || (args.length == 1 && !(args[0] instanceof Closure)))) {
+            throw new IllegalArgumentException("Rule '${name}' expects no arguments or one configuration closure")
+        }
+        def ruleObj = ruleClass.newInstance()
+        if(args != null && args.length > 0 ) {
+            Closure cl = args[0]
+            cl.resolveStrategy = DELEGATE_ONLY
+            cl.delegate = new RuleOptions(ruleObj)
+            cl.call()
+        }
+        try {
+            ruleObj.init()
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid configuration for rule '${name}': ${e.message}", e)
+        }
+        ruleSet.addRule(ruleObj)
     }
 }
-

@@ -9,7 +9,20 @@ Plugin goal is by default attached to validate which is the first phase of maven
 - ruleConfiguration: Defaults to `${basedir}/muleLinter.groovy`
 - outputDirectory: Defaults to `${project.build.directory}/mule-linter`
 - formats: Defaults to CONSOLE and JSON.
-- failBuild: Defaults to false. If `failBuild` is set to true, then rule violations with severity higher than MINOR will cause build to fail.
+- failBuild: Defaults to false (report only). Set to true to enforce findings at or above `failureThreshold`.
+- failureThreshold: Defaults to MAJOR. Valid values in descending severity order: BLOCKER, CRITICAL, MAJOR, MINOR. The default enforces MAJOR, CRITICAL and BLOCKER only; all findings are still reported.
+- strictAnalysis: Defaults to false. Set to true to fail when analysis is incomplete, for example if a parent POM cannot be resolved. Otherwise unresolved parents remain analysis warnings, separate from violations.
+
+Enforced findings produce `MojoFailureException`. Configuration, rule execution,
+strict-analysis and requested report generation/write errors always produce
+`MojoExecutionException`, even with `failBuild=false`. Reports are generated
+before enforcing findings; report errors are never swallowed.
+
+Console output retains Maven's logging adapter. JSON is written to
+`outputDirectory/mule-linter-report.json` in the existing SonarQube external-issues
+structure; warnings/completeness are logged separately rather than added to that
+schema. Reports consume one immutable analysis snapshot and do not change each
+other's findings or file paths when their order changes.
 
 ## Usage
 
@@ -38,6 +51,9 @@ To use plugin in your maven project, add following plugin configuration in proje
                 <appDir>${basedir}</appDir>
                 <ruleConfiguration>muleLinter.groovy</ruleConfiguration>
                 <outputDirectory>${project.build.directory}/reports</outputDirectory>
+                <failBuild>false</failBuild>
+                <failureThreshold>MAJOR</failureThreshold>
+                <strictAnalysis>false</strictAnalysis>
                 <formats>
                     <format>CONSOLE</format>
                     <format>JSON</format>

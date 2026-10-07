@@ -10,7 +10,7 @@ mule_linter {
         /* CONFIGURATION */
         API_CONSOLE_DISABLED{}
         COMMENTED_CODE {}
-        COMPONENT_ATTRIBUTE_VALUE {
+        COMPONENT_REQUIRED_ATTRIBUTES {
             component = 'flow-ref'
             namespace = 'http://www.mulesoft.org/schema/mule/core'
             requiredAttributes = ['name']
@@ -24,7 +24,7 @@ mule_linter {
         CONFIG_PLACEHOLDER {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
-        DISPLAY_NAME {
+        COMPONENT_DISPLAY_NAME {
             components = [
                     [name: 'set-payload', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Payload'],
                     [name: 'set-variable', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Variable'],
@@ -32,13 +32,13 @@ mule_linter {
                     [name: 'flow-ref', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Flow Reference']
             ]
         }
-        EXCESSIVE_LOGGERS {
+        CONSECUTIVE_LOGGERS_COUNT {
             excessiveLoggers = [
                     'INFO':3,
                     'DEBUG':2
             ]
         }
-        EXCESSIVE_LOGGERS {
+        CONSECUTIVE_LOGGERS_COUNT {
             excessiveLoggers = 2
         }
         FLOW_SUBFLOW_NAMING {
@@ -48,10 +48,10 @@ mule_linter {
             globalFileName = 'globals.xml'
         }
         GLOBAL_CONFIG_NO_FLOWS {}
-        GLOBAL_CONFIG {
+        GLOBAL_CONFIG_EXISTS {
             globalFileName = 'global-config.xml'
         }
-        LOGGER_ATTRIBUTES_RULE {
+        LOGGER_REQUIRED_ATTRIBUTES {
             requiredAttributes = ['category']
         }
         LOGGER_CATEGORY_HASVALUE {}
@@ -59,7 +59,7 @@ mule_linter {
             pattern = '[0-9]*'
         }
         LOGGER_MESSAGE_HASVALUE {}
-        MULE_CONFIG_SIZE {
+        MULE_CONFIG_FLOW_LIMIT {
             flowLimit = 2
         }
         ON_ERROR_LOG_EXCEPTION {}
@@ -110,7 +110,7 @@ mule_linter {
             artifactVersion = '5.11.0'
             versionOperator = 'GREATER_THAN'
         }
-        POM_EXISTS {}
+        POM_FILE_EXISTS {}
         POM_PLUGIN_ATTRIBUTE {
             groupId = 'org.mule.tools.maven'
             artifactId = 'mule-maven-plugin'

@@ -58,6 +58,8 @@ class ConsecutiveLoggersCountRule extends Rule {
                                                      (LoggerComponent.LogLevel.INFO) : excessiveLoggers,
                                                      (LoggerComponent.LogLevel.WARN) : excessiveLoggers,
                                                      (LoggerComponent.LogLevel.ERROR): excessiveLoggers])
+            } else {
+                throw new IllegalArgumentException("Invalid excessiveLoggers value: expected Integer or Map, got ${excessiveLoggers.getClass().simpleName}")
             }
         }
     }

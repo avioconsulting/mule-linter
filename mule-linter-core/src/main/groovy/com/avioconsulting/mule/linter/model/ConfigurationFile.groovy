@@ -93,12 +93,42 @@ class ConfigurationFile extends ProjectFile {
     }
 
     List<MuleComponent> findComponents(String componentType, String namespace) {
+        return toComponents(searchComponentType(componentType, namespace))
+    }
+
+    /** Exclude only branches whose error-handler is directly owned by a core Try scope. */
+    List<MuleComponent> findComponentsOutsideTryHandlers(String componentType, String namespace) {
+        return toComponents(searchComponentType(componentType, namespace).findAll { component ->
+            def handler = component.parent()
+            def owner = handler.parent()
+            !(handler.name() == 'error-handler' && handler.namespaceURI() == Namespace.CORE &&
+                owner.name() == 'try' && owner.namespaceURI() == Namespace.CORE)
+        })
+    }
+
+    private List<MuleComponent> toComponents(List<GPathResult> components) {
         List<MuleComponent> componentList = []
-        searchComponentType(componentType, namespace).each { comp ->
+        components.each { comp ->
             componentList.add(componentFactoryService.getComponentFor(new ComponentIdentifier(comp[0].name(), comp[0].namespaceURI()), comp[0].attributes(), getFile(),
                     getNestedComponent(comp)))
         }
         return componentList
+    }
+
+    /** Retain structural ownership so same-line branches cannot share an exemption accidentally. */
+    List<Map> findErrorBranches(boolean includeTryScopes) {
+        configXml.depthFirst().findAll {
+            it.namespaceURI() == Namespace.CORE && it.name() in ['on-error-continue', 'on-error-propagate']
+        }.findAll { branch ->
+            def owner = branch.parent().parent()
+            includeTryScopes || !(owner.name() == 'try' && owner.namespaceURI() == Namespace.CORE)
+        }.collect { branch ->
+            def handler = branch.parent()
+            def owner = handler.parent()
+            [component: toComponents([branch])[0], handler:
+                handler.name() == 'error-handler' && handler.namespaceURI() == Namespace.CORE &&
+                    owner.name() == 'mule' && owner.namespaceURI() == Namespace.CORE ? handler.@name.text() : null]
+        }
     }
 
     List<MuleComponent> getNestedComponent(GPathResult comp) {

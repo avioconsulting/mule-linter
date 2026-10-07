@@ -19,9 +19,9 @@ class MuleLinter {
     ReportFormat  outputFormat
 
     MuleLinter(File applicationDirectory, File ruleConfigFile, ReportFormat outputFormat) {
-        this.app = new MuleApplication(applicationDirectory)
-        //ruleSetList = parseConfigurationFile(ruleConfigFile)
+        // Validate configuration before application loading or parent repository access.
         ruleSetList = processDSL(ruleConfigFile)
+        this.app = new MuleApplication(applicationDirectory)
         this.outputFormat= outputFormat
     }
 

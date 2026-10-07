@@ -24,6 +24,8 @@ class HostnamePropertyRule extends Rule{
      * exemptions: is a list of properties the rule should ignore.
      */
     @Param("exemptions") def exemptions = []
+    /** Exact basenames, not patterns. Set [] to enforce all environment files. */
+    @Param('fileExemptions') List<String> fileExemptions = ['local.properties', 'unit.properties']
 
     HostnamePropertyRule() {
         super(RULE_ID, RULE_NAME)
@@ -33,6 +35,7 @@ class HostnamePropertyRule extends Rule{
     List<RuleViolation> execute(Application application) {
         List<RuleViolation> violations = []
         application.propertyFiles.each { PropertyFile file ->
+            if (fileExemptions.contains(file.getFile().name)) return
             file.getProperties().each {
                 String propName = it.key.toLowerCase()
                 if ((exemptions.size() == 0 || !exemptions.any {propName.contains(it.toLowerCase())}) &&

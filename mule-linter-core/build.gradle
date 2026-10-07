@@ -36,6 +36,7 @@ tasks.register('generateGDSL', JavaExec) {
 // Fix: Declare explicit dependency to resolve implicit dependency warning
 // compileTestGroovy uses the output directory that generateGDSL writes to
 compileTestGroovy.dependsOn(generateGDSL)
+groovydoc.dependsOn(generateGDSL)
 
 // Wire GDSL generation to jar task (only runs if onlyIf condition is met)
 jar.dependsOn(generateGDSL)

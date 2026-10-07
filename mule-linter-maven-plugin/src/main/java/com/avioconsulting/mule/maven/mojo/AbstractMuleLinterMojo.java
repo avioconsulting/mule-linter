@@ -2,6 +2,7 @@ package com.avioconsulting.mule.maven.mojo;
 
 import com.avioconsulting.mule.linter.model.rule.RuleSeverity;
 import com.avioconsulting.mule.linter.model.rule.RuleViolation;
+import com.avioconsulting.mule.linter.model.rule.FailurePolicy;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -30,11 +31,13 @@ public abstract class AbstractMuleLinterMojo extends AbstractMojo {
         return this.project.getVersion();
     }
 
+    /** @deprecated Use the shared FailurePolicy with an immutable analysis result. */
+    @Deprecated
     public void failIfNeeded(boolean shouldFail, List<RuleViolation> violations){
         if(shouldFail && !violations.isEmpty()
             && violations.stream()
                 .anyMatch(ruleViolation ->
-                        !ruleViolation.getRule().getSeverity().equals(RuleSeverity.MINOR))){
+                        FailurePolicy.meetsThreshold(ruleViolation.getRule().getSeverity(), RuleSeverity.MAJOR))){
             throw new RuntimeException("Linter validation has non-minor errors.");
         }
     }

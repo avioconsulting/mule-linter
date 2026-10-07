@@ -12,13 +12,16 @@ public class JsonFormatter extends AbstractFormatter {
     @Override
     public void buildReport() throws IOException {
         if(this.mojo.getOutputDirectory() == null) {
-            this.mojo.getLog().warn("Output directory not specified");
+            throw new IOException("Output directory not specified");
         }
-        this.mojo.getOutputDirectory().mkdirs();
+        if (!this.mojo.getOutputDirectory().isDirectory() && !this.mojo.getOutputDirectory().mkdirs()) {
+            throw new IOException("Could not create report directory: " + this.mojo.getOutputDirectory());
+        }
         String reportPath = this.mojo.getOutputDirectory().getAbsolutePath() + File.separator + "mule-linter-report.json";
         com.avioconsulting.mule.linter.model.rule.RuleExecutor re = this.ruleExecutor;
-        FileOutputStream out = new FileOutputStream(reportPath);
-        re.displayResults(ReportFormat.JSON, out );
+        try (FileOutputStream out = new FileOutputStream(reportPath)) {
+            re.displayResults(ReportFormat.JSON, out);
+        }
         this.mojo.getLog().info("Mule Linter report saved in "+ reportPath);
     }
 

@@ -5,9 +5,6 @@ import com.avioconsulting.mule.linter.model.rule.Rule
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
-import org.reflections.Reflections
-import org.reflections.scanners.Scanners
-import org.reflections.util.ConfigurationBuilder
 
 class GDSLGenerator {
 
@@ -44,39 +41,26 @@ class GDSLGenerator {
 
     Map<String, RuleMeta> getRulesMap(String packagePrefix) {
         def Map<String, RuleMeta> rulesMap = [:]
-//This loads all Rule classes shipped with core.
-//TODO: Find a way to load all classes from external library that can have different package.
-        Reflections rf = new Reflections(new ConfigurationBuilder()
-                .forPackages("com.", "org.", "io.")
-                .setExpandSuperTypes(false)
-                .addScanners(Scanners.values()))
-
-        def rules = rf.getSubTypesOf(Rule.class)
-//Look for field named RULE_ID
-        rules.each { rule -> {
-            rulesMap.put(rule.RULE_ID, new RuleMeta(rule))
-        }}
-
-
-        rf.getFieldsAnnotatedWith(Param.class).each { field -> {
-            def aValue = field.getAnnotation(Param.class).value()
-            def ruleId = field.declaringClass.RULE_ID
-            rulesMap.get(ruleId).params.add(new Tuple2(aValue, field.genericType.typeName))
-        }}
-
-
-        rf.getConstructorsWithParameter(Param.class).each { cs -> {
-            cs.parameters.each { p ->
-                if(p.isAnnotationPresent(Param.class)) {
-                    def annotation = p.getAnnotation(Param.class)
-                    def aValue = annotation.value()
-
-                    def ruleId = cs.declaringClass.RULE_ID
-                    rulesMap.get(ruleId).params.add(new Tuple2(aValue, p.getParameterizedType().typeName))
-                }
-
+        // Use exactly the same discovery and duplicate-ID checks as the runtime DSL.
+        RulesLoader.rulesMap.each { ruleId, rule ->
+            RuleMeta meta = new RuleMeta(rule)
+            meta.ruleId = ruleId
+            RuleOptions.fieldsFor(rule).each { name, field ->
+                meta.params.add(new Tuple2(name, field.genericType.typeName))
             }
-        }}
+            rulesMap.put(ruleId, meta)
+            rule.declaredConstructors.each { cs ->
+                cs.parameters.each { p ->
+                    if(p.isAnnotationPresent(Param.class)) {
+                        def annotation = p.getAnnotation(Param.class)
+                        def aValue = annotation.value()
+                        if (!meta.params.any { it.first == aValue }) {
+                            meta.params.add(new Tuple2(aValue, p.getParameterizedType().typeName))
+                        }
+                    }
+                }
+            }
+        }
 
         return rulesMap
     }

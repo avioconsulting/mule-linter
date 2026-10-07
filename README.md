@@ -26,6 +26,35 @@ Unzip/Untar the distribution. You can run the CLI from expanded files -
 You may move expanded distribution folder to other persistent location and add it on OS PATH, 
 and then run cli from anywhere on the system.
 
+```shell
+# Report only (default), including all severities
+./bin/mule-linter-cli -d ./my-app -r ./muleLinter.groovy -f CONSOLE
+# Fail on MAJOR, CRITICAL or BLOCKER findings
+./bin/mule-linter-cli -d ./my-app -r ./muleLinter.groovy --fail --threshold MAJOR
+```
+
+`-d` / `--dir` and `-r` / `--rules` are required. `-f` / `--format` accepts
+`CONSOLE` (default), `JSON` (existing SonarQube external-issues format), or `XML`.
+`--fail` enables findings enforcement; `--threshold` defaults to `MAJOR` and uses
+the explicit order `BLOCKER > CRITICAL > MAJOR > MINOR`. The threshold has no
+effect on which findings are reported, and does not enable enforcement by itself.
+
+Exit statuses: **0** = completed without an enforced findings failure,
+**1** = enforced findings failure, **2** = invalid input/configuration, rule
+execution error, or requested report write failure. Operational errors fail even
+in report-only mode.
+
+Unresolved parent POMs are separate analysis warnings, not violations, and mark
+analysis incomplete. By default analysis continues; use **`--strict`** to treat
+incomplete analysis as an operational error (status 2). Console reports include
+warnings; JSON/XML keep their existing schemas and warnings go to stderr.
+
+The core executes once and exposes an immutable `RuleExecutor.analysisResult`
+with scalar finding metadata, warnings, and completeness. `ReportWriters` can
+render independent reports in any order without changing findings. Existing
+`buildLinterExecutor()`, `results`, and `displayResults()` remain compatibility
+APIs; reports and failure policy use the snapshot, not mutable legacy results.
+
 ## Build
 
 When cloning add the 'recurse-submodules' flag
@@ -83,3 +112,56 @@ Mule Linter provides a service provider interface (SPI) based mechanism to add c
 * Click 'Download PNG' and save file into [config/mermaid](config/mermaid) directory
 ## Code Coverage
 [CodeNarc](https://codenarc.github.io/CodeNarc/) is used to ensure quality in groovy code.  The configuration file is located [here.](config/code-quality-config/codenarc/codenarc.xml)  To execute run ```gradle check```, and an output [report](build/reports/codenarc/main.html) will be generated. 
+## Global Configuration Layout
+
+See [Global Configuration Layout](GLOBAL-CONFIGURATION.md) for the
+separate configuration and flow-placement rules, exact-path exceptions, and
+migration from the legacy single-filename checks.
+
+## Exception Logging In Try Scopes
+
+`ON_ERROR_LOG_EXCEPTION {}` requires explicit `logException="true"` on
+flow-level and named shared error-handler branches. By default it skips branches
+whose inline `error-handler` is directly inside a core Mule `try` scope, including
+nested Try scopes. XML namespaces and ownership determine the scope, not filenames
+or display names. A named shared handler remains checked even when referenced by a Try.
+
+To restore strict checking of all branches:
+
+```groovy
+ON_ERROR_LOG_EXCEPTION {
+    includeTryScopes = true
+}
+```
+
+Choose Try logging based on recovery and the outer handler's responsibility.
+Avoid duplicate stack traces when propagating; a Try that consumes an unexpected
+technical failure still needs useful safe diagnostics. The exemption does not
+verify replacement logging or change runtime behavior.
+
+### Named Handler Exceptions
+
+```groovy
+ON_ERROR_LOG_EXCEPTION {
+    exceptions = [[
+        file: 'global/global-error-handler.xml',
+        handler: 'global-error-handler',
+        errorTypes: ['APIKIT:BAD_REQUEST'],
+        reason: 'Expected validation failure has a safe structured WARN event.'
+    ]]
+}
+```
+
+Paths are exact, relative to `src/main/mule`, using forward slashes. Only explicit
+`logException="false"` branches directly within the named shared handler match.
+One exception must cover all comma-separated types on a branch. `ANY`, wildcard
+types and blank reasons are rejected. Unused exceptions are findings. Other
+branches and handlers remain checked, including a shared handler used by Try.
+Review replacement logging separately; suppression alone does not prove safety.
+
+### Local Hostnames
+
+`HOSTNAME_PROPERTY` skips exact basenames `local.properties` and `unit.properties`
+by default. Set `fileExemptions = []` to check them too, or provide a replacement
+list. Other environments remain checked. Existing property-name `exemptions`,
+such as `https.host` for listener bind addresses, continue to apply.

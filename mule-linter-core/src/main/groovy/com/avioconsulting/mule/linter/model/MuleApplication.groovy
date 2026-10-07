@@ -26,10 +26,11 @@ class MuleApplication implements Application {
     String name
     GitIgnoreFile gitignoreFile
     MuleArtifact muleArtifact
+    List<String> analysisWarnings = []
 
     MuleApplication(File applicationPath) {
         this.applicationPath = applicationPath
-        if (!this.applicationPath.exists()) {
+        if (!this.applicationPath.isDirectory()) {
             throw new FileNotFoundException(APPLICATION_DOES_NOT_EXIST + applicationPath.absolutePath)
         }
         
@@ -38,12 +39,12 @@ class MuleApplication implements Application {
         
         // Create PomFile and resolve parent chain (only if POM exists)
         this.pomFile = new PomFile(pFile, pomXml)
-        if (pFile.exists()) {
+        if (pFile.exists() && pomXml.parent.size() > 0) {
             try {
                 pomFile.resolveParents(ParentPomResolver.getInstance())
             } catch (Exception e) {
                 // Log warning but continue - rules will operate on raw POM data
-                System.err.println("Warning: Could not resolve parent POM chain: ${e.message}")
+                analysisWarnings.add("Could not resolve parent POM chain: ${e.message}".toString())
             }
         }
         
