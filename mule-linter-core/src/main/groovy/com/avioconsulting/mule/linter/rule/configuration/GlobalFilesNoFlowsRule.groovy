@@ -18,6 +18,11 @@ class GlobalFilesNoFlowsRule extends Rule {
     }
 
     @Override
+    void init() {
+        patterns.each { java.util.regex.Pattern.compile(it) }
+    }
+
+    @Override
     List<RuleViolation> execute(Application app) {
         List<RuleViolation> violations = []
         app.configurationFiles.each { file ->

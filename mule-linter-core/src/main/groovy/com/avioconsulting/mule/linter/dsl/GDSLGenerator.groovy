@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.linter.dsl
 
-import com.avioconsulting.mule.linter.model.rule.Param
+import com.avioconsulting.mule.linter.catalog.RuleCatalog
 import com.avioconsulting.mule.linter.model.rule.Rule
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
@@ -11,6 +11,8 @@ class GDSLGenerator {
 
     class RuleMeta {
         String ruleId
+        String canonicalId
+        List<String> aliases
         List<Tuple2> params = new ArrayList<>()
         Class<? extends Rule> ruleClass
         RuleMeta(ruleClass){
@@ -41,25 +43,15 @@ class GDSLGenerator {
 
     Map<String, RuleMeta> getRulesMap(String packagePrefix) {
         def Map<String, RuleMeta> rulesMap = [:]
-        // Use exactly the same discovery and duplicate-ID checks as the runtime DSL.
-        RulesLoader.rulesMap.each { ruleId, rule ->
-            RuleMeta meta = new RuleMeta(rule)
-            meta.ruleId = ruleId
-            RuleOptions.fieldsFor(rule).each { name, field ->
-                meta.params.add(new Tuple2(name, field.genericType.typeName))
+        RuleCatalog.instance.definitions.each { definition ->
+            RuleMeta meta = new RuleMeta(definition.ruleClass)
+            meta.ruleId = definition.reportId
+            meta.canonicalId = definition.id
+            meta.aliases = definition.aliases
+            definition.options.each { name, option ->
+                meta.params.add(new Tuple2(name, option.javaTypeName))
             }
-            rulesMap.put(ruleId, meta)
-            rule.declaredConstructors.each { cs ->
-                cs.parameters.each { p ->
-                    if(p.isAnnotationPresent(Param.class)) {
-                        def annotation = p.getAnnotation(Param.class)
-                        def aValue = annotation.value()
-                        if (!meta.params.any { it.first == aValue }) {
-                            meta.params.add(new Tuple2(aValue, p.getParameterizedType().typeName))
-                        }
-                    }
-                }
-            }
+            rulesMap.put(definition.reportId, meta)
         }
 
         return rulesMap

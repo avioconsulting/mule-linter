@@ -25,9 +25,11 @@ class OnErrorLogExceptionRule extends Rule {
     }
 
     @Override
-    List<RuleViolation> execute(Application application) {
-        List<RuleViolation> violations = []
-        Set<Integer> used = [] as Set
+    void init() {
+        validateExceptions()
+    }
+
+    private void validateExceptions() {
         exceptions.each { exception ->
             if (!exception.file || !exception.handler || !exception.reason?.toString()?.trim() ||
                     !(exception.errorTypes instanceof List) || exception.errorTypes.empty ||
@@ -36,6 +38,14 @@ class OnErrorLogExceptionRule extends Rule {
                 throw new IllegalArgumentException('Exception logging exemptions require an exact relative file, named handler, explicit namespace:error types (not ANY), and a reason')
             }
         }
+    }
+
+    @Override
+    List<RuleViolation> execute(Application application) {
+        // Retain validation for callers constructing rules directly outside the catalog.
+        validateExceptions()
+        List<RuleViolation> violations = []
+        Set<Integer> used = [] as Set
         application.configurationFiles.each { file ->
             file.findErrorBranches(includeTryScopes).each { entry ->
                 def comp = entry.component

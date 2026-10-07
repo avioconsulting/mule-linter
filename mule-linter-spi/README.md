@@ -22,6 +22,59 @@ implementation 'com.avioconsulting.mule:mule-linter-spi:${mule-linter-version}'
 </dependency>
 ```
 
+## Adding Rules
+
+Rules are registered explicitly through `RuleProvider`; broad package reflection is no
+longer used. `@Param` is deprecated and does not define the configuration contract.
+Existing extensions must add a provider to remain discoverable.
+
+Implement `com.avioconsulting.mule.linter.spi.RuleProvider` and return typed definitions:
+
+```groovy
+new RuleDefinition(
+    'http-listener-api-path',           // Canonical ID
+    ['HTTP_LISTENER_API_PATH'],        // Optional aliases
+    'HTTP_LISTENER_API_PATH',          // Stable report ID
+    'Require HTTP listener paths to be /api/*.',
+    RuleSeverity.MINOR,
+    RuleType.CODE_SMELL,
+    HttpListenerPathRule,
+    [],                               // OptionDefinition list
+    { Map options -> new HttpListenerPathRule() }
+)
+```
+
+Add `src/main/resources/META-INF/services/com.avioconsulting.mule.linter.spi.RuleProvider`
+containing the provider's fully qualified class name. See
+`mule-linter-spi-test/.../ExtensionRuleProvider.groovy` for a complete example.
+When packaging multiple providers into a shaded jar, merge service descriptors.
+
+Definitions contain the canonical ID, aliases, report ID, description, default severity
+and classification, option contracts, and a factory returning a fresh rule instance.
+IDs and aliases must be unique across all installed providers, and report IDs must also
+be unique. Register each implementation once; inherited implementation fields do not
+automatically become public options.
+
+Use `OptionDefinition.string`, `integer`, `bool`, `stringList`, `stringMap`, `list`,
+`object`, `map`, `union`, and `enumeration` to compose contracts. Fluent methods declare
+`description`, `required`, `nullable`, `defaultValue`, `choices`, and numeric `minimum`.
+For example:
+
+```groovy
+OptionDefinition.list('components', OptionDefinition.object('component', [
+    OptionDefinition.string('name').required(),
+    OptionDefinition.string('namespace').required(),
+    OptionDefinition.string('timeoutAttribute').defaultValue('responseTimeout')
+])).description('Connector selectors.').defaultValue([])
+```
+
+`RuleSpecification` expands defaults and validates nested structures before factory
+binding. Factories receive independent mutable option copies, so one configured instance
+cannot alter another's defaults. The rule's `init()` runs after binding for domain-specific
+validation (regex compilation, cross-option relationships, and similar checks).
+Application-dependent checks belong in `execute()`. Direct constructor callers remain
+responsible for their own configuration and initialization.
+
 ## Adding Mule Components
 Mule linter is shipped with three components:
 

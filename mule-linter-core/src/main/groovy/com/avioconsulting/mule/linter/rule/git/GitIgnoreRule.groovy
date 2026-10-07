@@ -25,7 +25,7 @@ class GitIgnoreRule extends FileExistsRule {
      * This argument is optional. By default the List is:
      * ['*.jar', '*.class', 'target/', '.project', '.classpath', '.idea', 'build']
      */
-    @Param("ignoredFiles") static List<String> ignoredFiles
+    @Param("ignoredFiles") List<String> ignoredFiles
 
     GitIgnoreRule() {
         super(RULE_ID, RULE_NAME, GitIgnoreFile.GITIGNORE, FILE_MISSING_VIOLATION_MESSAGE)

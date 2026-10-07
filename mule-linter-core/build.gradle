@@ -7,9 +7,12 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'org.json:json:20231013'
     implementation 'org.yaml:snakeyaml:2.3'
-    implementation 'org.reflections:reflections:0.10.2'
     
     compileOnly 'org.apache.velocity:velocity-engine-core:2.4.1'
+}
+
+test {
+    inputs.file('AVIOGDSLRuleConfiguration.groovy')
 }
 
 // GDSL generation task with incremental build support

@@ -9,16 +9,17 @@ import picocli.CommandLine
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = 'mule-linter', mixinStandardHelpOptions = true,
+        subcommands = [CatalogCommands.RulesCommand, CatalogCommands.ConfigCommand],
         exitCodeOnExecutionException = 2,
         footer = '\nCopyright: 2021 AVIO Consulting, License: MIT\nWebsite: https://github.com/avioconsulting/mule-linter',
         description = 'Analyze mule application code for patterns that don’t follow convention', showDefaultValues = true,
         header = '%n@|green Mule Linter|@')
 class MuleLinterCli implements Callable<Integer>, Runnable {
 
-    @CommandLine.Option(names = ['-r', '--rules'], required = true, description = 'Rule configuration file')
+    @CommandLine.Option(names = ['-r', '--rules'], description = 'Rule configuration file (required for analysis)')
     File ruleConfiguration
 
-    @CommandLine.Option(names = ['-d', '--dir'], required = true, description = 'Application Directory')
+    @CommandLine.Option(names = ['-d', '--dir'], description = 'Application Directory (required for analysis)')
     File appDir
 
     @CommandLine.Option(names = ['-f', '--format'], defaultValue = 'CONSOLE',
@@ -46,6 +47,7 @@ class MuleLinterCli implements Callable<Integer>, Runnable {
     Integer call() {
         PrintWriter errors = spec == null ? new PrintWriter(System.err, true) : spec.commandLine().err
         try {
+            if (ruleConfiguration == null || appDir == null) throw new IllegalArgumentException('Analysis requires -r/--rules and -d/--dir')
             MuleLinter ml = new MuleLinter(appDir, ruleConfiguration, outputFormat)
             def result = ml.buildLinterExecutor().analysisResult
             // Do not close System.out: the harness or caller owns it.

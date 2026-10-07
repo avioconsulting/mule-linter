@@ -89,19 +89,64 @@ To release this module, follow these steps -
 
 Rule Configuration uses a Groovy-DSL provided by Mule Linter. See [AVIOGDSLRuleConfiguration.groovy](mule-linter-core/AVIOGDSLRuleConfiguration.groovy) for sample configuration.
 
+### Rule catalog and agent commands
+
+Every built-in rule has an explicit typed definition in
+`mule-linter-core/src/main/groovy/com/avioconsulting/mule/linter/catalog/BuiltinRuleProvider.groovy`.
+The catalog supplies descriptions, defaults, required options, nested types, allowed values,
+and factories to configuration validation, IDE metadata, and these commands:
+
+```shell
+mule-linter rules list
+mule-linter rules describe logger-required-attributes
+mule-linter config validate muleLinter.groovy
+```
+
+Append `--json` to any of these commands for machine-readable output with `schemaVersion: 1`.
+List output includes every installed rule's full contract; describe accepts canonical IDs
+or aliases. Validation returns `valid`, `ruleCount`, and the configured rule identities
+without loading a Mule application, resolving parents, or running checks. These commands
+return `0` on success and `2` on invalid input, configuration, or output errors.
+
+Canonical kebab-case IDs and optional aliases share one unique namespace. Existing uppercase
+IDs are aliases and remain the IDs used in reports. Repeated instances of the same rule
+remain supported. A readable configuration can now use:
+
+```groovy
+mule_linter {
+    rules {
+        rule('logger-required-attributes') {
+            requiredAttributes = ['category', 'message']
+        }
+        rule('flow-subflow-component-count') {
+            maxCount = 20
+        }
+    }
+}
+```
+
+Existing `LOGGER_REQUIRED_ATTRIBUTES { ... }` configurations still work. Unknown options,
+missing required options, invalid collection contents, and malformed nested objects fail
+before application loading. Rule-specific `init()` validation also runs at this point.
+
+**Security:** configuration remains executable Groovy. Validate only trusted files;
+this command is not a sandbox. Ordinary script `println` diagnostics go to stderr,
+but arbitrary script code can still perform I/O. YAML loading is not implemented.
+
 Mule Linter Core is shipped with many rules. You can browse subpackages under `com.avioconsulting.mule.linter.rule` in https://avioconsulting.github.io/mule-linter/groovydoc/index.html.
 
-Mule linter generates effective-pom.xml for the application using [maven-invoker](https://maven.apache.org/shared/maven-invoker/), and linter uses effective-pom.xml for executing the linter rulesets.
-Also, this requires Maven home location which can be passed using below options:
-- Pass maven.home system variable when executing mule-linter 
-- Set MAVEN_HOME environment variable in the system executing mule-linter
+Application loading parses `pom.xml` and resolves its parent chain using embedded Maven
+Resolver and Maven settings/authentication. It does not generate `effective-pom.xml` or
+require a Maven executable. Unresolved parents mark analysis incomplete; see `--strict`.
 
 ### Using IntelliJ Auto Completion
 Mule Linter's core library contains the GDSL file to support autocompletion in IntelliJ. To use that feature, `com.avioconsulting.mule:mule-linter-core`  dependency must be added with `provided`  scope in the project. `provided` scope will avoid maven packaging core into project artifact but still allow IntelliJ to detect the GDSL script from classpath.
 
 ## Extending for Mule Linter
 
-Mule Linter provides a service provider interface (SPI) based mechanism to add custom rules and components. See SPI [readme](./mule-linter-spi/readme.md) for details on how to use it. A Sample extension can be seen in [mule-linter-spi-test](./mule-linter-spi-test) module. 
+Mule Linter provides SPI mechanisms to add custom rules and components. See the SPI
+[README](./mule-linter-spi/README.md) for typed rule definitions and provider registration.
+An example is included in [mule-linter-spi-test](./mule-linter-spi-test).
 
 ## Mule Application Design
 ![Mermaid Design](config/mermaid/mule-application-diagram.png)

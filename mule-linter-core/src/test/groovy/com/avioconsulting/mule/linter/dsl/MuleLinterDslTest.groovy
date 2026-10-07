@@ -101,12 +101,12 @@ class MuleLinterDslTest extends Specification {
         "LOGGER_REQUIRED_ATTRIBUTES { requiredAttributes = 'category' }"   | 'LOGGER_REQUIRED_ATTRIBUTES'     | 'expected List'
         'MUNIT_MAVEN_PLUGIN_ATTRIBUTES { coverageAttributeMap = [] }'        | 'MUNIT_MAVEN_PLUGIN_ATTRIBUTES'   | 'expected Map'
         "AUTO_DISCOVERY_EXISTS { enabled = 'false' }"                       | 'AUTO_DISCOVERY_EXISTS'          | 'expected boolean'
-        'AUTO_DISCOVERY_EXISTS { enabled = null }'                          | 'AUTO_DISCOVERY_EXISTS'          | 'expected boolean'
+        'AUTO_DISCOVERY_EXISTS { enabled = null }'                          | 'AUTO_DISCOVERY_EXISTS'          | 'cannot be null'
         "README { severity = 'MJAOR' }"                                     | 'README'                         | 'expected one of'
-        'README { ruleType = 42 }'                                          | 'README'                         | 'expected RuleType'
+        'README { ruleType = 42 }'                                          | 'README'                         | 'expected String'
         "README { setSeverity('MJAOR') }"                                   | 'README'                         | 'expected one of'
-        "CONFIG_FILE_NAMING { format = 'not-a-format' }"                     | 'CONFIG_FILE_NAMING'             | 'Invalid format'
-        "COMPONENT_REQUIRED_ATTRIBUTES { attributeMatchers = [name: '['] }" | 'COMPONENT_REQUIRED_ATTRIBUTES'  | 'Invalid configuration'
+        "CONFIG_FILE_NAMING { format = 'not-a-format' }"                     | 'CONFIG_FILE_NAMING'             | 'expected one of'
+        "COMPONENT_REQUIRED_ATTRIBUTES { component = 'flow'; namespace = 'uri'; attributeMatchers = [name: '['] }" | 'COMPONENT_REQUIRED_ATTRIBUTES' | 'Invalid configuration'
         "CONSECUTIVE_LOGGERS_COUNT { excessiveLoggers = 'two' }"              | 'CONSECUTIVE_LOGGERS_COUNT'       | 'expected Integer or Map'
     }
 

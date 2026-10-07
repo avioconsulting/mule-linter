@@ -1,48 +1,48 @@
 mule_linter {
     rules {
     /* CICD */
-        AZURE_PIPELINES_EXISTS {}
-        JENKINS_EXISTS {}
+        rule('azure-pipelines-exists')
+        rule('jenkins-exists')
 
     /* CONFIGURATION */
-        API_CONSOLE_DISABLED{}
-        AUTO_DISCOVERY_EXISTS {
+        rule('api-console-disabled')
+        rule('auto-discovery-exists') {
             enabled = true
             exemptedFlows = []
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'
         }
-        COMMENTED_CODE {}
-        COMPONENT_REQUIRED_ATTRIBUTES {
+        rule('commented-code')
+        rule('component-required-attributes') {
             component = 'flow-ref'
             namespace = 'http://www.mulesoft.org/schema/mule/core'
             requiredAttributes = ['name']
         }
-        COMPONENT_COUNT {
+        rule('component-count') {
             component = 'flow-ref'
             namespace = 'http://www.mulesoft.org/schema/mule/core'
             maxCount = 5
         }
-        CONFIG_FILE_NAMING {}
-        CONFIG_PLACEHOLDER {
+        rule('config-file-naming')
+        rule('config-placeholder') {
             placeholderAttributes = ['key', 'password', 'keyPassword', 'username', 'host']
         }
-        CONNECTION_RETRY_CONFIG{
+        rule('connection-retry-config') {
             components = [
                     [name: 'request', namespace: 'http://www.mulesoft.org/schema/mule/http', 'config-ref': 'request-config'],
                     [name: 'publish', namespace: 'http://www.mulesoft.org/schema/mule/vm', 'config-ref': 'config '],
                     [name: 'publish-consume', namespace: 'http://www.mulesoft.org/schema/mule/vm', 'config-ref': 'config']
             ]
         }
-        CONNECTION_TIMEOUT_CONFIG{
+        rule('connection-timeout-config') {
             components = [
                     [name: 'request', namespace: 'http://www.mulesoft.org/schema/mule/http', timeoutAttribute: 'responseTimeout', 'config-ref': 'request-config'],
                     [name: 'publish', namespace: 'http://www.mulesoft.org/schema/mule/vm', timeoutAttribute: 'responseTimeout', 'config-ref': 'config'],
                     [name: 'publish-consume', namespace: 'http://www.mulesoft.org/schema/mule/vm', timeoutAttribute: 'responseTimeout', 'config-ref': 'config']
             ]
         }
-        CRON_EXPRESSION_EXTERNALIZED{}
-        COMPONENT_DISPLAY_NAME {
+        rule('cron-expression-externalized')
+        rule('component-display-name') {
             components = [
                 [name: 'set-payload', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Payload'],
                 [name: 'set-variable', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Set Variable'],
@@ -50,67 +50,67 @@ mule_linter {
                 [name: 'flow-ref', namespace: "http://www.mulesoft.org/schema/mule/core", displayName: 'Flow Reference']
             ]
         }
-        CONSECUTIVE_LOGGERS_COUNT {
+        rule('consecutive-loggers-count') {
             excessiveLoggers = [
                     'INFO':3,
                     'DEBUG':2
             ]
         }
-        CONSECUTIVE_LOGGERS_COUNT {
+        rule('consecutive-loggers-count') {
             excessiveLoggers = 2
         }
-        FLOW_ERROR_HANDLER{}
-        FLOW_SUBFLOW_COMPONENT_COUNT{
+        rule('flow-error-handler')
+        rule('flow-subflow-component-count') {
             maxCount = 20
         }
-        FLOW_SUBFLOW_NAMING {
+        rule('flow-subflow-naming') {
             format = 'KEBAB_CASE'
         }
-        GLOBAL_CONFIG_NO_FLOWS {
+        rule('global-config-no-flows') {
             globalFileName = 'globals.xml'
         }
-        GLOBAL_CONFIG_NO_FLOWS {}
-        GLOBAL_CONFIG_EXISTS {
+        rule('global-config-no-flows')
+        rule('global-config-exists') {
             globalFileName = 'global-config.xml'
         }
-        LOGGER_REQUIRED_ATTRIBUTES {
+        rule('logger-required-attributes') {
             requiredAttributes = ['category']
         }
-        LOGGER_CATEGORY_HASVALUE {}
-        LOGGER_MESSAGE_CONTENTS {
+        rule('logger-category-has-value')
+        rule('logger-message-contents') {
             pattern = '[0-9]*'
         }
-        LOGGER_MESSAGE_HASVALUE {}
-        MULE_CONFIG_FLOW_LIMIT {
+        rule('logger-message-has-value')
+        rule('mule-config-flow-limit') {
             flowLimit = 2
         }
-        ON_ERROR_LOG_EXCEPTION {}
-        UNTIL_SUCCESSFUL {}
-        UNUSED_FLOW {}
+        rule('on-error-log-exception')
+        rule('until-successful')
+        rule('unused-flow')
 
     /* GIT */
-        GIT_IGNORE {}
-        GIT_IGNORE {
+        rule('git-ignore')
+        rule('git-ignore') {
             ignoredFiles = ['*.jar', '*.class', 'target/', '.project', '.classpath', '.idea', 'build']
         }
 
     /* MULE ARTIFACT */
-        MULE_ARTIFACT_SECURE_PROPERTIES {
+        rule('mule-artifact-secure-properties') {
             properties = [
                 'anypoint.platform.db.password'
             ]
             includeDefaults = false
         }
-        MULE_ARTIFACT_MIN_MULE_VERSION {}
+        rule('mule-artifact-min-mule-version')
 
     /* POM */
-        MULE_MAVEN_PLUGIN {
+        rule('mule-maven-plugin') {
             version = '3.3.5'
         }
-        MULE_RUNTIME {
+        rule('mule-runtime') {
             version = '4.3.0'
         }
-        MUNIT_MAVEN_PLUGIN_ATTRIBUTES {
+        rule('munit-maven-plugin-attributes') {
             coverageAttributeMap =[
                 'runCoverage':'true',
                 'failBuild':'true',
@@ -120,56 +120,56 @@ mule_linter {
             ]
             includeDefaults = false
         }
-        MUNIT_PLUGIN_VERSION {
+        rule('munit-plugin-version') {
             version = '2.2.1'
         }
-        MUNIT_VERSION {
+        rule('munit-version') {
             version = '2.3.6'
         }
-        POM_DEPENDENCY_VERSION {
+        rule('pom-dependency-version') {
             groupId = 'com.mulesoft.connectors'
             artifactId = 'mule-amazon-sqs-connector'
             artifactVersion = '5.11.0'
             versionOperator = 'GREATER_THAN'
         }
-        POM_FILE_EXISTS {}
-        POM_PLUGIN_ATTRIBUTE {
+        rule('pom-file-exists')
+        rule('pom-plugin-attribute') {
             groupId = 'org.mule.tools.maven'
             artifactId = 'mule-maven-plugin'
             attributes = [
                 extensions: true
             ]
         }
-        MAVEN_PROPERTY {
+        rule('maven-property') {
             propertyName = 'cloudhubWorkers'
             propertyValue = '2'
         }
 
     /* PROPERTY */
-        APIKIT_VERSION {
+        rule('apikit-version') {
             artifactVersion = '1.9.0'
         }
-        ENCRYPTED_VALUE {}
-        HOSTNAME_PROPERTY {
+        rule('encrypted-value')
+        rule('hostname-property') {
             exemptions = []
         }
-        PROPERTY_EXISTS {
+        rule('property-exists') {
             environments = ['dev', 'test', 'prod']
             propertyName = 'db.user'
             pattern = '${appname}-${env}.yaml'
         }
-        PROPERTY_NAME_PATTERN{}
-        PROPERTY_FILE_NAMING {
+        rule('property-name-pattern')
+        rule('property-file-naming') {
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'
         }
-        PROPERTY_FILE_COUNT_MISMATCH {
+        rule('property-file-count-mismatch') {
             environments = ['dev', 'test', 'prod']
             pattern = '${appname}-${env}.properties'
         }
 
     /* README */
-        README {}
+        rule('readme')
 
     }
 }

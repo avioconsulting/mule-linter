@@ -1,6 +1,10 @@
 package com.avioconsulting.mule.linter.dsl
 
 import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.model.rule.RuleSeverity
+import com.avioconsulting.mule.linter.model.rule.RuleType
+import com.avioconsulting.mule.linter.catalog.RuleDefinition
+import com.avioconsulting.mule.linter.catalog.OptionDefinition
 import com.avioconsulting.mule.linter.rule.configuration.LoggerAttributesRule
 import spock.lang.Specification
 
@@ -39,29 +43,34 @@ class RulesLoaderTest extends Specification {
         reverse << [false, true]
     }
 
-    def "inherited annotated fields remain configurable and internal fields stay hidden"() {
+    def "explicit definitions bind inherited fields without exposing internal state"() {
         given:
         def loader = new GroovyClassLoader(this.class.classLoader)
         Class ruleClass = loader.parseClass('''
             import com.avioconsulting.mule.linter.model.rule.*
             import com.avioconsulting.mule.linter.model.Application
             class ParentOptionRule extends Rule {
-                @Param('paths') List<String> paths
+                List<String> paths
                 Object internalState
                 List<RuleViolation> execute(Application app) { [] }
             }
             class ChildOptionRule extends ParentOptionRule {}
         ''')
         Class child = loader.loadClass('ChildOptionRule')
-        Rule rule = child.newInstance()
-        def options = new RuleOptions(rule)
+        def definition = new RuleDefinition('child-option', [], 'CHILD_OPTION', 'Inherited field fixture.',
+            RuleSeverity.MINOR, RuleType.CODE_SMELL, child, [OptionDefinition.stringList('paths')], { Map values ->
+                Rule rule = child.newInstance()
+                rule.paths = values.paths
+                rule
+            })
+        def options = new RuleOptions(definition)
 
         when:
         options.paths = ['one']
 
         then:
-        rule.paths == ['one']
-        RuleOptions.fieldsFor(child).keySet() == ['paths', 'severity', 'ruleType', 'ruleName'] as Set
+        definition.specification(options.suppliedOptions()).instantiate().paths == ['one']
+        definition.options.keySet() == ['paths', 'severity', 'ruleType', 'ruleName'] as Set
 
         cleanup:
         loader.close()

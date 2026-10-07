@@ -47,11 +47,29 @@ contributor([closureScopeContext]) {
     }
     call = enclosingCall("rules")
     if(call) {
+        method name: 'rule', params: [identifier: String.name, configuration: Closure.name]
         #foreach($ruleId in $ruleIds)
             #closureParam($ruleId)
         #end
     }
     #set($paramSuffix = '-param')
+    call = enclosingCall('rule')
+    if (call) {
+        def arguments = call.argumentList?.expressionArguments
+        def selected = arguments && arguments[0] instanceof org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral ? arguments[0].value : null
+        switch (selected) {
+            #foreach($ruleId in $ruleIds)
+                case '$rules.get($ruleId).canonicalId':
+                #foreach($alias in $rules.get($ruleId).aliases)
+                case '$alias':
+                #end
+                    #foreach($param in $rules.get($ruleId).params)
+                        #typedProp($param.v1, $param.v2)
+                    #end
+                    break
+            #end
+        }
+    }
     #foreach($ruleId in $ruleIds)
         #set( $ruleKey= $ruleId+$paramSuffix )
         call = enclosingCall("$ruleId")

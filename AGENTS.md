@@ -14,14 +14,16 @@
 ## Boundaries and discovery
 
 - `mule-linter-spi` owns shared models (including the base `Rule`, `PomFile`, and XML parser), component SPI, and embedded Maven Resolver. `mule-linter-core` owns application loading, DSL, execution/reporting, and built-in rules.
-- Execution entrypoint: core's `com.avioconsulting.mule.MuleLinter` constructs `MuleApplication`, evaluates the Groovy DSL, then runs `RuleExecutor`. CLI (`MuleLinterCli`) and Java Maven mojos wrap core.
-- Rules are discovered by `RulesLoader` through Reflections under `com.`, `org.`, and `io.` using each class's `RULE_ID`; the DSL instantiates them and calls `init()`. New rule IDs must be unique.
+- Execution entrypoint: core's `com.avioconsulting.mule.MuleLinter` validates configuration before constructing `MuleApplication`, then runs `RuleExecutor`. CLI and Java Maven mojos wrap core.
+- Rule contracts live in `BuiltinRuleProvider`; all installed providers register through `META-INF/services/com.avioconsulting.mule.linter.spi.RuleProvider`. Canonical IDs and aliases share a unique namespace; historical report IDs remain unchanged. `@Param` is deprecated and no longer drives validation or IDE metadata.
+- Add/change options in the typed definition, not just the rule field. `RuleSpecification` validates structures/defaults; factories bind fresh rule instances and `init()` performs domain validation before application loading. Keep direct-constructor compatibility where needed.
+- Agent discovery: `mule-linter rules list --json`, `rules describe ID --json`, and `config validate FILE --json`; these need no application directory. Groovy validation executes trusted code, not a sandbox.
 - Components use a different mechanism: Java `ServiceLoader` with `META-INF/services/com.avioconsulting.mule.linter.spi.ComponentsFactory`. See `mule-linter-spi-test` for an extension example.
 - Extension tests use the misspelled package `com.aviconsulting.mule.linter.extension`; use it in `--tests` filters rather than the usual `com.avioconsulting`.
 
 ## POM resolution and test traps
 
-- Current application loading parses `pom.xml` and resolves only the parent chain through embedded Maven Resolver; it does **not** invoke Maven to generate `effective-pom.xml`. README Maven-invoker setup instructions are stale.
+- Current application loading parses `pom.xml` and resolves only the parent chain through embedded Maven Resolver; it does **not** invoke Maven to generate `effective-pom.xml`.
 - Direct `PomFile` callers must call `resolveParents(...)` to enable inheritance. Use `resolveProperty`, `resolveDependency`, and `resolvePlugin` for source/inheritance-aware results. `MuleApplication` resolves parents during construction but logs a warning and continues on failure.
 - Resolver settings/authentication come from Maven settings. Local repository priority: constructor path, `mule.linter.localRepo`, settings' `localRepository`, then `~/.m2/repository`.
 - Never close `ParentPomResolver.getInstance()` in application code: its shutdown hook owns cleanup. Isolated tests can construct `new ParentPomResolver(path)` and close that instance themselves.
@@ -31,7 +33,7 @@
 
 ## Generated artifacts and publication
 
-- IntelliJ GDSL is generated from `mule-linter-core.gdsl.vm` and rule classes into `mule-linter-core/build/classes/groovy/main/mule-linter-core.gdsl`; do not edit the output. Regenerate with `./gradlew :mule-linter-core:generateGDSL` (also wired into test compilation, jars, and Groovydoc).
+- IntelliJ GDSL is generated from `mule-linter-core.gdsl.vm` and the catalog into `mule-linter-core/build/classes/groovy/main/mule-linter-core.gdsl`; do not edit the output. Regenerate with `./gradlew :mule-linter-core:generateGDSL` (also wired into test compilation, jars, and Groovydoc).
 - CLI install: `./gradlew :mule-linter-cli:installDist`. Shadow archives: `./gradlew :mule-linter-cli:renameDists` (builds archives and removes `-shadow` from distribution names).
 - `./gradlew publish` stages Maven artifacts in each publishing module's `build/staging-deploy`; it does not install them into `~/.m2`. Use `./gradlew publishToMavenLocal` for local Maven consumers.
 - `.github/workflows/build.yml` delegates build/release to shared workflows and uses `mule-linter-core` for versioning. Release state lives in module `version.properties` files and `jreleaser.yml`.

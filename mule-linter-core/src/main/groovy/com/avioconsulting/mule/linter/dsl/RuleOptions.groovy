@@ -1,92 +1,43 @@
 package com.avioconsulting.mule.linter.dsl
 
-import com.avioconsulting.mule.linter.model.rule.Param
-import com.avioconsulting.mule.linter.model.rule.Rule
+import com.avioconsulting.mule.linter.catalog.RuleDefinition
 
-import java.lang.reflect.Field
-
-/**
- * Validates public DSL options before Groovy's otherwise permissive coercion.
- * Checks declared outer types, not generic collection contents or requiredness.
- * Dynamic Object options and domain-specific values remain the rule's init() responsibility.
- */
+/** DSL assignments build configuration, not mutable executable rules. */
 class RuleOptions {
-    private final Rule rule
-    private final Map<String, Field> options
+    private final RuleDefinition definition
+    private final Map<String, Object> supplied = [:]
 
-    RuleOptions(Rule rule) {
-        this.rule = rule
-        this.options = fieldsFor(rule.class)
-    }
+    RuleOptions(RuleDefinition definition) { this.definition = definition }
 
-    static Map<String, Field> fieldsFor(Class<? extends Rule> ruleClass) {
-        Map<String, Field> fields = [:]
-        for (Class type = ruleClass; type != null && Rule.isAssignableFrom(type); type = type.superclass) {
-            type.declaredFields.each { field ->
-                Param param = field.getAnnotation(Param)
-                if (param != null) {
-                    fields.putIfAbsent(param.value(), field)
-                } else if (type == Rule && field.name in ['severity', 'ruleType', 'ruleName']) {
-                    fields.putIfAbsent(field.name, field)
-                }
-            }
-        }
-        return fields
-    }
+    Map<String, Object> suppliedOptions() { new LinkedHashMap<>(supplied) }
 
     @Override
     Object getProperty(String name) {
-        Field field = option(name)
-        return rule.getProperty(field.name)
+        def option = definition.options[name]
+        if (option == null) unknown(name)
+        if (!supplied.containsKey(name) && option.hasDefault) supplied[name] = option.normalize(option.defaultValue, "rule '${definition.reportId}'.${name}")
+        supplied[name]
     }
 
     @Override
     void setProperty(String name, Object value) {
-        Field field = option(name)
-        Class type = field.type
-        Object converted = value
-        if (value != null && type.isEnum() && value instanceof CharSequence) {
-            try {
-                converted = Enum.valueOf(type, value.toString())
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid option '${name}' for rule '${rule.ruleId}': expected one of ${type.enumConstants*.name()}, got '${value}'", e)
-            }
-        } else if (type == String && value instanceof GString) {
-            converted = value.toString()
-        }
-        Class boxed = [
-                (Boolean.TYPE): Boolean, (Byte.TYPE): Byte, (Short.TYPE): Short,
-                (Integer.TYPE): Integer, (Long.TYPE): Long, (Float.TYPE): Float,
-                (Double.TYPE): Double, (Character.TYPE): Character
-        ].get(type, type)
-        if ((value == null && type.isPrimitive()) || (converted != null && !boxed.isInstance(converted))) {
-            throw new IllegalArgumentException("Invalid option '${name}' for rule '${rule.ruleId}': expected ${type.simpleName}, got ${value == null ? 'null' : value.getClass().simpleName}")
-        }
-        try {
-            rule.setProperty(field.name, converted)
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid option '${name}' for rule '${rule.ruleId}': ${e.message}", e)
-        }
+        def option = definition.options[name]
+        if (option == null) unknown(name)
+        supplied[name] = option.normalize(value, "rule '${definition.reportId}'.${name}")
     }
 
     def methodMissing(String name, args) {
-        // Preserve normal Groovy setter/getter syntax without bypassing option validation.
         if (name.startsWith('set') && name.length() > 3 && args.length == 1) {
-            String optionName = java.beans.Introspector.decapitalize(name.substring(3))
-            setProperty(optionName, args[0])
+            setProperty(java.beans.Introspector.decapitalize(name.substring(3)), args[0])
             return null
         }
         if (name.startsWith('get') && name.length() > 3 && args.length == 0) {
             return getProperty(java.beans.Introspector.decapitalize(name.substring(3)))
         }
-        return rule.invokeMethod(name, args)
+        throw new IllegalArgumentException("Unsupported configuration method '$name' for rule '${definition.reportId}'")
     }
 
-    private Field option(String name) {
-        Field field = options.get(name)
-        if (field == null) {
-            throw new IllegalArgumentException("Unknown option '${name}' for rule '${rule.ruleId}'. Available options: ${options.keySet().sort().join(', ')}")
-        }
-        return field
+    private void unknown(String name) {
+        throw new IllegalArgumentException("Unknown option '$name' for rule '${definition.reportId}'. Available options: ${definition.options.keySet().sort().join(', ')}")
     }
 }
