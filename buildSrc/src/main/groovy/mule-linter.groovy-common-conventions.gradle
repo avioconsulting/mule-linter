@@ -13,8 +13,8 @@ repositories {
 }
 
 dependencies {
-//    implementation 'org.apache.groovy:groovy-all:4.0.33@pom'
-    implementation('org.apache.groovy:groovy-all:4.0.33@pom') {
+    // groovy-all is a dependency aggregator, not a runtime POM artifact.
+    implementation('org.apache.groovy:groovy-all:4.0.33') {
         transitive = true
     }
     testImplementation platform('org.spockframework:spock-bom:2.5-groovy-4.0')
