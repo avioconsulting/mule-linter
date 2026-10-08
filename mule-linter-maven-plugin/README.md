@@ -140,3 +140,38 @@ Once you add required dependencies, you can add new rule in the rules configurat
         includeDefaults = false
     }
 ```
+### Anypoint Code Builder compatibility
+
+Add in the <properties> section ( this is required to be compatible with ACB Munits in the IDE )
+
+```xml
+<mule.linter.appDir>${project.basedir}</mule.linter.appDir>
+<mule.linter.config>${project.basedir}/linter.groovy</mule.linter.config>
+```
+
+Reference the properties in the plugin configuration:
+```xml
+<plugin>
+    <groupId>com.avioconsulting.mule</groupId>
+    <artifactId>mule-linter-maven-plugin</artifactId>
+    <version>LATEST_VERSION</version>
+    <executions>
+        <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+                <goal>validate</goal>
+            </goals>
+            <configuration>
+                <appDir>${mule.linter.appDir}</appDir>
+                <ruleConfiguration>${mule.linter.config}</ruleConfiguration>
+                <outputDirectory>${project.build.directory}/reports</outputDirectory>
+                <formats>
+                    <format>CONSOLE</format>
+                    <format>JSON</format>
+                </formats>
+            </configuration>
+        </execution>
+    </executions>    
+</plugin>
+```
