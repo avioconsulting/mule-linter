@@ -22,13 +22,34 @@ jobs:
       version-project: 'mule-linter-core'
       include-test-results: false
       java-version: '17'
+      java-distribution: temurin
 
   Release:
     needs: Build
-    uses: avioconsulting/shared-workflows/.github/workflows/gradle-release.yml@main
+    permissions:
+      contents: write
+    uses: avioconsulting/shared-workflows/.github/workflows/gradle-release.yml@gradle-central-migraiton
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
+      java-version: '17'
+      java-distribution: temurin
+
+  Central-Publishing-Dry-Run:
+    needs: Build
+    permissions:
+      contents: read
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/chore/dependency-maintenance-2026-10-12' }}
+    uses: avioconsulting/shared-workflows/.github/workflows/gradle-release.yml@gradle-central-migraiton
+    secrets: inherit
+    with:
+      # Stage a release-shaped version so Central validation is exercised rather
+      # than skipped for the normal SNAPSHOT version. Nothing is published.
+      app-version: '2.0.0-centralmigrationtest'
+      gradle-args: '-Dversion.semver=2.0.0-centralmigrationtest'
+      dry-run: true
+      java-version: '17'
+      java-distribution: temurin
 
   Post-Release:
     needs: [Build, Release]
@@ -36,3 +57,6 @@ jobs:
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
+      java-version: '17'
+      java-distribution: temurin
+      version-project: 'mule-linter-core'

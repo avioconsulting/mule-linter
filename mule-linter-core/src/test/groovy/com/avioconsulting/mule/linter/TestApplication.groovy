@@ -13,8 +13,6 @@ class TestApplication {
 
     static final String SAMPLE_APP_NAME = 'SampleMuleApp'
     
-    // Store previous value of system property for restoration
-    private String previousSkipEffectivePomValue
     static final List<String> CONFIGS = ['src/main/mule/business-logic.xml',
                                          'src/main/mule/global-config.xml',
                                          'src/main/mule/sample-mule-app-api.xml']
@@ -35,9 +33,6 @@ class TestApplication {
 
     void addPom() {
         copyFileFromBaseApp(PomFile.POM_XML)
-        // Create a simplified pom.xml for tests to avoid slow effective-pom generation
-        // The real MuleApplication constructor will use effective-pom which tries to download
-        // dependencies from MuleSoft repositories, causing tests to hang
     }
     
     /**
@@ -52,16 +47,6 @@ class TestApplication {
         
         // Copy child POM to app root
         copyFileFromResource('ComprehensiveParentSample/child/pom.xml', appDir)
-    }
-    
-    /**
-     * Enable effective POM generation for tests.
-     * Clears the skip flag so MuleApplication uses effective POM.
-     * Remember to call cleanup() in test cleanup to restore the previous value.
-     */
-    void useEffectivePomGeneration() {
-        previousSkipEffectivePomValue = System.getProperty('mule.linter.skipEffectivePom')
-        System.clearProperty('mule.linter.skipEffectivePom')
     }
     
     /**
@@ -145,19 +130,6 @@ class TestApplication {
         appDir.deleteDir()
     }
     
-    /**
-     * Restore system properties that were modified during test setup.
-     * Call this in test cleanup() to avoid polluting other tests.
-     */
-    void cleanup() {
-        // Restore the mule.linter.skipEffectivePom property
-        if (previousSkipEffectivePomValue != null) {
-            System.setProperty('mule.linter.skipEffectivePom', previousSkipEffectivePomValue)
-        } else {
-            System.clearProperty('mule.linter.skipEffectivePom')
-        }
-    }
-
     void removeFile(String fileName) {
         File fileToRemove = new File(appDir, fileName)
         if (fileToRemove.exists()) {

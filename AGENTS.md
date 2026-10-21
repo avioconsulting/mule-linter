@@ -2,14 +2,14 @@
 
 ## Build and focused verification
 
-- Use `./gradlew` (wrapper: Gradle 9.8.0); module toolchains target Java 17. Shared build/test/publication behavior lives in `buildSrc/src/main/groovy/*conventions.gradle`, not a root build file.
+- Use `./gradlew` (wrapper: Gradle 9.8.2); module toolchains target Java 17. Shared build/test/publication behavior lives in `buildSrc/src/main/groovy/*conventions.gradle`, not a root build file. With mise, run `mise exec java@temurin-17.0.20+101 -- ./gradlew build` (or select another installed Java 17).
 - Full verification: `./gradlew build`. Compile main and test sources without running tests: `./gradlew classes testClasses`.
 - Core tests: `./gradlew :mule-linter-core:test`.
 - One Spock class: `./gradlew :mule-linter-core:test --tests 'com.avioconsulting.mule.linter.rule.configuration.LoggerAttributesRuleTest'`.
 - One feature: append `.Logger Attributes check` inside that quoted test filter.
 - POM-rule changes: `./gradlew :mule-linter-core:test --tests 'com.avioconsulting.mule.linter.rule.pom.*'`; inheritance changes also need SPI resolver tests and core model tests.
 - SPI changes affect core, the Maven plugin, and the extension example; run affected module tests, not just `:mule-linter-spi:test`.
-- CodeNarc is commented out in the shared conventions despite the README's claim. `check` does not produce the advertised CodeNarc report.
+- CodeNarc is commented out in the shared conventions. `check` does not produce CodeNarc reports.
 
 ## Boundaries and discovery
 
@@ -29,9 +29,9 @@
 - Resolver settings/authentication come from Maven settings. Local repository priority: constructor path, `mule.linter.localRepo`, settings' `localRepository`, then `~/.m2/repository`.
 - Never close `ParentPomResolver.getInstance()` in application code: its shutdown hook owns cleanup. Isolated tests can construct `new ParentPomResolver(path)` and close that instance themselves.
 - The Maven mojo opens a thread-local `ParentPomResolver.openScope()` for each goal. Scoped instances close with that scope, before the host disposes its plugin realm. The published plugin uses a shaded, relocated Resolver/Maven stack; test its packaged JAR and a real Maven invocation, not only unshaded unit tests.
-- Gradle tests set `mule.linter.skipEffectivePom=true`, but current application/resolver code does not read that flag; parent resolution can still access repositories. Use local parent fixtures or minimal POMs for isolated tests.
-- `EffectivePomIntegrationTest` still skips unless `maven.home` or `MAVEN_HOME` is set, even though application loading no longer invokes Maven. A green default test run may omit this suite.
-- Core's `TestApplication` creates temporary apps from `SampleMuleApp`; `addMinimalPom` and `addComprehensiveParentSample` support focused POM cases. Remove the temporary app in cleanup; if using `useEffectivePomGeneration()`, also call the helper's `cleanup()` to restore its system property.
+- Parent resolution can access repositories. Use local parent fixtures or minimal POMs for isolated tests; there is no `skipEffectivePom` flag.
+- `EffectivePomIntegrationTest` runs without Maven installed; its parent fixture uses a relative path.
+- Core's `TestApplication` creates temporary apps from `SampleMuleApp`; `addMinimalPom` and `addComprehensiveParentSample` support focused POM cases. Remove the temporary app in cleanup.
 
 ## Generated artifacts and publication
 

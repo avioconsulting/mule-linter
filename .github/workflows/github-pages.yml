@@ -39,17 +39,8 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set Maven Home
-        id: set-maven-home
-        run: echo "maven-home=$(mvn -v | grep "Maven home" | sed -e "s/^Maven home\:\ //")" >> $GITHUB_OUTPUT
-
-      - name: Print Maven Home
-        run: echo "Maven Home ${{steps.set-maven-home.outputs.maven-home}}"
-
       - name: Verify and generate Groovydoc
         run: ./gradlew check :mule-linter-core:groovydoc
-        env:
-          MAVEN_HOME: ${{steps.set-maven-home.outputs.maven-home}}
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Verify Pages content

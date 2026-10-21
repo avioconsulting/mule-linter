@@ -19,7 +19,7 @@ dependencies {
     }
     // groovy-all's YAML/TOML modules bring Jackson, pinned by groovy-bom 4.0.33 to a
     // vulnerable 2.19.x. Align all Jackson modules on a patched 2.21 LTS release.
-    implementation platform('com.fasterxml.jackson:jackson-bom:2.21.7')
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.21.8')
     testImplementation platform('org.spockframework:spock-bom:2.5-groovy-4.0')
     testImplementation 'org.spockframework:spock-core:2.5-groovy-4.0'
 }
@@ -39,11 +39,6 @@ test {
     // Performance optimizations
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 100  // Restart forked JVM after 100 test classes to avoid memory leaks
-    
-    // Disable expensive effective-pom generation during tests
-    // Tests use sample projects with MuleSoft dependencies that require network access
-    // and cause Maven invoker to hang trying to resolve remote artifacts
-    systemProperty 'mule.linter.skipEffectivePom', 'true'
     
     // Test output settings
     testLogging {

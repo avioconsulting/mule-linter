@@ -13,7 +13,7 @@ project:
     homepage: https://github.com/avioconsulting/
     documentation: https://github.com/avioconsulting/mule-linter
     license: https://github.com/avioconsulting/mule-linter/blob/main/LICENSE
-    contribute: https://github.com/avioconsulting/mule-linter/blob/main/README.adoc
+    contribute: https://github.com/avioconsulting/mule-linter/blob/main/README.md
   authors:
     - Adam DesJardin
     - Kevin King
@@ -24,9 +24,10 @@ project:
     - maven
     - linter
     - mule
-  java:
-    groupId: com.avioconsulting.mule
-    version: '8'
+  languages:
+    java:
+      groupId: com.avioconsulting.mule
+      version: '17'
 
 release:
   github:
@@ -78,19 +79,17 @@ checksum:
 
 signing:
   active: ALWAYS
-  armored: true
-  mode: MEMORY
+  pgp:
+    armored: true
+    mode: MEMORY
 
 deploy:
   maven:
-    nexus2:
+    mavenCentral:
       maven-central:
-        active: ALWAYS
-        url: https://oss.sonatype.org/service/local
-        snapshotUrl: https://oss.sonatype.org/content/repositories/snapshots/
+        active: RELEASE
+        url: https://central.sonatype.com/api/v1/publisher
         applyMavenCentralRules: true
-        closeRepository: true
-        releaseRepository: true
         stagingRepositories:
           - mule-linter-core/build/staging-deploy
           - mule-linter-spi/build/staging-deploy

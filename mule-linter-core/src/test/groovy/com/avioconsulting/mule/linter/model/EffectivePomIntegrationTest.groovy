@@ -14,18 +14,14 @@ import com.avioconsulting.mule.linter.rule.pom.PomDependencyVersionRule
 import com.avioconsulting.mule.linter.rule.pom.PomExistsRule
 import com.avioconsulting.mule.linter.rule.pom.PomPluginAttributeRule
 import com.avioconsulting.mule.linter.rule.pom.PomPropertyValueRule
-import spock.lang.IgnoreIf
 import spock.lang.Specification
 
 /**
- * Integration tests for effective POM resolution with parent POM inheritance.
+ * Integration tests for embedded POM resolution with parent POM inheritance.
  * Tests comprehensive parent-child sample for end-to-end validation of POM rules.
  * 
- * NOTE: These tests require Maven to be available (maven.home system property or 
- * MAVEN_HOME environment variable) and network access to resolve parent POMs.
- * Tests are skipped if Maven is not configured.
+ * Parent fixtures are resolved by relative path; no Maven executable is required.
  */
-@IgnoreIf({ !System.getProperty('maven.home') && !System.getenv('MAVEN_HOME') })
 @SuppressWarnings(['MethodName', 'MethodReturnTypeRequired', 'StaticFieldsBeforeInstanceFields'])
 class EffectivePomIntegrationTest extends Specification {
 
@@ -36,8 +32,6 @@ class EffectivePomIntegrationTest extends Specification {
     }
 
     def cleanup() {
-        // Restore system properties before removing test app to avoid state leakage
-        testApp.cleanup()
         testApp.remove()
     }
 
@@ -46,7 +40,6 @@ class EffectivePomIntegrationTest extends Specification {
     def 'POM exists with comprehensive parent sample'() {
         given:
         testApp.addComprehensiveParentSample()
-        testApp.useEffectivePomGeneration()
         Rule rule = new PomExistsRule()
 
         when:
@@ -56,14 +49,17 @@ class EffectivePomIntegrationTest extends Specification {
         then:
         violations.size() == 0
         app.pomFile != null
+        app.pomFile.resolveProperty('app.runtime').value == '4.9.16'
+        app.pomFile.resolveProperty('app.runtime').parentDepth == 1
+        app.pomFile.resolveProperty('http.connector.version').value == '1.11.0'
+        app.pomFile.resolveProperty('http.connector.version').parentDepth == 0
     }
 
-    // ==================== EFFECTIVE POM WITH STANDALONE POM ====================
+    // ==================== STANDALONE POM ====================
 
-    def 'Effective POM generation with standalone POM works'() {
+    def 'Standalone POM is loaded without Maven execution'() {
         given:
         testApp.addPom()
-        testApp.useEffectivePomGeneration()
         
         Rule rule = new PomExistsRule()
 
@@ -79,7 +75,6 @@ class EffectivePomIntegrationTest extends Specification {
     def 'Property values are accessible in effective POM'() {
         given:
         testApp.addPom()
-        testApp.useEffectivePomGeneration()
         
         Rule rule = new PomPropertyValueRule()
         rule.propertyName = 'munit.version'
@@ -96,7 +91,6 @@ class EffectivePomIntegrationTest extends Specification {
     def 'Dependencies are accessible in effective POM'() {
         given:
         testApp.addPom()
-        testApp.useEffectivePomGeneration()
         
         Rule rule = new PomDependencyVersionRule()
         rule.groupId = 'org.mule.connectors'
@@ -116,7 +110,6 @@ class EffectivePomIntegrationTest extends Specification {
     def 'Plugins are accessible in effective POM'() {
         given:
         testApp.addPom()
-        testApp.useEffectivePomGeneration()
         
         Rule rule = new MunitMavenPluginAttributesRule()
         rule.init()
@@ -130,8 +123,7 @@ class EffectivePomIntegrationTest extends Specification {
     }
 
     // ==================== COMPREHENSIVE PARENT SAMPLE STRUCTURE ====================
-    // Note: Tests requiring actual Maven parent POM resolution require network access
-    // or a properly configured Maven repository. These tests validate the sample structure.
+    // These tests validate the local sample structure; no remote artifacts are resolved.
 
     def 'Comprehensive parent sample files are created correctly'() {
         given:
@@ -198,7 +190,6 @@ class EffectivePomIntegrationTest extends Specification {
     def 'PomFile provides access to effective POM properties'() {
         given:
         testApp.addComprehensiveParentSample()
-        testApp.useEffectivePomGeneration()
 
         when:
         MuleApplication app = new MuleApplication(testApp.appDir)
