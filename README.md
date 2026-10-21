@@ -227,8 +227,8 @@ running JReleaser with `--dry-run`. This does not publish artifacts or create a
 GitHub release. The shared workflow branch must be pushed before the linter
 branch so GitHub Actions can resolve it.
 
-The inherited `OSSRH_USERNAME` and `OSSRH_PASSWORD` secrets must contain **Central
-Portal user-token credentials**, despite their legacy names. Existing JReleaser
+The inherited `MAVEN_PUBLISH_USERNAME` and `MAVEN_PUBLISH_PASSWORD` secrets must
+contain **Central Portal user-token credentials**. Existing JReleaser
 GPG signing secrets are also required. Dry-run success does not verify remote
 authentication or actual publication. Central deployment is release-only;
 SNAPSHOT versions are not sent to the Publisher Portal.
