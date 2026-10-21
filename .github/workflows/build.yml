@@ -16,7 +16,7 @@ env:
 
 jobs:
   Build:
-    uses: avioconsulting/shared-workflows/.github/workflows/gradle-build.yml@main
+    uses: avioconsulting/shared-workflows/.github/workflows/gradle-build.yml@gradle-central-migraiton
     secrets: inherit
     with:
       version-project: 'mule-linter-core'

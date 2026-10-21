@@ -220,7 +220,7 @@ configuration is [here](config/code-quality-config/codenarc/codenarc.xml).
 
 ### Central Publishing Migration Test
 
-The release job temporarily uses `shared-workflows@gradle-central-migraiton`.
+The Build and Release jobs temporarily use `shared-workflows@gradle-central-migraiton`.
 Pushes to `chore/dependency-maintenance-2026-10-12` also run a Central publishing
 dry run after Build succeeds, staging version `2.0.0-centralmigrationtest` and
 running JReleaser with `--dry-run`. This does not publish artifacts or create a
@@ -233,7 +233,7 @@ GPG signing secrets are also required. Dry-run success does not verify remote
 authentication or actual publication. Central deployment is release-only;
 SNAPSHOT versions are not sent to the Publisher Portal.
 
-After the shared migration is merged, restore the workflow reference to `@main`
+After the shared migration is merged, restore the workflow references to `@main`
 and remove the temporary `Central-Publishing-Dry-Run` job.
 ## Global Configuration Layout
 
