@@ -228,8 +228,9 @@ GitHub release. The shared workflow branch must be pushed before the linter
 branch so GitHub Actions can resolve it.
 
 The inherited `MAVEN_PUBLISH_USERNAME` and `MAVEN_PUBLISH_PASSWORD` secrets must
-contain **Central Portal user-token credentials**. Existing JReleaser
-GPG signing secrets are also required. Dry-run success does not verify remote
+contain **Central Portal user-token credentials**. Signing reuses
+`MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PUBLIC_KEY`, and `MAVEN_GPG_PASSPHRASE`, mapped
+to JReleaser's signing environment variables. Dry-run success does not verify remote
 authentication or actual publication. Central deployment is release-only;
 SNAPSHOT versions are not sent to the Publisher Portal.
 
