@@ -226,9 +226,32 @@ JReleaser to publish staged Maven artifacts through the Central Publisher Portal
 The inherited `MAVEN_PUBLISH_USERNAME` and `MAVEN_PUBLISH_PASSWORD` secrets must
 contain **Central Portal user-token credentials**. Signing reuses
 `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PUBLIC_KEY`, and `MAVEN_GPG_PASSPHRASE`, mapped
-to JReleaser's signing environment variables. Dry-run success does not verify remote
-authentication or actual publication. Central deployment is release-only;
-SNAPSHOT versions are not sent to the Publisher Portal.
+to JReleaser's signing environment variables. The same publishing credentials
+are exposed as both `JRELEASER_MAVENCENTRAL_*` and `JRELEASER_NEXUS2_*`.
+
+JReleaser selects the deployer by version: non-SNAPSHOT releases use the Central
+Publisher API; SNAPSHOTs use the Nexus2 adapter's Maven repository PUT protocol
+at `https://central.sonatype.com/repository/maven-snapshots/`. No legacy OSSRH
+host or Nexus staging API is used for snapshots. Namespace snapshot publishing
+must be enabled in Central Portal. Production publishing remains limited to
+`main`; GitHub early-access CLI downloads are published alongside Maven snapshots.
+
+Consumers must explicitly enable the snapshot repository (including
+`pluginRepositories` for the Maven plugin). For example:
+
+```xml
+<pluginRepositories>
+  <pluginRepository>
+    <id>central-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <releases><enabled>false</enabled></releases>
+    <snapshots><enabled>true</enabled></snapshots>
+  </pluginRepository>
+</pluginRepositories>
+```
+
+Use the same repository under `repositories` when consuming the core/SPI as
+dependencies. Snapshots are mutable and subject to Sonatype's retention policy.
 
 ## Global Configuration Layout
 
