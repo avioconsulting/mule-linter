@@ -36,7 +36,7 @@ release:
     draft: false
     sign: true
     releaseName: '{{tagName}}'
-    skipTag: true
+    skipTag: false
     milestone:
       close: false
     changelog:
