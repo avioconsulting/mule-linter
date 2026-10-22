@@ -22,13 +22,18 @@ jobs:
       version-project: 'mule-linter-core'
       include-test-results: false
       java-version: '17'
+      java-distribution: temurin
 
   Release:
     needs: Build
+    permissions:
+      contents: write
     uses: avioconsulting/shared-workflows/.github/workflows/gradle-release.yml@main
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
+      java-version: '17'
+      java-distribution: temurin
 
   Post-Release:
     needs: [Build, Release]
@@ -36,3 +41,6 @@ jobs:
     secrets: inherit
     with:
       app-version: ${{ needs.Build.outputs.app-version }}
+      java-version: '17'
+      java-distribution: temurin
+      version-project: 'mule-linter-core'

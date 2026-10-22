@@ -209,8 +209,27 @@ An example is included in [mule-linter-spi-test](./mule-linter-spi-test).
 [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit#pako:eNrVWFtT6zYQ_isePyWdwCQcOECGYSalhoaT2ySUnulkhhGxEnRqS64lU9KU_17dLEuyE3gtD1ja_by72pvW2YUrEsOwH64SQOkvCGxykC7xksl9MMiyBK0AQwTvljjQf7cogQGoWDPAXiruCFF2NctJBnO2FdDrILN21EPeELxGmyKXkhR85ZOsd2Ykleoz9awY9xD_iTCVzB_VugIsWI7wJsAgtYh3iA03mORQvrdBDJldBRoXCRzkDK3BigWptakgCQGxfWbaarvM2jFrCFuLzVsjzN9OM4IhZrS14kuxethmsCNPQzOwgm3lTSHEgK8rIRvIbhPyN1eqcGKzB7conj8LHSTJZ6GCNYdrA91n6AuQYWuJg7WDnwlJIMCOJM_NDfnmwJscvy_znBfdeDhJ4NqjMpFDZn5Ocq5Oy7VC3NuJqXDv6mFVWrAMe8swODq65quf-Iof7gdcsUq2Kk6LvPsgzTWxkqC1WiKCq3-PjtwjaDW64naiLSyZFjWbjp--j0cubT6dRfOHYbRQZOGy72kyAzmFeZDJh-LEBNLojQehZcVYMIQ_eTfhZCWzopK0jHGrbCcTmSOcEyUw5WlUgRUAQTpCGE4IFzfEDG5K9QKSFBuEW5ucFNkw7gRAh3YYS4mKbdDjAqPyFZEKfDcGrxCXsIMutVLTC5-hB1YAfwX0hYHnBF5Nn4WkTqCepo0iux9ajQe5PcXxA7d6r9zG6pJOVg4uI9GAuiEFZrZ3DznCrqB7SrDtDJ_nZdv4t1H0NOCpdTu4eXi6X0wnJjQLuCpy6JxUCBjkOdhW8UNYaHiEOeUFpiFehs3hXwXKofBmXMiSbwDxMhVO2SchhllCtiIXIyxcHWugn-Oq9TTbuifNVbAOe9jcZrZrDdHz6d3wYXg3mc4jRRWJFL1lOaTCRU4m8fuYAd62WtDwvda8z6B7_yJWJtl3tWvUfTT5NpwsbocjadZ72SVrkmvN25ZfYzZk0w0_-dNkMI4Ws8FN5PCjUTSOJg9Pt6Pp7_Po9tPNjPrdDMTxII6RsAIkdwl5BokyrYUJtvdthRdXvU3ee1uW4Ikr5kO8NUccQPIknEDKYAX_SO6IbHj51-Ae-f82j5jsq-VT7Yp2Xvcbm2FYXX4MsiuVbh3dYK8DwPjiuWB2f-fz0KAkP4KkODQZNQIburexR7eyBoi8N4v0GeZ-dy9lvKAkziH-wH_l-GxYqnqdwNjuchi6arkLhAosbXHqC9FBhr4hGcxWc0tqUO5lpa3eY-3cgZC3PrDZ47AbwH1E8m0z94Cj4StMPJY23TNGGT94HE4PHKCBvfNin-cwkYk8jJtN0uc02USbzTNTUnm7Nw1FZRG4vLLpc2XV15cpRV0OTZD6OFfWKTPDqqtCt3Q95zm0auRzyK9qSFA0rSdIpGJFq32CCuKdGFvnkBYJCzJpAb8svPv-MwOsvvRYRZRdxpnL67xqXDVuKBGVq70kFFSqqbJVGKBqHzWkIr-K_xW2ecCmhqEc1zaX-dJJjDmvzuiNT3CM-9hKVEFfQBbkhfPxDxVUcJ0BJUY0S8BWuZ-2SMGyQoQTgrTttXJHo93FxUqr9S0Ulmg3ygQVtOvSNn3PC1pLkCrXaDOD6h3jHMWSEtpOUZXqlmHXuV8E3Ter_tEnBIpsbiBPnO9BpYZnOmLbgOpFzc-27Y-IqK5xXbNXmulgfEsNwwuxtKwiOcUmL5_aUcR39KTp0zZVTatunOqaiwyu0BqtfD86DBnkUkDYCVOYpwDFYT-Udi9D9sJrahn2-TKGa8CTbRku8TuHgoKRxRavwv4aJBR2wiKL-Y2gf1DzqBEfCUluiBnAfxDCQSwv-BZK7lj_LCceEhL2d-Fb2D_rHp-eX573ul_PT7_0Ts7OO-E27B-d9E6OLy965ydfu5e9i4svZ--d8B8ptHd8ctE9u-ien112Ty9Ov568_wfp9MoY)
 * Update code in [mule-application-design.mmd](config/mermaid/mule-application-design.mmd) and paste into live editor
 * Click 'Download PNG' and save file into [config/mermaid](config/mermaid) directory
-## Code Coverage
-[CodeNarc](https://codenarc.github.io/CodeNarc/) is used to ensure quality in groovy code.  The configuration file is located [here.](config/code-quality-config/codenarc/codenarc.xml)  To execute run ```gradle check```, and an output [report](build/reports/codenarc/main.html) will be generated. 
+## Build Verification
+Use Java 17 and the checked-in Gradle wrapper: `./gradlew build` runs the build and
+tests; `./gradlew check` runs verification. Test reports are generated under each
+module's `build/reports/tests/test/` directory.
+
+[CodeNarc](https://codenarc.github.io/CodeNarc/) is currently disabled in the shared
+Gradle conventions, so `check` does not generate CodeNarc reports. Its retained
+configuration is [here](config/code-quality-config/codenarc/codenarc.xml).
+
+### Central Publishing
+
+Build and release jobs use `avioconsulting/shared-workflows@main`. Releases use
+JReleaser to publish staged Maven artifacts through the Central Publisher Portal.
+
+The inherited `MAVEN_PUBLISH_USERNAME` and `MAVEN_PUBLISH_PASSWORD` secrets must
+contain **Central Portal user-token credentials**. Signing reuses
+`MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PUBLIC_KEY`, and `MAVEN_GPG_PASSPHRASE`, mapped
+to JReleaser's signing environment variables. Dry-run success does not verify remote
+authentication or actual publication. Central deployment is release-only;
+SNAPSHOT versions are not sent to the Publisher Portal.
+
 ## Global Configuration Layout
 
 See [Global Configuration Layout](GLOBAL-CONFIGURATION.md) for the

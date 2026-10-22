@@ -115,14 +115,16 @@ rules:
         ]
     }
 
-    def 'parser limits reject excessively deep and large documents'() {
+    def 'parser limits reject #scenario documents'() {
         when:
         ConfigurationLoader.load(write('policy.yaml', text))
         then:
         def error = thrown(IllegalArgumentException)
         error.message.contains('Invalid YAML')
         where:
-        text << ['[' * 60 + '0' + ']' * 60, 'text: ' + 'x' * (1024 * 1024 + 1)]
+        scenario           | text
+        'excessively deep' | '[' * 60 + '0' + ']' * 60
+        'oversized'        | 'text: ' + 'x' * (1024 * 1024 + 1)
     }
 
     def 'invalid YAML fails before application loading'() {

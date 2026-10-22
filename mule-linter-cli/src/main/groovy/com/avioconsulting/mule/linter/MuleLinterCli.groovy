@@ -11,7 +11,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(name = 'mule-linter', mixinStandardHelpOptions = true,
         subcommands = [CatalogCommands.RulesCommand, CatalogCommands.ConfigCommand],
         exitCodeOnExecutionException = 2,
-        footer = '\nCopyright: 2021 AVIO Consulting, License: MIT\nWebsite: https://github.com/avioconsulting/mule-linter',
+        footer = '\nCopyright: 2021 AVIO Consulting, License: BSD-2-Clause\nWebsite: https://github.com/avioconsulting/mule-linter',
         description = 'Analyze mule application code for patterns that don’t follow convention', showDefaultValues = true,
         header = '%n@|green Mule Linter|@')
 class MuleLinterCli implements Callable<Integer>, Runnable {
