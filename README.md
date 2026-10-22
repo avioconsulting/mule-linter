@@ -218,14 +218,10 @@ module's `build/reports/tests/test/` directory.
 Gradle conventions, so `check` does not generate CodeNarc reports. Its retained
 configuration is [here](config/code-quality-config/codenarc/codenarc.xml).
 
-### Central Publishing Migration Test
+### Central Publishing
 
-The Build and Release jobs temporarily use `shared-workflows@gradle-central-migraiton`.
-Pushes to `chore/dependency-maintenance-2026-10-12` also run a Central publishing
-dry run after Build succeeds, staging version `2.0.0-centralmigrationtest` and
-running JReleaser with `--dry-run`. This does not publish artifacts or create a
-GitHub release. The shared workflow branch must be pushed before the linter
-branch so GitHub Actions can resolve it.
+Build and release jobs use `avioconsulting/shared-workflows@main`. Releases use
+JReleaser to publish staged Maven artifacts through the Central Publisher Portal.
 
 The inherited `MAVEN_PUBLISH_USERNAME` and `MAVEN_PUBLISH_PASSWORD` secrets must
 contain **Central Portal user-token credentials**. Signing reuses
@@ -234,8 +230,6 @@ to JReleaser's signing environment variables. Dry-run success does not verify re
 authentication or actual publication. Central deployment is release-only;
 SNAPSHOT versions are not sent to the Publisher Portal.
 
-After the shared migration is merged, restore the workflow references to `@main`
-and remove the temporary `Central-Publishing-Dry-Run` job.
 ## Global Configuration Layout
 
 See [Global Configuration Layout](GLOBAL-CONFIGURATION.md) for the
