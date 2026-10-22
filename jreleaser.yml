@@ -85,6 +85,25 @@ signing:
 
 deploy:
   maven:
+    # Sonatype snapshots use Maven repository PUTs, not the release Publisher API.
+    # JReleaser's Nexus2 deployer uses that protocol without Nexus staging calls
+    # when the project is a SNAPSHOT.
+    nexus2:
+      central-snapshots:
+        active: SNAPSHOT
+        url: https://central.sonatype.com/repository/maven-snapshots/
+        snapshotUrl: https://central.sonatype.com/repository/maven-snapshots/
+        snapshotSupported: true
+        sign: true
+        checksums: true
+        sourceJar: true
+        javadocJar: true
+        verifyPom: true
+        stagingRepositories:
+          - mule-linter-core/build/staging-deploy
+          - mule-linter-spi/build/staging-deploy
+          - mule-linter-maven-plugin/build/staging-deploy
+          - mule-linter-cli/build/staging-deploy
     mavenCentral:
       maven-central:
         active: RELEASE
